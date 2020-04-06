@@ -24,6 +24,25 @@ provider_capacity <- provider_capacity[match(states$NAME, provider_capacity$NAME
 provider_capacity <- provider_capacity[1:51,]
 states <- data.frame(states, "hosp_beds_ldi"=provider_capacity$hosp_beds_ldi) # Append to states
 
+p_value_calculation<-function(pb,pa,Nb,Na){
+  #pa: observed rate
+  #pb: background rate
+  Xa<- pa*Na
+  Xb<- pb*Nb
+  pc<- (Xa+Xb)/(Na+Nb)
+  z<-(pa-pb)/sqrt(pc*(1-pc)*(1/Na+1/Nb))
+  return(2*pnorm(abs(z), lower.tail=FALSE))
+}
+
+provider_capacity <- merge(provider_capacity, covid_data_states[, c("NAME", "Population")], by="NAME")
+
+provider_capacity$hosp_beds_pvalue<-unlist(mapply(p_value_calculation,rep(pIT.1, nrow(provider_capacity)),
+                                                  provider_capacity$p_hosp_beds,
+                                                  rep(60482328,nrow(provider_capacity)),
+                                                  provider_capacity$Population))
+
+states <- merge(states, provider_capacity[, c("NAME", "hosp_beds_pvalue")], by="NAME")
+
 ## COVID-19 Testing fixing
 # colnames(state_covid_testing) <- c("NAME","total_num_tests","tests_pos_results")
 # Inner join to add population
