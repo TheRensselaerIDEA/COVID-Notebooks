@@ -38,6 +38,21 @@ The **COVIDMINDER** github repository can be found at:
 
 * https://github.com/TheRensselaerIDEA/COVID-DI-Prototype
 
+## HOW TO USE THIS NOTEBOOK AND REPOSITORY
+
+We're asking those who wish to participate in this excercise to clone the github repository, create a personal branch, and make additions to the repository by creating new, customized notebooks. The general procedure is as follows:
+
+* `git clone https://github.com/TheRensselaerIDEA/COVID-Notebooks.git` in your `home` directory, creating a new directory `COVID-Notebooks`
+* In the Linux shell, `cd` to `COVID-Notebooks` 
+* In the Linux shell, `git checkout -b my-new-branch` ; substitute a unique name for `my-new-branch` !!!
+* In RStudio Server, navigate to `COVID-Notebooks` via the **Files** panel
+* Set this to be your working directory
+* Make a copy of the notebook (ie `Rmd`) file using an *original, descriptive* filename
+* edit...knit (to HTML)...repeat
+* In Linux, `git add` each file you want to add to the repository (e.g. your new `Rmd` file, perhaps the `html` you create when you knit)
+* When you're ready, inLinux `git commit -a -m "some comment"` where "some comment" is a useful comment describing your changes
+* Finally, `git push origin my-new-branch` 
+* And then got to github and submit a pull request. 
 
 ```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
 ### Text used for captions and explanations
