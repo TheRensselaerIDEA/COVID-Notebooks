@@ -139,7 +139,7 @@ Data source: <a href='https://bit.ly/3dMWRP6'>JHU daily reports</a> (04-06-2020)
     labels2 <- sprintf(
       "<strong>%s</strong><br/>
       COVID-19 Mortality Rate DI: %.2g",
-      states$NAME, states$death_rate_ldi, states$tests_ldi, states$hosp_beds_ldi,states$cardio_death_rate_ldi
+      states$NAME, states$death_rate_ldi
     ) %>% lapply(htmltools::HTML)
     
     leaflet(states.shapes) %>%
@@ -223,7 +223,7 @@ Data source: <a href='https://bit.ly/3dMWRP6'>JHU daily reports</a> (04-06-2020)
     labels2 <- sprintf(
       "<strong>%s</strong><br/>
       Cardio Mortality Rate DI: %.2g<br/>",
-      states$NAME, states$death_rate_ldi, states$tests_ldi, states$hosp_beds_ldi,states$cardio_death_rate_ldi
+      states$NAME, states$cardio_death_rate_ldi
     ) %>% lapply(htmltools::HTML)
     
     leaflet(states.shapes) %>%
