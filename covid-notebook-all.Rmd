@@ -23,11 +23,27 @@ source("modules/preprocessing.R")
 
 ```
 
+## INTRODUCTION
+
+This R Notebook and its related R scripts provide an introduction to the **COVIDMINDER** application, which you can find at:
+
+* Public "production" version: https://covidminder.idea.rpi.edu/
+* Public "pre-release" version: https://bit.ly/COVIDMinder 
+
+The github repository for all the code required for this notebook, including a snapshot of the **COVIDMINDER** application, can be found at:
+
+* https://github.com/TheRensselaerIDEA/COVID-Notebooks
+
+The **COVIDMINDER** github repository can be found at:
+
+* https://github.com/TheRensselaerIDEA/COVID-DI-Prototype
+
+
 ```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
 ### Text used for captions and explanations
 
 ldi_explanation_text <- "<h4><b>EXPLANATION OF VISUALIZATIONS:</b></h4> The goal of these visualizations is to examine 
-nationwide disparities in COVID-19factors having to do with risks, mediations (e.g. testing, hospital beds), 
+nationwide disparities in COVID-19 factors having to do with risks, mediations (e.g. testing, hospital beds), 
 and outcomes (e.g. deaths, cases). A common measure, the <i>disparity index</i> is used to represent the 
 difference between the observed rate in the state and some baseline rate.</p>
 <p>The advantage of the disparity index is that represents how far off a target standard the observed rate is. </p>
@@ -100,6 +116,14 @@ NY_covid_cases_text <- "<h4><b>How do COVID-19 cases compare across New York Sta
 This map is updated daily. </i><br><br>
 Here, <span style='color:#b2182b'><b>shades of red</b></span> indicate that a 
 county's COVID-19 case count is higher than the NY rate.<br>
+Data source: <a href='https://bit.ly/3dMWRP6'>JHU daily reports</a> (04-06-2020)"
+
+### STATE VIEW: COVID-19 Cases Time Series (NY)
+
+NY_covid_cases_TS_text <- "<h4><b>How have COVID-19 cases increased across New York State?</b></h4>
+<i>This plot shows the growth of COVID-19 cases across NY counties since early 2020. 
+This data is updated daily. </i><br><br>
+Mouse over the plot to identify individual counties.<br>
 Data source: <a href='https://bit.ly/3dMWRP6'>JHU daily reports</a> (04-06-2020)"
 
 ```
@@ -370,3 +394,30 @@ Data source: <a href='https://bit.ly/3dMWRP6'>JHU daily reports</a> (04-06-2020)
         accessToken = Sys.getenv('MAPBOX_ACCESS_TOKEN')))
 ```
 
+`r NY_covid_cases_TS_text` 
+
+```{r echo=F}
+### New York State time series plot (log scale)
+
+# Set number to clean up plot; comment out when running to update data!
+covid_NY_TS_counties_long.cases <- covid_NY_TS_counties_long.cases %>% 
+   filter(cases >= 2)
+
+covid_NY_TS_plot.cases <- covid_NY_TS_counties_long.cases %>%
+  group_by(date)
+
+covid_NY_TS_plot.cases$log_cases <- log10(covid_NY_TS_plot.cases$cases)
+
+p.log.cases <- covid_NY_TS_plot.cases %>% 
+  mutate(
+    County = County,     # use County to define separate curves
+    Date = update(date, year = 1)  # use a constant year for the x-axis
+  ) %>% 
+  ggplot(aes(Date, log_cases, color = County)) +
+  geom_line() +
+  ggtitle("New York State COVID-19 Cases (log10 scale) (Mar - Apr 2020)")
+
+ggplotly(p.log.cases)
+
+
+```

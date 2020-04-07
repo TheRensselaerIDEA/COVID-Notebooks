@@ -44,4 +44,10 @@ covid_data_states$calc_death_rate <- covid_data_states$covid19_deaths/covid_data
 # covid_data_states$p_death_rate <- covid_data_states$deaths_per_mil/1000000
 covid_data_states$p_death_rate <- covid_data_states$calc_death_rate
 
+### NEW: COVID Notebook needs these extras
+
+covid_NY_TS_counties_long.cases <- read_csv("data/csv/time_series/covid_NY_TS_counties_long.cases.csv")
+         
+         
+
 
