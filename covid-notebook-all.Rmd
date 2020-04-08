@@ -59,6 +59,23 @@ We're asking those who wish to participate in this excercise to clone the github
 * Finally, `git push origin feature-id` (where `feature-id` is the branch you're working on) 
 * ...and then go to github and submit a pull request.
 
+Please also see this handy github "cheatsheet": https://education.github.com/git-cheat-sheet-education.pdf
+
+## UNDERSTANDING THE DATA
+
+* All of the data used for this notebook and the **COVIDMINDER** app is located in the `data/` directory hierarchy, mostly under `data/csv/` and `data/csv/time_series/`
+* Feel free to browse the directory tree using RStudio or on the web via github
+* Most of the nationwide data is under `data/csv`
+* Most of the nationwide time series data and New York per-county data is under `data/csv/time_series/`
+    * This layout may change
+* We will be expanding our data archive, esp. as we migrate data assets over from our **MORTALITYMINDER** repository
+    * See the **MORTALITYMINDER** github at: https://github.com/TheRensselaerIDEA/MortalityMinder
+
+## WHAT SHOULD I WORK ON?!?!?
+* Choose an existing issue: https://github.com/TheRensselaerIDEA/COVID-Notebooks/issues
+* OR, create your own issue...
+* OR, ask Prof. Bennett or Dr. Erickson for an issue to work on!
+
 ```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
 ### Text used for captions and explanations
 
