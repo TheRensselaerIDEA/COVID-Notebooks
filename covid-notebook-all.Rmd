@@ -44,15 +44,20 @@ We're asking those who wish to participate in this excercise to clone the github
 
 * `git clone https://github.com/TheRensselaerIDEA/COVID-Notebooks.git` in your `home` directory, creating a new directory `COVID-Notebooks`
 * In the Linux shell, `cd` to `COVID-Notebooks` 
-* In the Linux shell, `git checkout -b my-new-branch` ; substitute a unique name for `my-new-branch` !!!
+* In the Linux shell, `git checkout -b feature-id` where `id` is the github issue number your branch will address
+    * If you are working on `Issue #99`, your new branch should be `feature-99`
+    * If someone else is already working on #99 and you want to also, separately, call your branch `feature-99-1`
+    * Following this convention is **critical**! 
 * In RStudio Server, navigate to `COVID-Notebooks` via the **Files** panel
-* Set this to be your working directory
-* Make a copy of the notebook (ie `Rmd`) file using an *original, descriptive* filename
+* Set this to be your R working directory
+* One approach: Make a <b>copy</b> of this notebook (ie `Rmd`) file using an *original, descriptive* filename
+* Another approach: Create an entirely new, fresh notebook.
+* In either case, use the data we've provided under the `data/csv` subdirectory. 
 * edit...knit (to HTML)...repeat
 * In Linux, `git add` each file you want to add to the repository (e.g. your new `Rmd` file, perhaps the `html` you create when you knit)
-* When you're ready, inLinux `git commit -a -m "some comment"` where "some comment" is a useful comment describing your changes
-* Finally, `git push origin my-new-branch` 
-* And then got to github and submit a pull request. 
+* When you're ready, in Linux `git commit -a -m "some comment"` where "some comment" is a useful comment describing your changes
+* Finally, `git push origin feature-id` (where `feature-id` is the branch you're working on) 
+* ...and then go to github and submit a pull request.
 
 ```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
 ### Text used for captions and explanations
