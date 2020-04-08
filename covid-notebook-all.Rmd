@@ -68,12 +68,13 @@ Please also see this handy github "cheatsheet": https://education.github.com/git
 * Most of the nationwide data is under `data/csv`
 * Most of the nationwide time series data and New York per-county data is under `data/csv/time_series/`
     * This layout may change
-* We will be expanding our data archive, esp. as we migrate data assets over from our **MORTALITYMINDER** repository
-    * See the **MORTALITYMINDER** github at: https://github.com/TheRensselaerIDEA/MortalityMinder
+* We will be expanding our data archive, esp. using social determinatns data from <b>County Health Rankings</b>
+    * See https://www.countyhealthrankings.org/explore-health-rankings/measures-data-sources/2020-measures 
 
 ## WHAT SHOULD I WORK ON?!?!?
+
 * Choose an existing issue: https://github.com/TheRensselaerIDEA/COVID-Notebooks/issues
-* OR, create your own issue...
+* OR, create your own issue; click "New Issue"
 * OR, ask Prof. Bennett or Dr. Erickson for an issue to work on!
 
 ## WHAT TO INCLUDE IN YOUR NOTEBOOK
