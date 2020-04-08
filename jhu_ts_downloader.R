@@ -57,8 +57,8 @@ covid_TS_states_long$date <- parse_date_time(covid_TS_states_long$date, c("%m.%d
 
 covid_TS_states_long$NAME <- factor(covid_TS_states_long$NAME)
 
-covid_TS_states_long <- covid_TS_states_long %>% 
-    filter(deaths >= 10)
+# covid_TS_states_long <- covid_TS_states_long %>% 
+#     filter(deaths >= 10)
 
 # Make backup of existing LONG data
 write_csv(read_csv("data/csv/time_series/covid_TS_states_long.csv"),"data/csv/time_series/covid_TS_states_long.csv.bak")
