@@ -1,7 +1,7 @@
 ---
 title: "COVIDMINDER Bootcamp Notebook"
 author: "John Erickson"
-date: "4/7/2020"
+date: "4/8/2020"
 output: html_document
 ---
 
@@ -81,7 +81,7 @@ us_mortality_rates_text <- "<h4><b>How do COVID-19 mortality rates compare acros
 This map is updated daily.</i><br><br>
 Here, <span style='color:#b2182b'><b>shades of red</b></span> indicate that a 
 state's COVID-19 mortality rate is higher than the US rate<br><br> 
-Data source: <a href='https://bit.ly/3dMWRP6'>JHU daily reports</a> (04-06-2020)"
+Data source: <a href='https://bit.ly/3dMWRP6'>JHU daily reports</a> (04-07-2020)"
 
 ### MEDIATION: COVID-19 Testing (USA)
 
@@ -90,7 +90,7 @@ us_testing_rates_text <- "<h4><b>How do COVID-19 testing rates across the US com
 This map is updated daily.</i><br><br>
 Here, <span style='color:#b2182b'><b>shades of red</b></span> indicate that a 
 state's testing rate is lower than the South Korean rate<br><br>
-Data source: <a href='https://covidtracking.com/api'>The COVID Tracking Project daily reports</a> (04-06-2020)"
+Data source: <a href='https://covidtracking.com/api'>The COVID Tracking Project daily reports</a> (04-07-2020)"
 
 ### MEDIATION: Hospital Beds (USA)
 
