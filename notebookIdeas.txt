@@ -1,0 +1,14 @@
+Issue #7:
+Go the website
+https://www.countyhealthrankings.org/
+What data would be pertinent for increased risks or poor outcomes for the epidemic.
+Such as rate of diabetics. access to health care. ...
+
+Ideas for Issue #7:
+1. Number of necessary medical equipment like ventilators, masks major hospitals have
+2. Percentage of health insurance coverage, access to health care
+3. Neighbourhood Popolation Density
+4. Average Education Level
+5. GDP by county, income and social status
+6. Employment rate and working conditions
+7. Healthy behaviors, whether stay at home or nor
