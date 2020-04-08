@@ -76,6 +76,16 @@ Please also see this handy github "cheatsheet": https://education.github.com/git
 * OR, create your own issue...
 * OR, ask Prof. Bennett or Dr. Erickson for an issue to work on!
 
+## WHAT TO INCLUDE IN YOUR NOTEBOOK
+* The code in your notebook should be well commented
+* You should include thorough discussions of your methods and explanations of your results in the **markdown** sections (the non-code sections)
+* You should always include enough detail for someone else to reproduce (and re-use!) your work!
+* **ALWAYS* include useful titles and legends for your plots and tables!
+* Nicely-formatted tables are always a bonus
+* Your "default" for knitting notebooks should be HTML; this makes it easier to view and reduces errors. 
+
+<hr>
+
 ```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
 ### Text used for captions and explanations
 
