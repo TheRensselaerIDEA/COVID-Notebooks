@@ -1,0 +1,479 @@
+---
+title: "COVIDMINDER Bootcamp Notebook"
+author: "John Erickson"
+date: "4/8/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+#### Library and Data Imports ####
+
+## Load essential R packages
+source("modules/Source.R")
+
+## Load stored data (see `data` subdirectory)
+source("modules/data_load.R")
+
+## Create dataframes; perform desparity index calcuations; prep for plotting
+source("modules/preprocessing.R")
+
+```
+
+## INTRODUCTION
+
+This R Notebook and its related R scripts provide an introduction to the **COVIDMINDER** application, which you can find at:
+
+* Public "production" version: https://covidminder.idea.rpi.edu/
+* Public "pre-release" version: https://bit.ly/COVIDMinder 
+
+The github repository for all the code required for this notebook, including a snapshot of the **COVIDMINDER** application, can be found at:
+
+* https://github.com/TheRensselaerIDEA/COVID-Notebooks
+
+The **COVIDMINDER** github repository can be found at:
+
+* https://github.com/TheRensselaerIDEA/COVID-DI-Prototype
+
+## HOW TO USE THIS NOTEBOOK AND REPOSITORY
+
+We're asking those who wish to participate in this excercise to clone the github repository, create a personal branch, and make additions to the repository by creating new, customized notebooks. The general procedure is as follows:
+
+* `git clone https://github.com/TheRensselaerIDEA/COVID-Notebooks.git` in your `home` directory, creating a new directory `COVID-Notebooks`
+* In the Linux shell, `cd` to `COVID-Notebooks` 
+* In the Linux shell, `git checkout -b feature-id` where `id` is the github issue number your branch will address
+    * If you are working on `Issue #99`, your new branch should be `feature-99`
+    * If someone else is already working on #99 and you want to also, separately, call your branch `feature-99-1`
+    * Following this convention is **critical**! 
+* In RStudio Server, navigate to `COVID-Notebooks` via the **Files** panel
+* Set this to be your R working directory
+* One approach: Make a <b>copy</b> of this notebook (ie `Rmd`) file using an *original, descriptive* filename
+* Another approach: Create an entirely new, fresh notebook.
+* In either case, use the data we've provided under the `data/csv` subdirectory. 
+* edit...knit (to HTML)...repeat
+* In Linux, `git add` each file you want to add to the repository (e.g. your new `Rmd` file, perhaps the `html` you create when you knit)
+* When you're ready, in Linux `git commit -a -m "some comment"` where "some comment" is a useful comment describing your changes
+* Finally, `git push origin feature-id` (where `feature-id` is the branch you're working on) 
+* ...and then go to github and submit a pull request.
+
+Please also see this handy github "cheatsheet": https://education.github.com/git-cheat-sheet-education.pdf
+
+## UNDERSTANDING THE DATA
+
+* All of the data used for this notebook and the **COVIDMINDER** app is located in the `data/` directory hierarchy, mostly under `data/csv/` and `data/csv/time_series/`
+* Feel free to browse the directory tree using RStudio or on the web via github
+* Most of the nationwide data is under `data/csv`
+* Most of the nationwide time series data and New York per-county data is under `data/csv/time_series/`
+    * This layout may change
+* We will be expanding our data archive, esp. using social determinatns data from <b>County Health Rankings</b>
+    * See https://www.countyhealthrankings.org/explore-health-rankings/measures-data-sources/2020-measures 
+
+## WHAT SHOULD I WORK ON?!?!?
+
+* Choose an existing issue: https://github.com/TheRensselaerIDEA/COVID-Notebooks/issues
+    * Ask questions about the issue in the "Comments" section of that issue
+    * "Claim" the issue by self-assigning 
+* OR, create your own issue; click "New Issue"
+* OR, ask Prof. Bennett or Dr. Erickson for an issue to work on!
+
+## HOW TO SHARE YOUR WORK OR ASK QUESTIONS
+
+* Use the `idea_covid-19` stack channel under The Rensselaer IDEA
+    * Contact Dr. Erickson to be added (if you haven't already)
+
+## WHAT TO INCLUDE IN YOUR NOTEBOOK
+* The code in your notebook should be well commented
+* You should include thorough discussions of your methods and explanations of your results in the **markdown** sections (the non-code sections)
+* You should always include enough detail for someone else to reproduce (and re-use!) your work!
+* **ALWAYS* include useful titles and legends for your plots and tables!
+* Nicely-formatted tables are always a bonus
+* Your "default" for knitting notebooks should be HTML; this makes it easier to view and reduces errors. 
+
+
+<hr>
+
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+### Text used for captions and explanations
+
+ldi_explanation_text <- "<h4><b>EXPLANATION OF VISUALIZATIONS:</b></h4> The goal of these visualizations is to examine 
+nationwide disparities in COVID-19 factors having to do with risks, mediations (e.g. testing, hospital beds), 
+and outcomes (e.g. deaths, cases). A common measure, the <i>disparity index</i> is used to represent the 
+difference between the observed rate in the state and some baseline rate.</p>
+<p>The advantage of the disparity index is that represents how far off a target standard the observed rate is. </p>
+<p>Mathematically,
+<code>DI = log(x/y)</code> or <code>DI = log(y/x)</code>
+depending upon whether being above or below the target is preferred. 
+<ul>
+<li>In the case of hospital beds or rate of testing, <i>x</i> would be some state's rate , and <i>y</i> would be the US rate or some rate 
+we're comparing against (e.g. South Korea's testing or Italy's hospital beds).</li>
+<li>In the case of mortality rates, <i>x</i> would be the target rate (e.g. some national rate, including the US), and <i>y</i> would be the individual state's rate.</li>
+</ul>
+</p>
+<p>&nbsp;</p>"
+
+rpi_accessibility_link <- "<div class='center'><p><a href='https://info.rpi.edu/statement-of-accessibility'>Rensselaer Statement of Accessibility</a></p></div>"
+
+### OUTCOMES: COVID-19 Mortality Rates (USA)
+us_mortality_rates_text <- "<h4><b>How do COVID-19 mortality rates compare across the United States?</b></h4>
+<i>This map compares the COVID-19 mortality rates of individual states with the US rate.
+This map is updated daily.</i><br><br>
+Here, <span style='color:#b2182b'><b>shades of red</b></span> indicate that a 
+state's COVID-19 mortality rate is higher than the US rate<br><br> 
+Data source: <a href='https://bit.ly/3dMWRP6'>JHU daily reports</a> (04-07-2020)"
+
+### MEDIATION: COVID-19 Testing (USA)
+
+us_testing_rates_text <- "<h4><b>How do COVID-19 testing rates across the US compare with South Korea?</b></h4>
+<i>This map compares rates of COVID-19 tssting in US states vs South Korea's testing rate. 
+This map is updated daily.</i><br><br>
+Here, <span style='color:#b2182b'><b>shades of red</b></span> indicate that a 
+state's testing rate is lower than the South Korean rate<br><br>
+Data source: <a href='https://covidtracking.com/api'>The COVID Tracking Project daily reports</a> (04-07-2020)"
+
+### MEDIATION: Hospital Beds (USA)
+
+us_hospital_beds_text <- "<h4><b>How does the availability of hospital beds across the United States compare with Italy?</b></h4>
+<i>This map compares the availability of hospital beds in US states vs the rate in Italy (3.2 beds/1000). 
+This map uses recent historical figures and does not reflect 'surge' capacity.</i><br><br>
+Here, <span style='color:#b2182b'><b>shades of red</b></span> indicate that a 
+state's hospital bed availablity is lower than the rate in <b>Italy</b><br/><br>
+Data sources: <br/><a href='https://data.oecd.org/healtheqt/hospital-beds.htm'> Organisation for Economic Co-operation and Development</a>
+and <a href='https://bit.ly/2V0CYLU'>Kaiser Family Foundation</a>"
+
+### RISK: Cardiovascular Diseases (USA)
+
+us_cardio_deaths_rates_text <- "<h4><b>How do cardiovascular mortality rates across the US compare with the national average?</b></h4>
+<i>The map compares individual state mortality rates related to cardiovascular diseases (per 100k)
+with the US rate. In recent literature, COVID-19 risk has been
+linked to certain cardiovascular diseases, including hypertension. 
+This map uses recent historical figures. </i><br><br>
+Here, <span style='color:#b2182b'><b>shades of red</b></span> indicate that a 
+state's mortality rate from total cardiovascular diseases is 
+<b>higher</b> than the US rate<br/><br>
+Data source: <br/><a href='https://bit.ly/2V1Zl3I'>CDC (2017)</a>
+                            "
+
+### STATE VIEW: COVID-19 mortality rates (NY)
+
+NY_mortality_rates_text <- "<h4><b>How do COVID-19 mortality rates compare across New York State?</b></h4>
+<i>This map compares the COVID-19 mortality rates of NY counties with the NY average. 
+This map is updated daily. </i><br><br>
+Here, <span style='color:#b2182b'><b>shades of red</b></span> indicate that a 
+county's COVID-19 mortality rate is higher than the NY rate.<br>
+Data source: <a href='https://bit.ly/3dMWRP6'>JHU daily reports</a> (04-06-2020)"
+
+### STATE VIEW: COVID-19 Cases (NY)
+
+NY_covid_cases_text <- "<h4><b>How do COVID-19 cases compare across New York State?</b></h4>
+<i>This map compares the COVID-19 cases for NY counties with the NY average. 
+This map is updated daily. </i><br><br>
+Here, <span style='color:#b2182b'><b>shades of red</b></span> indicate that a 
+county's COVID-19 case count is higher than the NY rate.<br>
+Data source: <a href='https://bit.ly/3dMWRP6'>JHU daily reports</a> (04-06-2020)"
+
+### STATE VIEW: COVID-19 Cases Time Series (NY)
+
+NY_covid_cases_TS_text <- "<h4><b>How have COVID-19 cases increased across New York State?</b></h4>
+<i>This plot shows the growth of COVID-19 cases across NY counties since early 2020. 
+This data is updated daily. </i><br><br>
+Mouse over the plot to identify individual counties.<br>
+Data source: <a href='https://bit.ly/3dMWRP6'>JHU daily reports</a> (04-06-2020)"
+
+```
+
+`r ldi_explanation_text`
+
+`r us_mortality_rates_text`
+
+```{r echo = F}
+    colors <- c("#4575b4","#74add1","#abd9e9","white","#fdae61","#f46d43","#d73027")
+    bins <- c(5, 2, 1, .2, -.2, -1, -2, -5,-Inf)
+    pal2 <- leaflet::colorBin(colors, domain = states$death_rate_ldi, bins = bins, reverse=FALSE)
+    labels2 <- sprintf(
+      "<strong>%s</strong><br/>
+      COVID-19 Mortality Rate DI: %.2g",
+      states$NAME, states$death_rate_ldi
+    ) %>% lapply(htmltools::HTML)
+    
+    leaflet(states.shapes) %>%
+      setView(-96, 37.8, 4) %>% 
+      addPolygons(
+        fillColor = ~pal2(states$death_rate_ldi),
+        weight = 2,
+        opacity = 1,
+        color = "white",
+        dashArray = "3",
+        fillOpacity = 0.7,
+        highlight = highlightOptions(
+          weight = 5,
+          color = "#666",
+          dashArray = "",
+          fillOpacity = 0.7,
+          bringToFront = TRUE),
+        label = labels2,
+        labelOptions = labelOptions(
+          style = list("font-weight" = "normal", padding = "3px 8px"),
+          textsize = "15px",
+          direction = "auto")) %>% 
+      addLegend(pal = pal2, 
+                values = ~states$death_rate_ldi, 
+                opacity = 0.7, 
+                title = "Disparity Index<br/>US COVID-19 Mortality Rates",
+                position = "bottomright"
+                ) %>%
+      addProviderTiles("MapBox", options = providerTileOptions(
+        id = "mapbox.light",
+        accessToken = Sys.getenv('MAPBOX_ACCESS_TOKEN')))
+```
+
+  `r us_testing_rates_text` 
+
+```{r echo = F}
+    colors <- c("#4575b4","#74add1","#abd9e9","white","#fdae61","#f46d43","#d73027")
+    bins <- c(5, 2, 1, .2, -.2, -1, -2, -5)
+    pal2 <- leaflet::colorBin(colors, domain = states$tests_ldi, bins = bins, reverse=FALSE)
+    labels2 <- sprintf(
+      "<strong>%s</strong> State<br/>
+      Total Tests vs South Korea DI: %.2g",
+      states$NAME, states$tests_ldi
+    ) %>% lapply(htmltools::HTML)
+    
+    leaflet(states.shapes, width="100%", height="100%") %>%
+      setView(-96, 37.8, 4) %>% # TODO: Doesn't seem to do anything
+      addPolygons(
+      fillColor = ~pal2(states$tests_ldi),
+      weight = 2,
+      opacity = 1,
+      color = "white",
+      dashArray = "3",
+      fillOpacity = 0.7,
+      highlight = highlightOptions(
+        weight = 5,
+        color = "#666",
+        dashArray = "",
+        fillOpacity = 0.7,
+        bringToFront = TRUE),
+      label = labels2,
+      labelOptions = labelOptions(
+        style = list("font-weight" = "normal", padding = "3px 8px"),
+        textsize = "15px",
+        direction = "auto")) %>% 
+      addLegend(pal = pal2, values = ~states$tests_ldi, opacity = 0.7, title = "Disparity Index<br/>US Total Tests vs. South Korea",
+                position = "bottomright") %>%
+      addProviderTiles("MapBox", options = providerTileOptions(
+        id = "mapbox.light",
+        accessToken = Sys.getenv('MAPBOX_ACCESS_TOKEN')))
+
+```
+
+  `r us_cardio_deaths_rates_text` 
+
+```{r echo = F}
+
+    colors <- c("#4575b4","#74add1","#abd9e9","white","#fdae61","#f46d43","#d73027")
+    bins <- c(5, 2, 1, .2, -.2, -1, -2, -5)
+    pal2 <- leaflet::colorBin(colors, domain = states$cardio_death_rate_ldi, bins = bins, reverse=FALSE)
+    labels2 <- sprintf(
+      "<strong>%s</strong><br/>
+      Cardio Mortality Rate DI: %.2g<br/>",
+      states$NAME, states$cardio_death_rate_ldi
+    ) %>% lapply(htmltools::HTML)
+    
+    leaflet(states.shapes) %>%
+      setView(-96, 37.8, 4) %>% 
+      addPolygons(
+        fillColor = ~pal2(states$cardio_death_rate_ldi),
+        weight = 2,
+        opacity = 1,
+        color = "white",
+        dashArray = "3",
+        fillOpacity = 0.7,
+        highlight = highlightOptions(
+          weight = 5,
+          color = "#666",
+          dashArray = "",
+          fillOpacity = 0.7,
+          bringToFront = TRUE),
+        label = labels2,
+        labelOptions = labelOptions(
+          style = list("font-weight" = "normal", padding = "3px 8px"),
+          textsize = "15px",
+          direction = "auto")) %>% 
+      addLegend(pal = pal2, values = ~states$cardio_death_rate_ldi, opacity = 0.7, title = "Disparity Index<br/>US Cardio Mortality Rate",
+                position = "bottomright") %>%
+      addProviderTiles("MapBox", options = providerTileOptions(
+        id = "mapbox.light",
+        accessToken = Sys.getenv('MAPBOX_ACCESS_TOKEN')))
+```
+
+  `r us_hospital_beds_text` 
+
+```{r echo = F}
+
+    colors <- c("#4575b4","#74add1","#abd9e9","white","#fdae61","#f46d43","#d73027")
+    bins <- c(5, 2, 1, .2, -.2, -1, -2, -5)
+    pal2 <- leaflet::colorBin(colors, domain = states$hosp_beds_ldi, bins = bins, reverse=FALSE)
+    labels2 <- sprintf(
+      "<strong>%s</strong><br/>
+      Hospital Beds vs Italy DI: %.2g",
+      states$NAME, states$death_rate_ldi, states$tests_ldi, states$hosp_beds_ldi,states$cardio_death_rate_ldi
+    ) %>% lapply(htmltools::HTML)
+    
+    leaflet(states.shapes) %>%
+      setView(-96, 37.8, 4) %>% 
+      addPolygons(
+        fillColor = ~pal2(states$hosp_beds_ldi),
+        weight = 2,
+        opacity = 1,
+        color = "white",
+        dashArray = "3",
+        fillOpacity = 0.7,
+        highlight = highlightOptions(
+          weight = 5,
+          color = "#666",
+          dashArray = "",
+          fillOpacity = 0.7,
+          bringToFront = TRUE),
+        label = labels2,
+        labelOptions = labelOptions(
+          style = list("font-weight" = "normal", padding = "3px 8px"),
+          textsize = "15px",
+          direction = "auto")) %>% 
+      addLegend(pal = pal2, values = ~states$hosp_beds_ldi, opacity = 0.7, title = "Disparity Index<br/>US Hospital Beds vs Italy",
+                position = "bottomright") %>%
+      addProviderTiles("MapBox", options = providerTileOptions(
+        id = "mapbox.light",
+        accessToken = Sys.getenv('MAPBOX_ACCESS_TOKEN')))
+```
+
+
+`r NY_mortality_rates_text`
+
+```{r echo = F}
+
+    colors <- c("#4575b4","#74add1","#abd9e9","white","#fdae61","#f46d43","#d73027")
+    bins <- c(5, 2, 1, .2, -.2, -1, -2, -5,-Inf)
+    pal2 <- leaflet::colorBin(colors, domain = NY.data$death_rate_ldi, bins = bins, reverse=FALSE)
+    
+    NY.shape$county_fips <- paste(as.data.frame(NY.shape)$STATEFP, as.data.frame(NY.shape)$COUNTYFP, sep = '')
+    NY.data <- dplyr::left_join(as.data.frame(NY.shape), as.data.frame(NY.data), by = c("county_fips" = "FIPS"))
+    
+    labels <- sprintf(
+      "<strong>%s</strong><br/>
+      COVID-19 Mortality Rate DI: %.2g<br>
+      COVID-19 actual deaths: %g<br/>
+      County population: %d",
+      NY.data$County, NY.data$death_rate_ldi, NY.data$deaths, NY.data$Population
+    ) %>% lapply(htmltools::HTML)
+
+    leaflet(NY.shape) %>%
+      setView(-76.071782, 42.991989, 6) %>%  # Set to the geographic center of NY
+      addPolygons(
+        fillColor = ~pal2(NY.data$death_rate_ldi),
+        weight = 2,
+        opacity = 1,
+        color = "white",
+        dashArray = "3",
+        fillOpacity = 0.7,
+        highlight = highlightOptions(
+          weight = 5,
+          color = "#666",
+          dashArray = "",
+          fillOpacity = 0.7,
+          bringToFront = TRUE),
+        label = labels,
+        labelOptions = labelOptions(
+          style = list("font-weight" = "normal", padding = "3px 8px"),
+          textsize = "15px",
+          direction = "auto")) %>% 
+      addLegend(pal = pal2, 
+                values = ~NY.data$death_rate_ldi, 
+                opacity = 0.7, 
+                title = "Disparity Index<br/>NY COVID-19 Mortality Rates",
+                position = "bottomright"
+      ) %>%
+      addProviderTiles("MapBox", options = providerTileOptions(
+        id = "mapbox.light",
+        accessToken = Sys.getenv('MAPBOX_ACCESS_TOKEN')))
+```
+
+`r NY_covid_cases_text`
+
+```{r echo = F}
+
+    colors <- c("#4575b4","#74add1","#abd9e9","white","#fdae61","#f46d43","#d73027")
+    bins <- c(5, 2, 1, .2, -.2, -1, -2, -5,-Inf)
+    pal2 <- leaflet::colorBin(colors, domain = NY.data$case_rate_ldi, bins = bins, reverse=FALSE)
+    
+    NY.shape$county_fips <- paste(as.data.frame(NY.shape)$STATEFP, as.data.frame(NY.shape)$COUNTYFP, sep = '')
+    NY.data <- dplyr::left_join(as.data.frame(NY.shape), as.data.frame(NY.data), by = c("county_fips" = "county_fips"))
+  
+    labels <- sprintf(
+      "<strong>%s</strong><br/>
+      COVID-19 Cases Rate DI: %.2g<br>
+      COVID-19 actual cases: %g<br/>
+      County population: %d",
+      NY.data$County, NY.data$case_rate_ldi, NY.data$cases, NY.data$Population
+    ) %>% lapply(htmltools::HTML)
+    
+    leaflet(NY.shape) %>%
+      setView(-76.071782, 42.991989, 6) %>%  # Set to the geographic center of NY
+      addPolygons(
+        fillColor = ~pal2(NY.data$case_rate_ldi),
+        weight = 2,
+        opacity = 1,
+        color = "white",
+        dashArray = "3",
+        fillOpacity = 0.7,
+        highlight = highlightOptions(
+          weight = 5,
+          color = "#666",
+          dashArray = "",
+          fillOpacity = 0.7,
+          bringToFront = TRUE),
+        label = labels,
+        labelOptions = labelOptions(
+          style = list("font-weight" = "normal", padding = "3px 8px"),
+          textsize = "15px",
+          direction = "auto")) %>% 
+      addLegend(pal = pal2, 
+                values = ~NY.data$death_rate_ldi, 
+                opacity = 0.7, 
+                title = "Disparity Index<br/>NY COVID-19 Cases",
+                position = "bottomright"
+      ) %>%
+      addProviderTiles("MapBox", options = providerTileOptions(
+        id = "mapbox.light",
+        accessToken = Sys.getenv('MAPBOX_ACCESS_TOKEN')))
+```
+
+`r NY_covid_cases_TS_text` 
+
+```{r echo=F}
+### New York State time series plot (log scale)
+
+# Set number to clean up plot; comment out when running to update data!
+covid_NY_TS_counties_long.cases <- covid_NY_TS_counties_long.cases %>% 
+   filter(cases >= 2)
+
+covid_NY_TS_plot.cases <- covid_NY_TS_counties_long.cases %>%
+  group_by(date)
+
+covid_NY_TS_plot.cases$log_cases <- log10(covid_NY_TS_plot.cases$cases)
+
+p.log.cases <- covid_NY_TS_plot.cases %>% 
+  mutate(
+    County = County,     # use County to define separate curves
+    Date = update(date, year = 1)  # use a constant year for the x-axis
+  ) %>% 
+  ggplot(aes(Date, log_cases, color = County)) +
+  geom_line() +
+  ggtitle("New York State COVID-19 Cases (log10 scale) (Mar - Apr 2020)")
+
+ggplotly(p.log.cases)
+
+
+```
