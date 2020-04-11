@@ -10,6 +10,7 @@ https://olyerickson.shinyapps.io/covid-di-prototype/
 
 * JHU CSSE github: https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data
 * CTP Data API: https://covidtracking.com/api
+* NY Times github: https://github.com/nytimes/covid-19-data
 
 ## Screen Shot (06 Apr 2020)
 ![COVIDMinder Screenshot](https://raw.githubusercontent.com/TheRensselaerIDEA/COVID-DI-Prototype/master/COVIDMinder_screenshot.png)
