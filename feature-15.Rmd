@@ -1,0 +1,412 @@
+---
+title: "COVIDMINDER Insurance Data Notebook"
+author: "Nicole Schwartzbard"
+date: "4/13/2020"
+output:
+  html_document: default
+  pdf_document: default
+---
+<h5><b>Reasoning of Looking at Insurance:</b></h5>
+I wanted to study insurance rates since more people then normally expected now need care, and therefore insurance. For the US government that now becomes very expensive and for those uninsured it is now dangerous.This data is from the uninsured_by_state csv file but I don't know where that is from. There is duplicate work, formating the data, in each code chunk to keep the chunks separate if not all will be used.
+
+<h5>Methods:</h5>
+I used the same code from the COVIDMINDER Bootcamp Notebook so that the maps would look the same, though I did edit the borders because I didn't like the white dashed outlines. I used the uninsured_by_state csv to first display the actual percentages, and then I calculated the disparity index and displayed those.
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+#### Library and Data Imports ####
+r = getOption("repos")
+r["CRAN"] = "http://cran.rstudio.com"
+options(repos = r)
+
+## Load essential R packages
+source("modules/Source.R")
+
+## Load stored data (see `data` subdirectory)
+source("modules/data_load.R")
+
+## Create dataframes; perform desparity index calcuations; prep for plotting
+source("modules/preprocessing.R")
+
+```
+
+
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+### Text used for captions and explanations
+
+Insurance_explanation_text <- "<h4><b>EXPLANATION OF VISUALIZATIONS:</b></h4> The goal of these visualizations is to examine nationwide differences in how people across the US are insured. The graphs that use Disparity Index compare state rates to the united states rate, where disparity is calculated as log(x/y), where x is the state rate and y is the United States rate.
+<i>Those insured by Medicare and Medicaid will be limited by the money the US government has, while those uninsured are at risk of being unable to pay for care.</i>"
+
+
+### US Uninsured Percentage
+
+US_uninsured_text = "<h4><b>How does the perecentage of people uninsured vary across the United States?</b></h4>
+<i> This plot shows the differences of percentage of people uninsured across the US. This data is from _______.</i>"
+#I don't know where this data was from, uses the uninsured_by_state data
+
+### US Medicaid Percentage
+
+US_medicaid_text = "<h4><b>How does the perecentage of people insured by Medicaid vary across the United States?</b></h4><i> This plot shows the differences of percentage of people uninsured across the US. This data is from _______.</i>"
+#I don't know where this data was from, uses the uninsured_by_state data
+
+### US Medicare Percentage
+
+US_medicare_text = "<h4><b>How does the perecentage of people insured by Medicare vary across the United States?</b></h4><i> This plot shows the differences of percentage of people uninsured across the US. This data is from _______.</i>"
+#I don't know where this data was from, uses the uninsured_by_state data
+
+
+###US Uninsured DI
+US_uninsured_DI_text = "<h4><b>How does the perecentage of people uninsured compare across the United States?</b></h4>
+<i> This plot shows the disparity index of percentage people uninsured across the US. Here red indicates that there is a higher percentage than average who are uninsured. This data is from _______.</i>"
+#I don't know where this data was from, uses the uninsured_by_state data
+
+
+###US Medicaid DI
+US_medicaid_DI_text = "<h4><b>How does the perecentage of people insured by medicaid compare across the United States?</b></h4>
+<i> This plot shows the disparity index of percentage people insured by medicaid across the US. Here red indicates that there is a higher percentage than average who are insured by medicaid. This data is from _______.</i>"
+#I don't know where this data was from, uses the uninsured_by_state data
+
+
+###US Medicare DI
+US_medicare_DI_text = "<h4><b>How does the perecentage of people insured by medicare compare across the United States?</b></h4>
+<i> This plot shows the disparity index of percentage people insured by medicare across the US. Here red indicates that there is a higher percentage than average who are insured by medicare. This data is from _______.</i>"
+#I don't know where this data was from, uses the uninsured_by_state data
+```
+
+`r Insurance_explanation_text`
+
+`r US_uninsured_text`
+
+```{r echo = F}
+#Get Uninsured data and format column names correctly
+Uninsured = read.csv('data/csv/uninsured_by_state.csv', row.names = NULL)
+colnames(Uninsured) = c("NAME", "Status", "Employer", "Non-group", "Medicaid", "Medicare", "Military", "Uninsured", "number_uninsured")
+
+#match order with states in state data so that the state name is accurate on the map
+Uninsured = Uninsured[match(states$NAME, Uninsured$NAME),]
+
+
+ colors <- c("grey","#426C85","#67a9cf","#d1e5f0","#f7f7f7","#fddbc7","#ef8a62","#b2182b")
+    bins <- c(0, 0.025, 0.05, 0.075, 0.1, 0.125, 0.15, 0.175, 0.2)
+    pal2 <- leaflet::colorBin(colors, domain = Uninsured$Uninsured, bins = bins, reverse=FALSE)
+    labels2 <- sprintf(
+      "<strong>%s</strong><br/>
+      Percent of People Uninsured: %.9g",
+      Uninsured$NAME, Uninsured$Uninsured
+    ) %>% lapply(htmltools::HTML)
+    
+    leaflet(states.shapes) %>%
+      setView(-96, 37.8, 4) %>% 
+      addPolygons(
+        fillColor = ~pal2(Uninsured$Uninsured),
+        weight = 2,
+        opacity = 1,
+        color = "grey",
+        dashArray = "1",
+        fillOpacity = 0.7,
+        highlight = highlightOptions(
+          weight = 5,
+          color = "#666",
+          dashArray = "",
+          fillOpacity = 0.7,
+          bringToFront = TRUE),
+        label = labels2,
+        labelOptions = labelOptions(
+          style = list("font-weight" = "normal", padding = "3px 8px"),
+          textsize = "15px",
+          direction = "auto")) %>% 
+      addLegend(pal = pal2, 
+                values = ~Uninsured$Uninsured, 
+                opacity = 0.7, 
+                title = "US Uninsured Percentage",
+                position = "bottomright"
+                ) %>%
+      addProviderTiles("MapBox", options = providerTileOptions(
+        id = "mapbox.light",
+        accessToken = Sys.getenv('MAPBOX_ACCESS_TOKEN')))
+```
+
+
+`r US_medicaid_text`
+
+```{r echo = F}
+#Get Uninsured data and format column names correctly
+Uninsured = read.csv('data/csv/uninsured_by_state.csv', row.names = NULL)
+colnames(Uninsured) = c("NAME", "Status", "Employer", "Non-group", "Medicaid", "Medicare", "Military", "Uninsured", "number_uninsured")
+
+#match order with states in state data so that the state name is accurate on the map
+Uninsured = Uninsured[match(states$NAME, Uninsured$NAME),]
+
+
+#match order with states in state data
+Uninsured = Uninsured[match(states$NAME, Uninsured$NAME),]
+
+
+ colors <- c("grey","#426C85","#67a9cf","#d1e5f0","#f7f7f7","#fddbc7","#ef8a62","#b2182b")
+    bins <- c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35)
+    pal2 <- leaflet::colorBin(colors, domain = Uninsured$Uninsured, bins = bins, reverse=FALSE)
+    labels2 <- sprintf(
+      "<strong>%s</strong><br/>
+      Percentage of People insured by Medicaid: %.9g",
+      Uninsured$NAME, Uninsured$Medicaid
+    ) %>% lapply(htmltools::HTML)
+    
+    leaflet(states.shapes) %>%
+      setView(-96, 37.8, 4) %>% 
+      addPolygons(
+        fillColor = ~pal2(Uninsured$Medicaid),
+        weight = 2,
+        opacity = 1,
+        color = "grey",
+        dashArray = "1",
+        fillOpacity = 0.7,
+        highlight = highlightOptions(
+          weight = 5,
+          color = "#666",
+          dashArray = "",
+          fillOpacity = 0.7,
+          bringToFront = TRUE),
+        label = labels2,
+        labelOptions = labelOptions(
+          style = list("font-weight" = "normal", padding = "3px 8px"),
+          textsize = "15px",
+          direction = "auto")) %>% 
+      addLegend(pal = pal2, 
+                values = ~Uninsured$Medicaid, 
+                opacity = 0.7, 
+                title = "US Insured By Medicaid",
+                position = "bottomright"
+                ) %>%
+      addProviderTiles("MapBox", options = providerTileOptions(
+        id = "mapbox.light",
+        accessToken = Sys.getenv('MAPBOX_ACCESS_TOKEN')))
+```
+
+
+`r US_medicare_text`
+
+```{r echo = F}
+#Get Uninsured data and format column names correctly
+Uninsured = read.csv('data/csv/uninsured_by_state.csv', row.names = NULL)
+colnames(Uninsured) = c("NAME", "Status", "Employer", "Non-group", "Medicaid", "Medicare", "Military", "Uninsured", "number_uninsured")
+
+#match order with states in state data so that the state name is accurate on the map
+Uninsured = Uninsured[match(states$NAME, Uninsured$NAME),]
+
+
+ colors <- c("grey","#426C85","#67a9cf","#d1e5f0","#f7f7f7","#fddbc7","#ef8a62","#b2182b")
+    bins <- c(0, 0.075, 0.10, 0.125, 0.15, 0.175, 0.2)
+    pal2 <- leaflet::colorBin(colors, domain = Uninsured$Uninsured, bins = bins, reverse=FALSE)
+    labels2 <- sprintf(
+      "<strong>%s</strong><br/>
+      Percentage of People insured by Medicare: %.9g",
+      Uninsured$NAME, Uninsured$Medicare
+    ) %>% lapply(htmltools::HTML)
+    
+    leaflet(states.shapes) %>%
+      setView(-96, 37.8, 4) %>% 
+      addPolygons(
+        fillColor = ~pal2(Uninsured$Medicare),
+        weight = 2,
+        opacity = 1,
+        color = "grey",
+        dashArray = "1",
+        fillOpacity = 0.7,
+        highlight = highlightOptions(
+          weight = 5,
+          color = "#666",
+          dashArray = "",
+          fillOpacity = 0.7,
+          bringToFront = TRUE),
+        label = labels2,
+        labelOptions = labelOptions(
+          style = list("font-weight" = "normal", padding = "3px 8px"),
+          textsize = "15px",
+          direction = "auto")) %>% 
+      addLegend(pal = pal2, 
+                values = ~Uninsured$Medicare, 
+                opacity = 0.7, 
+                title = "US Insured By Medicare",
+                position = "bottomright"
+                ) %>%
+      addProviderTiles("MapBox", options = providerTileOptions(
+        id = "mapbox.light",
+        accessToken = Sys.getenv('MAPBOX_ACCESS_TOKEN')))
+```
+
+
+`r US_uninsured_DI_text`
+
+```{r echo = F}
+#Get Uninsured data and format column names correctly
+Uninsured = read.csv('data/csv/uninsured_by_state.csv', row.names = NULL)
+colnames(Uninsured) = c("NAME", "Status", "Employer", "Non-group", "Medicaid", "Medicare", "Military", "Uninsured", "number_uninsured")
+
+#Get America's Average Uninsured
+Avg = Uninsured[Uninsured$NAME == "United States",]$Uninsured
+
+#match order with states in state data so that the state name is accurate on the map
+Uninsured = Uninsured[match(states$NAME, Uninsured$NAME),]
+
+#Calculate Disparity Index
+Uninsured$DI = log(Uninsured$Uninsured/Avg)
+
+colors <- c("grey","#426C85","#67a9cf","#d1e5f0","#f7f7f7","#fddbc7","#ef8a62","#b2182b")
+    bins <- c(-1.25, -1, -0.75, -0.5, -0.25, 0, 0.25, 0.5, 0.75)
+    pal2 <- leaflet::colorBin(colors, domain = Uninsured$DI, bins = bins, reverse=FALSE)
+    labels2 <- sprintf(
+      "<strong>%s</strong><br/>
+      People Uninsured DI: %.9g",
+      Uninsured$NAME, Uninsured$DI
+    ) %>% lapply(htmltools::HTML)
+    
+    leaflet(states.shapes) %>%
+      setView(-96, 37.8, 4) %>% 
+      addPolygons(
+        fillColor = ~pal2(Uninsured$DI),
+        weight = 2,
+        opacity = 1,
+        color = "grey",
+        dashArray = "1",
+        fillOpacity = 0.7,
+        highlight = highlightOptions(
+          weight = 5,
+          color = "#666",
+          dashArray = "",
+          fillOpacity = 0.7,
+          bringToFront = TRUE),
+        label = labels2,
+        labelOptions = labelOptions(
+          style = list("font-weight" = "normal", padding = "3px 8px"),
+          textsize = "15px",
+          direction = "auto")) %>% 
+      addLegend(pal = pal2, 
+                values = ~Uninsured$DI, 
+                opacity = 0.7, 
+                title = "US Uninsured Disparity Index",
+                position = "bottomright"
+                ) %>%
+      addProviderTiles("MapBox", options = providerTileOptions(
+        id = "mapbox.light",
+        accessToken = Sys.getenv('MAPBOX_ACCESS_TOKEN')))
+
+```
+
+`r US_medicaid_DI_text`
+
+```{r echo = F}
+#Get Uninsured data and format column names correctly
+Uninsured = read.csv('data/csv/uninsured_by_state.csv', row.names = NULL)
+colnames(Uninsured) = c("NAME", "Status", "Employer", "Non-group", "Medicaid", "Medicare", "Military", "Uninsured", "number_uninsured")
+
+#Get America's Average Medicaid
+Avg = Uninsured[Uninsured$NAME == "United States",]$Medicaid
+
+#match order with states in state data so that the state name is accurate on the map
+Uninsured = Uninsured[match(states$NAME, Uninsured$NAME),]
+
+#Calculate Disparity Index
+Uninsured$DI = log(Uninsured$Medicaid/Avg)
+
+colors <- c("grey","#426C85","#67a9cf","#d1e5f0","#f7f7f7","#fddbc7","#ef8a62","#b2182b")
+    bins <- c(-0.75, -0.5, -0.25, 0, 0.25, 0.5)
+    pal2 <- leaflet::colorBin(colors, domain = Uninsured$DI, bins = bins, reverse=FALSE)
+    labels2 <- sprintf(
+      "<strong>%s</strong><br/>
+      People Medicaid DI: %.9g",
+      Uninsured$NAME, Uninsured$DI
+    ) %>% lapply(htmltools::HTML)
+    
+    leaflet(states.shapes) %>%
+      setView(-96, 37.8, 4) %>% 
+      addPolygons(
+        fillColor = ~pal2(Uninsured$DI),
+        weight = 2,
+        opacity = 1,
+        color = "grey",
+        dashArray = "1",
+        fillOpacity = 0.7,
+        highlight = highlightOptions(
+          weight = 5,
+          color = "#666",
+          dashArray = "",
+          fillOpacity = 0.7,
+          bringToFront = TRUE),
+        label = labels2,
+        labelOptions = labelOptions(
+          style = list("font-weight" = "normal", padding = "3px 8px"),
+          textsize = "15px",
+          direction = "auto")) %>% 
+      addLegend(pal = pal2, 
+                values = ~Uninsured$DI, 
+                opacity = 0.7, 
+                title = "US Medicare Disparity Index",
+                position = "bottomright"
+                ) %>%
+      addProviderTiles("MapBox", options = providerTileOptions(
+        id = "mapbox.light",
+        accessToken = Sys.getenv('MAPBOX_ACCESS_TOKEN')))
+
+```
+
+
+`r US_medicare_DI_text`
+
+```{r echo = F}
+#Get Uninsured data and format column names correctly
+Uninsured = read.csv('data/csv/uninsured_by_state.csv', row.names = NULL)
+colnames(Uninsured) = c("NAME", "Status", "Employer", "Non-group", "Medicaid", "Medicare", "Military", "Uninsured", "number_uninsured")
+
+#Get America's Average Medicare
+Avg = Uninsured[Uninsured$NAME == "United States",]$Medicare
+
+#match order with states in state data so that the state name is accurate on the map
+Uninsured = Uninsured[match(states$NAME, Uninsured$NAME),]
+
+#Calculate Disparity Index
+Uninsured$DI = log(Uninsured$Medicare/Avg)
+
+colors <- c("grey","#426C85","#67a9cf","#d1e5f0","#f7f7f7","#fddbc7","#ef8a62","#b2182b")
+    bins <- c(-0.75, -0.5, -0.375, -0.25, -0.125, 0, 0.125, 0.25, 0.375)
+    pal2 <- leaflet::colorBin(colors, domain = Uninsured$DI, bins = bins, reverse=FALSE)
+    labels2 <- sprintf(
+      "<strong>%s</strong><br/>
+      Medicare DI: %.9g",
+      Uninsured$NAME, Uninsured$DI
+    ) %>% lapply(htmltools::HTML)
+    
+    leaflet(states.shapes) %>%
+      setView(-96, 37.8, 4) %>% 
+      addPolygons(
+        fillColor = ~pal2(Uninsured$DI),
+        weight = 2,
+        opacity = 1,
+        color = "grey",
+        dashArray = "1",
+        fillOpacity = 0.7,
+        highlight = highlightOptions(
+          weight = 5,
+          color = "#666",
+          dashArray = "",
+          fillOpacity = 0.7,
+          bringToFront = TRUE),
+        label = labels2,
+        labelOptions = labelOptions(
+          style = list("font-weight" = "normal", padding = "3px 8px"),
+          textsize = "15px",
+          direction = "auto")) %>% 
+      addLegend(pal = pal2, 
+                values = ~Uninsured$DI, 
+                opacity = 0.7, 
+                title = "US Medicaid Disparity Index",
+                position = "bottomright"
+                ) %>%
+      addProviderTiles("MapBox", options = providerTileOptions(
+        id = "mapbox.light",
+        accessToken = Sys.getenv('MAPBOX_ACCESS_TOKEN')))
+
+```
