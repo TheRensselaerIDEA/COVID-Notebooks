@@ -1,10 +1,10 @@
-# COVID-DI-Prototype: COVIDMinder Development
+# COVID-Notebooks: COVIDMINDER Prototyping via R Notebooks
 
+* HOW TO USE THIS REPOSITORY: https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/master/HOW_TO_USE_COVID_GITHUB.pdf
 * For those new to github: https://education.github.com/git-cheat-sheet-education.pdf (github cheatsheet)
 
-## Shinyapps.io Deployment (Created 30 Mar 2020; updated frequently!)
-http://bit.ly/COVIDMinder
-https://olyerickson.shinyapps.io/covid-di-prototype/
+## COVIDMINDER Deployment (updated frequently!)
+http://covidminder.idea.rpi.edu
 
 ## Data Sources: Updated daily! (See also `data` subdirectories)
 
