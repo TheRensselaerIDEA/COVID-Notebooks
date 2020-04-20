@@ -1,0 +1,17 @@
+---
+title: "COVIDMINDER Unemployment Data Notebook"
+author: "Andrew Imrie"
+date: "4/20/2020"
+output:
+  html_document: default
+  pdf_document: default
+---
+<h5><b>Reasoning of Looking at Unemployment:</b></h5>
+There has been so much talk in the news about unemployment and the numbers are staggering. I wanted to look at the trends from the last few years to visualize the immediate impact COVID has had on unemployment. I also wanted to see if there was any strong correlation between the increase in the unemployment numbers and the number of covid cases in each state. 
+
+<h5>Methods:</h5>
+
+```{r}
+plot(cars)
+```
+
