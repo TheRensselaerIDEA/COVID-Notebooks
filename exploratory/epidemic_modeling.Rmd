@@ -1,0 +1,68 @@
+---
+title: "Using R's Epidemic Packages to Model COVID-19"
+author: "Thomas Hopkins"
+output: html_notebook
+---
+
+```{r include=FALSE}
+if(!require('tidyverse')) {
+  install.packages('tidyverse')
+  library(tidyverse)
+}
+if(!require('ggplot2')) {
+  install.packages('ggplot2')
+  library(ggplot2)
+}
+if(!require('dplyr')) {
+  install.packages('dplyr')
+  library(dplyr)
+}
+if(!require('EpiEstim')) {
+  install.packages('EpiEstim')
+  library(EpiEstim)
+}
+if(!require('stringr')) {
+  install.packages('stringr')
+  library(stringr)
+}
+if(!require('matlab')) {
+  install.packages('matlab')
+  library(matlab)
+}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Read in the time-series data for NYS Counties.
+
+```{r}
+covid_TS_states <- read.csv('../data/csv/time_series/time_series_covid19_confirmed_US.csv')
+covid_TS_NY <- covid_TS_states[covid_TS_states$Province_State=='New York',] %>%
+  group_by(Province_State) %>%
+  summarize_if(is.numeric, sum, na.rm=TRUE)
+col_names_dates <- str_replace_all(str_remove(colnames(covid_TS_NY)[7:ncol(covid_TS_NY)], 'X'), coll('.'), c(pattern1 = '/'))
+dates <- as.Date(col_names_dates, format = "%m/%d/%y")
+covid_cases_NY <- as.numeric(covid_TS_NY[,7:ncol(covid_TS_NY)])
+local_cases_NY <- covid_cases_NY[covid_cases_NY > 30]
+length(dates)
+length(local_cases_NY)
+local_cases_NY <- padarray(covid_cases_NY, padsize=c(0,length(dates)-length(local_cases_NY)), direction='pre')
+local_cases_NY
+length(local_cases_NY)
+imported_cases_NY <- covid_cases_NY[covid_cases_NY <= 30]
+covid_cases_NY.df <- data.frame(c(dates=dates, local=local_cases_NY, imported=imported_cases_NY))
+```
+
+```{r}
+plot_Ri <- function(estimate_R_obj) {
+    p_I <- plot(estimate_R_obj, "incid", add_imported_cases = TRUE)  # plots the incidence
+    p_SI <- plot(estimate_R_obj, "SI")  # plots the serial interval distribution
+    p_Ri <- plot(estimate_R_obj, "R")
+    return(gridExtra::grid.arrange(p_I, p_SI, p_Ri, ncol = 1))
+}
+
+NY_res_parametric_si <- estimate_R(covid_cases_NY, 
+    method = "parametric_si", config = make_config(list(mean_si = 3.4, 
+        std_si = 4.5)))
+
+plot_Ri(NY_res_parametric_si)
+```
