@@ -1,0 +1,94 @@
+---
+title: "feature-6"
+author: "Tracy (Chuoxi) Chen"
+output: html_notebook
+---
+
+# Overview
+This feature looks at what data would be pertinent for increased risks or poor outcomes for the epidemic at a state level.
+
+``` {r, message=FALSE}
+library(dplyr)
+library(ggplot2)
+```
+
+``` {r }
+all_states.df <- read.csv("~/COVID-Notebooks/data/2019-Annual.csv")
+all_states<- unique(all_states.df$State.Name) %>% sort()
+# Sort data frame by states 
+all_states.df<- all_states.df %>% 
+  arrange(factor(all_states.df$State.Name, levels = all_states))
+
+# America's Health Ranking (data source) defined health outcome as the interaction betweenthe 4 asepcts: behaviors, commuinty & environment, policy, and clinical care
+# Separate data into the 5 categories mentioned above
+behaviors<- c("Drug Deaths", "Excessive Drinking", "High School Graduation", "Obesity", "Physical Inactivity", "Smoking")
+behaviors.df <- filter(all_states.df, grepl(paste(behaviors, collapse="|"), Measure.Name))
+
+commmunity_env<- c("Air Pollution", "Children in Poverty", "Infectious Disease", "Chlamydia", "Pertussis", "Salmonella", "Occupational Fatalities", "Violent Crime")
+commmunity_env.df <- filter(all_states.df, grepl(paste(commmunity_env, collapse="|"), Measure.Name))
+
+policy<- c("Immunizations - Adolescents", "HPV Immunization Females", "HPV Immunization Males", "Meningococcal Immunization", "Tdap Immunization", "Immunizations - Children", "Public Health Funding", "Uninsured")
+policy.df <- filter(all_states.df, grepl(paste(policy, collapse="|"), Measure.Name))
+
+clinical_care<- c("Dentists", "Low Birthweight", "Mental Health Providers", "Preventable Hospitalizations", "Primary Care Physicians")
+clinical_care.df <- filter(all_states.df, grepl(paste(clinical_care, collapse="|"), Measure.Name))
+
+outcomes<- c("Cancer Deaths", "Cardiovascular Deaths", "Diabetes", "Disparity in Health Stat", "Frequent Mental Distress", "Frequent Physical Distress", "Infant Mortality", "Premature Death") 
+outcomes.df <- filter(all_states.df, grepl(paste(outcomes, collapse="|"), Measure.Name))
+```
+**note** measurement for each data type see appendix A
+
+``` {r }
+covid_today.df<- read.csv("~/COVID-Notebooks/data/csv/covid_data_states.csv")
+covid_today.df<- covid_today.df %>% filter(!grepl('Recovered', NAME))
+names(covid_today.df)[1] <- "State.Name"
+# nys_fatality<- read.csv("~/COVID-Notebooks/data/NYS_fatality.csv")
+```
+
+``` {r }
+# WIP
+nys.df<- all_states.df %>% 
+  filter(grepl("New York", State.Name))
+
+nys_outcome.df<- nys.df %>%
+  filter(grepl(paste(outcomes, collapse="|"), Measure.Name))
+```
+
+``` {r }
+# Behaviors (excluding drug death) vs COVID death
+age<- c("Ages 18-44", "Ages 45-64", "Ages 65+")
+
+# Filter out only the data that contain information with age, remove "Drug Death" because it is catergorize with different age groups
+behaviors_age<- behaviors.df %>%
+  filter(grepl(paste(age, collapse="|"), Measure.Name)) %>% 
+  filter(!grepl('Drug Death', Measure.Name)) %>% 
+  mutate(Age_Group = 0)
+
+# Insert a new column to catergories data by age
+for (i in 1:nrow(behaviors_age)){
+  if (grepl("18-44", as.character(behaviors_age$Measure.Name[i]), fixed=TRUE) == TRUE){
+    behaviors_age$Age_Group[i] = "18-44"
+  } else if (grepl("45-64", as.character(behaviors_age$Measure.Name[i]), fixed=TRUE) == TRUE){
+    behaviors_age$Age_Group[i] = "45-64"
+  } else{
+    behaviors_age$Age_Group[i] = "65+"
+  } 
+}
+
+# Rename the items in column "Measure.Name" without the age information
+behaviors_age$Measure.Name<- gsub("-.*","",behaviors_age$Measure.Name)
+
+# Add information about each state's covid19 death 
+behaviors_age<- merge(behaviors_age, covid_today.df[c('State.Name','covid19_deaths')], by='State.Name', all.x=TRUE) %>%
+  # Pick out the information we are interested in 
+  select(State.Name, Measure.Name, Value, Age_Group, covid19_deaths)
+```
+
+# Appendix A
+## Behaviors
+*Drug Deaths* = Number of deaths due to drug injury (unintentional, suicide, homicide or undetermined) per 100,000 population (age-adjusted to mid-year).\
+*Excessive Drinking* = Percentage of adults who reported either binge drinking (having four or more [women] or five or more [men] drinks on one occasion in the past 30 days) or chronic drinking (having eight or more [women] or 15 or more [men] drinks per week).\
+*Obesity* = Percentage of adults with a body mass index of 30.0 or higher based on reported height and weight.\
+*Physical Inactivity* = Percentage of adults who reported doing no physical activity or exercise other than their regular job in the past 30 days.\
+*Smoking* = Percentage of adults who are smokers (reported smoking at least 100 cigarettes in their lifetime and currently smoke daily or some days).\
+
