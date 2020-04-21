@@ -1,7 +1,9 @@
 ---
 title: "Using R's Epidemic Packages to Model COVID-19"
 author: "Thomas Hopkins"
-output: html_notebook
+output:
+  html_document:
+    df_print: paged
 ---
 
 ```{r include=FALSE}
@@ -42,14 +44,12 @@ covid_TS_NY <- covid_TS_states[covid_TS_states$Province_State=='New York',] %>%
 col_names_dates <- str_replace_all(str_remove(colnames(covid_TS_NY)[7:ncol(covid_TS_NY)], 'X'), coll('.'), c(pattern1 = '/'))
 dates <- as.Date(col_names_dates, format = "%m/%d/%y")
 covid_cases_NY <- as.numeric(covid_TS_NY[,7:ncol(covid_TS_NY)])
-local_cases_NY <- covid_cases_NY[covid_cases_NY > 30]
-length(dates)
-length(local_cases_NY)
-local_cases_NY <- padarray(covid_cases_NY, padsize=c(0,length(dates)-length(local_cases_NY)), direction='pre')
-local_cases_NY
-length(local_cases_NY)
-imported_cases_NY <- covid_cases_NY[covid_cases_NY <= 30]
-covid_cases_NY.df <- data.frame(c(dates=dates, local=local_cases_NY, imported=imported_cases_NY))
+local_cases_NY <- covid_cases_NY[covid_cases_NY > 70]
+imported_cases_NY <- covid_cases_NY[covid_cases_NY <= 70]
+local_cases_NY <- as.numeric(padarray(local_cases_NY, padsize=c(0,length(dates)-length(local_cases_NY)), direction='pre'))
+imported_cases_NY <- as.numeric(padarray(imported_cases_NY, padsize=c(0,length(dates)-length(imported_cases_NY)), direction='post'))
+covid_cases_NY.df <- data.frame(dates=dates, local=local_cases_NY, imported=imported_cases_NY)
+covid_cases_NY.df <- covid_cases_NY.df[41:nrow(covid_cases_NY.df),]
 ```
 
 ```{r}
@@ -60,9 +60,10 @@ plot_Ri <- function(estimate_R_obj) {
     return(gridExtra::grid.arrange(p_I, p_SI, p_Ri, ncol = 1))
 }
 
-NY_res_parametric_si <- estimate_R(covid_cases_NY, 
-    method = "parametric_si", config = make_config(list(mean_si = 3.4, 
-        std_si = 4.5)))
+NY_res_parametric_si <- estimate_R(covid_cases_NY.df, 
+    method = "uncertain_si", config = make_config(list(mean_si = 3.96, std_mean_si = 2, 
+        min_mean_si = 1, max_mean_si = 5.4, std_si = 4.75, std_std_si = 1, 
+        min_std_si = 0.5, max_std_si = 5, n1=10, n2=10)))
 
 plot_Ri(NY_res_parametric_si)
 ```
