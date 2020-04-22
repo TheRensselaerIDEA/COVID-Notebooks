@@ -1,0 +1,150 @@
+---
+title: "MATP-4400 COVID-19 Final Notebook (template)"
+author: "Your Name Here"
+date: "May 2020"
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+    toc_depth: 2
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
+---
+
+```{r setup, include=FALSE}
+# stick libraries here
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+# Final Project Guidance for Students
+
+##DELETE THIS SECTION IN FINAL NOTEBOOK!##
+
+* This notebook serves as a written presentation of your work so it should be written like a research paper.
+* The rubric for evaluating this project is on LMS.
+* The R code that executes the results should be embedded in this notebook if possible. It's also okay to "source" external scripts from within your notebook, including those provided by your instructors. 
+* If there is work that is not appropriate to be embedded on your final notebook, then you can describe the work in the notebook and provide figures generated elsewhere (e.g. screen shots, graphs). Indicate if that work has been committed to github. If necessary put details in Appendix.    
+* Your wording should be suitable for sharing with external partners/mentors and useful to future contributors.
+* Please don't summarize everything you did; discuss only the *most important* aspects of your work. Ask yourself *what really matters?*
+* IMPORTANT: Discuss any insights you found regarding COVID-19.
+* If there are limitations to your work, discuss. 
+* Include any background or support for your work. For example, mention any relevant research articles you found -- and be sure to include references!
+* Include your recommendations for extending the COVIDMINDER app:
+    + Data utilization...
+    + Analytics...
+    + Visualizations
+    + User interface design...
+* **Expect internet problems!** Commit versions of this notebook to the IDEA github *early and often*. You can continue to refine and update; that is the point of github!
+
+##SUBMISSION CHECKLIST: Things to check before you submit (DELETE)##
+
+* Have you given your file(s) a clear, sensible name? `my_notebook.Rmd` or `joey.Rmd` are **not* acceptable!
+* Is every figure clearly labeled and titled? 
+* Does every figure serve a purpose? 
+     + What question does it answer? 
+     + You can put extra (non-essential) figues in the Appendix.
+* Are your tables clearly labelled and legible?
+     + We recommend using `kable()` (built into `knitr`)
+     + `xtable()` might also work for you (not as easy as `kable()`)
+* **CRITICAL:** Have you given enough information for someone to reproduce, understand and extend your results?
+     + Where can they *find* the data that you used?
+     + Have you *described* the data that used?
+     + Have you *documented* your code? 
+     + Are your figures *clearly labeled*?
+     + Did you *discuss your findings*?
+     + Did you use good grammar and *proofread* your results?
+     + Finally, have you *committed* your work to github and made a *pull request*?
+     
+##github help (DELETE!)
+
+* DO THIS FIRST:
+    + `git clone https://github.com/TheRensselaerIDEA/COVID-Notebooks` (if you haven't already)
+        + NOTE: We may have added to the master since your last `git pull` so make sure to do a `git pull origin master`
+    + `git checkout -b <your-new-branch>` (more instructions immediately below)
+    + In R, create a new R notebook (ie a `.Rmd` file) in the subdirectory `MATP-4400-FINAL`
+    + `git add` it to the repo (make sure you're in the correct directory when you do this!)
+    + `git commit -a -m 'Created my notebook!'` as soon as you do this! 
+    + `git push origin <your-new-branch>` so we see you're working on something
+    + for details, see instructions in next few bullets
+    + Contact John Erickson erickj4@rpi.edu for further github questions
+* See: **HOW TO USE THIS NOTEBOOK AND REPOSITORY** https://bit.ly/2wYQGXP
+* See also: **git Cheat Sheet** https://bit.ly/2yCBSi8 
+
+<hr>
+
+# Final Project: External Links
+
+* github repository: https://github.com/TheRensselaerIDEA/COVID-Notebooks (for reference)
+* My github ID: *olyerickson* (example; substitute with yours!)
+* Github branch name of my submitted notebook: *erickson_final* (example; substitute with yours!)
+* link to merged notebook: 
+
+# Overview & Problems Tackled
+
+*Provide a top-level summary of your work and findings.*
+
+# Data Description
+
+*Include data sources/locations, versions/dates, etc.* 
+
+# Results
+
+*Break out your results by each problem you attacked*
+
+## Problem 1 
+
+*Describe the problem you are examining.  If there is background that is necessary for this problem, then put it here. Include any references.* 
+
+ 
+### Methods
+
+*How did you address the problem? What data did you use exactly? What methods did you use?* 
+
+	
+### Results
+
+*What were the results on this problem?*
+
+
+### Discussion
+
+*Interpret results.  What were your findings?  What do they say about COVID-19?   What are the strengths and limitations of these results? Is there support for your findings from other sources? Include references as appropriate.*
+
+## Problem 2
+ 
+### Methods
+	
+### Results
+
+### Discussion
+
+*Do at least 2 problems. Add more as necessary *
+
+
+# Summary and Recommendations COVIDMINDER
+
+* Overall, what insights did you find  about the  COVID-19 epidemic in your analysis?    
+
+* What recommendations do you have for COVIDMINDER for  Data utilization, Analytics, Visualizations, User interface design, etc.
+
+    + Would you recommend that your analysis be included in COVIDMINDER?  Why or Why not?  
+    + If not, is there additional work that might  improve the results?  Note that it is perfectly okay for you to recommend to not to include your analysis. Research doesn't always work out.  As a team we need to try a lot of different ideas in hopes of finding a few good ones to pursue.  *
+
+*Think of yourself as a consultant reporting back on a particular aspect of the analysis and application design!*
+
+# Github 
+
+* Provide your github ID.  Indicate the issues associated with this work on GitHub. Put the original and  html version of this notebook on GitHub and make a pull request.  You will only give the link to your Github Submission on LMS. You can put this link up anytime. The link must appear by 
+We will grade the latest version available on Github starting at 3:00 on Thursday, May 7 Friday .  Note that the R server is going down for maintenance for upto a week starting weekend of May 9,  so there can be no extensions or late submissions.* 
+
+# References
+
+*Include any references to literature in support of your work*
+*You might also wish to include references to unusual R packages essential to your work*
+
+# Appendix
+
+*Include here whatever you think is relevant to support the main content of your notebook. For example, you may have only include example figures above in your main text but include additional ones here* 
+
