@@ -77,9 +77,10 @@ knitr::opts_chunk$set(echo = TRUE)
 # Final Project: External Links
 
 * github repository: https://github.com/TheRensselaerIDEA/COVID-Notebooks (for reference)
-* My github ID: *olyerickson* (example; substitute with yours!)
-* Github branch name of my submitted notebook: *erickson_final* (example; substitute with yours!)
+* My github ID: *olyerickson* (example)
+* Github branch name of my submitted notebook: *erickson_final* (example)
 * link to merged notebook: 
+    + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/master/MATP-4400-FINAL/COVID_FINAL_2020.Rmd (example)
 
 # Overview & Problems Tackled
 
