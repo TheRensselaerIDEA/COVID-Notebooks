@@ -18,9 +18,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```
 
-# Final Project Guidance for Students
+# Final Project: Guidance for Students (DELETE)
 
-##DELETE THIS SECTION IN FINAL NOTEBOOK!##
+*DELETE THIS SECTION IN FINAL NOTEBOOK!*
+
+##GENERAL INSTRUCTIONS (DELETE)##
 
 * This notebook serves as a written presentation of your work so it should be written like a research paper.
 * The rubric for evaluating this project is on LMS.
@@ -57,6 +59,18 @@ knitr::opts_chunk$set(echo = TRUE)
      + Did you use good grammar and *proofread* your results?
      + Finally, have you *committed* your work to github and made a *pull request*?
      
+## github Submission Instructions (DELETE!)
+
+Fill out the bullets at the beginning of this notebook...
+
+* Provide your github ID. 
+* Indicate the issues associated with this work on github. 
+* Commit the Rmd and html versions of this notebook to the `MATP-4400-FINAL` directory on github and make a pull request.  
+* Provide the link to your github submission on LMS. 
+    + **NOTE:** You can post your link any time after it exists  
+    + We will grade the latest version available on Github starting at 3:00 on Thursday, 7 May.  
+* **NOTE:** RStudio Server will be unavailable due to maintenance for up to a week beginning the weekend of 9 May,  so there can be no extensions or late submissions. 
+
 ##github help (DELETE!)
 
 * DO THIS FIRST:
@@ -67,20 +81,26 @@ knitr::opts_chunk$set(echo = TRUE)
     + `git add` it to the repo (make sure you're in the correct directory when you do this!)
     + `git commit -a -m 'Created my notebook!'` as soon as you do this! 
     + `git push origin <your-new-branch>` so we see you're working on something
+    + Post a link in LMS; it will remain valid as you update (and check in) your work to github
     + for details, see instructions in next few bullets
     + Contact John Erickson erickj4@rpi.edu for further github questions
 * See: **HOW TO USE THIS NOTEBOOK AND REPOSITORY** https://bit.ly/2wYQGXP
 * See also: **git Cheat Sheet** https://bit.ly/2yCBSi8 
 
+*DELETE THE SECTIONS ABOVE!*
 <hr>
 
-# Final Project: External Links
+# Final Project: Submission Links
+
+*This should be the first section of your final project notebook. Fill out the following according to how you submitted your notebook!*
 
 * github repository: https://github.com/TheRensselaerIDEA/COVID-Notebooks (for reference)
 * My github ID: *olyerickson* (example)
+* github issues addressed by this work: `#123` (example)
 * Github branch name of my submitted notebook: *erickson_final* (example)
-* link to merged notebook: 
-    + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/master/MATP-4400-FINAL/COVID_FINAL_2020.Rmd (example)
+* link to merged notebook (post these to LMS!: 
+    + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/master/MATP-4400-FINAL/COVID_FINAL_2020.Rmd (example; Rmd version)
+    + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/master/MATP-4400-FINAL/COVID_FINAL_2020.html (example; HTML version)
 
 # Overview & Problems Tackled
 
@@ -124,7 +144,7 @@ knitr::opts_chunk$set(echo = TRUE)
 *Do at least 2 problems. Add more as necessary *
 
 
-# Summary and Recommendations COVIDMINDER
+# Summary and COVIDMINDER Recommendations
 
 * Overall, what insights did you find  about the  COVID-19 epidemic in your analysis?    
 
@@ -135,11 +155,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 *Think of yourself as a consultant reporting back on a particular aspect of the analysis and application design!*
 
-# Github 
-
-* Provide your github ID.  Indicate the issues associated with this work on GitHub. Put the original and  html version of this notebook on GitHub and make a pull request.  You will only give the link to your Github Submission on LMS. You can put this link up anytime. The link must appear by 
-We will grade the latest version available on Github starting at 3:00 on Thursday, May 7 Friday .  Note that the R server is going down for maintenance for upto a week starting weekend of May 9,  so there can be no extensions or late submissions.* 
-
 # References
 
 *Include any references to literature in support of your work*
@@ -148,4 +163,5 @@ We will grade the latest version available on Github starting at 3:00 on Thursda
 # Appendix
 
 *Include here whatever you think is relevant to support the main content of your notebook. For example, you may have only include example figures above in your main text but include additional ones here* 
+
 
