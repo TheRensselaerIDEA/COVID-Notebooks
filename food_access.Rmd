@@ -1,0 +1,107 @@
+---
+title: "COVIDMINDER Obesity Data Notebook"
+author: "Nicole Schwartzbard"
+date: "4/21/2020"
+output:
+  html_document: default
+  pdf_document: default
+---
+<h5><b>Reasoning of Looking at Obesity:</b></h5>
+This can be useful determinats for Covid-19. I could only find data based off of students for actual obesity, but I found data for limited access to healthy foods which is a contributing factor for obesity so I used that.
+
+
+<h5>Methods:</h5>
+I used the same code from the COVIDMINDER Bootcamp Notebook so that the maps would look the same, though I did edit the borders because I didn't like the white dashed outlines. 
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+#### Library and Data Imports ####
+r = getOption("repos")
+r["CRAN"] = "http://cran.rstudio.com"
+options(repos = r)
+
+## Load essential R packages
+source("modules/Source.R")
+
+## Load stored data (see `data` subdirectory)
+source("modules/data_load.R")
+
+## Create dataframes; perform desparity index calcuations; prep for plotting
+source("modules/preprocessing.R")
+
+```
+
+
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+### Text used for captions and explanations
+
+### NY Asthma DI
+NY_food_DI_text = "<h4><b> How does the percentage of people who are healthy food insecure compare across New York</h4></b><i> This plot shows the disparity index of percentage of people who are healthy food insecure across NY. Here red indicates that there is a higher percentage than average who don't have access. The disparity index is calculated by ln(x/y), where x is the county data and y is the state data. This data is from <a href='https://www.countyhealthrankings.org/app/new-york/2020/downloads'>www.countyhealthrankings.org</a>."
+
+```
+
+
+`r NY_food_DI_text`
+
+```{r echo = F}
+#read in data
+food = read.csv('county_data.csv')
+food$percent = as.numeric(paste(food$X..Limited.Access.to.Healthy.Foods))
+
+Avg = food[food$County == "",]$percent
+
+food = food[match(NY.data$County, food$County), ]
+
+
+NY.data$DIf = log(food$percent/Avg)
+
+  colors <- c("grey","#426C85","#67a9cf","#d1e5f0","#f7f7f7","#fddbc7","#ef8a62","#b2182b")
+    bins <- c( -Inf, -2, -1.5, -.5, -.2, 0, .2, .5, 1, 1.5, 2.0)
+    pal2 <- leaflet::colorBin(colors, domain = NY.data$death_rate_ldi , bins = bins, reverse=FALSE)
+    
+    #domain = NY.data$death_rate_ldi
+    NY.shape$county_fips <- paste(as.data.frame(NY.shape)$STATEFP, as.data.frame(NY.shape)$COUNTYFP, sep = '')
+    NY.data <- dplyr::left_join(as.data.frame(NY.shape), as.data.frame(NY.data), by = c("county_fips" = "FIPS"))
+    
+    labels <- sprintf(
+      "<strong>%s</strong><br/>
+      Limited Healthy Food Access Disparity Index: %.9g",
+      NY.data$County, NY.data$DIf
+    ) %>% lapply(htmltools::HTML)
+
+    leaflet(NY.shape) %>%
+      setView(-76.071782, 42.991989, 6) %>%  # Set to the geographic center of NY
+      addPolygons(
+        fillColor = ~pal2(NY.data$DIf ),
+        weight = 2,
+        opacity = 1,
+        color = "grey",
+        dashArray = "1",
+        fillOpacity = 0.7,
+        highlight = highlightOptions(
+          weight = 5,
+          color = "#666",
+          dashArray = "",
+          fillOpacity = 0.7,
+          bringToFront = TRUE),
+        label = labels,
+        labelOptions = labelOptions(
+          style = list("font-weight" = "normal", padding = "3px 8px"),
+          textsize = "15px",
+          direction = "auto")) %>% 
+      addLegend(pal = pal2, 
+                values = ~NY.data$death_rate_ldi, 
+                opacity = 0.7, 
+                title = "Disparity Index<br/>NY Limited Healthy Food Access",
+                position = "bottomright"
+      ) %>%
+      addProviderTiles("MapBox", options = providerTileOptions(
+        id = "mapbox.light",
+        accessToken = Sys.getenv('MAPBOX_ACCESS_TOKEN')))
+```
+
+
