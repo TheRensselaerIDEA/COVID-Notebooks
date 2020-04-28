@@ -241,3 +241,9 @@ covid_NY_TS_counties_long.cases <- dplyr::inner_join(covid_NY_TS_counties_long.c
 #   group_by(date)
 # Do it this way to be safe:
 covid_NY_TS_plot.cases <- read_csv("data/csv/time_series/covid_NY_TS_plot.cases.csv")
+
+# Process NY fatalities file and create day-over-day change
+
+# NY_fatalities_all.nys <- NY_fatalities_all %>% filter(county==myCounty)
+# 
+# NY_fatalities_all.nys$diff <- NY_fatalities_all.nys$deaths - c(NA, NY_fatalities_all.nys$deaths[1:(length(NY_fatalities_all.nys$deaths)-1)])
