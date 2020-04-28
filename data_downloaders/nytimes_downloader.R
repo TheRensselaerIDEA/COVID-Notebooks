@@ -1,11 +1,12 @@
 # Daily data importer
 # Source: NY Times Daily Reports (github): https://github.com/nytimes/covid-19-data
+# copied 11 Apr 2020 from the COVID-Notebooks repo
 library(tidyverse)
 
 # curl newest data from JHU github
 # (You must edit the date below in two places to be yesterday's date)
 # so if today is 4/10/2020 use 2020-04-09
-currDate <- "2020-04-09"
+currDate <- "2020-04-10"
 dateURL.1 <- "NYTIMES_temporary.csv"
 dateURL.2 <- "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv"
 
@@ -43,4 +44,3 @@ write_csv(covid_data_counties, "data/csv/state_covid_mortality.csv")
 # Delete raw data file because it is large and updated daily
 if (file.exists(paste0('data/csv/', dateURL.1)))
   file.remove(paste0('data/csv/', dateURL.1))
-
