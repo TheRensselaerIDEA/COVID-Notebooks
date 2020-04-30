@@ -13,9 +13,31 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-# stick libraries here
+if(!require('tidyverse')) {
+  install.packages('tidyverse')
+  library(tidyverse)
+}
+if(!require('ggplot2')) {
+  install.packages('ggplot2')
+  library(ggplot2)
+}
+if(!require('dplyr')) {
+  install.packages('dplyr')
+  library(dplyr)
+}
+if(!require('EpiEstim')) {
+  install.packages('EpiEstim')
+  library(EpiEstim)
+}
+if(!require('stringr')) {
+  install.packages('stringr')
+  library(stringr)
+}
+if(!require('matlab')) {
+  install.packages('matlab')
+  library(matlab)
+}
 knitr::opts_chunk$set(echo = TRUE)
-
 ```
 
 # Final Project: Guidance for Students (DELETE)
@@ -116,22 +138,63 @@ Fill out the bullets at the beginning of this notebook...
 
 ## Problem 1 
 
-*Describe the problem you are examining.  If there is background that is necessary for this problem, then put it here. Include any references.* 
+*Describe the problem you are examining.  If there is background that is necessary for this problem, then put it here. Include any references.*
 
+The first problem tackled was to look into the effective reproductive number ($R_0$) for New York State. Since $R_0$ is difficult to calculate with our current data, I chose to utilize the EpiEstim package to estimate $R_0$ called $R_e$. This used the incidence of COVID-19 in New York State as well as a serial interval distribution with a mean of 3.96 and a standard deviation of 4.75 (see 1 (ADD LINK TO REFERENCE)).
  
 ### Methods
 
-*How did you address the problem? What data did you use exactly? What methods did you use?* 
+*How did you address the problem? What data did you use exactly? What methods did you use?*
 
+Read in the time-series data for New York State. We need to calculate the incidence of COVID-19 and differentiate between imported and local cases. We assume the entries with less than 70 cases are considered imported. By imported we mean that the infected individual came from outside the region. Local cases are the entries with more than 70 cases.
+
+```{r}
+covid_TS_states <- read.csv('../data/csv/time_series/time_series_covid19_confirmed_US.csv')
+covid_TS_NY <- covid_TS_states[covid_TS_states$Province_State=='New York',] %>%
+  group_by(Province_State) %>%
+  summarize_if(is.numeric, sum, na.rm=TRUE)
+col_names_dates <- str_replace_all(str_remove(colnames(covid_TS_NY)[7:ncol(covid_TS_NY)], 'X'), coll('.'), c(pattern1 = '/'))
+dates <- as.Date(col_names_dates, format = "%m/%d/%y")
+covid_cases_NY <- as.numeric(covid_TS_NY[,7:ncol(covid_TS_NY)])
+local_cases_NY <- covid_cases_NY[covid_cases_NY > 70]
+imported_cases_NY <- covid_cases_NY[covid_cases_NY <= 70]
+local_cases_NY <- as.numeric(padarray(local_cases_NY, padsize=c(0,length(dates)-length(local_cases_NY)), direction='pre'))
+imported_cases_NY <- as.numeric(padarray(imported_cases_NY, padsize=c(0,length(dates)-length(imported_cases_NY)), direction='post'))
+covid_cases_NY.df <- data.frame(dates=dates, local=local_cases_NY, imported=imported_cases_NY)
+covid_incidence_NY.df <- covid_cases_NY.df[41:nrow(covid_cases_NY.df),]
+covid_incidence_NY.df$local <- ave(covid_incidence_NY.df$local, FUN=function(x) c(0, diff(x)))
+covid_incidence_NY.df$imported <- ave(covid_incidence_NY.df$imported, FUN=function(x) c(0, diff(x)))
+covid_incidence_NY.df$local[6] <- covid_incidence_NY.df$local[6] - covid_cases_NY.df$imported[45]
+covid_incidence_NY.df[covid_incidence_NY.df < 0] <- 0
+head(covid_incidence_NY.df)
+```
 	
 ### Results
 
 *What were the results on this problem?*
 
+Now we calculate the estimated effective reproductive number ($R_e$) for COVID-19 in New York State. This is done by using the EpiEstim `estimate_R()` function. We then plot the time-series for incidence, the explored serial intervals, and $R_e$. We use a parametric serial interval curve with a mean of 3.96 and a standard deviation of 4.75. 
+
+*Source: https://www.medrxiv.org/content/10.1101/2020.02.19.20025452v4*
+```{r}
+plot_Ri <- function(estimate_R_obj) {
+    p_I <- plot(estimate_R_obj, "incid", add_imported_cases = TRUE)  # plots the incidence
+    p_SI <- plot(estimate_R_obj, "SI")  # plots the serial interval distribution
+    p_Ri <- plot(estimate_R_obj, "R")
+    return(gridExtra::grid.arrange(p_I, p_SI, p_Ri, ncol = 1))
+}
+
+NY_res_parametric_si <- estimate_R(covid_incidence_NY.df, 
+    method = "parametric_si", config = make_config(list(mean_si = 3.96, std_si = 4.75)))
+
+plot_Ri(NY_res_parametric_si)
+```
 
 ### Discussion
 
 *Interpret results.  What were your findings?  What do they say about COVID-19?   What are the strengths and limitations of these results? Is there support for your findings from other sources? Include references as appropriate.*
+
+From the plots, it seems that the $R_e$ for New York State currently hovers around the 1.0 line. This means that on average, one individual will transmit COVID-19 to one other individual. The goal for New York should be to get this number as close to zero as possible, although any $R_e$ less than 1.0 is favorable. These plots also highlight what the $R_e$ was earlier in the timeline and show how social distancing and other epidemic policies put in place have reduced $R_e$ over time.
 
 ## Problem 2
  
@@ -159,6 +222,8 @@ Fill out the bullets at the beginning of this notebook...
 
 *Include any references to literature in support of your work*
 *You might also wish to include references to unusual R packages essential to your work*
+*1. https://www.medrxiv.org/content/10.1101/2020.02.19.20025452v4*
+*2. EpiEstim CRAN package*
 
 # Appendix
 
