@@ -50,8 +50,9 @@ NY.data.p <- dplyr::left_join(as.data.frame(NY.shape), as.data.frame(NY.data), b
 * github issues addressed by this work:  `#15`, `#23` 
 * Github branch name of my submitted notebook: *Schwartzbard_final*
 * link to merged notebook (post these to LMS!: 
-    + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/master/MATP-4400-FINAL/COVID_FINAL_2020.Rmd (example; Rmd version)
-    + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/master/MATP-4400-FINAL/COVID_FINAL_2020.html (example; HTML version)
+    + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/Schwartzbard_final/MATP-4400-FINAL/Final_Project_Nicole_Schwartzbard.Rmd
+    + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/Schwartzbard_final/MATP-4400-FINAL/Final_Project_Nicole_Schwartzbard.html
+    + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/Schwartzbard_final/MATP-4400-FINAL/Final_Project_Nicole_Schwartzbard.pdf
 
 # Overview & Problems Tackled
 
