@@ -1,0 +1,11 @@
+NAME,age_range,R0,infected,deaths,season_first_peak,seasonal,cold_temperatures,airborne,policy_action,season_second_peak
+SARS,80,2.75,8098,774,Spring,False,True,True,True,Spring
+MERS,100,4.275,2400,850,Spring,True,False,True,True,Summer
+Influenza,100,2.0,25000000,61000,Fall,True,True,True,True,Winter
+H1N1,40,1.48,60000000,12469,Spring,True,True,True,True,Fall
+Measles,35,12,20000000,73400,Winter,True,True,True,True,Spring
+Cholera,15,2.0,4000000,80000,Summer,True,False,False,False,Summer
+Yellow fever,60,6.15,200000,30000,Summer,True,False,True,False,Summer
+Ebola,40,18,28616,11310,Summer,False,False,False,True,Fall
+Dengue fever,15,27.2,100000000,22000,Winter,False,False,False,False,Summer
+COVID-19,80,2.4,3530000,248000,Spring,False,False,True,True,NA

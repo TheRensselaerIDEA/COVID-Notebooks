@@ -199,7 +199,21 @@ From the plots, it seems that the $R_e$ for New York State currently hovers arou
 ## Problem 2
  
 ### Methods
-	
+```{r}
+diseases <- read.csv('../data/csv/similar_diseases.csv')
+rownames(diseases) <- diseases[,'NAME']
+diseases$NAME <- NULL
+diseases$season_first_peak <- as.factor(diseases$season_first_peak)
+diseases$seasonal <- as.factor(diseases$seasonal)
+diseases$cold_temperatures <- as.factor(diseases$cold_temperatures)
+diseases$airborne <- as.factor(diseases$airborne)
+diseases$policy_action <- as.factor(diseases$policy_action)
+diseases$season_second_peak <- as.factor(diseases$season_second_peak)
+covid_features <- diseases['COVID-19',]
+covid_features$season_second_peak <- NULL
+diseases['COVID-19',] <- NULL
+str(diseases)
+```
 ### Results
 
 ### Discussion
@@ -224,6 +238,18 @@ From the plots, it seems that the $R_e$ for New York State currently hovers arou
 *You might also wish to include references to unusual R packages essential to your work*
 *1. https://www.medrxiv.org/content/10.1101/2020.02.19.20025452v4*
 *2. EpiEstim CRAN package*
+https://www.cdc.gov/about/history/sars/timeline.htm
+https://www.hindawi.com/journals/av/2011/734690/
+https://wwwnc.cdc.gov/eid/article/26/2/19-0697_article
+https://www.ncbi.nlm.nih.gov/pubmed/31813836
+https://ajph.aphapublications.org/doi/pdf/10.2105/AJPH.2013.301704r
+https://www.cdc.gov/h1n1flu/surveillanceqa.htm
+https://www.ncbi.nlm.nih.gov/pubmed/28757186
+https://journals.plos.org/plosntds/article/file?rev=2&id=10.1371/journal.pntd.0006158&type=printable
+https://www.ncbi.nlm.nih.gov/pubmed/27846442
+https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3381442/
+https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4397933/
+
 
 # Appendix
 
