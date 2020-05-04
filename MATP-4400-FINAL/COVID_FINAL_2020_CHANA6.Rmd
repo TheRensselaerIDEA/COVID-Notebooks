@@ -1,6 +1,6 @@
 ---
 title: "MATP-4400 COVID-19 Final Notebook (template)"
-author: "Your Name Here"
+author: "Alex Chan"
 date: "May 2020"
 output:
   html_document:
