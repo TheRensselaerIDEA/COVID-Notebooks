@@ -10,6 +10,7 @@ This feature looks at what data would be pertinent for increased risks or poor o
 ``` {r, message=FALSE}
 library(dplyr)
 library(ggplot2)
+library(plotly)
 ```
 
 ``` {r }
@@ -42,16 +43,17 @@ outcomes.df <- filter(all_states.df, grepl(paste(outcomes, collapse="|"), Measur
 covid_today.df<- read.csv("~/COVID-Notebooks/data/csv/covid_data_states.csv")
 covid_today.df<- covid_today.df %>% filter(!grepl('Recovered', NAME))
 names(covid_today.df)[1] <- "State.Name"
-# nys_fatality<- read.csv("~/COVID-Notebooks/data/NYS_fatality.csv")
 ```
 
-``` {r }
-# WIP
-nys.df<- all_states.df %>% 
-  filter(grepl("New York", State.Name))
+```{r }
+# Calculate the number of covid death by state then categorize into 3 age group: 15-44, 45-64, 65+
+# Ideally it should be 18-44, which is the age group used in the America Health Ranking data. But CDC separate the data in increment of 5
+death_count<- read.csv("~/COVID-Notebooks/data/csv/Provisional_COVID-19_Death_Counts_by_Sex__Age__and_State.csv")
+pick<- c("15-24 years", "25-34 years", "35-44 years", "45-54 years", "55-64 years", "65-74 years", "75-84 years", "85 years and over	")
+death_count<- death_count %>%
+  filter(grepl(paste(pick, collapse="|"), Age.group)) %>%
+  select(State, Sex, Age.group, COVID.19.Deaths)
 
-nys_outcome.df<- nys.df %>%
-  filter(grepl(paste(outcomes, collapse="|"), Measure.Name))
 ```
 
 ``` {r }
@@ -82,6 +84,35 @@ behaviors_age$Measure.Name<- gsub("-.*","",behaviors_age$Measure.Name)
 behaviors_age<- merge(behaviors_age, covid_today.df[c('State.Name','covid19_deaths')], by='State.Name', all.x=TRUE) %>%
   # Pick out the information we are interested in 
   select(State.Name, Measure.Name, Value, Age_Group, covid19_deaths)
+
+# Compare each state's score(value) against US's score(value)
+US_behavior<- behaviors_age[behaviors_age$State.Name == "United States", ]
+behaviors_age<- behaviors_age[behaviors_age$State.Name != "United States", ]
+US_behavior<- cbind(US_behavior, i = rep(1:51, each = nrow(US_behavior)))
+US_behavior$i<- NULL
+
+behaviors_age<- cbind(behaviors_age,ratio = round(behaviors_age$Value/US_behavior$Value,2))
+
+# Compute percentage of each state's covid death to ? 
+
+```
+
+```{r }
+# The goal is to compare the number of covid death against the behavioral score for Excessive Drinking, Obesity, Physical Inactivity, Smoking, separated by three age group: 18-44, 45-65, 65+
+# Right now the number of death is not categorize by age group yet 
+behavior_plot<- ggplot(data=behaviors_age, aes(x=ratio, y=covid19_deaths, color=State.Name)) + 
+  geom_point(alpha=0.5) +
+  facet_grid(Age_Group~ Measure.Name)
+ggplotly(behavior_plot)
+```
+
+``` {r }
+# WIP
+# nys.df<- all_states.df %>% 
+#   filter(grepl("New York", State.Name))
+# 
+# nys_outcome.df<- nys.df %>%
+#   filter(grepl(paste(outcomes, collapse="|"), Measure.Name))
 ```
 
 # Appendix A
