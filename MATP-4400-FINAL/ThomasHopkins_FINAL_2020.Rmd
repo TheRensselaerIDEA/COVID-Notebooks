@@ -211,8 +211,17 @@ diseases$policy_action <- as.factor(diseases$policy_action)
 diseases$season_second_peak <- as.factor(diseases$season_second_peak)
 covid_features <- diseases['COVID-19',]
 covid_features$season_second_peak <- NULL
-diseases['COVID-19',] <- NULL
-str(diseases)
+diseases <- diseases[-c(nrow(diseases)),]
+diseases
+```
+
+```{r}
+train_data <- diseases[,c(1:ncol(diseases)-1)]
+train_labels <- diseases[,'season_second_peak']
+train.df <- data.frame(train_data, class=train_labels)
+lda.fit <- lda(class~., train.df)
+covid_pred <- predict(lda.fit, covid_features)
+covid_pred
 ```
 ### Results
 
