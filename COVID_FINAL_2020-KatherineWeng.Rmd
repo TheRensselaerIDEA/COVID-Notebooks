@@ -3,13 +3,13 @@ title: "MATP-4400 COVID-19 Final Notebook - Katherine Weng"
 author: "Katherine Weng"
 date: "May 2020"
 output:
-  pdf_document:
-    toc: yes
-    toc_depth: '2'
   html_document:
     number_sections: yes
     toc: yes
     toc_depth: 2
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
 ---
 
 ```{r setup, include=FALSE}
@@ -83,13 +83,13 @@ if (!require(tidyverse)){
 
 *This should be the first section of your final project notebook. Fill out the following according to how you submitted your notebook!*
 
-* github repository: https://github.com/TheRensselaerIDEA/COVID-Notebooks (for reference)
-* My github ID: *Katherineweng* (example)
-* github issues addressed by this work: `#9` (example)
-* Github branch name of my submitted notebook: *feature-9* (example)
-* link to merged notebook (post these to LMS!: 
-    + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/master/MATP-4400-FINAL/COVID_FINAL_2020.Rmd (example; Rmd version)
-    + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/master/MATP-4400-FINAL/COVID_FINAL_2020.html (example; HTML version)
+* github repository: https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/feature-9
+* My github ID: *Katherineweng*
+* github issues addressed by this work: `#9`
+* Github branch name of my submitted notebook: *feature-9*
+* link to merged notebook: 
+    + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/feature-9/COVID_FINAL_2020-KatherineWeng.Rmd (Rmd version)
+    + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/feature-9/COVID_FINAL_2020-KatherineWeng.html (HTML version)
 
 # Overview & Problems Tackled
 
@@ -116,9 +116,7 @@ Release Date: December 2019
 
 # Results
 
-*Break out your results by each problem you attacked*
-
-The number of people applying for unemployment insurance increased drastically since the outbreak of COVID-19. This is the most severe tide of unemployment in at least last 20 years in the United States.
+The number of people applying for unemployment insurance increased drastically since the outbreak of COVID-19. This is the most severe tide of unemployment in at least last 20 years in the United States. The plot of Net UI Benefits Disbursement has the same trend as the plot of insured UI claims, so even though we don't have data for March and April 2020, we can expect that there will also be a drastic increase in these two months.
 
 
 ## Problem 1 
