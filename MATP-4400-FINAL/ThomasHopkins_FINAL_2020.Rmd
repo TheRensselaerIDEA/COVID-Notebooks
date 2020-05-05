@@ -37,6 +37,18 @@ if(!require('matlab')) {
   install.packages('matlab')
   library(matlab)
 }
+if(!require('gplots')) {
+  install.packages('gplots')
+  library(gplots)
+}
+if(!require('ggbiplot')) {
+  install.packages('ggbiplot')
+  library(ggbiplot)
+}
+if(!require('MASS')) {
+  install.packages('MASS')
+  library('MASS')
+}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -176,6 +188,7 @@ head(covid_incidence_NY.df)
 Now we calculate the estimated effective reproductive number ($R_e$) for COVID-19 in New York State. This is done by using the EpiEstim `estimate_R()` function. We then plot the time-series for incidence, the explored serial intervals, and $R_e$. We use a parametric serial interval curve with a mean of 3.96 and a standard deviation of 4.75. 
 
 *Source: https://www.medrxiv.org/content/10.1101/2020.02.19.20025452v4*
+
 ```{r}
 plot_Ri <- function(estimate_R_obj) {
     p_I <- plot(estimate_R_obj, "incid", add_imported_cases = TRUE)  # plots the incidence
@@ -203,25 +216,57 @@ From the plots, it seems that the $R_e$ for New York State currently hovers arou
 diseases <- read.csv('../data/csv/similar_diseases.csv')
 rownames(diseases) <- diseases[,'NAME']
 diseases$NAME <- NULL
+diseases$mortality_rate <- diseases$deaths / diseases$infected
 diseases$season_first_peak <- as.factor(diseases$season_first_peak)
 diseases$seasonal <- as.factor(diseases$seasonal)
 diseases$cold_temperatures <- as.factor(diseases$cold_temperatures)
 diseases$airborne <- as.factor(diseases$airborne)
 diseases$policy_action <- as.factor(diseases$policy_action)
 diseases$season_second_peak <- as.factor(diseases$season_second_peak)
+diseases$infected <- NULL
+diseases$dead <- NULL
 covid_features <- diseases['COVID-19',]
 covid_features$season_second_peak <- NULL
-diseases <- diseases[-c(nrow(diseases)),]
+train_data <- diseases[-c(nrow(diseases)),names(diseases) != 'season_second_peak']
+train_labels <- diseases[-c(nrow(diseases)),'season_second_peak']
 diseases
 ```
 
+
 ```{r}
-train_data <- diseases[,c(1:ncol(diseases)-1)]
-train_labels <- diseases[,'season_second_peak']
+train_data_pca <- rbind(train_data, covid_features)
+numeric_features <- c('age_range', 'R0', 'mortality_rate')
+numeric_train_data <- train_data_pca[,numeric_features]
+scaled_train_data <- scale(numeric_train_data)
+km <- kmeans(scaled_train_data, 4)
+kclass <- as.factor(km$cluster)
+heatmap.2(km$centers, 
+          dendrogram="row",
+          scale="none",
+          trace="none",
+          main='Scaled Disease Data Cluster Centers',
+          cexRow=0.8,
+          cexCol=0.8,
+          srtRow=0,
+          srtCol=0)
+```
+
+
+```{r}
+my.pca <- prcomp(scaled_train_data, retx=TRUE)
+ggbiplot(my.pca, choices=1:2, labels=rownames(train_data_pca), scale=0)
+```
+
+
+```{r}
 train.df <- data.frame(train_data, class=train_labels)
 lda.fit <- lda(class~., train.df)
 covid_pred <- predict(lda.fit, covid_features)
-covid_pred
+barplot(covid_pred$posterior,
+        ylab="Probability", 
+        xlab="Season of Second Wave", 
+        ylim=c(0, 1.0), 
+        main="Predicted Season of Second Wave of COVID-19")
 ```
 ### Results
 
