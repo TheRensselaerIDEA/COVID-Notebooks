@@ -1,0 +1,630 @@
+---
+title: "MATP-4400 COVID-19 Final Notebook - Katherine Weng"
+author: "Katherine Weng"
+date: "May 2020"
+output:
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
+  html_document:
+    number_sections: yes
+    toc: yes
+    toc_depth: 2
+---
+
+```{r setup, include=FALSE}
+# stick libraries here
+knitr::opts_chunk$set(echo = TRUE)
+
+
+## Load essential R packages
+source("modules/Source.R")
+
+## Load stored data (see `data` subdirectory)
+source("modules/data_load.R")
+
+## Create dataframes; perform desparity index calcuations; prep for plotting
+source("modules/preprocessing.R")
+
+# Set the correct default repository
+r = getOption("repos")
+r["CRAN"] = "http://cran.rstudio.com"
+options(repos = r)
+
+if (!require("ggplot2")) {
+   install.packages("ggplot2")
+   library(ggplot2)
+}
+if (!require("knitr")) {
+   install.packages("knitr")
+   library(knitr)
+}
+if (!require("xtable")) {
+   install.packages("xtable")
+   library(xtable)
+}
+if (!require("pander")) {
+   install.packages("pander")
+   library(pander)
+}
+if (!require("ggbiplot")) {
+  install.packages("devtools" )  # also need install ggplot2
+  library("devtools")
+  install_git("git://github.com/vqv/ggbiplot.git")
+  library("ggbiplot")
+}
+if (!require(reshape2)){
+  install.packages("reshape2")
+   library(reshape2)
+} 
+if (!require(gridExtra)){
+  install.packages("gridExtra")
+   library(gridExtra)
+} 
+if (!require(MASS)){
+  install.packages("MASS")
+   library(MASS)
+} 
+if (!require(caret)){
+  install.packages("caret")
+   library(caret)
+} 
+if (!require(readr)){
+  install.packages("readr")
+   library(readr)
+}
+if (!require(tidyverse)){
+  install.packages("tidyverse")
+   library(tidyverse)
+}
+```
+
+# Final Project: Submission Links
+
+*This should be the first section of your final project notebook. Fill out the following according to how you submitted your notebook!*
+
+* github repository: https://github.com/TheRensselaerIDEA/COVID-Notebooks (for reference)
+* My github ID: *Katherineweng* (example)
+* github issues addressed by this work: `#9` (example)
+* Github branch name of my submitted notebook: *feature-9* (example)
+* link to merged notebook (post these to LMS!: 
+    + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/master/MATP-4400-FINAL/COVID_FINAL_2020.Rmd (example; Rmd version)
+    + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/master/MATP-4400-FINAL/COVID_FINAL_2020.html (example; HTML version)
+
+# Overview & Problems Tackled
+
+Since COVID-19 spreads mainly from person to person, limiting face-to-face contact with others becomes the best way to prevent the further spread of the virus. By now, each state has enforced different levels of policies regarding social distancing, including shutdown of non-essential businesses. Thus, other than people's life and health, which we care most about, the economy had also been attacked by the virus.
+
+This notebook will focus on the impact of COVID-19 on the employment situation in the United States. Each data set used in this notebook regarding employment situation will be analyzed in three levels: the United States as a whole, comparison between 50 states + District of Columbia, and New York State alone. We will also take a look at how much money the government put into the Unemployment Insurance overtime.
+
+# Data Description
+
+In this notebook, number of Unemployment Insurance Initial Claims, number of Unemployment Insurance Insured Claims, and the Net Unemployment Insurance Benefits obtained from Department of Labor website will be analyzed.
+
+* United States unemployment data cite (downloaded on 04/28/2020):
+    + https://oui.doleta.gov/unemploy/DataDownloads.asp (ETA 539, Unemploment Insurance Data) (ETA 2112, UI Financial Transaction Summary)
+    + https://oui.doleta.gov/dmstree/handbooks/402/402_4/4024c6/4024c6.pdf#ETA539-ar539 (Page 33: Description of ETA 539 data, Page 39: Description of ETA 2112 data)
+
+To calculate the percentage of people applied for UI, we need to know the population for each state and the whole country as well.
+
+* United States Population:
+    + https://www.census.gov/data/datasets/time-series/demo/popest/2010s-state-total.html#par_textimage_1873399417
+
+Table 1. Annual Estimates of the Resident Population for the United States, Regions, States, and Puerto Rico: April 1, 2010 to July 1, 2019 (NST-EST2019-01)												
+Source: U.S. Census Bureau, Population Division												
+Release Date: December 2019				
+
+# Results
+
+*Break out your results by each problem you attacked*
+
+The number of people applying for unemployment insurance increased drastically since the outbreak of COVID-19. This is the most severe tide of unemployment in at least last 20 years in the United States.
+
+
+## Problem 1 
+
+In response to social distancing policies that prevent further spread of Coronavirus, most non-essential businesses in the United States closed down. As an inevitable result, incredible amount of people lost their jobs. With no income to support basic living expenses, people seek help from government. Applying for Unmployment Insurance are their life-saving straws. So looking at how COVID-19 impact the number of Unemployment Insurance Claims is the most direct way to examine the employment situation in the United States right now.
+
+ 
+### Methods
+
+We will use the data table provided in the Department of Labor website, specifically ETA 539, to create visualizations.
+
+Below are the data that we are interested in
+
+ETA 539:
+
+    Column Name       |       Information
+      st              |          States
+      c2              |    Reflected week ending
+      c3              |    Initial claims measuring emerging unemployment
+      c8              |   Continued weeks claimed measuring insured unemployed
+
+We will use time series plots and unemployment rate disparities by states to analyze the UI data.
+	
+### Results
+
+We first read in and organize the UI data.
+
+```{r}
+# READ IN DATA OF ETA 539
+UIdata <- read.csv("~/COVID-Notebooks/data/csv/UIweeklyclaims.csv")
+
+# Only keep state names, reflected week ending dates, # of emerging unemployment and # of insured unemployed
+UIdata <- UIdata[,c(1,4,5,10)]
+
+# Convert dates into ISO 8601 form
+UIdata$c2 <- as.Date(UIdata$c2, '%m/%d/%Y' )
+
+# Extract data after Year 2000
+UIdata2000 <- UIdata[UIdata$c2>=as.Date('2000-01-01'),]
+
+# 50 States
+ST <- unique(UIdata2000$st)
+```
+
+Then prepare for the UI Initial Claims data of United States as a whole (because the data file only contains information per state).
+
+```{r}
+# Get only NY data
+NYdata <- UIdata2000[UIdata2000$st == 'NY',]
+
+# Number of weeks recorded for each state is the same
+n <- nrow(NYdata)
+
+# Ending day of the reflected weeks
+date2000 <- NYdata$c2
+
+# Preparing to sum up NEWLY claimed UI data for all states by dates (the original data file has data for each state but not the total numbers)
+
+# vector that stores sum of number of initial claims of all states
+USdata2000 <- c()
+
+start <- date2000[1]
+end <- date2000[n]
+theDate <- start
+
+while (theDate <= end) {
+  ss <- sum(UIdata2000$c3[UIdata2000$c2 == theDate])
+  USdata2000 <- c(USdata2000,ss)
+  theDate <- theDate + 7
+}
+
+USdata2000 <- data.frame(date2000,USdata2000)
+```
+
+Plot time series graphs in three levels: United States as a whole, comparison between 50 states and District of Columbia, and New York State alone.
+
+```{r}
+# Max <- ifelse(USdata2000$USdata2000==max(USdata2000$USdata2000),"Yes","No")
+
+# Date vs # of UI initial claims (whole country)
+ggplot(USdata2000, aes(x=date2000, y=USdata2000)) + 
+  geom_line(size=0.2, colour = 'red') + 
+  xlab("Year") +
+  ylab("Number of UI initial claims") + 
+  ggtitle("United States UI Initial Claims Since 2000") 
+```
+
+The time series plot above shows the trend of the Number of UI initial claims of US since Year 2000. The number of people start to apply for UI increased drastically since the outbreak of COVID-19. At the worst week, the number of UI initial claims is more than 6 times greater than the worst number we got during 2008 economic crisis. The number went down at the very end but it doesn't mean that the number of unemployed people decreased because this only shows the INITIAL UI claims.
+
+```{r}
+# Date vs # of UI initial claims (by States)
+ggplot(data=UIdata2000, aes(c2, c3, group=st, color=st)) + 
+  geom_line(size=0.15) + 
+  xlab("Year") +
+  ylab("Number of UI initial claims") + 
+  ggtitle("UI Initial Claims by States Since 2000") +
+  geom_text(data=UIdata2000 %>% group_by(st) %>% 
+              arrange(desc(c2)) %>% 
+              slice(1) %>% 
+              filter(c3 >= 200000),
+            aes(x = end + 0.03, label=st), hjust=0) +
+  theme_bw() +
+  expand_limits(x = max(UIdata2000$c2) + 0.03)
+```
+
+The time series above shows the UI initial claims for each state separately and marked out the states that received more than 200,000 initial UI claims for the latest recorded week. The trend of UI initial claims for all states are similar to the trend for the United States as a whole. From the graph we can see that California and Florida are the states that have the highest number of UI initial claims in the latest recorded week.
+
+```{r}
+#  Date vs # of UI initial claims (NYS)
+ggplot(NYdata, aes(x=c2, y=c3)) + 
+  geom_line(size=0.2, colour = 'blue') + 
+  xlab("Year") +
+  ylab("Number of UI initial claims") + 
+  ggtitle("NYS UI Initial Claims Since 2000") 
+```
+
+The graph above shows the trend of UI initial claims for New York State. The overall trend is similar to what we have for the United States.
+
+The data for UI initial claims tells the number of emerging unemployment but not total number of people applying for unemployment benefits at the time, So the sharp decrease at the end of the time does not mean people are returning to work. Thus, we will take a look at the number of insured UI claims, which is closer to the actual number of people who are unemployed.
+
+First calculate for the Insured UI Claims of United States as a whole (because the data file only contains information per state).
+```{r}
+# Preparing to sum up INSURED UI data for all states by dates (the original data file has data for each state but not the total numbers)
+
+INSUREDdata2000 <- c()
+
+theDate <- start
+
+while (theDate <= end) {
+  ss <- sum(UIdata2000$c8[UIdata2000$c2 == theDate])
+  INSUREDdata2000 <- c(INSUREDdata2000,ss)
+  theDate <- theDate + 7
+}
+
+INSUREDdata2000 <- data.frame(date2000,INSUREDdata2000)
+```
+
+Again, plot time series graphs in three levels: United States as a whole, comparison between 50 states and District of Columbia, and New York State alone.
+
+```{r}
+#Max <- ifelse(INSUREDdata2000$INSUREDdata2000==max(INSUREDdata2000$INSUREDdata2000),"Yes","No")
+
+# Date vs # of UI initial claims (whole country)
+ggplot(INSUREDdata2000, aes(x=date2000, y=INSUREDdata2000)) + 
+  #geom_point(aes(col=Max)) +
+  geom_line(size=0.2, colour = 'red') + 
+  xlab("Year") +
+  ylab("Number of Insured UI") + 
+  ggtitle("United States Insured UI Since 2000") 
+```
+
+From the time series plot above, we can see that before the outbreak of COVID-19, the worst time was during the 2008 economic crisis. That is over 6,000,000 people applying for unemployment benefits at the same time. But even 6,000,000 seems not that bad when compared to the most recent data which indicates that more than 16,000,000 are now unemployed and need help from the government. We can see that the number of insured UI claims is still increasing at the end, which means that although the emerging unemployment decreased, the total number of people applying for unemployment benefits is still growing.
+
+```{r}
+# Date vs # of UI initial claims (by States)
+ggplot(data=UIdata2000, aes(c2, c8, group=st, color=st)) + 
+  geom_line(size=0.15) + 
+  xlab("Year") +
+  ylab("Number of Insured UI") + 
+  ggtitle("Insured UI by States Since 2000") +
+  geom_text(data=UIdata2000 %>% group_by(st) %>% 
+              arrange(desc(c2)) %>% 
+              slice(1) %>% 
+              filter(c8 >= 1000000),
+            aes(x = end + 0.03, label=st), hjust=0) +
+  theme_bw() +
+  expand_limits(x = max(UIdata2000$c2) + 0.03)
+```
+
+The graph above shows the UI insured claims for each state separately and marked out the states that received more than 1,000,000 Insured UI claims for the latest recorded week. The trend of UI initial claims for all states are similar to the trend for the United States as a whole. From the graph we can see that the number for California is a lot higher than other states.
+
+```{r}
+#  Date vs # of UI initial claims (NYS)
+ggplot(NYdata, aes(x=c2, y=c8)) + 
+  geom_line(size=0.2, colour = 'blue') + 
+  xlab("Year") +
+  ylab("Number of Insured UI") + 
+  ggtitle("NYS Insured UI Since 2000") 
+```
+
+The graph above shows the trend of insured UI claims for New York State. The overall trend is similar to what we have for the United States.
+
+Only looking at the numbers can not give an accurate insight about each state's employment situation because population for each state is different. So we will create disparity map that shows the difference in percentages of UI claims for all states for the most recently recorded week.
+
+First of all, extrac the data of UI initial claims for the most recent data and caculate the percentages.
+```{r}
+# Using the newest data to create a disparity graph
+dataNewest <- UIdata[UIdata$c2>=as.Date('2020-04-11'),]
+
+
+# READ IN POPULATION data
+pop <- read.csv("~/COVID-Notebooks/data/csv/pop.csv")
+
+# Excluding Inhabitated Territories
+dataNewest <- dataNewest[dataNewest$st!='PR',]
+dataNewest <- dataNewest[dataNewest$st!='VI',]
+
+# Add a column with full state names to dataNewest
+abbr <- read.csv("~/COVID-Notebooks/data/csv/stabbr.csv")
+
+dataNewest <- data.frame(abbr$State, dataNewest)
+
+dataNewest = dataNewest[match(states$NAME, dataNewest$abbr.State),]
+
+popUS <- pop[1,]
+
+pop = pop[match(states$NAME, pop$State),]
+
+ICrate <- c()
+ICtotal <- 0
+for (i in 1:nrow(dataNewest)) {
+  ICtotal <- ICtotal+dataNewest[i,4]
+  rate <- dataNewest[i,4]/pop[i,2]
+  ICrate <- c(ICrate,rate)
+}
+
+ICtotalrate <- ICtotal/popUS[2]
+
+ICrate <- data.frame(dataNewest$abbr.State,ICrate)
+```
+
+Then create the disparity map for UI initial claims.
+```{r}
+
+colors <- c("#426C85","#67a9cf","#d1e5f0","#f7f7f7","#fddbc7","#ef8a62","#b2182b")
+bins <- c(0.03, 0.025, 0.02, 0.015, 0.01, 0.005, 0.00)
+pal2 <- leaflet::colorBin(colors, domain = ICrate$ICrate, bins = bins, reverse=FALSE)
+    labels2 <- sprintf(
+      "<strong>%s</strong><br/>
+      COVID-19 Initial UI Claim Rate: %.2g",
+      ICrate$dataNewest.abbr.State, ICrate$ICrate
+    ) %>% lapply(htmltools::HTML)
+    
+    leaflet(states.shapes) %>%
+      setView(-96, 37.8, 4) %>% 
+      addPolygons(
+        fillColor = ~pal2(ICrate$ICrate),
+        weight = 2,
+        opacity = 1,
+        color = "white",
+        dashArray = "3",
+        fillOpacity = 0.7,
+        highlight = highlightOptions(
+          weight = 5,
+          color = "#666",
+          dashArray = "",
+          fillOpacity = 0.7,
+          bringToFront = TRUE),
+        label = labels2,
+        labelOptions = labelOptions(
+          style = list("font-weight" = "normal", padding = "3px 8px"),
+          textsize = "15px",
+          direction = "auto")) %>% 
+      addLegend(pal = pal2, 
+                values = ~ICrate$ICrate, 
+                opacity = 0.7, 
+                title = "Disparity Index<br/>US COVID-19 Initial UI Claim Rate",
+                position = "bottomright"
+                ) %>%
+      addProviderTiles("MapBox", options = providerTileOptions(
+        id = "mapbox.light",
+        accessToken = Sys.getenv('MAPBOX_ACCESS_TOKEN')))
+```
+
+From the map, we can see that among the 5 states that have the highest number of UI initial claims for the latest recorded week (CA, FL, TX, GA, NY), only Florida and Georgia can be considered to have higher percentage of UI initial claims when comparing to other states. California, the state that have the highest number of UI initial claims is actually at mean level.
+
+Then calculate the percentage for insured UI claims for each state.
+```{r}
+INSUREDrate <- c()
+
+for (i in 1:nrow(dataNewest)) {
+  rate <- dataNewest[i,5]/pop[i,2]
+  INSUREDrate <- c(INSUREDrate,rate)
+}
+
+INSUREDrate <- data.frame(dataNewest$abbr.State,INSUREDrate)
+
+```
+
+Create disparity map for insured UI claims.
+```{r}
+
+colors <- c("#426C85","#67a9cf","#d1e5f0","#f7f7f7","#fddbc7","#ef8a62","#b2182b")
+bins <- c(0.12, 0.1, 0.08, 0.06, 0.04, 0.02, 0.00)
+pal2 <- leaflet::colorBin(colors, domain = INSUREDrate$INSUREDrate, bins = bins, reverse=FALSE)
+    labels2 <- sprintf(
+      "<strong>%s</strong><br/>
+      COVID-19 Insured UI Rate: %.2g",
+      INSUREDrate$dataNewest.abbr.State, INSUREDrate$INSUREDrate
+    ) %>% lapply(htmltools::HTML)
+    
+    leaflet(states.shapes) %>%
+      setView(-96, 37.8, 4) %>% 
+      addPolygons(
+        fillColor = ~pal2(INSUREDrate$INSUREDrate),
+        weight = 2,
+        opacity = 1,
+        color = "white",
+        dashArray = "3",
+        fillOpacity = 0.7,
+        highlight = highlightOptions(
+          weight = 5,
+          color = "#666",
+          dashArray = "",
+          fillOpacity = 0.7,
+          bringToFront = TRUE),
+        label = labels2,
+        labelOptions = labelOptions(
+          style = list("font-weight" = "normal", padding = "3px 8px"),
+          textsize = "15px",
+          direction = "auto")) %>% 
+      addLegend(pal = pal2, 
+                values = ~INSUREDrate$INSUREDrate, 
+                opacity = 0.7, 
+                title = "Disparity Index<br/>US COVID-19 Insured UI Rate",
+                position = "bottomright"
+                ) %>%
+      addProviderTiles("MapBox", options = providerTileOptions(
+        id = "mapbox.light",
+        accessToken = Sys.getenv('MAPBOX_ACCESS_TOKEN')))
+```
+
+From the map, we can see that among the 3 states that have the highest number of insured UI claims for the latest recorded week (CA, NY, PA), only Pennsylvania can be considered to have higher percentage of insured UI claims when comparing to other states. California, the state that have the highest number of insured UI claims is actually at mean level.
+
+### Discussion
+
+By looking at the visualizations created above, we can conlcude that COVID-19 has caused the greatest negative impact on the employment situation in the United States in at least the last 20 years. The amount of people applying for unemployment benefits skyrocketed since the outbreak of COVID-19. From the disparity maps created by using latest recorded data, we can see that West Virginia and Connecticut has the highest percentage of UI initial claims while Vermont has the highest percentage of insured UI claims. Florida has relatively high percentage of UI initial claims while having lowest percentage of insured UI claims among all states. New York has high numbers in both UI initial claims and insured UI claims but both percentages are in mean level in the disparity graphs.
+
+Since the data used in above is from the offical site of Department of Labor, we don't have to worry about the reliability of the data. However, not all people who get unemployed because of the COVID-19 applied for the UI. So the results above can only be seen as a relatively good estimation of current employment situation in the United States.
+
+Although an incredible amount of people are getting unemployed right now, it is not an absolute bad news because by limiting face-to-face contact, the virus can be wiped out earlier. We can continue watching these data as they get updated and see if the infection rate of COVID-19 would increase or be controlled when people start to go back to work and the UI claims decrease.
+
+## Problem 2
+More UI applications means that the government needs more money to put into the program to help people out.
+### Methods
+
+We will again use the data table provided in the Department of Labor website, specifically ETA 2112, to create visualizations.
+
+Below are the data that we are interested in
+
+ETA 539:
+
+    Column Name       |       Information
+      st              |          States
+    rptdate           |    Reflected month ending
+      c51             |    Net UI Benefits
+
+We will use time series plots and bar graph to visualize the data.
+	
+### Results
+
+We first read in and organize the data.
+
+```{r}
+# READ IN DATA OF ETA 539
+UIBenefits <- read.csv("~/COVID-Notebooks/data/csv/UI_contribution.csv")
+
+# Only keep state names, reflected month ending dates, and Net UI Benefits
+UIBenefits <- UIBenefits[,c(1,2,52)]
+
+# Convert dates into ISO 8601 form
+UIBenefits$rptdate <- as.Date(UIBenefits$rptdate, '%m/%d/%Y' )
+
+# Extract data after Year 2000
+UIBenefits2000 <- UIBenefits[UIBenefits$rptdate>=as.Date('2000-01-01'),]
+```
+
+Then prepare for the Net UI Benefits data of United States as a whole (because the data file only contains information per state).
+
+```{r}
+library(lubridate)
+
+```
+```{r}
+# Get only NY data
+NYBenefits <- UIBenefits2000[UIBenefits2000$st == 'NY',]
+
+# Number of weeks recorded for each state is the same
+n <- nrow(NYBenefits)
+
+# Ending day of the reflected weeks
+date2000 <- NYBenefits$rptdate
+
+# Preparing to sum up Net UI Benefits for all states by dates (the original data file has data for each state but not the total numbers)
+
+# vector that stores sum of number of initial claims of all states
+USBenefits2000 <- c()
+
+start <- as.Date("2000-01-01")
+end <- as.Date("2020-02-01")
+theDate <- start
+
+while (theDate <= end) {
+  temp <- theDate + months(1) - days(1)
+  ss <- sum(UIBenefits2000$c51[UIBenefits2000$rptdate == temp])
+  USBenefits2000 <- c(USBenefits2000,ss)
+  theDate <- theDate + months(1)
+}
+
+USBenefits2000 <- data.frame(date2000,USBenefits2000)
+```
+
+Plot time series graphs in three levels: United States as a whole, comparison between 50 states and District of Columbia, and New York State alone.
+
+```{r}
+
+# Date vs # of UI initial claims (whole country)
+ggplot(USBenefits2000, aes(x=date2000, y=USBenefits2000)) + 
+  geom_line(size=0.2, colour = 'red') + 
+  xlab("Year") +
+  ylab("Net UI Benefits Disbursement") + 
+  ggtitle("United States Net UI Benefits Disbursement Since 2000") 
+```
+
+Since not all states recorded the Net UI Benefits after 02/29/2020, we don't have the complete data to plot how much the government had to put into UI after February when non-essential businesses were closed down and people got unemployed. However, we can see that the trend is similar to the number of Insured UI Claims overtime, and so we can expect a great increase after February 2020 that looks like the great increase in the time series plot of insured UI claims.
+
+```{r}
+# Date vs # of UI initial claims (by States)
+ggplot(data=UIBenefits2000, aes(rptdate, c51, group=st, color=st)) + 
+  geom_line(size=0.15) + 
+  xlab("Year") +
+  ylab("Net UI Benefits Disbursement") + 
+  ggtitle("Net UI Benefits Disbursement by States Since 2000") +
+  geom_text(data=UIBenefits2000 %>% group_by(st) %>% 
+              arrange(desc(rptdate)) %>% 
+              slice(1) %>% 
+              filter(c51 >= 200000000),
+            aes(x = end + 0.03, label=st), hjust=0) +
+  theme_bw() +
+  expand_limits(x = max(UIBenefits2000$rptdate) + 0.03)
+```
+The graph above shows the Net UI Benefits Disbursement for each state separately and marked out the states that spent more than $200,000,000 into UI for the latest recorded month. From the graph we can see that California spent the most money into UI.
+
+```{r}
+#  Date vs # of UI initial claims (NYS)
+ggplot(NYBenefits, aes(x=rptdate, y=c51)) + 
+  geom_line(size=0.2, colour = 'blue') + 
+  xlab("Year") +
+  ylab("Net UI Benefits Disbursement") + 
+  ggtitle("Net UI Benefists Disbursement Since 2000") 
+```
+Again, the overall trend of Net UI Benefits Disbursement is similar to what we have for the United States as a whole. However the NYS data between 2008 and 2014 fluctuated more violently than the US data.
+
+We can also use bar charts to visualize the relationship between population and Net UI Benefits Disbursement.
+
+```{r}
+# Using the newest data to create a bar chart
+BenefitsNewest <- UIBenefits[UIBenefits$rptdate == as.Date('2020-02-29'),]
+
+BenefitsNewest$c51 <- BenefitsNewest$c51 / sum(BenefitsNewest$c51)
+
+# Population data
+pop$X2019 <- pop$X2019 / sum(pop$X2019)
+```
+
+Create bar chart for state population/US population.
+```{r}
+ggplot(pop, aes(x= reorder(State, -X2019), y=X2019, fill=State)) + 
+  geom_bar(stat = "identity") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(legend.position = "none") +
+  xlab("States") +
+  ylab("Percent of Population") +
+  ggtitle("Percent of Population by States")
+```
+
+Then create state UI Benefits Disbursement/US UI Benefits Disbursement.
+```{r}
+ggplot(BenefitsNewest, aes(x= reorder(st, -c51), y=c51, fill=st)) + 
+  geom_bar(stat = "identity") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(legend.position = "none") +
+  xlab("States") +
+  ylab("Percent of Net UI Benefits Disbursement") +
+  ggtitle("Percent of Net UI Benefits Disbursement by States")
+
+```
+
+From the two bar charts created above, we found that it is not always true that the larger population leads to more spending on UI expenses in February 2020. 
+
+### Discussion
+
+From the visualizations created above, we see that the trend of Net UI Benefits Disbursement is similar to the trend of insured UI claims. Although we do not have complete Net UI Benefits data after February 2020, we can predict that it will have a sharp increase just like what we have for the time series of Insured UI claims. The two sorted bar charts of data in February 2020 made it easy to see that population is not the only factor that decides how much the government needs to put into the UI. Like New York States has 4th largest population but ranking the second in the net disbursement of UI.
+
+We might be able to have better analysis if the March and April data are updated in the official site of Department of Labor because March is when most state governments took actions in response to COVID-19.
+
+
+# Summary and COVIDMINDER Recommendations
+
+* Overall, what insights did you find about the COVID-19 epidemic in your analysis?    
+
+  The COVID-19 epidemic not only attacked the healthcare system and people's health in the United States, but also the economy and the way people live their daily lives. The number of emerging unemployment is about 6 times greater than the highest number we got during the 2008 economic crisis, and the number of insured unemployment is about tripled the highest insured unemployment we had during the 2008 economic crisis. What a shocking number! The sharp increase of the amount of people applying for Unemployment Insurance after the breakout of COVID-19 is not only representing how hard the virus hit us but also a record of our efforts on preventing the spread of the virus. Although we don't have the data for Net UI Benefits Disbursement for March and April 2020, we can expect it behaves similarly as the number of insured UI claims. US governments are putting millions and millions of money to fight against the virus, we are trading money with lives.
+
+* What recommendations do you have for COVIDMINDER for Data utilization, Analytics, Visualizations, User interface design, etc.
+    + Would you recommend that your analysis be included in COVIDMINDER?  Why or Why not?  
+
+    I would recommend to create visualizations that tell us more about the effort of frontline workers, especially hospital personnel. I have tried to find data about how many hours they have to work/how may hours of sleep they get each day during this special time period, but I couldn't find data regarding this. And how many frontline workers have contributed their health/lives in this war without smoke should be recorded and remembered in someway.
+    I would recommend analysis on unemployment situation in US be included in COVIDMINDER because other than lives and health that is being hit the hardest by the virus, people are also struggling to make a living during this time period. There might be better visualizations about unemployment situations, but time series plot is a really strong tool and shows how many people's daily lives are affected by COVID-19. 
+
+# References
+
+* COVID-19 informations
+https://www.cdc.gov/coronavirus/2019-ncov/prevent-getting-sick/social-distancing.html
+
+# Appendix
+
+*Include here whatever you think is relevant to support the main content of your notebook. For example, you may have only include example figures above in your main text but include additional ones here* 
+
+

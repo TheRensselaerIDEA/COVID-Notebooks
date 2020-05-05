@@ -3,9 +3,31 @@ states.shapes <- readRDS("data/json/us_projection.Rds")
 
 # Import NY shape
 NY.shape <- readRDS("data/shape_files/NY.Rds")
-NY.tests <- read_csv("data/csv/time_series/NY_county_tests.csv")
+
+# Data structure modifed 08 Apr
+#NY.tests <- read_csv("data/csv/time_series/NY_county_tests.csv")
+NY.tests <- read_csv("data/csv/time_series/NY_county_data.csv")
+
 NY.deaths.cases <- read_csv("data/csv/time_series/covid_NY_counties.csv")
+
+# Update with manual deaths; don't use new date field (yet)
+covid_NY_counties.deaths <- read_csv("data/csv/time_series/covid_NY_counties.deaths.manual.csv") %>%
+  select(county, deaths)
+
+# Import county regions and join them is
+NY_counties_regions <- read_csv("data/csv/time_series/NY_counties_regions.csv")
+
+# Import NY Diabetes 
+NY_counties_diabetes <- read_csv("data/csv/time_series/NY_counties_diabetes.csv")
+
+NY.deaths.cases <- dplyr::inner_join(NY.deaths.cases[,-2], covid_NY_counties.deaths, by = c("county" = "county"))
+
 NY.data <- dplyr::inner_join(as.data.frame(NY.tests), as.data.frame(NY.deaths.cases), by = c("County" = "county"))
+
+NY.data <- dplyr::inner_join(NY.data, as.data.frame(NY_counties_diabetes[,2:3]), by = c("County" = "County"))
+
+NY.data <- dplyr::inner_join(NY.data, as.data.frame(NY_counties_regions), by = c("County" = "County"))
+
 NY.data$FIPS <- as.character(NY.data$FIPS)
 
 # Convert to dataframe state data
@@ -28,7 +50,10 @@ state_covid_testing <- read_csv("data/csv/state_covid_testing.csv")
 at_risk_adults <- read_csv("data/csv/at_risk_adults.csv") 
 
 # Import cardio data (NEW)
-cardio_deaths_2017 <- read_csv("data/csv/cardio_deaths_2017.csv")
+# UPDATED: 16 Apr (new source!)
+#cardio_deaths_2017 <- read_csv("data/csv/cardio_deaths_2017.csv")
+# NOTE: Includes ethnicities; already in p_100K format
+cardio_deaths_2015 <- read_csv("data/csv/HeartDisease_DeathRate_States_CDC_2015.csv")
 
 # Import COVID-19 Cases & Deaths data
 covid_data_states <- read_csv("data/csv/covid_data_states.csv")
@@ -44,10 +69,19 @@ covid_data_states$calc_death_rate <- covid_data_states$covid19_deaths/covid_data
 # covid_data_states$p_death_rate <- covid_data_states$deaths_per_mil/1000000
 covid_data_states$p_death_rate <- covid_data_states$calc_death_rate
 
-### NEW: COVID Notebook needs these extras
+# Import US Diabetes data
+diabetes_data_states <- read_csv("data/csv/diabetes_data_states.csv")
 
+
+# Import NYS TS cases (for plotting) 
+covid_NY_TS_counties_long <- read_csv("data/csv/time_series/covid_NY_TS_counties_long.csv")
 covid_NY_TS_counties_long.cases <- read_csv("data/csv/time_series/covid_NY_TS_counties_long.cases.csv")
-         
-         
 
+covid_NY_TS_plot.cases <- read_csv("data/csv/time_series/covid_NY_TS_plot.cases.csv")
+
+# Import per-state per-race disparity data
+covid_racial_data_states.wide <- read_csv("data/csv/states_cdc_racial_wide.csv")
+
+# Input NY fatalities data (updated daily)
+NY_fatalities_all <- read_csv("data/csv/time_series/NY_fatalities_all.csv")
 
