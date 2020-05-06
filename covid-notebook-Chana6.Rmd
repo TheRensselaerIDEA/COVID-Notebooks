@@ -104,7 +104,7 @@ Fill out the bullets at the beginning of this notebook...
 * github issues addressed by this work: `#27` (example)
 * Github branch name of my submitted notebook: *erickson_final* (example)
 * link to merged notebook (post these to LMS!: 
-    + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/master/MATP-4400-FINAL/COVID_FINAL_2020.Rmd (example; Rmd version)
+    + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/feature-27/MATP-4400-FINAL/covid-notebook-Chana6.Rmd 
     + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/master/MATP-4400-FINAL/COVID_FINAL_2020.html (example; HTML version)
 
 # Overview & Problems Tackled
