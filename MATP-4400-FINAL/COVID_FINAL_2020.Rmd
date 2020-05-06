@@ -1,6 +1,6 @@
 ---
-title: "MATP-4400 COVID-19 Final Notebook (template)"
-author: "Your Name Here"
+title: "MATP-4400 COVID-19 Final Notebook"
+author: "Tracy (Chuoxi) Chen"
 date: "May 2020"
 output:
   html_document:
@@ -15,7 +15,9 @@ output:
 ```{r setup, include=FALSE}
 # stick libraries here
 knitr::opts_chunk$set(echo = TRUE)
-
+library(dplyr)
+library(ggplot2)
+library(plotly)
 ```
 
 # Final Project: Guidance for Students (DELETE)
@@ -95,9 +97,9 @@ Fill out the bullets at the beginning of this notebook...
 *This should be the first section of your final project notebook. Fill out the following according to how you submitted your notebook!*
 
 * github repository: https://github.com/TheRensselaerIDEA/COVID-Notebooks (for reference)
-* My github ID: *olyerickson* (example)
-* github issues addressed by this work: `#123` (example)
-* Github branch name of my submitted notebook: *erickson_final* (example)
+* My github ID: *Tracy29* (example)
+* github issues addressed by this work: `#6` (example)
+* Github branch name of my submitted notebook: *feature-6* (example)
 * link to merged notebook (post these to LMS!: 
     + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/master/MATP-4400-FINAL/COVID_FINAL_2020.Rmd (example; Rmd version)
     + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/master/MATP-4400-FINAL/COVID_FINAL_2020.html (example; HTML version)
@@ -105,6 +107,7 @@ Fill out the bullets at the beginning of this notebook...
 # Overview & Problems Tackled
 
 *Provide a top-level summary of your work and findings.*
+I used data from America's health ranking's 2019 Annual report and specifically focused on 4 behaviors: 
 
 # Data Description
 
@@ -114,15 +117,88 @@ Fill out the bullets at the beginning of this notebook...
 
 *Break out your results by each problem you attacked*
 
+# Set up data
+```{r }
+all_states.df <- read.csv("~/COVID-Notebooks/data/2019-Annual.csv")
+all_states<- unique(all_states.df$State.Name) %>% sort()
+# Sort data frame by states 
+all_states.df<- all_states.df %>% 
+  arrange(factor(all_states.df$State.Name, levels = all_states))
+
+# America's Health Ranking (data source) defined health outcome as the interaction betweenthe 4 asepcts: behaviors, commuinty & environment, policy, and clinical care
+# Pick data for behaviors as topic of this project
+behaviors<- c("Excessive Drinking","Physical Inactivity", "Smoking")
+behaviors.df <- filter(all_states.df, grepl(paste(behaviors, collapse="|"), Measure.Name))
+```
+
+```{r }
+# Calculate the number of covid death by state then categorize by sex
+death_count<- read.csv("~/COVID-Notebooks/data/csv/Provisional_COVID-19_Death_Counts_by_Sex__Age__and_State.csv")
+
+pick<- c("Male Total", "Female Total")
+death_count<- death_count %>%
+  filter(grepl(paste(pick, collapse="|"), Sex)) %>%
+  select(State, Sex, COVID.19.Deaths)
+
+US_death<- death_count[death_count$State == "United States", ]
+NYC_death<- death_count[death_count$State == "New York City", ]
+
+drop <- c("United States", "New York City", "Puerto Rico")
+death_count<- death_count[!(death_count$State %in% drop), ]
+row.names(death_count) <- NULL
+
+n<- which(grepl("New York", death_count$State))
+death_count$COVID.19.Deaths[n[1]]<- death_count$COVID.19.Deaths[n[1]] + NYC_death$COVID.19.Deaths[1]
+death_count$COVID.19.Deaths[n[2]]<- death_count$COVID.19.Deaths[n[2]] + NYC_death$COVID.19.Deaths[2]
+
+fmean_death<- US_death$COVID.19.Deaths[2]/53
+mmean_death<- US_death$COVID.19.Deaths[1]/53
+US_death$mean_death<- c(fmean_death, mmean_death)
+
+death_count$death_desparity<- log(death_count$COVID.19.Deaths/US_death$mean_death)
+
+death_count<- death_count[c(rbind(seq(2, nrow(death_count), 2), seq(1, nrow(death_count), 2))),]
+```
+
+```{r }
+# Behaviors (excluding drug death and obesity) vs COVID death
+sex<- c("Female", "Male")
+
+# Filter out only the data that contain information with sex
+behaviors_sex.df<- behaviors.df %>%
+  filter(grepl(paste(sex, collapse="|"), Measure.Name)) %>%
+  select(State.Name, Measure.Name, Value)
+
+US_behavior<- behaviors_sex.df[behaviors_sex.df$State.Name == "United States", ]
+behaviors_sex.df<- behaviors_sex.df[behaviors_sex.df$State.Name != "United States", ]
+```
+
 ## Problem 1 
 
 *Describe the problem you are examining.  If there is background that is necessary for this problem, then put it here. Include any references.* 
-
+From the data source, America's Health Ranking, it defined excessive drinking as "Adults who reported either binge drinking (having four or more [women] or five or more [men] drinks on one occasion in the past 30 days) or chronic drinking (having eight or more [women] or 15 or more [men] drinks per week)". There are many health risk associated with excessive drinking, such as the development of chronic disease and weakening immune system. I am interested in investigating the relationship between COVID-19 death and excessive drinking behaviors by comparing the assoiated value from America's Health Ranking on the percentage of people of years 18-45, 45-64, and 65+ and their corresponding age group's COVID-19 death by state. 
  
 ### Methods
 
 *How did you address the problem? What data did you use exactly? What methods did you use?* 
 
+```{r }
+# US_drinking value is the median value of states and DC
+US_drinking<- US_behavior %>% filter(grepl(paste("Excessive Drinking", collapse="|"), Measure.Name))
+
+excessive_drinking.df<- behaviors_sex.df %>%
+  filter(grepl(paste("Excessive Drinking", collapse="|"), Measure.Name))
+
+excessive_drinking.df<- excessive_drinking.df %>%
+  mutate(value.disparity = log(excessive_drinking.df$Value/US_drinking$Value)) %>%
+  mutate(death.disparity = death_count$death_desparity) %>%
+  na.omit() # Some state don't have information about COVID 19 death
+
+ex_drinkign_plot<- ggplot(data=excessive_drinking.df, aes(x=value.disparity, y=death.disparity, color=State.Name)) + 
+  geom_point(alpha=0.5) +
+  facet_grid(~ Measure.Name)
+ggplotly(ex_drinkign_plot)
+```
 	
 ### Results
 
@@ -134,15 +210,56 @@ Fill out the bullets at the beginning of this notebook...
 *Interpret results.  What were your findings?  What do they say about COVID-19?   What are the strengths and limitations of these results? Is there support for your findings from other sources? Include references as appropriate.*
 
 ## Problem 2
- 
+physical inactivity
+
 ### Methods
+```{r }
+# US_activity value is the median value of states and DC
+US_activity<- US_behavior %>% filter(grepl(paste("Physical Inactivity", collapse="|"), Measure.Name))
+
+inactivity.df<- behaviors_sex.df %>%
+  filter(grepl(paste("Physical Inactivity", collapse="|"), Measure.Name))
+
+inactivity.df<- inactivity.df %>%
+  mutate(value.disparity = log(inactivity.df$Value/US_activity$Value)) %>%
+  mutate(death.disparity = death_count$death_desparity) %>%
+  na.omit() # Some state don't have information about COVID 19 death
+
+inactivity_plot<- ggplot(data=inactivity.df, aes(x=value.disparity, y=death.disparity, color=State.Name)) + 
+  geom_point(alpha=0.5) +
+  facet_grid(~ Measure.Name)
+ggplotly(inactivity_plot)
+```
 	
 ### Results
 
 ### Discussion
 
-*Do at least 2 problems. Add more as necessary *
+## Problem 3
+smoking
 
+### Methods
+```{r }
+# US_smoking value is the median value of states and DC
+US_smoking<- US_behavior %>% filter(grepl(paste("Smoking", collapse="|"), Measure.Name))
+
+smoking.df<- behaviors_sex.df %>%
+  filter(grepl(paste("Smoking", collapse="|"), Measure.Name))
+
+smoking.df<- smoking.df %>%
+  mutate(value.disparity = log(smoking.df$Value/US_smoking$Value)) %>%
+  mutate(death.disparity = death_count$death_desparity) %>%
+  na.omit() # Some state don't have information about COVID 19 death
+
+smoking_plot<- ggplot(data=smoking.df, aes(x=value.disparity, y=death.disparity, color=State.Name)) + 
+  geom_point(alpha=0.5) +
+  facet_grid(~ Measure.Name)
+ggplotly(smoking_plot)
+```
+	
+### Results
+
+### Discussion
 
 # Summary and COVIDMINDER Recommendations
 
