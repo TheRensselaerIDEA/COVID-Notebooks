@@ -13,115 +13,68 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-# stick libraries here
 knitr::opts_chunk$set(echo = TRUE)
-
 ```
 
-# Final Project: Guidance for Students (DELETE)
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+#### Library and Data Imports ####
 
-*DELETE THIS SECTION IN FINAL NOTEBOOK!*
+setwd('../')
 
-##GENERAL INSTRUCTIONS (DELETE)##
+## Load essential R packages
+source("modules/Source.R")
 
-* This notebook serves as a written presentation of your work so it should be written like a research paper.
-* The rubric for evaluating this project is on LMS.
-* The R code that executes the results should be embedded in this notebook if possible. It's also okay to "source" external scripts from within your notebook, including those provided by your instructors. 
-* If there is work that is not appropriate to be embedded on your final notebook, then you can describe the work in the notebook and provide figures generated elsewhere (e.g. screen shots, graphs). Indicate if that work has been committed to github. If necessary put details in Appendix.    
-* Your wording should be suitable for sharing with external partners/mentors and useful to future contributors.
-* Please don't summarize everything you did; discuss only the *most important* aspects of your work. Ask yourself *what really matters?*
-* IMPORTANT: Discuss any insights you found regarding COVID-19.
-* If there are limitations to your work, discuss. 
-* Include any background or support for your work. For example, mention any relevant research articles you found -- and be sure to include references!
-* Include your recommendations for extending the COVIDMINDER app:
-    + Data utilization...
-    + Analytics...
-    + Visualizations
-    + User interface design...
-* **Expect internet problems!** Commit versions of this notebook to the IDEA github *early and often*. You can continue to refine and update; that is the point of github!
+## Load stored data (see `data` subdirectory)
+source("modules/data_load.R")
 
-##SUBMISSION CHECKLIST: Things to check before you submit (DELETE)##
+## Create dataframes; perform desparity index calcuations; prep for plotting
+source("modules/preprocessing.R")
 
-* Have you given your file(s) a clear, sensible name? `my_notebook.Rmd` or `joey.Rmd` are **not* acceptable!
-* Is every figure clearly labeled and titled? 
-* Does every figure serve a purpose? 
-     + What question does it answer? 
-     + You can put extra (non-essential) figues in the Appendix.
-* Are your tables clearly labelled and legible?
-     + We recommend using `kable()` (built into `knitr`)
-     + `xtable()` might also work for you (not as easy as `kable()`)
-* **CRITICAL:** Have you given enough information for someone to reproduce, understand and extend your results?
-     + Where can they *find* the data that you used?
-     + Have you *described* the data that used?
-     + Have you *documented* your code? 
-     + Are your figures *clearly labeled*?
-     + Did you *discuss your findings*?
-     + Did you use good grammar and *proofread* your results?
-     + Finally, have you *committed* your work to github and made a *pull request*?
-     
-## github Submission Instructions (DELETE!)
-
-Fill out the bullets at the beginning of this notebook...
-
-* Provide your github ID. 
-* Indicate the issues associated with this work on github. 
-* Commit the Rmd and html versions of this notebook to the `MATP-4400-FINAL` directory on github and make a pull request.  
-* Provide the link to your github submission on LMS. 
-    + **NOTE:** You can post your link any time after it exists  
-    + We will grade the latest version available on Github starting at 3:00 on Thursday, 7 May.  
-* **NOTE:** RStudio Server will be unavailable due to maintenance for up to a week beginning the weekend of 9 May,  so there can be no extensions or late submissions. 
-
-##github help (DELETE!)
-
-* DO THIS FIRST:
-    + `git clone https://github.com/TheRensselaerIDEA/COVID-Notebooks` (if you haven't already)
-        + NOTE: We may have added to the master since your last `git pull` so make sure to do a `git pull origin master`
-    + `git checkout -b <your-new-branch>` (more instructions immediately below)
-    + In R, create a new R notebook (ie a `.Rmd` file) in the subdirectory `MATP-4400-FINAL`
-    + `git add` it to the repo (make sure you're in the correct directory when you do this!)
-    + `git commit -a -m 'Created my notebook!'` as soon as you do this! 
-    + `git push origin <your-new-branch>` so we see you're working on something
-    + Post a link in LMS; it will remain valid as you update (and check in) your work to github
-    + for details, see instructions in next few bullets
-    + Contact John Erickson erickj4@rpi.edu for further github questions
-* See: **HOW TO USE THIS NOTEBOOK AND REPOSITORY** https://bit.ly/2wYQGXP
-* See also: **git Cheat Sheet** https://bit.ly/2yCBSi8 
-
-*DELETE THE SECTIONS ABOVE!*
-<hr>
+```
 
 # Final Project: Submission Links
 
 *This should be the first section of your final project notebook. Fill out the following according to how you submitted your notebook!*
 
-* github repository: https://github.com/TheRensselaerIDEA/COVID-Notebooks (for reference)
-* My github ID: *olyerickson* (example)
-* github issues addressed by this work: `#123` (example)
-* Github branch name of my submitted notebook: *erickson_final* (example)
+* github repository: https://github.com/TheRensselaerIDEA/COVID-Notebooks
+* My github ID: *awi100*
+* github issues addressed by this work: `#8` 
+* Github branch name of my submitted notebook: *Imrie_final*
 * link to merged notebook (post these to LMS!: 
-    + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/master/MATP-4400-FINAL/COVID_FINAL_2020.Rmd (example; Rmd version)
-    + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/master/MATP-4400-FINAL/COVID_FINAL_2020.html (example; HTML version)
+    + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/master/MATP-4400-FINAL/Final_Project_Andrew_Imrie.Rmd (example; Rmd version)
+    + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/master/MATP-4400-FINAL/Final_Project_Andrew_Imrie.html (example; HTML version)
 
 # Overview & Problems Tackled
 
-*Provide a top-level summary of your work and findings.*
-<h5><b>Reasoning of Looking at Unemployment:</b></h5>
-There has been so much talk in the news about unemployment and the numbers are staggering. I wanted to look at the trends from the last few years to visualize the immediate impact COVID has had on unemployment. I also wanted to see if there was any strong correlation between the increase in the unemployment numbers and the number of covid cases in each state. 
-
+There has been so much talk in the news about unemployment and the numbers are staggering. I wanted to look at the trends from the last few years as well as the last few months to visualize the immediate impact COVID has had on unemployment. I also wanted to see if there was any strong correlation between the increase in the unemployment numbers and the number of covid cases in each state. Given the time and correct data sources, I would also like to dive deeper in New York state's data, and see if there are any specific groups where the economic impact is more severe. These potential groups include but are not limited to race, age, or gender. 
 
 # Data Description
 
 *Include data sources/locations, versions/dates, etc.* 
-<h5>The Data</h5>
-The dataset I used is from the Bureau of Labor Statistics website. It is the monthly unemployment rate per state from 1976-present. It also included regional and national statistics. The data was only available as a txt file on the BLS website, so I downloaded and wrote a small Python script in order to clean the data. The cleaned data only has state data from 2018-present. The columns of the data breakdown as such:
 
-series_id: series_id is a 20 character code for what state the data came from as well as the type of data. All values begin with the 3 characters "LAU" for Local Area Unemployment. The next 15 characters maps the data to a particular state. For example, "ST0100000000000" is Alabama. The last 2 characters tell us what kind of unemployment data it is. 
+The first dataset I used is from the Bureau of Labor Statistics website. It is the monthly unemployment rate per state from 1976-present. It also included regional and national statistics. The data was only available as a txt file on the BLS website, so I downloaded it and wrote a Python script in order to clean the data. The cleaned data only has state data from 2018-present. In the Python script, I also created a dictionary of state codes and their respective states, and then added a state column to the filtered csv. I have attached screenshots of the Python script below.
 
-year:
+(../pictures/uninsured_DI.png)
 
-period:
 
-value:
+This data was pulled from the BLS website on April 28th 2020, and as such, it does not contain the unemployment data for April 2020. That data is set to be released on May 8th 2020, which is the due date of this project. The columns of the data breakdown as such:
+
+*series_id*: series_id is a 20 length character code for what state the data came from as well as the type of data. All values begin with the 2 characters "LA" for Local Area. The following character is either a "S" or "U" for seasonally adjusted data or not. The next 15 characters maps the data to a particular state. For example, "ST0100000000000" is Alabama. The last 2 characters tell us what kind of unemployment data it is. For clarity purposes, I have broken down the 20 character series_id code in the following table:
+
+| Represented         | Char Length | Possible Values                                                                                                                                                                                |
+|---------------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Survey abbreviation | 2           | LA (Local Area)                                                                                                                                                                                |
+| Seasonally          | 1           | S (Seasonal), U (Unadjusted)                                                                                                                                                                   |
+| State               | 15          | ST0100000000000 (Alabama), ST0200000000000 (Alaska), etc.                                                                                                                                      |
+| Measurement Code    | 2           | 03 (unemployment rate), 04 (unemployment), 05 (employment), 06 (labor force), 07 (employment-population ratio), 08 (labor force participation rate), 09 (civilian noninstitutional population) |
+
+*year*: year is a numeric that simply represents the year in which the data is from. It ranges from 1976-2020.
+
+*period*: period is a 3 length character code that represents the month the data is from. Values range from "M01" to "M12" and are based on the corresponded month of the year. "M13" is the states average for that year.
+
+*value*: value is a numeric value that is the measured unemployment value. Because there are many different measurement types in the data set, the values for this column cannot be strictly defined. However, in this analysis we will be dealing with solely the unemployment rate data, which will simply be somewhere between 0.0 and about 25.0 (estimated max limit is based on the Great Depression maximum unemployment rate of 24.9).
+
+The next data set I used is also from the Bureau of Labor Statistics website. It is simply the national unemployment rate by month. As with the previous dataset, I also had to write a Python script to clean this and convert it from .txt to .csv. 
 
 # Results
 
@@ -130,37 +83,273 @@ value:
 ## Problem 1 
 
 *Describe the problem you are examining.  If there is background that is necessary for this problem, then put it here. Include any references.* 
-
+The first problem that I am examining is the disparity index between state's unemployement rates and the US national average unemployment. Specifically, I am looking at maps of the months from Jan 2020 - March 2020. COVID-19 began to severely impact the United States in March, so this gives us two months of data just prior to when COVID-19 hit as well as a month of data from COVID-19 picking up. Personally, I believe the April 2020 data will tell a much more detailed story, but as previously mentioned, that data will only be available hours after the submission deadline.
  
 ### Methods
 
 *How did you address the problem? What data did you use exactly? What methods did you use?* 
+I addressed the problem by making a visualization of the disparity indexes amongst the states' unemployment rates vs. the national average. Before I could do this, I had to make a visualization of all the state's unemployment rates as well as the national average. After looking this visualization, I tested a few bin sizes and decided use a bin size of 0.2 in order to categorize each state. Once I did that, I used what COVIDMinder has been using for disparty index, which is ln(x/y). In this case, x will be the state's unemployment rate, and y will be the national average. 
 
 	
 ### Results
 
+```{r}
+# Get unemployment data and name columns
+Unemployment = read.csv('../data/csv/allstates_unemployment_filtered_s.csv', row.names = NULL)
+colnames(Unemployment) = c("series_id", "state_id", "state", "year", "period", "value")
+
+# Get state codes and name columns
+state_codes = read.csv('../data/csv/states_unemployment_codes.csv', row.names = NULL)
+colnames(state_codes) = c("state_id", "state")
+
+national_avgs = read.csv('../data/csv/national_unemployment.csv', row.names = NULL)
+colnames(national_avgs) = c("year", "month", "rate")
+
+```
+
+```{r}
+
+# months = c("M01", "M02", "M03", "M04", "M05", "M06", "M07", "M08", "M09", "M10", "M11", "M12")
+# years = c("2018", "2019", "2020")
+
+jan_differences = c()
+jan_disparity = c()
+
+feb_differences = c()
+feb_disparity = c()
+
+march_differences = c()
+march_disparity = c()
+
+jan_2020_national <- national_avgs$rate[(national_avgs$year == "2020") & (national_avgs$month == "M01")]
+jan_2020_national <- as.numeric((jan_2020_national))
+
+feb_2020_national <- national_avgs$rate[(national_avgs$year == "2020") & (national_avgs$month == "M02")]
+feb_2020_national <- as.numeric((feb_2020_national))
+
+march_2020_national <- national_avgs$rate[(national_avgs$year == "2020") & (national_avgs$month == "M03")]
+march_2020_national <- as.numeric((march_2020_national))
+
+for (current_state in states$NAME){
+  
+  jan_2020_current_state <- Unemployment$value[Unemployment$state == current_state & Unemployment$year == "2020" & Unemployment$period == "M01"]
+  jan_2020_current_state <- as.numeric(jan_2020_current_state)
+  jan_diff <- jan_2020_national - jan_2020_current_state
+  jan_disp <- log(jan_2020_national/jan_2020_current_state)
+  jan_differences <- c(jan_differences,  jan_diff)
+  jan_disparity <- c(jan_disparity, jan_disp)
+  
+  feb_2020_current_state <- Unemployment$value[Unemployment$state == current_state & Unemployment$year == "2020" & Unemployment$period == "M02"]
+  feb_2020_current_state <- as.numeric(feb_2020_current_state)
+  feb_diff <- feb_2020_national - feb_2020_current_state
+  feb_disp <- log(feb_2020_national/feb_2020_current_state)
+  feb_differences <- c(feb_differences, feb_diff)
+  feb_disparity <- c(feb_disparity, feb_disp)
+  
+  march_2020_current_state <- Unemployment$value[Unemployment$state == current_state & Unemployment$year == "2020" & Unemployment$period == "M03"]
+  march_2020_current_state <- as.numeric(march_2020_current_state)
+  march_diff <- march_2020_national - march_2020_current_state
+  march_disp <- log(march_2020_national/march_2020_current_state)
+  march_differences <- c(march_differences,  march_diff)
+  march_disparity <- c(march_disparity, march_disp)
+}
+```
+
+```{r}
+
+all_months <- cbind.data.frame(states$NAME, jan_disparity, feb_disparity, march_disparity)
+colnames(all_months) = c("state", "Jan2020_ldi", "Feb2020_ldi", "Mar2020_ldi")
+all_months$Jan2020_ldi <- as.numeric(all_months$Jan2020_ldi)
+all_months$Feb2020_ldi <- as.numeric(all_months$Feb2020_ldi)
+all_months$Mar2020_ldi <- as.numeric(all_months$Mar2020_ldi)
+
+```
+
+
 *What were the results on this problem?*
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+### Text used for captions and explanations
 
-```{r}
-Unemployment.df = read.csv('data/csv/allstates_unemployment.csv', row.names = NULL)
-colnames(Unemployment.df) = c("series_id", "year", "period", "value")
+ldi_explanation_text <- "<h4><b>EXPLANATION OF VISUALIZATIONS:</b></h4> The goal of these visualizations is to examine 
+the serverity of the economic impact COVID-19 has had across the states in terms of unemployment rates. There are three maps, 
+which represent data from A common measure, the <i>disparity index</i> 
+is used to represent thedifference between the observed unemployment rate in the state and the national unemployment rate.</p>
+<p>The advantage of the disparity index is that represents how far off a target standard the observed rate is. </p>
+<p>Mathematically,
+<code>DI = log(x/y)</code> or <code>DI = log(y/x)</code>
+depending upon whether being above or below the target is preferred. 
+<ul>
+<li>In this case, <i>x</i> will be some state's unemployment rate, and <i>y</i> would be the US national unemployment rate</li>
+</ul>
+</p>
+<p>&nbsp;</p>"
 
-state_codes.df = read.csv('data/csv/states_unemployment_codes.csv', row.names = NULL)
-colnames(state_codes.df) = c("state_code", "state")
+### MEDIATION: Hospital Beds (USA)
+
+us_unemployment_text <- "<h4><b>How does the unemployement rate across the United States compare to the national average?</b></h4>
+<i>These maps compare the unemployment rate in US states vs the national unemployment rate 
+For these three maps, <span style='color:#b2182b'><b>shades of red</b></span> indicate that a 
+state's unemployment rate is lower than the national rate<br/><br>
+Data sources: <br/><a href='https://download.bls.gov/pub/time.series/la/la.data.3.AllStatesS'>Bureau of Labor Statistics</a>"
+
+
+jan_2020_text <- "<h2>January 2020</h4>"
 
 ```
 
-```{r}
-# Unemployment.df$series_id[Unemployment.df$year == 2018]
-library(dplyr)
-
-Unemployment.df %>% filter(year == 2018, period == "M01")
-# Unemployment.df
+ `r ldi_explanation_text`
  
-# Get the state code, given a state
-# state_codes.df %>% filter(state == "Alabama")
+ `r us_unemployment_text` 
+ 
+ `r jan_2020_text` 
+
+```{r}
+    colors <- c("#253494","#4575B4", "#74ADD1","#ABD9E9","#f7f7f7","#FDAE61","#F46D43", "#D73027", "#BD0026")
+    bins <- c(1, .8, .4, .2, .1, -.1, -.2, -.4, -.8, -1)
+    pal2 <- leaflet::colorBin(colors, domain = all_months$Jan2020_ldi, bins = bins, reverse=TRUE)
+    labels2 <- sprintf(
+      "<strong>%s</strong><br/>
+      National Unemployment Rate DI: %.2g",
+      states$NAME, all_months$Jan2020_ldi
+    ) %>% lapply(htmltools::HTML)
+    
+    leaflet(states.shapes) %>%
+      setView(-96, 37.8, 4) %>% 
+      addPolygons(
+        fillColor = ~pal2(all_months$Jan2020_ldi),
+        weight = 1,
+        opacity = 1,
+        color = "#330000",
+        dashArray = "1",
+        fillOpacity = 0.7,
+        highlight = highlightOptions(
+          weight = 5,
+          color = "#666",
+          dashArray = "",
+          fillOpacity = 0.7,
+          bringToFront = TRUE),
+        label = labels2,
+        labelOptions = labelOptions(
+          style = list("font-weight" = "normal", padding = "3px 8px"),
+          textsize = "15px",
+          direction = "auto")) %>% 
+      addLegend(pal = pal2, 
+                values = ~all_months$Jan2020_ldi, 
+                opacity = 0.7, 
+                title = "Disparity Index<br/>US vs State Unemployment Rate",
+                position = "bottomright",
+                labFormat = function(type, cuts, p) { n = length(cuts) 
+                cuts[n] = paste0(cuts[n]," lower") 
+                for (i in c(1,seq(2,(n-1)))){cuts[i] = paste0(cuts[i]," — ")} 
+                cuts[2] = paste0(cuts[2]," higher") 
+                paste0(str_remove(cuts[-n],"higher"), str_remove(cuts[-1],"—"))
+                }
+                ) %>%
+      addProviderTiles("MapBox", options = providerTileOptions(
+        id = "mapbox.light"))
 
 ```
+
+
+```{r}
+    colors <- c("#253494","#4575B4", "#74ADD1","#ABD9E9","#f7f7f7","#FDAE61","#F46D43", "#D73027", "#BD0026")
+    bins <- c(1, .8, .4, .2, .1, -.1, -.2, -.4, -.8, -1)
+    pal2 <- leaflet::colorBin(colors, domain = all_months$Feb2020_ldi, bins = bins, reverse=TRUE)
+    labels2 <- sprintf(
+      "<strong>%s</strong><br/>
+      National Unemployment Rate DI: %.2g",
+      states$NAME, all_months$Feb2020_ldi
+    ) %>% lapply(htmltools::HTML)
+    
+    leaflet(states.shapes) %>%
+      setView(-96, 37.8, 4) %>% 
+      addPolygons(
+        fillColor = ~pal2(all_months$Feb2020_ldi),
+        weight = 1,
+        opacity = 1,
+        color = "#330000",
+        dashArray = "1",
+        fillOpacity = 0.7,
+        highlight = highlightOptions(
+          weight = 5,
+          color = "#666",
+          dashArray = "",
+          fillOpacity = 0.7,
+          bringToFront = TRUE),
+        label = labels2,
+        labelOptions = labelOptions(
+          style = list("font-weight" = "normal", padding = "3px 8px"),
+          textsize = "15px",
+          direction = "auto")) %>% 
+      addLegend(pal = pal2, 
+                values = ~all_months$Feb2020_ldi, 
+                opacity = 0.7, 
+                title = "Disparity Index<br/>US vs State Unemployment Rate",
+                position = "bottomright",
+                labFormat = function(type, cuts, p) { n = length(cuts) 
+                cuts[n] = paste0(cuts[n]," lower") 
+                for (i in c(1,seq(2,(n-1)))){cuts[i] = paste0(cuts[i]," — ")} 
+                cuts[2] = paste0(cuts[2]," higher") 
+                paste0(str_remove(cuts[-n],"higher"), str_remove(cuts[-1],"—"))
+                }
+                ) %>%
+      addProviderTiles("MapBox", options = providerTileOptions(
+        id = "mapbox.light"))
+
+```
+
+
+
+
+```{r}
+    colors <- c("#253494","#4575B4", "#74ADD1","#ABD9E9","#f7f7f7","#FDAE61","#F46D43", "#D73027", "#BD0026")
+    bins <- c(1, .8, .4, .2, .1, -.1, -.2, -.4, -.8, -1)
+    pal2 <- leaflet::colorBin(colors, domain = all_months$Mar2020_ldi, bins = bins, reverse=TRUE)
+    labels2 <- sprintf(
+      "<strong>%s</strong><br/>
+      National Unemployment Rate DI: %.2g",
+      states$NAME, all_months$Mar2020_ldi
+    ) %>% lapply(htmltools::HTML)
+    
+    leaflet(states.shapes) %>%
+      setView(-96, 37.8, 4) %>% 
+      addPolygons(
+        fillColor = ~pal2(all_months$Mar2020_ldi),
+        weight = 1,
+        opacity = 1,
+        color = "#330000",
+        dashArray = "1",
+        fillOpacity = 0.7,
+        highlight = highlightOptions(
+          weight = 5,
+          color = "#666",
+          dashArray = "",
+          fillOpacity = 0.7,
+          bringToFront = TRUE),
+        label = labels2,
+        labelOptions = labelOptions(
+          style = list("font-weight" = "normal", padding = "3px 8px"),
+          textsize = "15px",
+          direction = "auto")) %>% 
+      addLegend(pal = pal2, 
+                values = ~all_months$Mar2020_ldi, 
+                opacity = 0.7, 
+                title = "Disparity Index<br/>US vs State Unemployment Rate",
+                position = "bottomright",
+                labFormat = function(type, cuts, p) { n = length(cuts) 
+                cuts[n] = paste0(cuts[n]," lower") 
+                for (i in c(1,seq(2,(n-1)))){cuts[i] = paste0(cuts[i]," — ")} 
+                cuts[2] = paste0(cuts[2]," higher") 
+                paste0(str_remove(cuts[-n],"higher"), str_remove(cuts[-1],"—"))
+                }
+                ) %>%
+      addProviderTiles("MapBox", options = providerTileOptions(
+        id = "mapbox.light"))
+
+```
+
+
+
 
 
 ### Discussion
