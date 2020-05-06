@@ -22,7 +22,14 @@ source("modules/data_load.R")
 source("modules/preprocessing.R")
 
 ```
+```{r}
+mimic_synthetic_test[mimic_synthetic_test==-1]<- 0
+write.table(mimic_synthetic_test,file = "mimic_synthetic_test.csv", row.names=F, col.names=F)
 
+#This automatically generates a compressed (zip) file 
+system("zip -u MMentry.csv.zip mimic_synthetic_test.csv")
+
+```
 ## INTRODUCTION
 
 This R Notebook and its related R scripts provide an introduction to the **COVIDMINDER** application, which you can find at:
