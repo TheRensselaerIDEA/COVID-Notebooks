@@ -94,13 +94,13 @@ Fill out the bullets at the beginning of this notebook...
 
 *This should be the first section of your final project notebook. Fill out the following according to how you submitted your notebook!*
 
-* github repository: https://github.com/TheRensselaerIDEA/COVID-Notebooks (for reference)
-* My github ID: *olyerickson* (example)
-* github issues addressed by this work: `#123` (example)
-* Github branch name of my submitted notebook: *erickson_final* (example)
+* github repository: https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/state-report-card-daniel-tabin-project 
+* My github ID: *Darokrithia*
+* github issues addressed by this work: `#31` (example)
+* Github branch name of my submitted notebook: *state-report-card-daniel-tabin-project* (example)
 * link to merged notebook (post these to LMS!: 
-    + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/master/MATP-4400-FINAL/COVID_FINAL_2020.Rmd (example; Rmd version)
-    + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/master/MATP-4400-FINAL/COVID_FINAL_2020.html (example; HTML version)
+    + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/state-report-card-daniel-tabin-project/MATP-4400-FINAL/COVID_FINAL_2020_Daniel_Tabin.Rmd (example; Rmd version)
+    + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/state-report-card-daniel-tabin-project/MATP-4400-FINAL/COVID_FINAL_2020_Daniel_Tabin.html (example; HTML version)
 
 # Overview & Problems Tackled
 
