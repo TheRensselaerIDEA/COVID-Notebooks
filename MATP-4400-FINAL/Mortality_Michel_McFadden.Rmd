@@ -1,0 +1,255 @@
+---
+title: "COVIDMINDER Incident and Mortality Notebook"
+author: "Michél McFadden"
+date: "5/4/2020"
+output:
+  html_document: default
+  pdf_document: default
+---
+<h5><b>Why Incident and Mortality Is Important :</b></h5>
+Looking at Incident and Mortality is important because it can help predict the future of the state. To flatten the curve states want to keep their incident rates low over time. It may be possible to predict when states might open by looking at their incident rates and mortality rates. It's reasonable to assume that states that have low rates for both will open back up sooner than states with higher rates. 
+
+<h5>Methods:</h5>
+INSERT DESCRIPTION
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(gplots)
+library(ggplot2)
+library(ggbiplot)
+library(rlang)
+```
+
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+#### Library and Data Imports ####
+r = getOption("repos")
+r["CRAN"] = "http://cran.rstudio.com"
+options(repos = r)
+
+## Load essential R packages
+source("modules/Source.R")
+
+## Load stored data (see `data` subdirectory)
+source("modules/data_load.R")
+
+## Create dataframes; perform desparity index calcuations; prep for plotting
+source("modules/preprocessing.R")
+```
+
+
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+### Text used for captions and explanations
+
+Graph_explanation_text <- "<h4><b>ABOUT THE VISUALIZATIONS:</b></h4> These maps go to show the different rates for states. The Mortality Rate graph uses the data untouched directly from the CSV and the Incident Graph takes the log(X) of each states incident rate (the amount of people that catch coronvirus divided by the population value."
+
+
+# Mortality Graph Text
+mortality_text = "<h4><b>What does the mortality rate look like across the United States?</b></h4>
+<i> This plot shows the different mortality rates across the US. This data is from JHU's Github repo.</i>"
+
+# Incident Rate Text 
+incident_text <- "<h4><b> What does the incident rate look like across the United States? </b></h4>
+<i> This plot shows the different incident rates across the US. 'Incident rate' is defined as the amount of people who catch coronavirus in a given state divided by the population of that state. This data is from JHU's Github repo. </i>"
+
+```
+
+`r Graph_explanation_text`
+
+`r mortality_text`
+
+```{r echo = F}
+#COVID data from JHU
+COVID.df = read.csv('data/csv/05-01-2020.csv', row.names = NULL)
+
+# Removeing the unnecessary features and places
+COVID.df$Country_Region <- NULL
+COVID.df$Last_Update <- NULL
+COVID.df$Lat <- NULL
+COVID.df$Long_ <- NULL
+COVID.df$FIPS <- NULL
+COVID.df$UID <- NULL
+COVID.df$ISO3 <- NULL
+COVID.df$Confirmed <- NULL
+COVID.df$Deaths <- NULL
+COVID.df$Recovered <- NULL
+COVID.df$Active <- NULL
+COVID.df$People_Hospitalized <- NULL
+COVID.df$People_Tested <- NULL
+COVID.df <- COVID.df[-c(10, 14, 40, 53), ]
+colnames(COVID.df) <- c("NAME", "Incident", "Mortality", "Testing", "Hospitalization")
+
+
+# Setting NAs to 0
+COVID.df[is.na(COVID.df)] <- 0
+COVID.df$Incident <- log(COVID.df$Incident + 1)
+
+#match order with states in state data so that the state name is accurate on the map
+COVID.df = COVID.df[match(states$NAME, COVID.df$NAME),]
+
+
+ colors <- c("#ffff00","#ff7f50","#d1e5f0","#fddbc7","#ff8100","#ff8d00","#b2182b")
+    bins <- c(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+    pal2 <- leaflet::colorBin(colors, domain = COVID.df$Mortality, bins = bins, reverse=FALSE)
+    labels2 <- sprintf(
+      "<strong>%s</strong><br/>
+      Mortality Rate: %.9g",
+      COVID.df$NAME, COVID.df$Mortality
+    ) %>% lapply(htmltools::HTML)
+    
+    leaflet(states.shapes) %>%
+      setView(-96, 37.8, 4) %>% 
+      addPolygons(
+        fillColor = ~pal2(COVID.df$Mortality),
+        weight = 2,
+        opacity = 1,
+        color = "grey",
+        dashArray = "1",
+        fillOpacity = 0.7,
+        highlight = highlightOptions(
+          weight = 5,
+          color = "#666",
+          dashArray = "",
+          fillOpacity = 0.7,
+          bringToFront = TRUE),
+        label = labels2,
+        labelOptions = labelOptions(
+          style = list("font-weight" = "normal", padding = "3px 8px"),
+          textsize = "15px",
+          direction = "auto")) %>% 
+      addLegend(pal = pal2, 
+                values = ~COVID.df$Mortality, 
+                opacity = 0.7, 
+                title = "US Mortality Rates by State",
+                position = "bottomright"
+                ) %>%
+      addProviderTiles("MapBox", options = providerTileOptions(
+        id = "mapbox.light",
+        accessToken = Sys.getenv('MAPBOX_ACCESS_TOKEN')))
+```
+
+
+`r incident_text`
+
+```{r echo = F}
+
+ colors <- c("#fffcb3","#fff96a", "#ffff00","#fddbc7","#ff8100","#ff8d00","#b2182b")
+    bins <- c(0, 1, 2, 3, 4, 5, 6, 7, 8)
+    pal2 <- leaflet::colorBin(colors, domain = COVID.df$Incident, bins = bins, reverse=FALSE)
+    labels2 <- sprintf(
+      "<strong>%s</strong><br/>
+      Incident Rate: %.9g",
+      COVID.df$NAME, COVID.df$Incident
+    ) %>% lapply(htmltools::HTML)
+    
+    leaflet(states.shapes) %>%
+      setView(-96, 37.8, 4) %>% 
+      addPolygons(
+        fillColor = ~pal2(COVID.df$Incident),
+        weight = 2,
+        opacity = 1,
+        color = "grey",
+        dashArray = "1",
+        fillOpacity = 0.7,
+        highlight = highlightOptions(
+          weight = 5,
+          color = "#666",
+          dashArray = "",
+          fillOpacity = 0.7,
+          bringToFront = TRUE),
+        label = labels2,
+        labelOptions = labelOptions(
+          style = list("font-weight" = "normal", padding = "3px 8px"),
+          textsize = "15px",
+          direction = "auto")) %>% 
+      addLegend(pal = pal2, 
+                values = ~COVID.df$Incident, 
+                opacity = 0.7, 
+                title = "US Incident Rates by State",
+                position = "bottomright"
+                ) %>%
+      addProviderTiles("MapBox", options = providerTileOptions(
+        id = "mapbox.light",
+        accessToken = Sys.getenv('MAPBOX_ACCESS_TOKEN')))
+```
+
+<i> New York had such inflated values that including them in the analysis would lead to overfitting the data. New York data was removed from the analysis techniques below </i>
+
+```{r echo = F}
+# Downloading the COVID data into ta data frame
+COVID.df <- read.csv("data/csv/05-01-2020.csv", row.names = 1)
+
+
+# Removeing the unnecessary features and places
+COVID.df$Country_Region <- NULL
+COVID.df$Last_Update <- NULL
+COVID.df$Lat <- NULL
+COVID.df$Long_ <- NULL
+COVID.df$FIPS <- NULL
+COVID.df$UID <- NULL
+COVID.df$ISO3 <- NULL
+COVID.df$Confirmed <- NULL
+COVID.df$Deaths <- NULL
+COVID.df$Recovered <- NULL
+COVID.df$Active <- NULL
+COVID.df$People_Hospitalized <- NULL
+COVID.df$People_Tested <- NULL
+COVID.df <- COVID.df[-c(10, 14, 37, 40, 53), ]
+colnames(COVID.df) <- c("Incident", "Mortality", "Testing", "Hospitalization")
+
+# Setting NAs to 0
+COVID.df[is.na(COVID.df)] <- 0
+
+# Converting the data frame and scaling the resulting matrix
+COVID.matrix <- data.matrix(COVID.df)
+COVID.matrix <- scale(COVID.matrix, center = TRUE, scale = TRUE)
+
+# Principle Component Analysis and Screeplot 
+COVID.pca <- prcomp(COVID.matrix, retx=TRUE, center=TRUE, scale=TRUE)
+screeplot(COVID.pca, type = "lines", main = 'Explanation of Variance for State COVID')
+```
+
+
+# A look at the heatmap values for the different cluster of states. 
+
+* Cluster A is characterized by it's low testing, incident, and mortality rates and medium hospitalization rate.
+
+* Cluster B is characterized by it's low hospitalization rate, medium testing and mortality rates, and high incident rate.
+
+* Cluster C is characterized by it's low rates for all 4 features.
+
+```{r echo = F}
+# K Means Clustering
+set.seed(300)
+COVID.km <-kmeans(COVID.matrix, 3)
+COVID.km$cluster <- as.factor(COVID.km$cluster)
+
+Clusters <- COVID.km$cluster
+levels(Clusters) <- c("A", "B", "C")
+
+my_palette <- colorRampPalette(c("yellow", "goldenrod2", "coral1"))(n = 500)
+
+heatmap.2(COVID.km$centers, col=my_palette, scale=NULL)
+```
+
+
+# What information can we get from looking at a biplot?
+<h4><b> A biplot shows the characteristics of a cluster in relation to one another </b></h4>
+
+* For example we see Cluster A's medium hospitalization rate characterized by the blue states plotted higher on the Hospitalization Rate eigenvector
+
+* We can see Cluster B's high incident rate by the golden states with large placements on the Incident Rate eigenvector
+
+* Cluster C's low values across all rates are demonstrated by it's clustering close to the origin of the biplot
+
+```{r echo = F}
+ggbiplot(COVID.pca,choices=c(1,2),
+                labels=rownames(COVID.matrix), #show point labels
+                var.axes=TRUE, # Display axes 
+                ellipse = FALSE, # Don't display ellipse
+                obs.scale=.01,
+                groups = Clusters) + scale_color_manual(values=c("dodgerblue1", "goldenrod2", "coral1")) + labs(title = "Biplot for COVID Data Features")
+```
+
+
