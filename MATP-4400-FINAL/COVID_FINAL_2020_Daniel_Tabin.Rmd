@@ -15,6 +15,7 @@ output:
 ```{r setup, include=FALSE}
 # stick libraries here
 knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
 
 ```
 
@@ -105,10 +106,23 @@ Fill out the bullets at the beginning of this notebook...
 # Overview & Problems Tackled
 
 *Provide a top-level summary of your work and findings.*
+Problem 1 what is important for covid
+Problem 2 can we make an explanitory report card?
 
 # Data Description
 
 *Include data sources/locations, versions/dates, etc.* 
+Original:
+at_risk_adults.csv
+uninsured_by_state.csv
+states_abbreviations.csv
+provider_capacity.csv
+hypertension_mortality.csv
+diabetes_data_states.csv
+covid_data_states.csv
+New:
+time_series_covid19_deaths_US.csv
+time_series_covid19_confirmed_US.csv
 
 # Results
 
@@ -120,6 +134,151 @@ Fill out the bullets at the beginning of this notebook...
 
  
 ### Methods
+Load in data
+```{r}
+at_risk_adults <- read.csv('../data/csv/at_risk_adults.csv')
+uninsured_by_state <- read.csv('../data/csv/uninsured_by_state.csv', row.names = NULL)
+states_abbreviations<- read.csv('../data/csv/states_abbreviations.csv')
+provider_capacity <- read.csv('../data/csv/provider_capacity.csv')
+hypertension_mortality <- read.csv('../data/csv/hypertension_mortality.csv')
+diabetes_data_states <- read.csv('../data/csv/diabetes_data_states.csv')
+covid_data_states <- read.csv('../data/csv/covid_data_states.csv')
+
+
+time_series_covid19_deaths_US <- read.csv('../data/csv/time_series/time_series_covid19_deaths_US.csv')
+time_series_covid19_confirmed_US <- read.csv('../data/csv/time_series/time_series_covid19_confirmed_US.csv')
+
+```
+
+```{r}
+colnames(uninsured_by_state) = c("NAME", "Status", "Employer", "Non-group", "Medicaid", "Medicare", "Military", "Uninsured", "number_uninsured")
+names(diabetes_data_states)[names(diabetes_data_states) == 'State'] <- 'NAME'
+
+master_data <- merge(at_risk_adults, uninsured_by_state, by="NAME")
+master_data <- merge(master_data, states_abbreviations, by="NAME", type="inner")
+master_data <- merge(master_data, provider_capacity, by="NAME", type="inner")
+master_data <- merge(master_data, hypertension_mortality, by="NAME", type="inner")
+master_data <- merge(master_data, diabetes_data_states, by="NAME", type="inner")
+master_data <- merge(master_data, covid_data_states, by="NAME", type="inner")
+
+
+names(time_series_covid19_confirmed_US)[names(time_series_covid19_confirmed_US) == 'Province_State'] <- 'NAME'
+names(time_series_covid19_deaths_US)[names(time_series_covid19_deaths_US) == 'Province_State'] <- 'NAME'
+latest_confirmed <- time_series_covid19_confirmed_US [ , c(7, ncol(time_series_covid19_confirmed_US), ncol(time_series_covid19_confirmed_US)-1)] 
+latest_deaths <- time_series_covid19_deaths_US [ , c(7, ncol(time_series_covid19_deaths_US), ncol(time_series_covid19_deaths_US)-1)]
+
+names(latest_confirmed)[3] <- 'prev_c'
+names(latest_deaths)[3] <- 'prev_d'
+names(latest_confirmed)[2] <- 'total_c'
+names(latest_deaths)[2] <- 'total_d'
+
+latest_deaths$daily_deaths <- (latest_deaths$total_d - latest_deaths$prev_d)
+latest_confirmed$daily_confirmed <- (latest_confirmed$total_c - latest_confirmed$prev_c)
+
+latest_deaths <- latest_deaths[, c("NAME", "daily_deaths")]
+latest_confirmed <- latest_confirmed[, c("NAME", "daily_confirmed")]
+
+latest_confirmed <- aggregate(latest_confirmed['daily_confirmed'], by=latest_confirmed['NAME'], sum)
+latest_deaths <- aggregate(latest_deaths['daily_deaths'], by=latest_deaths['NAME'], sum)
+
+master_data <- merge(master_data, latest_confirmed, by="NAME", type="inner")
+master_data <- merge(master_data, latest_deaths, by="NAME", type="inner")
+
+head(master_data)
+```
+
+```{r}
+gradable_data <- master_data[, c("p_at_risk_adults", "p_older_at_risk_adults", "Uninsured", "hosp_beds_per_1000", "p_ht_death_rate", "pct_Adults_with_Diabetes")]
+colnames(gradable_data) = c("At risk Adults", "Older at risk Adults", "Uninsured", "Hospital Beds", "Heart Disease", "Diabetes")
+head(gradable_data)
+gradable_data2 <- master_data[, c("p_at_risk_adults", "p_older_at_risk_adults", "Uninsured", "hosp_beds_per_1000", "p_ht_death_rate", "pct_Adults_with_Diabetes", "covid19_cases", "covid19_deaths")]
+colnames(gradable_data2) = c("At risk Adults", "Older at risk Adults", "Uninsured", "Hospital Beds", "Heart Disease", "Diabetes", "Covid Cases", "Covid Deaths")
+
+gradable_data3 <- master_data[, c("p_at_risk_adults", "p_older_at_risk_adults", "Uninsured", "hosp_beds_per_1000", "p_ht_death_rate", "pct_Adults_with_Diabetes", "daily_confirmed", "daily_deaths")]
+colnames(gradable_data3) = c("At risk Adults", "Older at risk Adults", "Uninsured", "Hospital Beds", "Heart Disease", "Diabetes", "Covid Cases", "Covid Deaths")
+```
+```{r}
+set.seed(300)
+km <-kmeans(scale(data.matrix(gradable_data)), 5)
+km$cluster <- as.character(km$cluster)
+my.pca <- prcomp(scale(data.matrix(gradable_data)), retx=TRUE, center=TRUE, scale=TRUE)
+# Calculate x and y scale limits for the biplot
+t<-max(abs(my.pca$x[,1:2]))
+# Generate the biplot using ggbiplot
+p <- ggbiplot(my.pca,
+            choices=c(1,2),
+            varname.adjust=0.5,
+            obs.scale = 1,
+            groups=as.factor(km$cluster))
+p + ggtitle('First two PCs of gradable data') + xlim(-t,t) + ylim(-t,t)
+p <- ggbiplot(my.pca,
+            choices=c(2,3),
+            varname.adjust=0.5,
+            obs.scale = 1,
+            groups=as.factor(km$cluster))
+p + ggtitle('Second two PCs of gradable data') + xlim(-t,t) + ylim(-t,t)
+heatmap.2(km$centers, 
+          scale = "none",
+          dendrogram = "none",
+          Colv=FALSE,
+          cexCol=0.5,
+          main = "Heatmap of gradable features",
+          trace ="none")
+
+km2 <-kmeans(scale(data.matrix(gradable_data2)), 5)
+km2$cluster <- as.character(km$cluster)
+my2.pca <- prcomp(scale(data.matrix(gradable_data2)), retx=TRUE, center=TRUE, scale=TRUE)
+# Calculate x and y scale limits for the biplot
+t<-max(abs(my2.pca$x[,1:2]))
+# Generate the biplot using ggbiplot
+p <- ggbiplot(my2.pca,
+            choices=c(1,2),
+            varname.adjust=0.5,
+            obs.scale = 1,
+            groups=as.factor(km2$cluster))
+p + ggtitle('First two PCs of gradable data (including COVID data)') + xlim(-t,t) + ylim(-t,t)
+p <- ggbiplot(my2.pca,
+            choices=c(2,3),
+            varname.adjust=0.5,
+            obs.scale = 1,
+            groups=as.factor(km2$cluster))
+p + ggtitle('Second two PCs of gradable data (including COVID data)') + xlim(-t,t) + ylim(-t,t)
+heatmap.2(km2$centers, 
+          scale = "none",
+          dendrogram = "none",
+          Colv=FALSE,
+          cexCol=0.5,
+          main = "Heatmap of gradable features (including COVID data)",
+          trace ="none")
+
+
+
+km3 <-kmeans(scale(data.matrix(gradable_data3)), 5)
+km3$cluster <- as.character(km$cluster)
+my3.pca <- prcomp(scale(data.matrix(gradable_data3)), retx=TRUE, center=TRUE, scale=TRUE)
+# Calculate x and y scale limits for the biplot
+t<-max(abs(my3.pca$x[,1:2]))
+# Generate the biplot using ggbiplot
+p <- ggbiplot(my3.pca,
+            choices=c(1,2),
+            varname.adjust=0.5,
+            obs.scale = 1,
+            groups=as.factor(km3$cluster))
+p + ggtitle('First two PCs of gradable data (including latest COVID data)') + xlim(-t,t) + ylim(-t,t)
+p <- ggbiplot(my3.pca,
+            choices=c(2,3),
+            varname.adjust=0.5,
+            obs.scale = 1,
+            groups=as.factor(km3$cluster))
+p + ggtitle('Second two PCs of gradable data (including latest COVID data)') + xlim(-t,t) + ylim(-t,t)
+heatmap.2(km3$centers, 
+          scale = "none",
+          dendrogram = "none",
+          Colv=FALSE,
+          cexCol=0.5,
+          main = "Heatmap of gradable features (including latest COVID data)",
+          trace ="none")
+```
 
 *How did you address the problem? What data did you use exactly? What methods did you use?* 
 
