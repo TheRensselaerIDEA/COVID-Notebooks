@@ -3,13 +3,13 @@ title: "MATP-4400 COVID-19 Final Notebook"
 author: "Tracy (Chuoxi) Chen"
 date: "May 2020"
 output:
-  pdf_document:
-    toc: yes
-    toc_depth: '2'
   html_document:
     number_sections: yes
     toc: yes
     toc_depth: 2
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
 ---
 
 ```{r setup, include=FALSE}
@@ -17,99 +17,25 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 library(dplyr)
 library(ggplot2)
-library(plotly)
 library(maps)
 library(cowplot)
+library(tools)
 ```
 
-# Final Project: Guidance for Students (DELETE)
-
-*DELETE THIS SECTION IN FINAL NOTEBOOK!*
-
-##GENERAL INSTRUCTIONS (DELETE)##
-
-* This notebook serves as a written presentation of your work so it should be written like a research paper.
-* The rubric for evaluating this project is on LMS.
-* The R code that executes the results should be embedded in this notebook if possible. It's also okay to "source" external scripts from within your notebook, including those provided by your instructors. 
-* If there is work that is not appropriate to be embedded on your final notebook, then you can describe the work in the notebook and provide figures generated elsewhere (e.g. screen shots, graphs). Indicate if that work has been committed to github. If necessary put details in Appendix.    
-* Your wording should be suitable for sharing with external partners/mentors and useful to future contributors.
-* Please don't summarize everything you did; discuss only the *most important* aspects of your work. Ask yourself *what really matters?*
-* IMPORTANT: Discuss any insights you found regarding COVID-19.
-* If there are limitations to your work, discuss. 
-* Include any background or support for your work. For example, mention any relevant research articles you found -- and be sure to include references!
-* Include your recommendations for extending the COVIDMINDER app:
-    + Data utilization...
-    + Analytics...
-    + Visualizations
-    + User interface design...
-* **Expect internet problems!** Commit versions of this notebook to the IDEA github *early and often*. You can continue to refine and update; that is the point of github!
-
-##SUBMISSION CHECKLIST: Things to check before you submit (DELETE)##
-
-* Have you given your file(s) a clear, sensible name? `my_notebook.Rmd` or `joey.Rmd` are **not* acceptable!
-* Is every figure clearly labeled and titled? 
-* Does every figure serve a purpose? 
-     + What question does it answer? 
-     + You can put extra (non-essential) figues in the Appendix.
-* Are your tables clearly labelled and legible?
-     + We recommend using `kable()` (built into `knitr`)
-     + `xtable()` might also work for you (not as easy as `kable()`)
-* **CRITICAL:** Have you given enough information for someone to reproduce, understand and extend your results?
-     + Where can they *find* the data that you used?
-     + Have you *described* the data that used?
-     + Have you *documented* your code? 
-     + Are your figures *clearly labeled*?
-     + Did you *discuss your findings*?
-     + Did you use good grammar and *proofread* your results?
-     + Finally, have you *committed* your work to github and made a *pull request*?
-     
-## github Submission Instructions (DELETE!)
-
-Fill out the bullets at the beginning of this notebook...
-
-* Provide your github ID. 
-* Indicate the issues associated with this work on github. 
-* Commit the Rmd and html versions of this notebook to the `MATP-4400-FINAL` directory on github and make a pull request.  
-* Provide the link to your github submission on LMS. 
-    + **NOTE:** You can post your link any time after it exists  
-    + We will grade the latest version available on Github starting at 3:00 on Thursday, 7 May.  
-* **NOTE:** RStudio Server will be unavailable due to maintenance for up to a week beginning the weekend of 9 May,  so there can be no extensions or late submissions. 
-
-##github help (DELETE!)
-
-* DO THIS FIRST:
-    + `git clone https://github.com/TheRensselaerIDEA/COVID-Notebooks` (if you haven't already)
-        + NOTE: We may have added to the master since your last `git pull` so make sure to do a `git pull origin master`
-    + `git checkout -b <your-new-branch>` (more instructions immediately below)
-    + In R, create a new R notebook (ie a `.Rmd` file) in the subdirectory `MATP-4400-FINAL`
-    + `git add` it to the repo (make sure you're in the correct directory when you do this!)
-    + `git commit -a -m 'Created my notebook!'` as soon as you do this! 
-    + `git push origin <your-new-branch>` so we see you're working on something
-    + Post a link in LMS; it will remain valid as you update (and check in) your work to github
-    + for details, see instructions in next few bullets
-    + Contact John Erickson erickj4@rpi.edu for further github questions
-* See: **HOW TO USE THIS NOTEBOOK AND REPOSITORY** https://bit.ly/2wYQGXP
-* See also: **git Cheat Sheet** https://bit.ly/2yCBSi8 
-
-*DELETE THE SECTIONS ABOVE!*
-<hr>
-
 # Final Project: Submission Links
-
-*This should be the first section of your final project notebook. Fill out the following according to how you submitted your notebook!*
 
 * github repository: https://github.com/TheRensselaerIDEA/COVID-Notebooks
 * My github ID: *Tracy29*
 * github issues addressed by this work: `#6`
 * Github branch name of my submitted notebook: *feature-6*
 * link to merged notebook (post these to LMS!: 
-    + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/feature-6/MATP-4400-FINAL/Tracy_Chen_COVID_FINAL_2020.Rmd (example; Rmd version)
-    + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/master/MATP-4400-FINAL/COVID_FINAL_2020.html (example; HTML version)
+    + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/feature-6/MATP-4400-FINAL/Tracy_Chen_COVID_FINAL_2020.Rmd 
+    + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/feature-6/MATP-4400-FINAL/Tracy_Chen_COVID_FINAL_2020.pdf 
 
 # Overview & Problems Tackled
+In this project, I explored the connection between unhealthy behaviors and COVID 19 death for male and female. The approach was to first create visualizations of the disparity index for 3 common unhealthy behaviors: smoking, physical inactivity, and excessive drinking, across the 50 states for both male and female. Then I created a fourth visualization for the disparity index for COVID 19 death by states and gender. 
 
-*Provide a top-level summary of your work and findings.*
-I used data from America's health ranking's 2019 Annual report and specifically focused on 4 behaviors: 
+In the first problem, I investigated the disparity in smoking across the US. In the dataset, the percentage of male and female adult who reported smoking at least 100 cigarettes in their lifetime and currently smoke daily or some days in each state are recorded. From the disparity index, female adult in general tend to have lower percentage of smoker than male adult. In 
 
 # Data Description
 
@@ -121,6 +47,7 @@ I used data from America's health ranking's 2019 Annual report and specifically 
 
 # Set up data
 ```{r }
+# Read in health data
 all_states.df <- read.csv("~/COVID-Notebooks/data/2019-Annual.csv")
 all_states<- unique(all_states.df$State.Name) %>% sort()
 # Sort data frame by states 
@@ -134,9 +61,10 @@ behaviors.df <- filter(all_states.df, grepl(paste(behaviors, collapse="|"), Meas
 ```
 
 ```{r }
-# Calculate the number of covid death by state then categorize by sex
+# Read in data about COVID 19 death
 death_count<- read.csv("~/COVID-Notebooks/data/csv/Provisional_COVID-19_Death_Counts_by_Sex__Age__and_State.csv")
 
+# Choose data that contains information about sex
 pick<- c("Male Total", "Female Total")
 death_count<- death_count %>%
   filter(grepl(paste(pick, collapse="|"), Sex)) %>%
@@ -145,22 +73,28 @@ death_count<- death_count %>%
 US_death<- death_count[death_count$State == "United States", ]
 NYC_death<- death_count[death_count$State == "New York City", ]
 
+# Remove irrelevant data
 drop <- c("United States", "New York City", "Puerto Rico")
 death_count<- death_count[!(death_count$State %in% drop), ]
 row.names(death_count) <- NULL
 
+# Add COVID 19 death information for NYC to NY's data for COVID 19 death
 n<- which(grepl("New York", death_count$State))
 death_count$COVID.19.Deaths[n[1]]<- death_count$COVID.19.Deaths[n[1]] + NYC_death$COVID.19.Deaths[1]
 death_count$COVID.19.Deaths[n[2]]<- death_count$COVID.19.Deaths[n[2]] + NYC_death$COVID.19.Deaths[2]
 
-fmean_death<- US_death$COVID.19.Deaths[2]/53
+# Calculate the average number of COVID 19 death for female and male
+fmean_death<- US_death$COVID.19.Deaths[2]/53 # Divide by 53 because district of columbia and NYC counted is counted separately 
 mmean_death<- US_death$COVID.19.Deaths[1]/53
 US_death$mean_death<- c(fmean_death, mmean_death)
 
+# Calculate the disparity index of each state's COVID 19 death count against the US value
 death_count$death.disparity<- log(death_count$COVID.19.Deaths/US_death$mean_death)
 
+# Reverse every two row from male, female to female, male to match the ordering for the health behavior data
 death_count<- death_count[c(rbind(seq(2, nrow(death_count), 2), seq(1, nrow(death_count), 2))),]
 
+# Categorize COVID 19 death count into 8 groups for female and male 
 dcut_by<- c(5, 2, 1, .2, -.2, -1, -2, -5)
 fdeath.df<- death_count %>% filter(grepl(paste("Female", collapse="|"), Sex))
 fdeath.df$dgroup<- as.numeric(cut(fdeath.df$death.disparity, breaks = dcut_by))
@@ -169,7 +103,6 @@ mdeath.df$dgroup<- as.numeric(cut(mdeath.df$death.disparity, breaks = dcut_by))
 ```
 
 ```{r }
-# Behaviors (excluding drug death and obesity) vs COVID death
 sex<- c("Female", "Male")
 
 # Filter out only the data that contain information with sex
@@ -177,14 +110,9 @@ behaviors_sex.df<- behaviors.df %>%
   filter(grepl(paste(sex, collapse="|"), Measure.Name)) %>%
   select(State.Name, Measure.Name, Value)
 
+# Pick and remove the data pertaining to United States
 US_behavior<- behaviors_sex.df[behaviors_sex.df$State.Name == "United States", ]
 behaviors_sex.df<- behaviors_sex.df[behaviors_sex.df$State.Name != "United States", ]
-```
-
-```{r }
-us_states <- map_data("state")
-vlabel<- c("-1 to -.5", "-.5 to -.25", "-.25 to -.1", "-.1 to 0", "0 to .1", ".1 to .25", ".25 to .5", ".5 to 1")
-vcut_by<- c(-1,-.5,-.25,-.1,0,.1,.25,.5,1)
 ```
 
 ## Problem 1 
@@ -201,15 +129,23 @@ smoking
 # US_smoking value is the median value of states and DC
 US_smoking<- US_behavior %>% filter(grepl(paste("Smoking", collapse="|"), Measure.Name))
 
+# Filter out information about smoking 
 smoking.df<- behaviors_sex.df %>%
   filter(grepl(paste("Smoking", collapse="|"), Measure.Name))
+# Calculate the disparity index of each state's smoking percentage against the US value
 smoking.df$value.disparity<- log(smoking.df$Value/US_smoking$Value)
 
+# Separate smoking data by geneder
 fsmoking.df<- smoking.df %>% 
   filter(grepl(paste("Female", collapse="|"), Measure.Name)) %>%
+  # Add COVID 19 death disparity
   mutate(death.disparity= fdeath.df$death.disparity) %>% 
   mutate(dgroup= fdeath.df$dgroup)
 fsmoking.df$region<- tolower(fsmoking.df$State.Name)
+
+# Bin size for smoking disparity
+vcut_by<- c(-1,-.5,-.25,-.1,0,.1,.25,.5,1)
+# Categorize smoking percentage into 8 groups
 fsmoking.df$vgroup<- as.numeric(cut(fsmoking.df$value.disparity, breaks = vcut_by))
 
 msmoking.df<- smoking.df %>% 
@@ -219,32 +155,49 @@ msmoking.df<- smoking.df %>%
 msmoking.df$region<- tolower(msmoking.df$State.Name)
 msmoking.df$vgroup<- as.numeric(cut(msmoking.df$value.disparity, breaks = vcut_by))
 
+# Access US map data from library(map)
+us_states<- map_data("state")
+# Abbreviate state names so the names can fit on the map
+us_states$abbrev <- state.abb[match(toTitleCase(us_states$region), state.name)]
+
+# Merge US map data and smoking data for female and male
 us_fsmoking<- left_join(us_states, fsmoking.df)
 us_msmoking<- left_join(us_states, msmoking.df)
 
+# Use to locate state labels on the map
+cnames <- aggregate(cbind(long, lat) ~ abbrev, data=us_fsmoking, 
+                    FUN=function(x)mean(range(x)))
+
 # Plot female and male smoking disparity 
+vlabel<- c("-1 to -.5", "-.5 to -.25", "-.25 to -.1", "-.1 to 0", "0 to .1", ".1 to .25", ".25 to .5", ".5 to 1")
 smoke_1<- ggplot(data = us_fsmoking, mapping = aes(x = long, y = lat, group = group, fill = as.factor(vgroup))) + 
-  geom_polygon(color = "gray90", size = 0.2) + coord_quickmap() + 
+  geom_polygon(color = "white", size = 0.2) + 
+  with(cnames, annotate(geom="text", x = long, y=lat, label = abbrev, size = 2.5))+ coord_quickmap() + 
   theme_map()+labs(title = "US Female Smoking Disparity")+labs(fill = "Smoking Disparity") +
   scale_fill_brewer(palette = "RdYlBu", labels= vlabel, direction=-1)
 smoke_2<- ggplot(data = us_msmoking, mapping = aes(x = long, y = lat, group = group, fill = as.factor(vgroup))) + 
-  geom_polygon(color = "gray90", size = 0.2) + coord_quickmap() + 
+  geom_polygon(color = "white", size = 0.2) + 
+  with(cnames, annotate(geom="text", x = long, y=lat, label = abbrev, size = 2.5))+ coord_quickmap() + 
   theme_map()+labs(title = "US Male Smoking Disparity")+labs(fill = "Smoking Disparity") +
   scale_fill_brewer(palette = "RdYlBu", labels= vlabel, direction=-1)
 
+# Combine the two maps
 plot_grid(smoke_1, smoke_2, ncol = 1)
 
-# Plot femake and male COVID 19 death disparity
+# Plot female and male COVID 19 death disparity
 dlabel<- c("-5 to -2", "-2 to -1", "-1 to -.2", "-.2 to .2", ".2 to 1", "1 to 2", "2 to 5", "NA")
 covid_1<- ggplot(data = us_fsmoking, mapping = aes(x = long, y = lat, group = group, fill = as.factor(dgroup))) + 
-  geom_polygon(color = "gray90", size = 0.2) + coord_quickmap() + 
+  geom_polygon(color = "white", size = 0.2) + 
+  with(cnames, annotate(geom="text", x = long, y=lat, label = abbrev, size = 2.5))+ coord_quickmap() + 
   theme_map()+labs(title = "US Female COVID 19 Death Disparity")+labs(fill = "Death Disparity") +
   scale_fill_brewer(palette = "RdYlBu", labels= dlabel, direction=-1)
 covid_2<- ggplot(data = us_msmoking, mapping = aes(x = long, y = lat, group = group, fill = as.factor(dgroup))) + 
-  geom_polygon(color = "gray90", size = 0.2) + coord_quickmap() + 
+  geom_polygon(color = "white", size = 0.2) + 
+  with(cnames, annotate(geom="text", x = long, y=lat, label = abbrev, size = 2.5))+ coord_quickmap() + 
   theme_map()+labs(title = "US Male COVID 19 Death Disparity")+labs(fill = "Death Disparity") +
   scale_fill_brewer(palette = "RdYlBu", labels= dlabel, direction=-1)
 
+# Combine the two maps
 plot_grid(covid_1, covid_2, ncol = 1)
 ```
 
@@ -265,10 +218,12 @@ physical inactivity
 # US_inactivity value is the median value of states and DC
 US_inactivity<- US_behavior %>% filter(grepl(paste("Physical Inactivity", collapse="|"), Measure.Name))
 
+# Filter out information about physical inactivity 
 inactivity.df<- behaviors_sex.df %>%
   filter(grepl(paste("Physical Inactivity", collapse="|"), Measure.Name))
 inactivity.df$value.disparity<- log(inactivity.df$Value/US_inactivity$Value)
 
+# Separate physical inactivity data by geneder
 finactivity.df<- inactivity.df %>% 
   filter(grepl(paste("Female", collapse="|"), Measure.Name))
 finactivity.df$region<- tolower(finactivity.df$State.Name)
@@ -279,18 +234,23 @@ minactivity.df<- inactivity.df %>%
 minactivity.df$region<- tolower(minactivity.df$State.Name)
 minactivity.df$vgroup<- as.numeric(cut(minactivity.df$value.disparity, breaks = vcut_by))
 
+# Merge US map data and physical inactivity data for female and male
 us_finactivity<- left_join(us_states, finactivity.df)
 us_minactivity<- left_join(us_states, minactivity.df)
 
+# Plot femake and male physical inactivity disparity
 inactivity_1<- ggplot(data = us_finactivity, mapping = aes(x = long, y = lat, group = group, fill = as.factor(vgroup))) + 
-  geom_polygon(color = "gray90", size = 0.2) + coord_quickmap() + 
+  geom_polygon(color = "white", size = 0.2) + 
+  with(cnames, annotate(geom="text", x = long, y=lat, label = abbrev, size = 2.5))+ coord_quickmap() + 
   theme_map()+labs(title = "US Female Physical Inactivity Disparity")+labs(fill = "Physical Inactivity Disparity") +
   scale_fill_brewer(palette = "RdYlBu", labels= vlabel, direction=-1)
 inactivity_2<- ggplot(data = us_minactivity, mapping = aes(x = long, y = lat, group = group, fill = as.factor(vgroup))) + 
-  geom_polygon(color = "gray90", size = 0.2) + coord_quickmap() + 
+  geom_polygon(color = "white", size = 0.2) + 
+  with(cnames, annotate(geom="text", x = long, y=lat, label = abbrev, size = 2.5))+ coord_quickmap() + 
   theme_map()+labs(title = "US Male Physical Inactivity Disparity")+labs(fill = "Physical Inactivity Disparity") +
   scale_fill_brewer(palette = "RdYlBu", labels= vlabel, direction=-1)
 
+# Combine the two maps
 plot_grid(inactivity_1, inactivity_2, ncol = 1)
 ```
 	
@@ -303,36 +263,44 @@ From the data source, America's Health Ranking, it defined excessive drinking as
 
 ### Methods
 
-```{r, fig.width=10, fig.height=10}
+```{r, fig.width=10, fig.height=10, warning = FALSE}
 # US_drinking value is the median value of states and DC
 US_drinking<- US_behavior %>% filter(grepl(paste("Excessive Drinking", collapse="|"), Measure.Name))
 
+# Filter out information about excessive drinking
 drinking.df<- behaviors_sex.df %>%
   filter(grepl(paste("Excessive Drinking", collapse="|"), Measure.Name))
 drinking.df$value.disparity<- log(drinking.df$Value/US_drinking$Value)
 
+# Separate excessive drinking data by geneder
 fdrinking.df<- drinking.df %>% 
   filter(grepl(paste("Female", collapse="|"), Measure.Name))
 fdrinking.df$region<- tolower(fdrinking.df$State.Name)
 fdrinking.df$vgroup<- as.numeric(cut(fdrinking.df$value.disparity, breaks = vcut_by))
 
+# Merge US map data and excessive drinking data for female and male
 mdrinking.df<- drinking.df %>% 
   filter(grepl(paste("Male", collapse="|"), Measure.Name))
 mdrinking.df$region<- tolower(mdrinking.df$State.Name)
 mdrinking.df$vgroup<- as.numeric(cut(mdrinking.df$value.disparity, breaks = vcut_by))
 
+# Merge US map data and excessive drinking data for female and male
 us_fdrinking<- left_join(us_states, fdrinking.df)
 us_mdrinking<- left_join(us_states, mdrinking.df)
 
+# Plot femake and male excessive drinking disparity
 drinking_1<- ggplot(data = us_fdrinking, mapping = aes(x = long, y = lat, group = group, fill = as.factor(vgroup))) + 
-  geom_polygon(color = "gray90", size = 0.2) + coord_quickmap() + 
+  geom_polygon(color = "white", size = 0.2) + 
+  with(cnames, annotate(geom="text", x = long, y=lat, label = abbrev, size = 2.5))+ coord_quickmap() + 
   theme_map()+labs(title = "US Female Excessive Drinking Disparity")+labs(fill = "Excessive Drinking Disparity") +
   scale_fill_brewer(palette = "RdYlBu", labels= vlabel, direction=-1)
 drinking_2<- ggplot(data = us_mdrinking, mapping = aes(x = long, y = lat, group = group, fill = as.factor(vgroup))) + 
-  geom_polygon(color = "gray90", size = 0.2) + coord_quickmap() + 
+  geom_polygon(color = "white", size = 0.2) + 
+  with(cnames, annotate(geom="text", x = long, y=lat, label = abbrev, size = 2.5))+ coord_quickmap() + 
   theme_map()+labs(title = "US Male Excessive Drinking Disparity")+labs(fill = "Excessive Drinking Disparity") +
   scale_fill_brewer(palette = "RdYlBu", labels= vlabel, direction=-1)
 
+# Combine the two maps
 plot_grid(drinking_1, drinking_2, ncol = 1)
 ```
 
