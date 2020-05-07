@@ -17,6 +17,68 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 library(dplyr)
 
+if (!require("ggplot2")) {
+  install.packages("ggplot2")
+  library(ggplot2)
+}
+
+if (!require("knitr")) {
+  install.packages("knitr")
+  library(knitr)
+}
+
+if (!require("matlab")) {
+   install.packages("matlab")
+   library(matlab)
+}
+
+if (!require("anchors")) {
+   install.packages("anchors")
+   library(anchors)
+}
+
+
+if (!require("ggbiplot")) {
+   devtools::install_git("https://github.com/vqv/ggbiplot.git")
+   library(ggbiplot)
+}
+
+if (!require("scatterplot3d")) {
+  install.packages("scatterplot3d")
+  library(scatterplot3d)
+}
+
+if (!require("gplots")) {
+  install.packages("gplots")
+  library(gplots)
+}
+
+if (!require('fields')) {
+  install.packages("fields")
+  library(fields)
+}
+
+if (!require('dplyr')) {
+  install.packages("dplyr")
+  library(dplyr)
+}
+
+if (!require('gdata')) {
+  install.packages("gdata")
+  library(gdata)
+}
+
+knitr::opts_chunk$set(echo = TRUE)
+
+## Load essential R packages
+source("../modules/Source.R")
+
+## Load stored data (see `data` subdirectory)
+source("../modules/data_load.R")
+
+## Create dataframes; perform desparity index calcuations; prep for plotting
+source("../modules/preprocessing.R")
+
 ```
 
 # Final Project: Guidance for Students (DELETE)
@@ -279,7 +341,139 @@ heatmap.2(km3$centers,
           main = "Heatmap of gradable features (including latest COVID data)",
           trace ="none")
 ```
+```{r}
+names(time_series_covid19_confirmed_US)[names(time_series_covid19_confirmed_US) == 'Province_State'] <- 'NAME'
+names(time_series_covid19_deaths_US)[names(time_series_covid19_deaths_US) == 'Province_State'] <- 'NAME'
+last_week_confirmed <- time_series_covid19_confirmed_US [ , c(7, ncol(time_series_covid19_confirmed_US), ncol(time_series_covid19_confirmed_US)-7)] 
+last_week_deaths <- time_series_covid19_deaths_US [ , c(7, ncol(time_series_covid19_deaths_US), ncol(time_series_covid19_deaths_US)-7)]
 
+names(last_week_confirmed)[3] <- 'prev_c'
+names(last_week_deaths)[3] <- 'prev_d'
+names(last_week_confirmed)[2] <- 'total_c'
+names(last_week_deaths)[2] <- 'total_d'
+
+latest_death_percent <- last_week_deaths[, c("NAME", "prev_d", "total_d")]
+latest_confirmed_percent <- last_week_confirmed[, c("NAME", "prev_c", "total_c")]
+
+last_week_deaths$last_week_deaths <- (last_week_deaths$total_d - last_week_deaths$prev_d)
+last_week_confirmed$last_week_confirmed <- (last_week_confirmed$total_c - last_week_confirmed$prev_c)
+last_week_deaths$percent_deaths <- (last_week_deaths$last_week_deaths / last_week_deaths$total_d)
+last_week_confirmed$percent_confirmed <- (last_week_confirmed$last_week_confirmed / last_week_confirmed$total_c)
+
+death_df <- last_week_deaths[complete.cases(last_week_deaths), ]
+confirmed_df <- last_week_confirmed[complete.cases(last_week_confirmed), ]
+
+ggplot(confirmed_df) +
+  geom_density(aes(x = percent_confirmed, color = NAME)) +
+  ggtitle("Distribution of confirmed growth per county")
+
+ggplot(death_df) +
+  geom_density(aes(x = percent_deaths, color = NAME)) +
+  ggtitle("Distribution of death growth per county")
+
+boxplot(percent_confirmed~NAME, data=confirmed_df, main="Boxplot of growth by states")
+boxplot(percent_deaths~NAME, data=death_df, main="Boxplot of deaths by stae")
+```
+
+```{r}
+state_covid_growth <- aggregate(list(last_week_confirmed['prev_c'], last_week_confirmed['total_c']), by=last_week_confirmed['NAME'], sum)
+state_death <- aggregate(list(last_week_deaths['prev_d'], last_week_deaths['total_d']), by=last_week_deaths['NAME'], sum)
+
+state_death$state_death <- (state_death$total_d - state_death$prev_d)
+state_covid_growth$state_covid_growth <- (state_covid_growth$total_c - state_covid_growth$prev_c)
+state_death$percent_deaths <- (state_death$state_death / state_death$total_d)
+state_covid_growth$percent_confirmed <- (state_covid_growth$state_covid_growth / state_covid_growth$total_c)
+
+state_death <- state_death[complete.cases(state_death), ]
+state_covid_growth <- state_covid_growth[complete.cases(state_covid_growth), ]
+
+wssplot <- function(data, nc=15, seed=10){
+  wss <- data.frame(cluster=1:nc, quality=c(0))
+  for (i in 1:nc){
+    set.seed(seed)
+    wss[i,2] <- sum(kmeans(data, centers=i)$withinss)}
+  ggplot(data=wss,aes(x=cluster,y=quality)) + 
+    geom_line() + 
+    ggtitle("Quality of k-means by Cluster")
+}
+
+cov_death_matrix <- data.matrix(state_covid_growth)
+cov_growth_matrix <- data.matrix(state_death)
+
+cov_death_matrix <- cov_death_matrix[,c(5)]
+cov_growth_matrix <- cov_growth_matrix[,c(5)]
+
+wssplot(cov_death_matrix, 25, 300)
+wssplot(cov_growth_matrix, 25, 300)
+
+head(cov_growth_matrix)
+cnf_km <- kmeans(cov_growth_matrix, centers = 5)
+cnf_kclass=data.frame(as.factor(cnf_km$cluster))
+kmeans_cnf <-data.frame(cbindX(state_covid_growth, cnf_kclass))
+
+dth_km <- kmeans(cov_death_matrix, centers = 5)
+dth_kclass=data.frame(as.factor(dth_km$cluster))
+kmeans_dth <-data.frame(cbindX(state_death, dth_kclass))
+
+kmeans_dth <- kmeans_dth[complete.cases(kmeans_dth), ]
+kmeans_cnf <- kmeans_cnf[complete.cases(kmeans_cnf), ]
+
+#kmeans_cnf$percent_confirmed <- unlist(kmeans_cnf$percent_confirmed)
+#kmeans_cnf$cnf_kclass <- unlist(kmeans_cnf$cnf_kclass)
+#kmeans_dth$percent_deaths <- unlist(kmeans_dth$percent_deaths)
+#kmeans_dth$dth_kclass <- unlist(kmeans_dth$dth_kclass)
+
+names(kmeans_cnf)[6] <- 'cnf_kclass'
+names(kmeans_dth)[6] <- 'dth_kclass'
+
+ggplot(kmeans_cnf) +
+  geom_density(aes(x = percent_confirmed, color = cnf_kclass)) +
+  ggtitle("Distribution of confirmed growth by kclass")
+
+ggplot(kmeans_dth) +
+  geom_density(aes(x = percent_deaths, color = dth_kclass)) +
+  ggtitle("Distribution of death growth by kclass")
+```
+```{r}
+colors <- c("grey","#426C85","#67a9cf","#d1e5f0","#f7f7f7","#fddbc7","#ef8a62","#b2182b")
+    bins <- c(-1, 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6,-Inf)
+    pal2 <- leaflet::colorBin(colors, domain = state_covid_growth$percent_confirmed, bins = bins, reverse=FALSE)
+    labels2 <- sprintf(
+      "<strong>%s</strong><br/>
+      COVID-19 Mortality Rate DI: %.2g",
+      state_covid_growth$NAME, state_covid_growth$percent_confirmed
+    ) %>% lapply(htmltools::HTML)
+    
+    leaflet(states.shapes) %>%
+      setView(-96, 37.8, 4) %>% 
+      addPolygons(
+        fillColor = ~pal2(state_covid_growth$percent_confirmed),
+        weight = 2,
+        opacity = 1,
+        color = "white",
+        dashArray = "3",
+        fillOpacity = 0.7,
+        highlight = highlightOptions(
+          weight = 5,
+          color = "#666",
+          dashArray = "",
+          fillOpacity = 0.7,
+          bringToFront = TRUE),
+        label = labels2,
+        labelOptions = labelOptions(
+          style = list("font-weight" = "normal", padding = "3px 8px"),
+          textsize = "15px",
+          direction = "auto")) %>% 
+      addLegend(pal = pal2, 
+                values = ~state_covid_growth$percent_confirmed, 
+                opacity = 0.7, 
+                title = "Disparity Index<br/>US COVID-19 Mortality Rates",
+                position = "bottomright"
+                ) %>%
+      addProviderTiles("MapBox", options = providerTileOptions(
+        id = "mapbox.light",
+        accessToken = Sys.getenv('MAPBOX_ACCESS_TOKEN')))
+```
 *How did you address the problem? What data did you use exactly? What methods did you use?* 
 
 	
