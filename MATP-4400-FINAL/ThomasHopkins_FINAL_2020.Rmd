@@ -58,8 +58,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Final Project: Submission Links
 
-*This should be the first section of your final project notebook. Fill out the following according to how you submitted your notebook!*
-
 * github repository: https://github.com/TheRensselaerIDEA/COVID-Notebooks
 * My github ID: *thomashopkins32*
 * github issues addressed by this work: `#18` and `#24`
@@ -80,7 +78,6 @@ The results from the first issue show that the $R_e$ is decreasing over time whi
 
 # Data Description
 
-*Include data sources/locations, versions/dates, etc.* 
 The first issue uses time series data found at data/csv/time_series/time_series_covid19_confirmed_US.csv on the GitHub Repository. It includes the totals of confirmed cases for each state in the US over time. The date range is from 1/22/20 to 5/5/20.
 
 The second issue uses data from many sources that I compiled into a suitable format for the task. This can be found at data/csv/similar_diseases.csv on the GitHub Repository. The sources I used for the numbers found in the data file can be found in the References section below. Here is a view of the data I compiled:
@@ -93,12 +90,17 @@ diseases
 ```
 
 I took features of many similar (in terms of impact on society) diseases and used them for a classification task.
-*
-    + `R0` denotes the average basic reproduction number
-    + `mortality_rate` denotes the rate at which individuals who are infected die from disease
-    + `month_first_peak` denotes the first month in which the disease became an epidemic
-    + `airborne` denotes whether or not the disease can be spread through the air
-    + `month_season_peak` denotes the season in which a reemergence of the disease appeared after the initial outbreak
+
+`R0` denotes the average basic reproduction number
+    
+`mortality_rate` denotes the rate at which individuals who are infected die from disease
+    
+`month_first_peak` denotes the first month in which the disease became an epidemic
+    
+`airborne` denotes whether or not the disease can be spread through the air
+    
+`month_season_peak` denotes the season in which a reemergence of the disease appeared after the initial outbreak
+    
  
 The diseases I included in this analysis include SARS, MERS, H1N1, Measles, Cholera, Yellow fever, Ebola, and Dengue fever.
 
@@ -106,13 +108,9 @@ The diseases I included in this analysis include SARS, MERS, H1N1, Measles, Chol
 
 ## Problem 1: Estimating $R_e$ in New York
 
-*Describe the problem you are examining.  If there is background that is necessary for this problem, then put it here. Include any references.*
-
 The first problem tackled was to look into the effective reproductive number ($R_0$) for New York State. Since $R_0$ is difficult to calculate with our current data, I chose to utilize the EpiEstim package to estimate $R_0$ called $R_e$. This used the incidence of COVID-19 in New York State as well as a serial interval distribution with a mean of 3.96 and a standard deviation of 4.75.
  
 ### Methods
-
-*How did you address the problem? What data did you use exactly? What methods did you use?*
 
 To address this problem, I decided to use the incidence of COVID-19 in New York State. This data was not readily available, so I took the cumulative cases over time and subtracted each day from the previous to get the total *new* cases for each day since the first contact.
 
@@ -123,8 +121,6 @@ With both imported incidence and local incidence at hand, all that was left was 
 All that remains is to calculate the $R_e$ and plot it over time. I used the `EpiEstim` package's `estimate_R()` function to do this.
 	
 ### Results
-
-*What were the results on this problem?*
 
 First I read in the time-series data for New York State. I need to calculate the incidence of COVID-19 and differentiate between imported and local cases. We assume the entries with less than 70 cases are considered imported. By imported we mean that the infected individual came from outside the region. Local cases are the entries with more than 70 cases.
 
@@ -164,7 +160,7 @@ Now I calculate the estimated effective reproductive number ($R_e$) for COVID-19
 
 *Source for serial interval: https://www.medrxiv.org/content/10.1101/2020.02.19.20025452v4*
 
-```{r, echo=False}
+```{r}
 # set up plots so they can be viewed all at once
 plot_Ri <- function(estimate_R_obj) {
     p_I <- plot(estimate_R_obj, "incid", add_imported_cases = TRUE)  # plots the incidence
@@ -185,7 +181,9 @@ From the plots, it seems that the $R_e$ for New York State currently hovers arou
 
 ## Problem 2: Predicting Second Wave of COVID-19
 
-The second problem I looked at was predicting when the second outbreak of COVID-19 may occur. This is under the assumption that it is inevitable that a second outbreak will occur. Second outbreaks in epidemics are sometimes worse than the initial outbreak (see https://www.history.com/news/spanish-flu-second-wave-resurgence). To prevent something like this happening again, it is important to try and determine a time-frame in which individuals and governments can prepare for a second wave of COVID-19. The results of my analysis indicate that the month of October is the most likely scenario in which a second wave will occur worldwide. Please note that this result was determined based on the aspects and timelines of other diseases with similar outbreaks worldwide. There are many issues with this method of analysis that are described in the Discussion found below.
+The second problem I looked at was predicting when the second outbreak of COVID-19 may occur. This is under the assumption that it is inevitable that a second outbreak will occur. Second outbreaks in epidemics are sometimes worse than the initial outbreak (see https://www.history.com/news/spanish-flu-second-wave-resurgence). To prevent something like this happening again, it is important to try and determine a time-frame in which individuals and governments can prepare for a second wave of COVID-19. The results of my analysis indicate that the month of October is the most likely scenario in which a second wave will occur worldwide. 
+
+*Please note that this result was determined based on the aspects and timelines of other diseases with similar outbreaks worldwide. There are many issues with this method of analysis that are described in the Discussion found below.*
  
 ### Methods
 
@@ -274,18 +272,30 @@ I believe that the first problem I addressed in this analysis could be included 
 
 # References
 
-https://www.medrxiv.org/content/10.1101/2020.02.19.20025452v4
-EpiEstim package
-https://www.cdc.gov/about/history/sars/timeline.htm
-https://www.hindawi.com/journals/av/2011/734690/
-https://wwwnc.cdc.gov/eid/article/26/2/19-0697_article
-https://www.ncbi.nlm.nih.gov/pubmed/31813836
-https://ajph.aphapublications.org/doi/pdf/10.2105/AJPH.2013.301704r
-https://www.cdc.gov/h1n1flu/surveillanceqa.htm
-https://www.ncbi.nlm.nih.gov/pubmed/28757186
-https://journals.plos.org/plosntds/article/file?rev=2&id=10.1371/journal.pntd.0006158&type=printable
-https://www.ncbi.nlm.nih.gov/pubmed/27846442
-https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3381442/
-https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4397933/
-https://www.who.int/emergencies/mers-cov/MERS-epicurve-July-2019.png
-
+  + https://www.medrxiv.org/content/10.1101/2020.02.19.20025452v4
+  
+  + EpiEstim package
+  
+  + https://www.cdc.gov/about/history/sars/timeline.htm
+  
+  + https://www.hindawi.com/journals/av/2011/734690/
+  
+  + https://wwwnc.cdc.gov/eid/article/26/2/19-0697_article
+  
+  + https://www.ncbi.nlm.nih.gov/pubmed/31813836
+  
+  + https://ajph.aphapublications.org/doi/pdf/10.2105/AJPH.2013.301704r
+  
+  + https://www.cdc.gov/h1n1flu/surveillanceqa.htm
+  
+  + https://www.ncbi.nlm.nih.gov/pubmed/28757186
+  
+  + https://journals.plos.org/plosntds/article/file?rev=2&id=10.1371/journal.pntd.0006158&type=printable
+  
+  + https://www.ncbi.nlm.nih.gov/pubmed/27846442
+  
+  + https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3381442/
+  
+  + https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4397933/
+  
+  + https://www.who.int/emergencies/mers-cov/MERS-epicurve-July-2019.png
