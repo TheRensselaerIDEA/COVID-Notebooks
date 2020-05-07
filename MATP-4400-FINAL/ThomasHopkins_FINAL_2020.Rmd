@@ -3,13 +3,13 @@ title: "MATP-4400 COVID-19 Final Notebook"
 author: "Thomas Hopkins"
 date: "May 2020"
 output:
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
   html_document:
     number_sections: yes
     toc: yes
     toc_depth: 2
-  pdf_document:
-    toc: yes
-    toc_depth: '2'
 ---
 
 ```{r setup, include=FALSE}
@@ -62,25 +62,25 @@ knitr::opts_chunk$set(echo = TRUE)
 * My github ID: *thomashopkins32*
 * github issues addressed by this work: `#18` and `#24`
 * Github branch name of my submitted notebook: *feature-24*
-* link to merged notebook (post these to LMS!: 
+* link to merged notebook:
     + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/master/MATP-4400-FINAL/ThomasHopkins_FINAL_2020.Rmd
     + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/master/MATP-4400-FINAL/ThomasHopkins_FINAL_2020.html
 
 # Overview & Problems Tackled
 
-Two key issues in understanding the overall impact of an epidemic are determining how rapidly the disease is spreading and predicting future outcomes of the disease based on similar experiences. 
+Two key problems in understanding the overall impact of an epidemic are determining how rapidly the disease spreads and predicting future outcomes of the disease based on similar experiences with other diseases.
 
-I first decided to estimate the effective reproductive number $R_e$ for New York State over time. This gives a baseline for the expected number of individuals to contract the disease if one individual were to have it in the population. 
+I first estimated the effective reproductive number ($R_e$) for New York State over time. This gives a baseline for the expected number of individuals to contract the disease if one individual were to have it in the population. 
 
-Second, I decided to look at properties of diseases that would help in predicting when a second wave of the virus may occur. This is done under the assumption that a second wave will definitely occur (something that should be analyzed separately). 
+Second, I examined properties of diseases that would assist in predicting when a second wave of the virus might occur. This is done under the assumption that a second wave will definitely occur (something that should be researched separately). 
 
-The results from the first issue show that the $R_e$ is decreasing over time while the results of the second issue suggest that a second wave will occur sometime in the Fall of this year.
+The results from the first problem show that the $R_e$ is decreasing over time while the results of the second issue suggest that a second wave will occur sometime in the Fall of this year.
 
 # Data Description
 
-The first issue uses time series data found at data/csv/time_series/time_series_covid19_confirmed_US.csv on the GitHub Repository. It includes the totals of confirmed cases for each state in the US over time. The date range is from 1/22/20 to 5/5/20.
+The first problem uses time series data found at data/csv/time_series/time_series_covid19_confirmed_US.csv on the GitHub Repository. It includes the totals of confirmed cases for each state in the US over time. The date range is from 1/22/20 to 5/5/20.
 
-The second issue uses data from many sources that I compiled into a suitable format for the task. This can be found at data/csv/similar_diseases.csv on the GitHub Repository. The sources I used for the numbers found in the data file can be found in the References section below. Here is a view of the data I compiled:
+The second problem uses data from many sources that I compiled into a suitable format for the task. This can be found at data/csv/similar_diseases.csv on the GitHub Repository. The sources I used for the numbers found in the data file can be found in the References section below. The following is a view of the data I compiled:
 
 ```{r}
 diseases <- read.csv('../data/csv/similar_diseases.csv')
@@ -91,38 +91,40 @@ diseases
 
 I took features of many similar (in terms of impact on society) diseases and used them for a classification task.
 
-`R0` denotes the average basic reproduction number
+`R0` denotes the average basic reproduction number.
     
-`mortality_rate` denotes the rate at which individuals who are infected die from disease
+`mortality_rate` denotes the rate at which individuals who are infected die from the disease.
     
-`month_first_peak` denotes the first month in which the disease became an epidemic
+`month_first_peak` denotes the first month in which the disease became an epidemic.
     
-`airborne` denotes whether or not the disease can be spread through the air
+`airborne` denotes whether or not the disease can be spread through the air.
+
+`seasonal` denotes whether or not the disease reemerges seasonally.
     
-`month_season_peak` denotes the season in which a reemergence of the disease appeared after the initial outbreak
+`month_season_peak` denotes the month in which a reemergence of the disease appeared after the initial outbreak.
     
  
-The diseases I included in this analysis include SARS, MERS, H1N1, Measles, Cholera, Yellow fever, Ebola, and Dengue fever.
+The diseases included in this analysis are SARS, MERS, H1N1, Measles, Cholera, Yellow fever, Ebola, and Dengue fever.
 
 # Results
 
 ## Problem 1: Estimating $R_e$ in New York
 
-The first problem tackled was to look into the effective reproductive number ($R_0$) for New York State. Since $R_0$ is difficult to calculate with our current data, I chose to utilize the EpiEstim package to estimate $R_0$ called $R_e$. This used the incidence of COVID-19 in New York State as well as a serial interval distribution with a mean of 3.96 and a standard deviation of 4.75.
+The first problem addressed was the effective reproductive number ($R_0$) for New York State. Since $R_0$ is difficult to calculate with our current data, I used the EpiEstim package to estimate $R_0$ called $R_e$. This used the incidence of COVID-19 in New York State as well as a serial interval distribution with a mean of 3.96 and a standard deviation of 4.75.
  
 ### Methods
 
-To address this problem, I decided to use the incidence of COVID-19 in New York State. This data was not readily available, so I took the cumulative cases over time and subtracted each day from the previous to get the total *new* cases for each day since the first contact.
+To address this problem, I decided to use the incidence of COVID-19 in New York State. This data was not readily available. So, I took the cumulative cases over time and subtracted each day from the previous to get the total *new* cases for each day since the first contact.
 
-Furthermore, I assumed that the days in which the total cumulative cases were under 70 came from outside New York State. I then separated the new cases for each day into imported cases (those with less than 70 cumulative) and local cases.
+I also assumed that the days in which the total cumulative cases were under 70 came from outside New York State. I then separated the new cases for each day into imported cases (those with less than 70 cumulative) and local cases.
 
-With both imported incidence and local incidence at hand, all that was left was to determine a serial interval to use. From 1, we can see that the serial interval for COVID-19 appears to have a mean of 3.96 days and a standard deviation of 4.75.
+With both imported incidence and local incidence at hand, all that was left was to determine a serial interval to use. From https://www.medrxiv.org/content/10.1101/2020.02.19.20025452v4, the serial interval for COVID-19 appears to have a mean of 3.96 days and a standard deviation of 4.75.
 
-All that remains is to calculate the $R_e$ and plot it over time. I used the `EpiEstim` package's `estimate_R()` function to do this.
+All that remains is to calculate the $R_e$ and plot it over time. I used the `EpiEstim` package\'s `estimate_R()` function to do this.
 	
 ### Results
 
-First I read in the time-series data for New York State. I need to calculate the incidence of COVID-19 and differentiate between imported and local cases. We assume the entries with less than 70 cases are considered imported. By imported we mean that the infected individual came from outside the region. Local cases are the entries with more than 70 cases.
+First, I read in the time-series data for New York State. I calculated the incidence of COVID-19 and differentiated between imported and local cases. I assumed the entries with less than 70 cases are imported. By imported I mean that the infected individual came from outside the region. Local cases are the entries with more than 70 cases.
 
 ```{r}
 # read in the time-series US data
@@ -156,9 +158,7 @@ covid_incidence_NY.df[covid_incidence_NY.df < 0] <- 0
 head(covid_incidence_NY.df)
 ```
 
-Now I calculate the estimated effective reproductive number ($R_e$) for COVID-19 in New York State. This is done by using the EpiEstim `estimate_R()` function. We then plot the time-series for incidence, the explored serial intervals, and $R_e$. We use a parametric serial interval curve with a mean of 3.96 and a standard deviation of 4.75. 
-
-*Source for serial interval: https://www.medrxiv.org/content/10.1101/2020.02.19.20025452v4*
+Now I calculate the estimated effective reproductive number ($R_e$) for COVID-19 in New York State. This is done by using the EpiEstim `estimate_R()` function. I then plot the time-series for incidence, the explored serial intervals, and $R_e$. I use a parametric serial interval curve with a mean of 3.96 and a standard deviation of 4.75.
 
 ```{r}
 # set up plots so they can be viewed all at once
@@ -177,17 +177,17 @@ plot_Ri(NY_res_parametric_si)
 
 ### Discussion
 
-From the plots, it seems that the $R_e$ for New York State currently hovers around the 1.0 line. This means that on average, one individual will transmit COVID-19 to one other individual. The goal for New York should be to get this number as close to zero as possible, although any $R_e$ less than 1.0 is favorable. These plots also highlight what $R_e$ was earlier in the timeline and show how social distancing and other epidemic policies put in place have reduced $R_e$ over time. Overall, these results indicate that the response put in place by New York State is working and the epidemic curve will begin to flatten out.
+From the plots, it seems that the $R_e$ for New York State currently hovers around the 1.0 line. This means that on average, one individual will transmit COVID-19 to one other individual. The goal for New York should be to get this number as close to zero as possible, although any $R_e$ less than 1.0 is favorable. These plots also highlight what $R_e$ was earlier in the timeline and show how social distancing and other remedial policies have reduced $R_e$ over time. Overall, these results indicate that the response by New York State is working and the epidemic curve will begin to flatten out.
 
 ## Problem 2: Predicting Second Wave of COVID-19
 
-The second problem I looked at was predicting when the second outbreak of COVID-19 may occur. This is under the assumption that it is inevitable that a second outbreak will occur. Second outbreaks in epidemics are sometimes worse than the initial outbreak (see https://www.history.com/news/spanish-flu-second-wave-resurgence). To prevent something like this happening again, it is important to try and determine a time-frame in which individuals and governments can prepare for a second wave of COVID-19. The results of my analysis indicate that the month of October is the most likely scenario in which a second wave will occur worldwide. 
+The second problem I looked at was predicting when the second outbreak of COVID-19 may occur. This is under the assumption that it is inevitable that a second outbreak will occur. Second outbreaks in epidemics are sometimes worse than the initial outbreak (see https://www.history.com/news/spanish-flu-second-wave-resurgence). To prevent something like this from happening again, it is important to try and determine a time-frame in which individuals and governments can prepare for a second wave of COVID-19. The results of my analysis indicate that the month of October is the most likely scenario in which a second wave will occur worldwide. 
 
 *Please note that this result was determined based on the aspects and timelines of other diseases with similar outbreaks worldwide. There are many issues with this method of analysis that are described in the Discussion found below.*
  
 ### Methods
 
-The problem of predicting a block of time in which COVID-19 will re-emerge can be done using classification. In this approach I first gathered data of other relevant diseases in terms of the features described above in the Data Description section. I started this analysis by designating each month of the year as a possible time block for a second wave. This is the class for prediction. Next, I used principal componenet analysis to get a better understanding of which diseases were similar to begin with. Then, I created a model with linear discriminant analysis in order to predict which month of the year COVID-19 would fall into in terms of a second wave.
+The problem of predicting a block of time in which COVID-19 will re-emerge can be done using classification. In this approach, I first gathered data of other relevant diseases in terms of the features described above in the Data Description section. I started this analysis by designating each month of the year as a possible time block for a second wave. This is the class for prediction. Next, I used principal componenet analysis to get a better understanding of which diseases were similar to begin with. Then, I created a model with linear discriminant analysis in order to predict which month of the year COVID-19 would fall into in terms of a second wave.
 
 ### Results
 
@@ -231,7 +231,7 @@ my.pca <- prcomp(scaled_train_data, retx=TRUE)
 ggbiplot(my.pca, choices=1:2, labels=rownames(train_data_pca), scale=0)
 ```
 
-Next, I perform LDA and see how the training data prediction compare to the actual in a table.
+Next, I perform LDA and see how the training data prediction compares to the actual in a table.
 
 ```{r}
 # perform LDA on data
@@ -256,19 +256,19 @@ barplot(covid_pred$posterior,
 
 ### Discussion
 
-From the principal component analysis biplot, we can see that COVID-19 is most similar to the SARS outbreak of 2003. This is expected since they are both coronaviruses. However, it is interesting to note how changing the seasonality of COVID-19 as more research is completed may shift COVID-19's placement towards H1N1 and Yellow fever.
+From the principal component analysis biplot, COVID-19 is most similar to the SARS outbreak of 2003. This is expected since they are both coronaviruses. However, it is interesting to note how changing the seasonality of COVID-19 as more research is completed may shift COVID-19\'s placement towards H1N1 and Yellow fever.
 
-The table of predictions above highlights some issues with the dataset. First of all, there are too few diseases used in this analysis to provide accurate results, especially for a classification task of this magnitude. All of the predictions place the second wave of each disease in October. This is most likely due to the small number of data points as well as the limitations of the selected features. These features were chosen as to what I thought would be good factors for determining the time-frame for a second wave of COVID-19. Better features would look into the biology and chemistry of each disease. A better result would most likely result from using the protein sequences of each disease and comparing them that way for instance.
+The table of predictions above highlights some issues with the dataset. First, there are too few diseases used in this analysis to provide accurate results, especially for a classification task of this magnitude. All of the predictions place the second wave of each disease in October. This is most likely due to the small number of data points as well as the limitations of the selected features. These features were chosen based on what I thought would be good factors for determining the time-frame for a second wave of COVID-19. Better features would look into the biology and chemistry of each disease. For instance, a better result would most likely result from using the protein sequences of each disease and comparing them that way.
 
-Lastly, the probabilities outlined above in the barplot show that October is most likely the month in which COVID-19 will have its second wave. This outcome does make sense from the perspective that the disease's infection rate may decrease as temperature increases, but we did not consider that possibility in this analysis directly. So, what this outcome really means is that based on other epidemics' second wave, it is most likely that COVID-19 will have a second wave in October.
+Lastly, the probabilities outlined above in the barplot show that October is most likely the month in which COVID-19 will have its second wave. This outcome does make sense from the perspective that the disease\'s infection rate may decrease as temperature increases, but I did not consider that possibility in this analysis directly. So, what this outcome really means is that based on other epidemics' second wave, it is most likely that COVID-19 will have a second wave in October.
 
 # Summary and COVIDMINDER Recommendations
 
-The first key insight into COVID-19 that result from this analysis are that the $R_e$ is hovering around the 1.0 line, which is a good sign for New York State. This shows that whatever we are doing to keep the disease from spreading is working for the most part.
+The first key insight into COVID-19 resulting from this analysis are that the $R_e$ is hovering around the 1.0 line which is a good sign for New York State. This shows that whatever we are doing to keep the disease from spreading is working for the most part.
 
-The second is that October is the month in which we should be planning for when COVID-19 may come back in a second wave. Individuals and governments should plan ahead for the Fall and be ready when the time comes. More research into this prediction is necessary to achieve a more accurate analysis in this regard, however.
+The second is that October is the month in which we should be planning for a reemergence of COVID-19. Individuals and governments should plan ahead for the Fall and be ready when the time comes. More research into this prediction is necessary to achieve a more accurate analysis in this regard.
     
-I believe that the first problem I addressed in this analysis could be included in COVIDMINDER. It could be a useful insight into how government and individual actions are limiting the spread of the virus in New York State. The second problem I addressed should be researched more before including in COVIDMINDER due to the problems with the small dataset and feature selection.
+I believe that the first problem I addressed in this analysis could be included in COVIDMINDER. It could provide useful insight into how government and individual actions are limiting the spread of the virus in New York State. The second problem I addressed should be researched more before including in COVIDMINDER due to the problems with the small dataset and feature selection.
 
 # References
 
