@@ -3,13 +3,13 @@ title: "MATP-4400 COVID-19 Final Notebook"
 author: "Thomas Hopkins"
 date: "May 2020"
 output:
-  pdf_document:
-    toc: yes
-    toc_depth: '2'
   html_document:
     number_sections: yes
     toc: yes
     toc_depth: 2
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
 ---
 
 ```{r setup, include=FALSE}
