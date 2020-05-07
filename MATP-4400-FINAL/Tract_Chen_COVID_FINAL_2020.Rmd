@@ -1,7 +1,7 @@
 ---
 title: "MATP-4400 COVID-19 Final Notebook"
 author: "Tracy (Chuoxi) Chen"
-date: "May 2020"
+date: "May 7, 2020"
 output:
   html_document:
     number_sections: yes
@@ -75,10 +75,15 @@ behaviors_sex.df<- behaviors_sex.df[behaviors_sex.df$State.Name != "United State
 ```
 
 For the data set containing the COVID 19 death count, additional work also needs to be done to ensure the format of the data matches that of the health behavior data. This will be helpful when I create the visualizations later on. Several tasks/ problems are identified and solved here:
+
 1. United States' total death count is included. I still need this information, but as a separate item from the data frame containing the death counts for the states. The US death count data will be used to calculate the death disparity index later.
+
 2. New York City's death count is not included in New York State's death count. Thus I would need to pick out the data for New York City from the data set and add it onto New York State's number.
+
 3. Additional complexity is present because I separated the death counts by gender. Therefore I cannot just add and remove samples freely in the data frame as it may disrupt the order of the data.
+
 4. In the health behavior data set, data is present in the form of a female, male. However, in the COVID 19 death count data set, data is present in the form of male, female. To have the data match up when I merge the two data sets later, I swapped the rows in COVID 19 death count dataset so that the new order is female, male. 
+
 5. I calculated the death disparity index for females and males using the formula $Death~Disparity~Index=\frac{\#~of~COVID~19~Death~in~state}{mean~\#~of~COVID~19~Death~in~US}$ and used the same bin size in COVIDMinder to group the indices. 
 ```{r }
 # Read in data about COVID 19 death
@@ -396,14 +401,12 @@ National Academies of Sciences, Engineering, and Medicine; Health and Medicine D
 
 Sudhinaraset, M., Wigglesworth, C., & Takeuchi, D. T. (2016). Social and Cultural Contexts of Alcohol Use: Influences in a Social-Ecological Framework. Alcohol research : current reviews, 38(1), 35–45.
 
-**R code references**
-
-https://socviz.co/maps.html
-
+**R code references**\
+https://socviz.co/maps.html \
 https://cran.r-project.org/web/packages/ggplot2/ggplot2.pdf 
 
 # Appendix
 ## Appendix A
-```{r, echo=FALSE, out.width = '75%'}
-include_graphics("~/COVID-Notebooks/MATP-4400-FINAL/HDI_image.jpeg")
+```{r, echo=FALSE,out.width = '75%'}
+include_graphics("C:/Users/chent/OneDrive/Documents/GitHub/COVID-Notebooks/MATP-4400-FINAL/HDI_image.jpeg")
 ```
