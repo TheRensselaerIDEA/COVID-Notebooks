@@ -68,18 +68,12 @@ if (!require('gdata')) {
   library(gdata)
 }
 
+if (!require('leaflet')) {
+  install.packages("leaflet")
+  library(leaflet)
+}
+
 knitr::opts_chunk$set(echo = TRUE)
-
-setwd('../')
-
-## Load essential R packages
-source("modules/Source.R")
-
-## Load stored data (see `data` subdirectory)
-source("modules/data_load.R")
-
-## Create dataframes; perform desparity index calcuations; prep for plotting
-source("modules/preprocessing.R")
 
 ```
 
@@ -436,20 +430,34 @@ ggplot(kmeans_dth) +
   geom_density(aes(x = percent_deaths, color = dth_kclass)) +
   ggtitle("Distribution of death growth by kclass")
 ```
+
+```{r}
+states.shapes <- readRDS("../data/json/us_projection.Rds")
+states <- states.shapes
+states <- data.frame(states)
+states <- states[c("fips_state", "name")]
+colnames(states) <- c("FIPS", "NAME")
+
+map_data <- merge(states, state_covid_growth, by="NAME", type="inner")
+map_data <- merge(map_data, state_death, by="NAME", type="inner")
+map_data = map_data[match(states$NAME, map_data$NAME),]
+
+```
+
 ```{r}
 colors <- c("grey","#426C85","#67a9cf","#d1e5f0","#f7f7f7","#fddbc7","#ef8a62","#b2182b")
-    bins <- c(-1, 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6,-Inf)
-    pal2 <- leaflet::colorBin(colors, domain = state_covid_growth$percent_confirmed, bins = bins, reverse=FALSE)
+    bins <- c(0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 1,-Inf)
+    pal2 <- leaflet::colorBin(colors, domain = map_data$percent_confirmed, bins = bins, reverse=FALSE)
     labels2 <- sprintf(
       "<strong>%s</strong><br/>
-      COVID-19 Mortality Rate DI: %.2g",
-      state_covid_growth$NAME, state_covid_growth$percent_confirmed
+      Percent of new COVID cases from last week: %.2g",
+      map_data$NAME, map_data$percent_confirmed
     ) %>% lapply(htmltools::HTML)
     
     leaflet(states.shapes) %>%
       setView(-96, 37.8, 4) %>% 
       addPolygons(
-        fillColor = ~pal2(state_covid_growth$percent_confirmed),
+        fillColor = ~pal2(map_data$percent_confirmed),
         weight = 2,
         opacity = 1,
         color = "white",
@@ -467,9 +475,48 @@ colors <- c("grey","#426C85","#67a9cf","#d1e5f0","#f7f7f7","#fddbc7","#ef8a62","
           textsize = "15px",
           direction = "auto")) %>% 
       addLegend(pal = pal2, 
-                values = ~state_covid_growth$percent_confirmed, 
+                values = ~map_data$percent_confirmed, 
                 opacity = 0.7, 
-                title = "Disparity Index<br/>US COVID-19 Mortality Rates",
+                title = "Percent of total COVID<br>cases from previous week",
+                position = "bottomright"
+                ) %>%
+      addProviderTiles("MapBox", options = providerTileOptions(
+        id = "mapbox.light",
+        accessToken = Sys.getenv('MAPBOX_ACCESS_TOKEN')))
+
+colors <- c("grey","#426C85","#67a9cf","#d1e5f0","#f7f7f7","#fddbc7","#ef8a62","#b2182b")
+    bins <- c(0, 0.075, 0.125, 0.15, 0.225, 0.275, 0.35, 1,-Inf)
+    pal2 <- leaflet::colorBin(colors, domain = map_data$percent_deaths, bins = bins, reverse=FALSE)
+    labels2 <- sprintf(
+      "<strong>%s</strong><br/>
+      Percent COVID-19 deaths in last week %.2g",
+      map_data$NAME, map_data$percent_deaths
+    ) %>% lapply(htmltools::HTML)
+    
+    leaflet(states.shapes) %>%
+      setView(-96, 37.8, 4) %>% 
+      addPolygons(
+        fillColor = ~pal2(map_data$percent_deaths),
+        weight = 2,
+        opacity = 1,
+        color = "white",
+        dashArray = "3",
+        fillOpacity = 0.7,
+        highlight = highlightOptions(
+          weight = 5,
+          color = "#666",
+          dashArray = "",
+          fillOpacity = 0.7,
+          bringToFront = TRUE),
+        label = labels2,
+        labelOptions = labelOptions(
+          style = list("font-weight" = "normal", padding = "3px 8px"),
+          textsize = "15px",
+          direction = "auto")) %>% 
+      addLegend(pal = pal2, 
+                values = ~map_data$percent_deaths, 
+                opacity = 0.7, 
+                title = "Percent of total COVID<br>deaths from last week",
                 position = "bottomright"
                 ) %>%
       addProviderTiles("MapBox", options = providerTileOptions(
