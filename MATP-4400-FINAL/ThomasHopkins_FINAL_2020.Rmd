@@ -1,15 +1,15 @@
 ---
-title: "MATP-4400 COVID-19 Final Notebook (template)"
+title: "MATP-4400 COVID-19 Final Notebook"
 author: "Thomas Hopkins"
 date: "May 2020"
 output:
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
   html_document:
     number_sections: yes
     toc: yes
     toc_depth: 2
-  pdf_document:
-    toc: yes
-    toc_depth: '2'
 ---
 
 ```{r setup, include=FALSE}
@@ -47,251 +47,235 @@ if(!require('ggbiplot')) {
 }
 if(!require('MASS')) {
   install.packages('MASS')
-  library('MASS')
+  library(MASS)
+}
+if(!require('knitr')) {
+  install.packages('knitr')
+  library(knitr)
 }
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
-# Final Project: Guidance for Students (DELETE)
-
-*DELETE THIS SECTION IN FINAL NOTEBOOK!*
-
-##GENERAL INSTRUCTIONS (DELETE)##
-
-* This notebook serves as a written presentation of your work so it should be written like a research paper.
-* The rubric for evaluating this project is on LMS.
-* The R code that executes the results should be embedded in this notebook if possible. It's also okay to "source" external scripts from within your notebook, including those provided by your instructors. 
-* If there is work that is not appropriate to be embedded on your final notebook, then you can describe the work in the notebook and provide figures generated elsewhere (e.g. screen shots, graphs). Indicate if that work has been committed to github. If necessary put details in Appendix.    
-* Your wording should be suitable for sharing with external partners/mentors and useful to future contributors.
-* Please don't summarize everything you did; discuss only the *most important* aspects of your work. Ask yourself *what really matters?*
-* IMPORTANT: Discuss any insights you found regarding COVID-19.
-* If there are limitations to your work, discuss. 
-* Include any background or support for your work. For example, mention any relevant research articles you found -- and be sure to include references!
-* Include your recommendations for extending the COVIDMINDER app:
-    + Data utilization...
-    + Analytics...
-    + Visualizations
-    + User interface design...
-* **Expect internet problems!** Commit versions of this notebook to the IDEA github *early and often*. You can continue to refine and update; that is the point of github!
-
-##SUBMISSION CHECKLIST: Things to check before you submit (DELETE)##
-
-* Have you given your file(s) a clear, sensible name? `my_notebook.Rmd` or `joey.Rmd` are **not* acceptable!
-* Is every figure clearly labeled and titled? 
-* Does every figure serve a purpose? 
-     + What question does it answer? 
-     + You can put extra (non-essential) figues in the Appendix.
-* Are your tables clearly labelled and legible?
-     + We recommend using `kable()` (built into `knitr`)
-     + `xtable()` might also work for you (not as easy as `kable()`)
-* **CRITICAL:** Have you given enough information for someone to reproduce, understand and extend your results?
-     + Where can they *find* the data that you used?
-     + Have you *described* the data that used?
-     + Have you *documented* your code? 
-     + Are your figures *clearly labeled*?
-     + Did you *discuss your findings*?
-     + Did you use good grammar and *proofread* your results?
-     + Finally, have you *committed* your work to github and made a *pull request*?
-     
-## github Submission Instructions (DELETE!)
-
-Fill out the bullets at the beginning of this notebook...
-
-* Provide your github ID. 
-* Indicate the issues associated with this work on github. 
-* Commit the Rmd and html versions of this notebook to the `MATP-4400-FINAL` directory on github and make a pull request.  
-* Provide the link to your github submission on LMS. 
-    + **NOTE:** You can post your link any time after it exists  
-    + We will grade the latest version available on Github starting at 3:00 on Thursday, 7 May.  
-* **NOTE:** RStudio Server will be unavailable due to maintenance for up to a week beginning the weekend of 9 May,  so there can be no extensions or late submissions. 
-
-##github help (DELETE!)
-
-* DO THIS FIRST:
-    + `git clone https://github.com/TheRensselaerIDEA/COVID-Notebooks` (if you haven't already)
-        + NOTE: We may have added to the master since your last `git pull` so make sure to do a `git pull origin master`
-    + `git checkout -b <your-new-branch>` (more instructions immediately below)
-    + In R, create a new R notebook (ie a `.Rmd` file) in the subdirectory `MATP-4400-FINAL`
-    + `git add` it to the repo (make sure you're in the correct directory when you do this!)
-    + `git commit -a -m 'Created my notebook!'` as soon as you do this! 
-    + `git push origin <your-new-branch>` so we see you're working on something
-    + Post a link in LMS; it will remain valid as you update (and check in) your work to github
-    + for details, see instructions in next few bullets
-    + Contact John Erickson erickj4@rpi.edu for further github questions
-* See: **HOW TO USE THIS NOTEBOOK AND REPOSITORY** https://bit.ly/2wYQGXP
-* See also: **git Cheat Sheet** https://bit.ly/2yCBSi8 
-
-*DELETE THE SECTIONS ABOVE!*
-<hr>
 
 # Final Project: Submission Links
 
 *This should be the first section of your final project notebook. Fill out the following according to how you submitted your notebook!*
 
-* github repository: https://github.com/TheRensselaerIDEA/COVID-Notebooks (for reference)
-* My github ID: *olyerickson* (example)
-* github issues addressed by this work: `#123` (example)
-* Github branch name of my submitted notebook: *erickson_final* (example)
+* github repository: https://github.com/TheRensselaerIDEA/COVID-Notebooks
+* My github ID: *thomashopkins32*
+* github issues addressed by this work: `#18` and `#24`
+* Github branch name of my submitted notebook: *feature-24*
 * link to merged notebook (post these to LMS!: 
-    + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/master/MATP-4400-FINAL/COVID_FINAL_2020.Rmd (example; Rmd version)
-    + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/master/MATP-4400-FINAL/COVID_FINAL_2020.html (example; HTML version)
+    + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/master/MATP-4400-FINAL/ThomasHopkins_FINAL_2020.Rmd
+    + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/master/MATP-4400-FINAL/ThomasHopkins_FINAL_2020.html
 
 # Overview & Problems Tackled
 
-*Provide a top-level summary of your work and findings.*
+Two key issues in understanding the overall impact of an epidemic are determining how rapidly the disease is spreading and predicting future outcomes of the disease based on similar experiences. 
+
+I first decided to estimate the effective reproductive number $R_e$ for New York State over time. This gives a baseline for the expected number of individuals to contract the disease if one individual were to have it in the population. 
+
+Second, I decided to look at properties of diseases that would help in predicting when a second wave of the virus may occur. This is done under the assumption that a second wave will definitely occur (something that should be analyzed separately). 
+
+The results from the first issue show that the $R_e$ is decreasing over time while the results of the second issue suggest that a second wave will occur sometime in the Fall of this year.
 
 # Data Description
 
 *Include data sources/locations, versions/dates, etc.* 
+The first issue uses time series data found at data/csv/time_series/time_series_covid19_confirmed_US.csv on the GitHub Repository. It includes the totals of confirmed cases for each state in the US over time. The date range is from 1/22/20 to 5/5/20.
+
+The second issue uses data from many sources that I compiled into a suitable format for the task. This can be found at data/csv/similar_diseases.csv on the GitHub Repository. The sources I used for the numbers found in the data file can be found in the References section below. Here is a view of the data I compiled:
+
+```{r}
+diseases <- read.csv('../data/csv/similar_diseases.csv')
+rownames(diseases) <- diseases[,'NAME']
+diseases$NAME <- NULL
+diseases
+```
+
+I took features of many similar (in terms of impact on society) diseases and used them for a classification task.
+*
+    + `R0` denotes the average basic reproduction number
+    + `mortality_rate` denotes the rate at which individuals who are infected die from disease
+    + `month_first_peak` denotes the first month in which the disease became an epidemic
+    + `airborne` denotes whether or not the disease can be spread through the air
+    + `month_season_peak` denotes the season in which a reemergence of the disease appeared after the initial outbreak
+ 
+The diseases I included in this analysis include SARS, MERS, H1N1, Measles, Cholera, Yellow fever, Ebola, and Dengue fever.
 
 # Results
 
-*Break out your results by each problem you attacked*
-
-## Problem 1 
+## Problem 1: Estimating $R_e$ in New York
 
 *Describe the problem you are examining.  If there is background that is necessary for this problem, then put it here. Include any references.*
 
-The first problem tackled was to look into the effective reproductive number ($R_0$) for New York State. Since $R_0$ is difficult to calculate with our current data, I chose to utilize the EpiEstim package to estimate $R_0$ called $R_e$. This used the incidence of COVID-19 in New York State as well as a serial interval distribution with a mean of 3.96 and a standard deviation of 4.75 (see 1 (ADD LINK TO REFERENCE)).
+The first problem tackled was to look into the effective reproductive number ($R_0$) for New York State. Since $R_0$ is difficult to calculate with our current data, I chose to utilize the EpiEstim package to estimate $R_0$ called $R_e$. This used the incidence of COVID-19 in New York State as well as a serial interval distribution with a mean of 3.96 and a standard deviation of 4.75.
  
 ### Methods
 
 *How did you address the problem? What data did you use exactly? What methods did you use?*
 
-Read in the time-series data for New York State. We need to calculate the incidence of COVID-19 and differentiate between imported and local cases. We assume the entries with less than 70 cases are considered imported. By imported we mean that the infected individual came from outside the region. Local cases are the entries with more than 70 cases.
+To address this problem, I decided to use the incidence of COVID-19 in New York State. This data was not readily available, so I took the cumulative cases over time and subtracted each day from the previous to get the total *new* cases for each day since the first contact.
 
-```{r}
-covid_TS_states <- read.csv('../data/csv/time_series/time_series_covid19_confirmed_US.csv')
-covid_TS_NY <- covid_TS_states[covid_TS_states$Province_State=='New York',] %>%
-  group_by(Province_State) %>%
-  summarize_if(is.numeric, sum, na.rm=TRUE)
-col_names_dates <- str_replace_all(str_remove(colnames(covid_TS_NY)[7:ncol(covid_TS_NY)], 'X'), coll('.'), c(pattern1 = '/'))
-dates <- as.Date(col_names_dates, format = "%m/%d/%y")
-covid_cases_NY <- as.numeric(covid_TS_NY[,7:ncol(covid_TS_NY)])
-local_cases_NY <- covid_cases_NY[covid_cases_NY > 70]
-imported_cases_NY <- covid_cases_NY[covid_cases_NY <= 70]
-local_cases_NY <- as.numeric(padarray(local_cases_NY, padsize=c(0,length(dates)-length(local_cases_NY)), direction='pre'))
-imported_cases_NY <- as.numeric(padarray(imported_cases_NY, padsize=c(0,length(dates)-length(imported_cases_NY)), direction='post'))
-covid_cases_NY.df <- data.frame(dates=dates, local=local_cases_NY, imported=imported_cases_NY)
-covid_incidence_NY.df <- covid_cases_NY.df[41:nrow(covid_cases_NY.df),]
-covid_incidence_NY.df$local <- ave(covid_incidence_NY.df$local, FUN=function(x) c(0, diff(x)))
-covid_incidence_NY.df$imported <- ave(covid_incidence_NY.df$imported, FUN=function(x) c(0, diff(x)))
-covid_incidence_NY.df$local[6] <- covid_incidence_NY.df$local[6] - covid_cases_NY.df$imported[45]
-covid_incidence_NY.df[covid_incidence_NY.df < 0] <- 0
-head(covid_incidence_NY.df)
-```
+Furthermore, I assumed that the days in which the total cumulative cases were under 70 came from outside New York State. I then separated the new cases for each day into imported cases (those with less than 70 cumulative) and local cases.
+
+With both imported incidence and local incidence at hand, all that was left was to determine a serial interval to use. From 1, we can see that the serial interval for COVID-19 appears to have a mean of 3.96 days and a standard deviation of 4.75.
+
+All that remains is to calculate the $R_e$ and plot it over time. I used the `EpiEstim` package's `estimate_R()` function to do this.
 	
 ### Results
 
 *What were the results on this problem?*
 
-Now we calculate the estimated effective reproductive number ($R_e$) for COVID-19 in New York State. This is done by using the EpiEstim `estimate_R()` function. We then plot the time-series for incidence, the explored serial intervals, and $R_e$. We use a parametric serial interval curve with a mean of 3.96 and a standard deviation of 4.75. 
-
-*Source: https://www.medrxiv.org/content/10.1101/2020.02.19.20025452v4*
+First I read in the time-series data for New York State. I need to calculate the incidence of COVID-19 and differentiate between imported and local cases. We assume the entries with less than 70 cases are considered imported. By imported we mean that the infected individual came from outside the region. Local cases are the entries with more than 70 cases.
 
 ```{r}
+# read in the time-series US data
+covid_TS_states <- read.csv('../data/csv/time_series/time_series_covid19_confirmed_US.csv')
+# filter data by New York and sum up the total number of cases
+covid_TS_NY <- covid_TS_states[covid_TS_states$Province_State=='New York',] %>%
+  group_by(Province_State) %>%
+  summarize_if(is.numeric, sum, na.rm=TRUE)
+# change the date columns into actual date objects
+col_names_dates <- str_replace_all(str_remove(colnames(covid_TS_NY)[7:ncol(covid_TS_NY)], 'X'), coll('.'), c(pattern1 = '/'))
+dates <- as.Date(col_names_dates, format = "%m/%d/%y")
+# extract the time-series for cases
+covid_cases_NY <- as.numeric(covid_TS_NY[,7:ncol(covid_TS_NY)])
+# take cases larger than 70 total infected as local infections
+local_cases_NY <- covid_cases_NY[covid_cases_NY > 70]
+# take cases less than 70 as imported (from outside NYS) infections
+imported_cases_NY <- covid_cases_NY[covid_cases_NY <= 70]
+# pad both arrays with 0s to make them the same length
+local_cases_NY <- as.numeric(padarray(local_cases_NY, padsize=c(0,length(dates)-length(local_cases_NY)), direction='pre'))
+imported_cases_NY <- as.numeric(padarray(imported_cases_NY, padsize=c(0,length(dates)-length(imported_cases_NY)), direction='post'))
+# create a dataframe with dates, local, and imported columns
+covid_cases_NY.df <- data.frame(dates=dates, local=local_cases_NY, imported=imported_cases_NY)
+# take only cases after the first 41 rows since there were 0 infected at that time
+covid_incidence_NY.df <- covid_cases_NY.df[41:nrow(covid_cases_NY.df),]
+# compute the incidence (number of new cases) for both imported and local cases
+covid_incidence_NY.df$local <- ave(covid_incidence_NY.df$local, FUN=function(x) c(0, diff(x)))
+covid_incidence_NY.df$imported <- ave(covid_incidence_NY.df$imported, FUN=function(x) c(0, diff(x)))
+# quick fix for this specific value since it is the cutoff point between local and imported
+covid_incidence_NY.df$local[6] <- covid_incidence_NY.df$local[6] - covid_cases_NY.df$imported[45]
+covid_incidence_NY.df[covid_incidence_NY.df < 0] <- 0
+head(covid_incidence_NY.df)
+```
+
+Now I calculate the estimated effective reproductive number ($R_e$) for COVID-19 in New York State. This is done by using the EpiEstim `estimate_R()` function. We then plot the time-series for incidence, the explored serial intervals, and $R_e$. We use a parametric serial interval curve with a mean of 3.96 and a standard deviation of 4.75. 
+
+*Source for serial interval: https://www.medrxiv.org/content/10.1101/2020.02.19.20025452v4*
+
+```{r, echo=False}
+# set up plots so they can be viewed all at once
 plot_Ri <- function(estimate_R_obj) {
     p_I <- plot(estimate_R_obj, "incid", add_imported_cases = TRUE)  # plots the incidence
     p_SI <- plot(estimate_R_obj, "SI")  # plots the serial interval distribution
     p_Ri <- plot(estimate_R_obj, "R")
     return(gridExtra::grid.arrange(p_I, p_SI, p_Ri, ncol = 1))
 }
-
+# calculate the curves using estimate_R function from EpiEstim package
 NY_res_parametric_si <- estimate_R(covid_incidence_NY.df, 
     method = "parametric_si", config = make_config(list(mean_si = 3.96, std_si = 4.75)))
-
+# plot results
 plot_Ri(NY_res_parametric_si)
 ```
 
 ### Discussion
 
-*Interpret results.  What were your findings?  What do they say about COVID-19?   What are the strengths and limitations of these results? Is there support for your findings from other sources? Include references as appropriate.*
+From the plots, it seems that the $R_e$ for New York State currently hovers around the 1.0 line. This means that on average, one individual will transmit COVID-19 to one other individual. The goal for New York should be to get this number as close to zero as possible, although any $R_e$ less than 1.0 is favorable. These plots also highlight what $R_e$ was earlier in the timeline and show how social distancing and other epidemic policies put in place have reduced $R_e$ over time. Overall, these results indicate that the response put in place by New York State is working and the epidemic curve will begin to flatten out.
 
-From the plots, it seems that the $R_e$ for New York State currently hovers around the 1.0 line. This means that on average, one individual will transmit COVID-19 to one other individual. The goal for New York should be to get this number as close to zero as possible, although any $R_e$ less than 1.0 is favorable. These plots also highlight what the $R_e$ was earlier in the timeline and show how social distancing and other epidemic policies put in place have reduced $R_e$ over time.
+## Problem 2: Predicting Second Wave of COVID-19
 
-## Problem 2
+The second problem I looked at was predicting when the second outbreak of COVID-19 may occur. This is under the assumption that it is inevitable that a second outbreak will occur. Second outbreaks in epidemics are sometimes worse than the initial outbreak (see https://www.history.com/news/spanish-flu-second-wave-resurgence). To prevent something like this happening again, it is important to try and determine a time-frame in which individuals and governments can prepare for a second wave of COVID-19. The results of my analysis indicate that the month of October is the most likely scenario in which a second wave will occur worldwide. Please note that this result was determined based on the aspects and timelines of other diseases with similar outbreaks worldwide. There are many issues with this method of analysis that are described in the Discussion found below.
  
 ### Methods
+
+The problem of predicting a block of time in which COVID-19 will re-emerge can be done using classification. In this approach I first gathered data of other relevant diseases in terms of the features described above in the Data Description section. I started this analysis by designating each month of the year as a possible time block for a second wave. This is the class for prediction. Next, I used principal componenet analysis to get a better understanding of which diseases were similar to begin with. Then, I created a model with linear discriminant analysis in order to predict which month of the year COVID-19 would fall into in terms of a second wave.
+
+### Results
+
+I start by reading in the similar disease data (which includes COVID-19). I convert the categorical data found in `month_second_peak` to a factor.
+Lastly, the training data and training labels are created.
+
+Here is another overveiw of what the data looks like:
+
 ```{r}
+# read in the csv file containing the data
 diseases <- read.csv('../data/csv/similar_diseases.csv')
+# change rownames to match names of the disease
 rownames(diseases) <- diseases[,'NAME']
+# get rid of NAME column
 diseases$NAME <- NULL
-diseases$mortality_rate <- diseases$deaths / diseases$infected
-diseases$season_first_peak <- as.factor(diseases$season_first_peak)
-diseases$seasonal <- as.factor(diseases$seasonal)
-diseases$cold_temperatures <- as.factor(diseases$cold_temperatures)
-diseases$airborne <- as.factor(diseases$airborne)
-diseases$policy_action <- as.factor(diseases$policy_action)
-diseases$season_second_peak <- as.factor(diseases$season_second_peak)
-diseases$infected <- NULL
-diseases$dead <- NULL
+# change categorical data types to factors
+months <- c('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December')
+diseases$month_first_peak <- as.numeric(factor(diseases$month_first_peak, levels=months))
+diseases$seasonal <- as.numeric(as.factor(diseases$seasonal))
+diseases$airborne <- as.numeric(as.factor(diseases$airborne))
+diseases$month_second_peak <- factor(diseases$month_second_peak, levels=months)
+# take out COVID-19 feature set for prediction later
 covid_features <- diseases['COVID-19',]
-covid_features$season_second_peak <- NULL
-train_data <- diseases[-c(nrow(diseases)),names(diseases) != 'season_second_peak']
-train_labels <- diseases[-c(nrow(diseases)),'season_second_peak']
+covid_features$month_second_peak <- NULL
+# create training data and training labels
+train_data <- diseases[-c(nrow(diseases)),names(diseases) != 'month_second_peak']
+train_labels <- diseases[-c(nrow(diseases)),'month_second_peak']
 diseases
 ```
 
+I then scale the data and perform principal component analysis. The results are shown in the biplot.
 
 ```{r}
+# recreate dataframe with COVID-19 features
 train_data_pca <- rbind(train_data, covid_features)
-numeric_features <- c('age_range', 'R0', 'mortality_rate')
-numeric_train_data <- train_data_pca[,numeric_features]
-scaled_train_data <- scale(numeric_train_data)
-km <- kmeans(scaled_train_data, 4)
-kclass <- as.factor(km$cluster)
-heatmap.2(km$centers, 
-          dendrogram="row",
-          scale="none",
-          trace="none",
-          main='Scaled Disease Data Cluster Centers',
-          cexRow=0.8,
-          cexCol=0.8,
-          srtRow=0,
-          srtCol=0)
-```
-
-
-```{r}
+# scale numeric data
+scaled_train_data <- scale(train_data_pca)
+# perform PCA on scaled training data
 my.pca <- prcomp(scaled_train_data, retx=TRUE)
+# create biplot
 ggbiplot(my.pca, choices=1:2, labels=rownames(train_data_pca), scale=0)
 ```
 
+Next, I perform LDA and see how the training data prediction compare to the actual in a table.
 
 ```{r}
-train.df <- data.frame(train_data, class=train_labels)
-lda.fit <- lda(class~., train.df)
+# perform LDA on data
+lda.fit <- lda(train_data, grouping=train_labels)
+# get accuracy on training data
+train_preds <- predict(lda.fit, train_data)$class
+confusion.matrix <- table(train_labels, train_preds)
+kable(confusion.matrix, type="html",digits = 2)
+```
+
+I use the LDA model to predict the month in which COVID-19 will have a second wave. The probabilities for each month (only months > 0) are shown in the barplot.
+
+```{r}
+# predict outcome for COVID-19
 covid_pred <- predict(lda.fit, covid_features)
 barplot(covid_pred$posterior,
         ylab="Probability", 
-        xlab="Season of Second Wave", 
+        xlab="Month of Second Wave", 
         ylim=c(0, 1.0), 
-        main="Predicted Season of Second Wave of COVID-19")
+        main="Predicted Month of Second Wave of COVID-19")
 ```
-### Results
 
 ### Discussion
 
-*Do at least 2 problems. Add more as necessary *
+From the principal component analysis biplot, we can see that COVID-19 is most similar to the SARS outbreak of 2003. This is expected since they are both coronaviruses. However, it is interesting to note how changing the seasonality of COVID-19 as more research is completed may shift COVID-19's placement towards H1N1 and Yellow fever.
 
+The table of predictions above highlights some issues with the dataset. First of all, there are too few diseases used in this analysis to provide accurate results, especially for a classification task of this magnitude. All of the predictions place the second wave of each disease in October. This is most likely due to the small number of data points as well as the limitations of the selected features. These features were chosen as to what I thought would be good factors for determining the time-frame for a second wave of COVID-19. Better features would look into the biology and chemistry of each disease. A better result would most likely result from using the protein sequences of each disease and comparing them that way for instance.
+
+Lastly, the probabilities outlined above in the barplot show that October is most likely the month in which COVID-19 will have its second wave. This outcome does make sense from the perspective that the disease's infection rate may decrease as temperature increases, but we did not consider that possibility in this analysis directly. So, what this outcome really means is that based on other epidemics' second wave, it is most likely that COVID-19 will have a second wave in October.
 
 # Summary and COVIDMINDER Recommendations
 
-* Overall, what insights did you find  about the  COVID-19 epidemic in your analysis?    
+The first key insight into COVID-19 that result from this analysis are that the $R_e$ is hovering around the 1.0 line, which is a good sign for New York State. This shows that whatever we are doing to keep the disease from spreading is working for the most part.
 
-* What recommendations do you have for COVIDMINDER for  Data utilization, Analytics, Visualizations, User interface design, etc.
-
-    + Would you recommend that your analysis be included in COVIDMINDER?  Why or Why not?  
-    + If not, is there additional work that might  improve the results?  Note that it is perfectly okay for you to recommend to not to include your analysis. Research doesn't always work out.  As a team we need to try a lot of different ideas in hopes of finding a few good ones to pursue.  *
-
-*Think of yourself as a consultant reporting back on a particular aspect of the analysis and application design!*
+The second is that October is the month in which we should be planning for when COVID-19 may come back in a second wave. Individuals and governments should plan ahead for the Fall and be ready when the time comes. More research into this prediction is necessary to achieve a more accurate analysis in this regard, however.
+    
+I believe that the first problem I addressed in this analysis could be included in COVIDMINDER. It could be a useful insight into how government and individual actions are limiting the spread of the virus in New York State. The second problem I addressed should be researched more before including in COVIDMINDER due to the problems with the small dataset and feature selection.
 
 # References
 
-*Include any references to literature in support of your work*
-*You might also wish to include references to unusual R packages essential to your work*
-*1. https://www.medrxiv.org/content/10.1101/2020.02.19.20025452v4*
-*2. EpiEstim CRAN package*
+https://www.medrxiv.org/content/10.1101/2020.02.19.20025452v4
+EpiEstim package
 https://www.cdc.gov/about/history/sars/timeline.htm
 https://www.hindawi.com/journals/av/2011/734690/
 https://wwwnc.cdc.gov/eid/article/26/2/19-0697_article
@@ -303,10 +287,5 @@ https://journals.plos.org/plosntds/article/file?rev=2&id=10.1371/journal.pntd.00
 https://www.ncbi.nlm.nih.gov/pubmed/27846442
 https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3381442/
 https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4397933/
-
-
-# Appendix
-
-*Include here whatever you think is relevant to support the main content of your notebook. For example, you may have only include example figures above in your main text but include additional ones here* 
-
+https://www.who.int/emergencies/mers-cov/MERS-epicurve-July-2019.png
 
