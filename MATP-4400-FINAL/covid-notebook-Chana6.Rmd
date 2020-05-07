@@ -2,7 +2,14 @@
 title: "COVIDMINDER Bootcamp Notebook"
 author: "Alex Chan"
 date: "4/28/2020"
-output: html_document
+output:
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
+  html_document:
+    number_sections: yes
+    toc: yes
+    toc_depth: 2
 ---
 
 ```{r setup, include=FALSE}
@@ -22,6 +29,7 @@ source("modules/data_load.R")
 source("modules/preprocessing.R")
 
 ```
+
 
 # Final Project: Guidance for Students (DELETE)
 
@@ -104,7 +112,7 @@ Fill out the bullets at the beginning of this notebook...
 * github issues addressed by this work: `#27` (example)
 * Github branch name of my submitted notebook: *erickson_final* (example)
 * link to merged notebook (post these to LMS!: 
-    + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/master/MATP-4400-FINAL/COVID_FINAL_2020.Rmd (example; Rmd version)
+    + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/feature-27/MATP-4400-FINAL/covid-notebook-Chana6.Rmd 
     + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/master/MATP-4400-FINAL/COVID_FINAL_2020.html (example; HTML version)
 
 # Overview & Problems Tackled
@@ -126,34 +134,59 @@ Fill out the bullets at the beginning of this notebook...
  
 ### Methods
 
+
 ```{r}
+
+#April22 <- read_csv("data/csv/04-22-2020.csv")
+#Ap22 <- April22[April22$Province_State == "New York",]
+#A22 <- data.frame(Ap22$Admin2, Ap22$Confirmed, Ap22$Deaths)
+#A22 <- A22[rowSums(is.na(Ap22)) == 0,] #April 22nd NY Counties Confirmed and Deaths
+#A22Deaths = sum(A22$Ap22.Deaths)
+
+Deaths = 19413
+
 April23 <- read_csv("data/csv/04-23-2020.csv")
 Ap23 <- April23[April23$Province_State == "New York",]
 A23 <- data.frame(Ap23$Admin2, Ap23$Confirmed, Ap23$Deaths)
 A23 <- A23[rowSums(is.na(Ap23)) == 0,] #April 23rd NY Counties Confirmed and Deaths
+A23Deaths = sum(A23$Ap23.Deaths) - Deaths
 
 April26 <- read_csv("data/csv/04-26-2020.csv")
 Ap26 <- April26[April26$Province_State == "New York",]
 A26 <- data.frame(Ap26$Admin2, Ap26$Confirmed, Ap26$Deaths)
 A26 <- A26[rowSums(is.na(A26)) == 0,] #April 26th NY Counties Confirmed and Deaths
+A26Deaths = sum(A26$Ap26.Deaths) - Deaths
 
 April29 <- read_csv("data/csv/04-29-2020.csv")
 Ap29 <- April29[April29$Province_State == "New York",]
 A29 <- data.frame(Ap29$Admin2, Ap29$Confirmed, Ap29$Deaths)
 A29 <- A29[rowSums(is.na(A29)) == 0,] #April 29th NY Counties Confirmed and Deaths
+A29Deaths = sum(A29$Ap29.Deaths) - Deaths
 
 May2 <- read_csv("data/csv/05-02-2020.csv")
 Ma2 <- May2[May2$Province_State == "New York",]
 M2 <- data.frame(Ma2$Admin2, Ma2$Confirmed, Ma2$Deaths)
 M2 <-M2[rowSums(is.na(M2)) == 0,] #May 2nd NY Counties Confirmed and Deaths
+M2Deaths = sum(M2$Ma2.Deaths) - Deaths
 
 May5 <- read_csv("data/csv/05-05-2020.csv")
 Ma5 <- May5[May5$Province_State == "New York",]
 M5 <- data.frame(Ma5$Admin2, Ma5$Confirmed, Ma5$Deaths)
 M5 <- M5[rowSums(is.na(M5)) == 0,] #May 5th NY Counties Confirmed and Deaths
+M5Deaths = sum(M5$Ma5.Deaths) - Deaths
+
+#Put the number of new deaths for each day into a csv file
+DaysDeaths <- read_csv("data/csv/DaysDeaths.csv")
 
 ```
 
+```{r}
+barplot(DaysDeaths$Deaths, main="Deaths Per Day Every 3 Days Since April 23rd",
+   xlab="Date",
+   ylab="# of deaths",
+   names.arg=c(DaysDeaths$Date))
+```
+	
 	
 ### Results
 
