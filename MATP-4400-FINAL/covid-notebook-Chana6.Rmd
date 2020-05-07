@@ -30,60 +30,6 @@ source("modules/preprocessing.R")
 
 ```
 
-
-# Final Project: Guidance for Students (DELETE)
-
-*DELETE THIS SECTION IN FINAL NOTEBOOK!*
-
-##GENERAL INSTRUCTIONS (DELETE)##
-
-* This notebook serves as a written presentation of your work so it should be written like a research paper.
-* The rubric for evaluating this project is on LMS.
-* The R code that executes the results should be embedded in this notebook if possible. It's also okay to "source" external scripts from within your notebook, including those provided by your instructors. 
-* If there is work that is not appropriate to be embedded on your final notebook, then you can describe the work in the notebook and provide figures generated elsewhere (e.g. screen shots, graphs). Indicate if that work has been committed to github. If necessary put details in Appendix.    
-* Your wording should be suitable for sharing with external partners/mentors and useful to future contributors.
-* Please don't summarize everything you did; discuss only the *most important* aspects of your work. Ask yourself *what really matters?*
-* IMPORTANT: Discuss any insights you found regarding COVID-19.
-* If there are limitations to your work, discuss. 
-* Include any background or support for your work. For example, mention any relevant research articles you found -- and be sure to include references!
-* Include your recommendations for extending the COVIDMINDER app:
-    + Data utilization...
-    + Analytics...
-    + Visualizations
-    + User interface design...
-* **Expect internet problems!** Commit versions of this notebook to the IDEA github *early and often*. You can continue to refine and update; that is the point of github!
-
-##SUBMISSION CHECKLIST: Things to check before you submit (DELETE)##
-
-* Have you given your file(s) a clear, sensible name? `my_notebook.Rmd` or `joey.Rmd` are **not* acceptable!
-* Is every figure clearly labeled and titled? 
-* Does every figure serve a purpose? 
-     + What question does it answer? 
-     + You can put extra (non-essential) figues in the Appendix.
-* Are your tables clearly labelled and legible?
-     + We recommend using `kable()` (built into `knitr`)
-     + `xtable()` might also work for you (not as easy as `kable()`)
-* **CRITICAL:** Have you given enough information for someone to reproduce, understand and extend your results?
-     + Where can they *find* the data that you used?
-     + Have you *described* the data that used?
-     + Have you *documented* your code? 
-     + Are your figures *clearly labeled*?
-     + Did you *discuss your findings*?
-     + Did you use good grammar and *proofread* your results?
-     + Finally, have you *committed* your work to github and made a *pull request*?
-     
-## github Submission Instructions (DELETE!)
-
-Fill out the bullets at the beginning of this notebook...
-
-* Provide your github ID. 
-* Indicate the issues associated with this work on github. 
-* Commit the Rmd and html versions of this notebook to the `MATP-4400-FINAL` directory on github and make a pull request.  
-* Provide the link to your github submission on LMS. 
-    + **NOTE:** You can post your link any time after it exists  
-    + We will grade the latest version available on Github starting at 3:00 on Thursday, 7 May.  
-* **NOTE:** RStudio Server will be unavailable due to maintenance for up to a week beginning the weekend of 9 May,  so there can be no extensions or late submissions. 
-
 ##github help (DELETE!)
 
 * DO THIS FIRST:
@@ -108,16 +54,18 @@ Fill out the bullets at the beginning of this notebook...
 *This should be the first section of your final project notebook. Fill out the following according to how you submitted your notebook!*
 
 * github repository: https://github.com/TheRensselaerIDEA/COVID-Notebooks (for reference)
-* My github ID: *alexchan18* (example)
-* github issues addressed by this work: `#27` (example)
-* Github branch name of my submitted notebook: *erickson_final* (example)
+* My github ID: *alexchan18*
+* github issues addressed by this work: `#27`
+* Github branch name of my submitted notebook: *feature-27*
 * link to merged notebook (post these to LMS!: 
     + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/feature-27/MATP-4400-FINAL/covid-notebook-Chana6.Rmd 
-    + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/master/MATP-4400-FINAL/COVID_FINAL_2020.html (example; HTML version)
+    + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/feature-27/MATP-4400-FINAL/covid-notebook-Chana6.pdf 
 
 # Overview & Problems Tackled
 
 *On March 11, 2020, the World Health Organization declared COVID-19 a global pandemic. The number of cases reached a point where the entire world needed to take action. In the United States, state governors began closing down states to reduce the rate of infection. This meant that all citizens had to remain in their homes until further notice. Fast forward 6 weeks, the citizens of the United States are eager to leave their homes and return to normal life. The decision to do open up the country will be made based on the rate of infection and the increase in new cases. I looked at the data for this in New York State to see if Governor Cuomo should make the decision to open. *
+
+
 
 # Data Description
 
@@ -129,64 +77,267 @@ Fill out the bullets at the beginning of this notebook...
 
 ## Problem 1 
 
-*Describe the problem you are examining.  If there is background that is necessary for this problem, then put it here. Include any references.* 
+*We need to visualize the number of new deaths per days in New York, separated by counties. * 
 
  
 ### Methods
 
 
-```{r}
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
 
-#April22 <- read_csv("data/csv/04-22-2020.csv")
-#Ap22 <- April22[April22$Province_State == "New York",]
-#A22 <- data.frame(Ap22$Admin2, Ap22$Confirmed, Ap22$Deaths)
-#A22 <- A22[rowSums(is.na(Ap22)) == 0,] #April 22nd NY Counties Confirmed and Deaths
-#A22Deaths = sum(A22$Ap22.Deaths)
+April22 <- read_csv("data/csv/04-22-2020.csv")
+Ap22 <- April22[April22$Province_State == "New York",]
+A22 <- data.frame(Ap22$Admin2, Ap22$Confirmed, Ap22$Deaths)
+A22 <- A22[rowSums(is.na(Ap22)) == 0,] #April 22nd NY Counties Confirmed and Deaths
+A22Deaths = sum(A22$Ap22.Deaths)
 
 Deaths = 19413
 
-April23 <- read_csv("data/csv/04-23-2020.csv")
+April23 <- read_csv("data/csv/04-23-2020.csv") 
 Ap23 <- April23[April23$Province_State == "New York",]
 A23 <- data.frame(Ap23$Admin2, Ap23$Confirmed, Ap23$Deaths)
 A23 <- A23[rowSums(is.na(Ap23)) == 0,] #April 23rd NY Counties Confirmed and Deaths
 A23Deaths = sum(A23$Ap23.Deaths) - Deaths
+A23Change = A23$Ap23.Deaths - A22$Ap22.Deaths
+A23 <- data.frame(A23, A23Change)
 
 April26 <- read_csv("data/csv/04-26-2020.csv")
 Ap26 <- April26[April26$Province_State == "New York",]
 A26 <- data.frame(Ap26$Admin2, Ap26$Confirmed, Ap26$Deaths)
 A26 <- A26[rowSums(is.na(A26)) == 0,] #April 26th NY Counties Confirmed and Deaths
+A26 <- A26[-c(53),]
 A26Deaths = sum(A26$Ap26.Deaths) - Deaths
+A26Change = A26$Ap26.Deaths - A23$Ap23.Deaths
+A26 <- data.frame(A26, A26Change)
 
 April29 <- read_csv("data/csv/04-29-2020.csv")
 Ap29 <- April29[April29$Province_State == "New York",]
 A29 <- data.frame(Ap29$Admin2, Ap29$Confirmed, Ap29$Deaths)
 A29 <- A29[rowSums(is.na(A29)) == 0,] #April 29th NY Counties Confirmed and Deaths
+A29 <- A29[-c(53),]
 A29Deaths = sum(A29$Ap29.Deaths) - Deaths
+A29Change = A29$Ap29.Deaths - A26$Ap26.Deaths
+A29 <- data.frame(A29, A29Change)
 
 May2 <- read_csv("data/csv/05-02-2020.csv")
 Ma2 <- May2[May2$Province_State == "New York",]
 M2 <- data.frame(Ma2$Admin2, Ma2$Confirmed, Ma2$Deaths)
-M2 <-M2[rowSums(is.na(M2)) == 0,] #May 2nd NY Counties Confirmed and Deaths
+M2 <- M2[rowSums(is.na(M2)) == 0,] #May 2nd NY Counties Confirmed and Deaths
+M2 <- M2[-c(53),]
 M2Deaths = sum(M2$Ma2.Deaths) - Deaths
+M2Change = M2$Ma2.Deaths - A29$Ap29.Deaths
+M2 <- data.frame(M2, M2Change)
 
 May5 <- read_csv("data/csv/05-05-2020.csv")
 Ma5 <- May5[May5$Province_State == "New York",]
 M5 <- data.frame(Ma5$Admin2, Ma5$Confirmed, Ma5$Deaths)
 M5 <- M5[rowSums(is.na(M5)) == 0,] #May 5th NY Counties Confirmed and Deaths
+M5 <- M5[-c(53),]
 M5Deaths = sum(M5$Ma5.Deaths) - Deaths
+M5Change = M5$Ma5.Deaths - M2$Ma2.Deaths
+M5 <- data.frame(M5, M5Change)
 
 #Put the number of new deaths for each day into a csv file
 DaysDeaths <- read_csv("data/csv/DaysDeaths.csv")
 
 ```
 
-```{r}
-barplot(DaysDeaths$Deaths, main="Deaths Per Day Every 3 Days Since April 23rd",
-   xlab="Date",
-   ylab="# of deaths",
-   names.arg=c(DaysDeaths$Date))
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+library(usmap)
+library(ggplot2)
+```
+
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+Ap23 <-Ap23[rowSums(is.na(Ap23)) == 0,]
+fips <- Ap23$FIPS
+s <- rep("ny", length(fips))
+AP23names <- Ap23$Admin2
+AP23deaths <- A23$A23Change
+AP23combined <- data.frame(fips,s,AP23names,AP23deaths) #Combined Data Frame for April 23th
+AP23combined <- AP23combined[-c(29),]
+AP23combined <- add_row(AP23combined, fips = 36005, s = "ny", AP23names = "Bronx", AP23deaths = 329)
+AP23combined <- add_row(AP23combined, fips = 36061, s = "ny", AP23names = "Manhattan", AP23deaths = 329)
+AP23combined <- add_row(AP23combined, fips = 36085, s = "ny", AP23names = "Staten Island", AP23deaths = 329)
+AP23combined <- add_row(AP23combined, fips = 36047, s = "ny", AP23names = "Brooklyn", AP23deaths = 329)
+AP23combined <- add_row(AP23combined, fips = 36081, s = "ny", AP23names = "Queens", AP23deaths = 329)
+```
+
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+Ap26 <-Ap26[rowSums(is.na(Ap26)) == 0,]
+fips <- Ap26$FIPS
+s <- rep("ny", length(fips))
+AP26names <- Ap26$Admin2
+AP26deaths <- A26$A26Change
+AP26combined <- data.frame(fips,s,AP26names,AP26deaths) #Combined Data Frame for April 26th
+AP26combined <- AP26combined[-c(29),]
+AP26combined <- add_row(AP26combined, fips = 36005, s = "ny", AP26names = "Bronx", AP26deaths = 223)
+AP26combined <- add_row(AP26combined, fips = 36061, s = "ny", AP26names = "Manhattan", AP26deaths = 223)
+AP26combined <- add_row(AP26combined, fips = 36085, s = "ny", AP26names = "Staten Island", AP26deaths = 223)
+AP26combined <- add_row(AP26combined, fips = 36047, s = "ny", AP26names = "Brooklyn", AP26deaths = 223)
+AP26combined <- add_row(AP26combined, fips = 36081, s = "ny", AP26names = "Queens", AP26deaths = 223)
+
+```
+
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+Ap29 <-Ap29[rowSums(is.na(Ap29)) == 0,]
+fips <- Ap29$FIPS
+s <- rep("ny", length(fips))
+AP29names <- Ap29$Admin2
+AP29deaths <- A29$A29Change
+AP29combined <- data.frame(fips,s,AP29names,AP29deaths) #Combined Data Frame for April 29th
+AP29combined <- AP29combined[-c(29),]
+AP29combined <- add_row(AP29combined, fips = 36005, s = "ny", AP29names = "Bronx", AP29deaths = 199)
+AP29combined <- add_row(AP29combined, fips = 36061, s = "ny", AP29names = "Manhattan", AP29deaths = 199)
+AP29combined <- add_row(AP29combined, fips = 36085, s = "ny", AP29names = "Staten Island", AP29deaths = 199)
+AP29combined <- add_row(AP29combined, fips = 36047, s = "ny", AP29names = "Brooklyn", AP29deaths = 199)
+AP29combined <- add_row(AP29combined, fips = 36081, s = "ny", AP29names = "Queens", AP29deaths = 199)
+```
+
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+Ma2 <-Ma2[rowSums(is.na(Ma2)) == 0,]
+fips <- Ma2$FIPS
+s <- rep("ny", length(fips))
+M2names <- Ma2$Admin2
+M2deaths <- M2$M2Change
+M2combined <- data.frame(fips,s,M2names,M2deaths) #Combined Data Frame for April 29th
+M2combined <- M2combined[-c(29),]
+M2combined <- add_row(M2combined, fips = 36005, s = "ny", M2names = "Bronx", M2deaths = 104)
+M2combined <- add_row(M2combined, fips = 36061, s = "ny", M2names = "Manhattan", M2deaths = 104)
+M2combined <- add_row(M2combined, fips = 36085, s = "ny", M2names = "Staten Island", M2deaths = 104)
+M2combined <- add_row(M2combined, fips = 36047, s = "ny", M2names = "Brooklyn", M2deaths = 104)
+M2combined <- add_row(M2combined, fips = 36081, s = "ny", M2names = "Queens", M2deaths = 104)
+```
+
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+Ma5 <-Ma5[rowSums(is.na(Ma5)) == 0,]
+fips <- Ma5$FIPS
+s <- rep("ny", length(fips))
+M5names <- Ma5$Admin2
+M5deaths <- M5$M5Change
+M5combined <- data.frame(fips,s,M5names,M5deaths) #Combined Data Frame for May 5th
+M5combined <- M5combined[-c(29),]
+M5combined <- add_row(M5combined, fips = 36005, s = "ny", M5names = "Bronx", M5deaths = 144)
+M5combined <- add_row(M5combined, fips = 36061, s = "ny", M5names = "Manhattan", M5deaths = 144)
+M5combined <- add_row(M5combined, fips = 36085, s = "ny", M5names = "Staten Island", M5deaths = 144)
+M5combined <- add_row(M5combined, fips = 36047, s = "ny", M5names = "Brooklyn", M5deaths = 144)
+M5combined <- add_row(M5combined, fips = 36081, s = "ny", M5names = "Queens", M5deaths = 144)
+```
+
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+plot_usmap(
+    data = AP23combined, values = "AP23deaths", include = c("NY"), exclude = c("36005", "36061", "36085", "36047", "36081", "36059", "36103", "36119", "36087"), color = "royalblue"
+  ) + 
+  scale_fill_continuous(
+    low = "white", high = "royalblue", name = "Deaths", label = scales::comma, limit = c(-2,50)
+  ) + 
+  labs(title = "New York State Counties - North of Weschester", subtitle = "Deaths Per County, Aril 23rd") +
+  theme(legend.position = "right")
+```
+
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+
+plot_usmap(
+    data = AP26combined, values = "AP26deaths", include = c("NY"), exclude = c("36005", "36061", "36085", "36047", "36081", "36059", "36103", "36119", "36087"), color = "royalblue"
+  ) + 
+  scale_fill_continuous(
+    low = "white", high = "royalblue", name = "Deaths", label = scales::comma, limit = c(-2,50)
+  ) + 
+  labs(title = "New York State Counties - North of Weschester", subtitle = "Deaths Per County, Aril 26th") +
+  theme(legend.position = "right")
+```
+
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+plot_usmap(
+    data = AP29combined, values = "AP29deaths", include = c("NY"), exclude = c("36005", "36061", "36085", "36047", "36081", "36059", "36103", "36119", "36087"), color = "royalblue"
+  ) + 
+  scale_fill_continuous(
+    low = "white", high = "royalblue", name = "Deaths", label = scales::comma, limit = c(-2,50)
+  ) + 
+  labs(title = "New York State Counties - North of Weschester", subtitle = "Deaths Per County, Aril 29th") +
+  theme(legend.position = "right")
+
+```
+
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+plot_usmap(
+    data = M2combined, values = "M2deaths", include = c("NY"), exclude = c("36005", "36061", "36085", "36047", "36081", "36059", "36103", "36119", "36087"), color = "royalblue"
+  ) + 
+  scale_fill_continuous(
+    low = "white", high = "royalblue", name = "Deaths", label = scales::comma, limit = c(-2,50)
+  ) + 
+  labs(title = "New York State Counties - North of Weschester", subtitle = "Deaths Per County, May 2nd") +
+  theme(legend.position = "right")
+```
+
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+plot_usmap(
+    data = M5combined, values = "M5deaths", include = c("NY"), exclude = c("36005", "36061", "36085", "36047", "36081", "36059", "36103", "36119", "36087"), color = "royalblue"
+  ) + 
+  scale_fill_continuous(
+    low = "white", high = "royalblue", name = "Deaths", label = scales::comma, limit = c(-2,50)
+  ) + 
+  labs(title = "New York State Counties - North of Weschester", subtitle = "Deaths Per County, May 5th") +
+  theme(legend.position = "right")
+
 ```
 	
+	
+	
+	
+	
+	
+	
+	
+	
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+plot_usmap(
+    data = AP23combined, values = "AP23deaths", include = c("36005", "36061", "36085", "36047", "36081", "36059", "36103", "36119", "36087"), color = "royalblue3"
+  ) + 
+  scale_fill_continuous(
+    low = "white", high = "royalblue3", name = "Deaths", label = scales::comma, limit = c(-10, 400)
+  ) + 
+  labs(title = "New York Counties - Westchester and Below", subtitle = "Deaths Per County, April 23rd") +
+  theme(legend.position = "right")
+
+
+plot_usmap(
+    data = AP26combined, values = "AP26deaths", include = c("36005", "36061", "36085", "36047", "36081", "36059", "36103", "36119", "36087"), color = "royalblue3"
+  ) + 
+  scale_fill_continuous(
+    low = "white", high = "royalblue3", name = "Deaths", label = scales::comma, limit = c(-10, 400)
+  ) + 
+  labs(title = "New York Counties - Westchester and Below", subtitle = "Deaths Per County, April 26th") +
+  theme(legend.position = "right")
+
+
+plot_usmap(
+    data = AP29combined, values = "AP29deaths", include = c("36005", "36061", "36085", "36047", "36081", "36059", "36103", "36119", "36087"), color = "royalblue3"
+  ) + 
+  scale_fill_continuous(
+    low = "white", high = "royalblue3", name = "Deaths", label = scales::comma, limit = c(-10, 400)
+  ) + 
+  labs(title = "New York Counties - Westchester and Below", subtitle = "Deaths Per County, April 29th") +
+  theme(legend.position = "right")
+
+plot_usmap(
+    data = M2combined , values = "M2deaths", include = c("36005", "36061", "36085", "36047", "36081", "36059", "36103", "36119", "36087"), color = "royalblue3"
+  ) + 
+  scale_fill_continuous(
+    low = "white", high = "royalblue3", name = "Deaths", label = scales::comma, limit = c(-10, 400)
+  ) + 
+  labs(title = "New York Counties - Westchester and Below", subtitle = "Deaths Per County, May 2nd") +
+  theme(legend.position = "right")
+
+plot_usmap(
+    data = M5combined , values = "M5deaths", include = c("36005", "36061", "36085", "36047", "36081", "36059", "36103", "36119", "36087"), color = "royalblue3"
+  ) + 
+  scale_fill_continuous(
+    low = "white", high = "royalblue3", name = "Deaths", label = scales::comma, limit = c(-10, 400)
+  ) + 
+  labs(title = "New York Counties - Westchester and Below", subtitle = "Deaths Per County, May 5th") +
+  theme(legend.position = "right")
+```
+
 	
 ### Results
 
