@@ -135,7 +135,7 @@ Fill out the bullets at the beginning of this notebook...
 ### Methods
 
 
-```{r}
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
 
 #April22 <- read_csv("data/csv/04-22-2020.csv")
 #Ap22 <- April22[April22$Province_State == "New York",]
@@ -180,13 +180,57 @@ DaysDeaths <- read_csv("data/csv/DaysDeaths.csv")
 
 ```
 
-```{r}
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
 barplot(DaysDeaths$Deaths, main="Deaths Per Day Every 3 Days Since April 23rd",
    xlab="Date",
    ylab="# of deaths",
    names.arg=c(DaysDeaths$Date))
 ```
-	
+
+
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+library(usmap)
+library(ggplot2)
+```
+
+
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+usmap::plot_usmap("counties", fill = "navy", alpha = 0.75,
+                  include = c("NY"))
+```
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+Ap29 <-Ap29[rowSums(is.na(Ap29)) == 0,]
+fips <- Ap29$FIPS
+s <- rep("ny", length(fips))
+names <- Ap29$Admin2
+deaths <- Ap29$Deaths
+combined <- data.frame(fips,s,names,deaths)
+```
+
+
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+plot_usmap(
+    data = combined, values = "deaths", include = c("NY"), color = "navy"
+  ) + 
+  scale_fill_continuous(
+    low = "white", high = "navy", name = "Deaths", label = scales::comma
+  ) + 
+  labs(title = "New York State", subtitle = "Deaths Per County") +
+  theme(legend.position = "right")
+```
+
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+
+plot_usmap(
+    data = combined, values = "deaths", include = c("NY"), exclude = c("New York City"), color = "navy"
+  ) + 
+  scale_fill_continuous(
+    low = "white", high = "navy", name = "Population (2015)", label = scales::comma
+  ) + 
+  labs(title = "New York State", subtitle = "Deaths Per County") +
+  theme(legend.position = "right")
+```
+
 	
 ### Results
 
