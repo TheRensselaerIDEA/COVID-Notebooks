@@ -1,0 +1,412 @@
+---
+title: "MATP-4400 COVID-19 Final Notebook"
+author: "Tracy (Chuoxi) Chen"
+date: "May 7, 2020"
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+    toc_depth: 2
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
+---
+
+```{r setup, include=FALSE}
+# stick libraries here
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(ggplot2)
+library(maps)
+library(cowplot)
+library(tools)
+library(knitr)
+```
+
+# Final Project: Submission Links
+
+* github repository: https://github.com/TheRensselaerIDEA/COVID-Notebooks
+* My github ID: *Tracy29*
+* github issues addressed by this work: `#6`
+* Github branch name of my submitted notebook: *feature-6*
+* link to merged notebook (post these to LMS!: 
+    + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/feature-6/MATP-4400-FINAL/Tracy_Chen_COVID_FINAL_2020.Rmd 
+    + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/feature-6/MATP-4400-FINAL/Tracy_Chen_COVID_FINAL_2020.html 
+
+# Overview & Problems Tackled
+In this project, I explored the connection between poor lifestyle behaviors and COVID 19 death for males and females. The approach was to first create visualization maps of the disparity index for 3 common unhealthy behaviors: smoking, physical inactivity, and excessive drinking, across the states for both male and female. Then I created a fourth visualization map for the disparity index for COVID 19 death by states and gender that will be used for comparison with the previous maps.
+
+In the first problem, I investigated the disparity index in smoking behavior across the US. My findings suggest that multiple states in the south have a higher percentage of the population who smoke. While states in the Mid-Atlantic region have a lower percentage of the population who smoke when compared against the US median. Overall, the male population has a lower percentage of smokers than the female population in the US. 
+
+In the second problem, the disparity index for physical inactivity suggests states in the deep south are less physically active than the US median for both females and males. Across the US, the female population is more physically active in certain northern states than the male population. 
+
+In the third problem, the disparity index for excessive drinking indicates the northern-central region of the United States has a high percentage of the population that engages in heavy drinking. Unlike in the first and second problems, some states in the south have a smaller percentage of the population engaging in heavy drinking behaviors when compared against the US median. 
+
+# Data Description
+The health behavior data come from America's Health Ranking's 2019 annual report, which covers all 50 states and the District of Columbia and the US average across the 51 locations. It identifies over 50 different health determinants that the organization thinks is associated with health outcomes. Moreover, these determinants are subset into different biosocial-economical categories such as income, ethnicity, age, and more. A value, most often as a percentage of the state adult population, is assigned to the measure. This will be used in my analysis to investigate the overall behavior of the states. In total, the full report contains 32,642 samples, with 11 variables.
+
+The COVID 19 death count data comes from the Center for Disease Control and Prevention (CDC). It reports the number of death for the 50 states, the District of Columbia, New York City, and Puerto Rico. Notably, CDC excluded New York City's death count from the overall New York state's death count most likely because the city had a very large number. The death count is then subsetted by age groups and by gender. In my analysis, I chose to use the death count for each state separated by sex. In feature 6, I began working on using the death count by age groups. This invites future work for comparing it with the health behaviors for different age groups. 
+
+# Results
+
+## Set up data
+Due to the scale of the health data set, I need to clean up and pick out just the data I am interested in looking into for this project before any analysis can begin. 
+```{r }
+# Read in the entire 2019 report from America's Health Ranking. 
+all_states.df <- read.csv("~/COVID-Notebooks/data/2019-Annual.csv")
+all_states<- unique(all_states.df$State.Name) %>% sort()
+# Sort data frame by states 
+all_states.df<- all_states.df %>% 
+  arrange(factor(all_states.df$State.Name, levels = all_states))
+
+# Pick data for specific health behaviors as topics of this project
+behaviors<- c("Smoking", "Physical Inactivity", "Excessive Drinking")
+behaviors.df <- filter(all_states.df, grepl(paste(behaviors, collapse="|"), Measure.Name))
+
+# Filter out only the data that contain information with sex
+sex<- c("Female", "Male")
+behaviors_sex.df<- behaviors.df %>%
+  filter(grepl(paste(sex, collapse="|"), Measure.Name)) %>%
+  select(State.Name, Measure.Name, Value)
+
+# Pick and remove the data pertaining to United States
+US_behavior<- behaviors_sex.df[behaviors_sex.df$State.Name == "United States", ]
+behaviors_sex.df<- behaviors_sex.df[behaviors_sex.df$State.Name != "United States", ]
+```
+
+For the data set containing the COVID 19 death count, additional work also needs to be done to ensure the format of the data matches that of the health behavior data. This will be helpful when I create the visualizations later on. Several tasks/ problems are identified and solved here:
+
+1. United States' total death count is included. I still need this information, but as a separate item from the data frame containing the death counts for the states. The US death count data will be used to calculate the death disparity index later.
+
+2. New York City's death count is not included in New York State's death count. Thus I would need to pick out the data for New York City from the data set and add it onto New York State's number.
+
+3. Additional complexity is present because I separated the death counts by gender. Therefore I cannot just add and remove samples freely in the data frame as it may disrupt the order of the data.
+
+4. In the health behavior data set, data is present in the form of a female, male. However, in the COVID 19 death count data set, data is present in the form of male, female. To have the data match up when I merge the two data sets later, I swapped the rows in COVID 19 death count dataset so that the new order is female, male. 
+
+5. I calculated the death disparity index for females and males using the formula $Death~Disparity~Index=\frac{\#~of~COVID~19~Death~in~state}{mean~\#~of~COVID~19~Death~in~US}$ and used the same bin size in COVIDMinder to group the indices. 
+```{r }
+# Read in data about COVID 19 death
+death_count<- read.csv("~/COVID-Notebooks/data/csv/Provisional_COVID-19_Death_Counts_by_Sex__Age__and_State.csv")
+
+# Choose data that contains information about sex
+pick<- c("Male Total", "Female Total")
+death_count<- death_count %>%
+  filter(grepl(paste(pick, collapse="|"), Sex)) %>%
+  select(State, Sex, COVID.19.Deaths)
+
+US_death<- death_count[death_count$State == "United States", ]
+NYC_death<- death_count[death_count$State == "New York City", ]
+
+# Remove irrelevant data
+drop <- c("United States", "New York City", "Puerto Rico")
+death_count<- death_count[!(death_count$State %in% drop), ]
+row.names(death_count) <- NULL
+
+# Add COVID 19 death information for NYC to NY's data for COVID 19 death
+n<- which(grepl("New York", death_count$State))
+death_count$COVID.19.Deaths[n[1]]<- death_count$COVID.19.Deaths[n[1]] + NYC_death$COVID.19.Deaths[1]
+death_count$COVID.19.Deaths[n[2]]<- death_count$COVID.19.Deaths[n[2]] + NYC_death$COVID.19.Deaths[2]
+
+# Calculate the average number of COVID 19 death for female and male
+fmean_death<- US_death$COVID.19.Deaths[2]/53 # Divide by 53 because district of columbia and NYC counted is counted separately 
+mmean_death<- US_death$COVID.19.Deaths[1]/53
+US_death$mean_death<- c(fmean_death, mmean_death)
+
+# Calculate the disparity index of each state's COVID 19 death count against the US value
+death_count$death.disparity<- log(death_count$COVID.19.Deaths/US_death$mean_death)
+
+# Reverse every two row from male, female to female, male to match the ordering for the health behavior data set
+death_count<- death_count[c(rbind(seq(2, nrow(death_count), 2), seq(1, nrow(death_count), 2))),]
+
+# Categorize COVID 19 death count into 8 groups for female and male 
+cut_by<- c(5, 2, 1, .2, -.2, -1, -2, -5)
+fdeath.df<- death_count %>% filter(grepl(paste("Female", collapse="|"), Sex))
+fdeath.df$dgroup<- as.numeric(cut(fdeath.df$death.disparity, breaks = cut_by))
+mdeath.df<- death_count %>% filter(grepl(paste("Male", collapse="|"), Sex))
+mdeath.df$dgroup<- as.numeric(cut(mdeath.df$death.disparity, breaks = cut_by))
+```
+
+## Problem 1 
+According to the CDC, smoking is the most common cause of preventable death in the United States. It can damage most organs in the human body and are related to many illnesses such as heart and respiratory diseases, diabetes, and various types of cancer. Additionally, second-hand smoking can also cause health side effects as the smoke contains thousands of toxic chemicals, many of which are dangerous to the human body. Finally, smoking adds stress to the US economy as over 300 billion dollars each year are spent on medical care and compensation for incidents relating to smoking. 
+
+Since smoking weakens the immune system and the body's ability to fight back diseases, the smoking population is especially vulnerable during the COVID 19 pandemic. By analyzing the percentage of female and male smoker in the US, it offers insight into the most impacted regions. Additionally, the separation for female and male smokers can let us have a clearer understanding of the overall smoking behavior of the two genders and whether it has any connection with the COVID 19 death count for each gender. 
+
+### Methods
+Note: The data source America's Health Ranking defines a smoker as one "who reported smoking at least 100 cigarettes in their lifetime and currently smoke daily or some days". 
+
+First I separate the data on smoking behavior in the US from the health behavior data set by females and males. Then I calculated the smoking disparity index for each state using the formula $Smoking~Disparity ~Index = \frac{\%~smoker~in~state}{median~\%~smoker~in~US}$ for both female and male smokers. I used the same bin size for the indices as the ones used in COVIDMinder for proportionate comparison across the maps. Next, I visualized the disparity indices for states on a US map, one for each gender. 
+
+To see the connection for smoking with COVID 19 death, I used the same method as above. I calculated the disparity indices for COVID 19 death count by states for females and males. Next, I created a visualization of the death disparity indices on a US map using the same bin size as the ones used for COVIDMinder. 
+
+### Results
+```{r, fig.width=10, fig.height=10}
+# US_smoking value is the median value of states and DC
+US_smoking<- US_behavior %>% filter(grepl(paste("Smoking", collapse="|"), Measure.Name))
+
+# Filter out information about smoking 
+smoking.df<- behaviors_sex.df %>%
+  filter(grepl(paste("Smoking", collapse="|"), Measure.Name))
+# Calculate the disparity index of each state's smoking percentage against the US value
+smoking.df$value.disparity<- log(smoking.df$Value/US_smoking$Value)
+
+# Filter data that pertains to female
+fsmoking.df<- smoking.df %>% 
+  filter(grepl(paste("Female", collapse="|"), Measure.Name)) %>%
+  # Add COVID 19 death disparity
+  mutate(death.disparity= fdeath.df$death.disparity) %>% 
+  mutate(dgroup= fdeath.df$dgroup)
+fsmoking.df$region<- tolower(fsmoking.df$State.Name)
+
+# Categorize smoking percentage into 8 groups
+fsmoking.df$vgroup<- as.numeric(cut(fsmoking.df$value.disparity, breaks = cut_by))
+
+# Filter data that pertains to male
+msmoking.df<- smoking.df %>% 
+  filter(grepl(paste("Male", collapse="|"), Measure.Name)) %>%
+  mutate(death.disparity= mdeath.df$death.disparity) %>% 
+  mutate(dgroup= mdeath.df$dgroup)
+msmoking.df$region<- tolower(msmoking.df$State.Name)
+msmoking.df$vgroup<- as.numeric(cut(msmoking.df$value.disparity, breaks = cut_by))
+
+# Access US map data from library(map)
+us_states<- map_data("state")
+# Abbreviate state names so the names can fit on the map
+us_states$abbrev <- state.abb[match(toTitleCase(us_states$region), state.name)]
+
+# Merge US map data and smoking data for female and male
+us_fsmoking<- left_join(us_states, fsmoking.df)
+us_msmoking<- left_join(us_states, msmoking.df)
+
+# Used to locate state labels on the map by calculating the centroid using longitude and latitude of the states
+cnames <- aggregate(cbind(long, lat) ~ abbrev, data=us_fsmoking, 
+                    FUN=function(x)mean(range(x)))
+
+# Labels for map legend
+label<- c("-5 to -2", "-2 to -1", "-1 to -.2", "-.2 to .2", ".2 to 1", "1 to 2", "2 to 5", "NA")
+# Used later in mapping to match group with color
+match<- c("1"="#426C85", "2"="#67a9cf", "3"="#d1e5f0", "4"="#F5F5F5", "5"="#fddbc7", "6"="#ef8a62", "7"="#b2182b",
+          "NA"="white")
+# Used later to set limit for map legend so that unused levels still appear 
+lim<- c(1,2,3,4,5,6,7,8)
+
+# Plot female and male smoking disparity 
+smoke_1<- ggplot(us_fsmoking, aes(x=long, y=lat, group=group, fill=as.factor(vgroup), colour=as.factor(vgroup))) + 
+  geom_polygon(color = "gray90", size = 0.2) + 
+  with(cnames, annotate(geom="text", x = long, y=lat, label = abbrev, size = 2.5))+ 
+  coord_quickmap() + theme_map()+
+  labs(title = "US Female Smoking Disparity Index")+ labs(fill = "Disparity Index") +
+  scale_color_manual(name = "Disparity Index", aesthetics = c("colour", "fill"), breaks = as.factor(1:8), 
+                     limits= lim, labels= label, values = match)
+smoke_2<- ggplot(us_msmoking, aes(x=long, y=lat, group=group, fill=as.factor(vgroup), colour=as.factor(vgroup))) + 
+  geom_polygon(color = "gray90", size = 0.2) + 
+  with(cnames, annotate(geom="text", x = long, y=lat, label = abbrev, size = 2.5))+ 
+  coord_quickmap() + theme_map()+
+  labs(title = "US Male Smoking Disparity Index")+ labs(fill = "Disparity Index") +
+  scale_color_manual(name = "Disparity Index", aesthetics = c("colour", "fill"), breaks = as.factor(1:8), 
+                     limits= lim, labels= label, values = match)
+
+# Combine the two maps
+plot_grid(smoke_1, smoke_2, ncol = 1)
+
+# Plot female and male COVID 19 death disparity
+covid_1<- ggplot(us_fsmoking, aes(x=long, y=lat, group=group, fill=as.factor(dgroup), colour=as.factor(dgroup))) + 
+  geom_polygon(color = "gray90", size = 0.2) + 
+  with(cnames, annotate(geom="text", x = long, y=lat, label = abbrev, size = 2.5))+ 
+  coord_quickmap() + theme_map()+
+  labs(title = "US Female COVID 19 Death Disparity Index")+ labs(fill = "Disparity Index") +
+  scale_color_manual(name = "Disparity Index", aesthetics = c("colour", "fill"), breaks = as.factor(1:8), 
+                     limits= lim, labels= label, values = match)
+covid_2<- ggplot(us_msmoking, aes(x=long, y=lat, group=group, fill=as.factor(dgroup), colour=as.factor(dgroup))) + 
+  geom_polygon(color = "gray90", size = 0.2) + 
+  with(cnames, annotate(geom="text", x = long, y=lat, label = abbrev, size = 2.5))+ 
+  coord_quickmap() + theme_map()+
+  labs(title = "US Male Male COVID 19 Death Disparity Index")+ labs(fill = "Disparity Index") +
+  scale_color_manual(name = "Disparity Index", aesthetics = c("colour", "fill"), breaks = as.factor(1:8), 
+                     limits= lim, labels= label, values = match)
+plot_grid(covid_1, covid_2, ncol = 1)
+```
+### Discussion
+
+*Interpret results.  What were your findings?  What do they say about COVID-19?   What are the strengths and limitations of these results? Is there support for your findings from other sources? Include references as appropriate.*
+On the maps for smoking disparity index, several states in the South have a higher disparity index for the percentage of the smoker for both female and male adult populations. Female adults have a lower percentage of smokers in  Washington, California, and New York as compared to the male adult population. Utah has a low percentage of smokers for both of its female and male adult population. 
+
+On the maps for COVID 19 death disparity index, New York, New Jersey, Michigan, and Massachusetts have a higher disparity index for the COVID  death for both female and male populations than the rest of the US. Follow by California, Illinois, Florida, Pennsylvania, and Louisiana. The majority of the Midwest and South tend to have lower disparity index for COVID 19 death for both female and male, except for Illinois, Louisiana, and Michigan.  
+
+By comparing the two sets of maps, my first thought was that the maps almost appear to be opposites. States with a higher percentage of a smoker than the US median have lower COVID 19 death disparity than the US average, especially when comparing the Midwest and the South with the Mid-Atlantic region. However, this also makes sense because according to a report from Measure of America on American human development index (HDI), the states with the higher COVID 19 death disparity index tend to be the states with higher human development index. Human develpment index is a measure of a region's social and economic dimensions. It includes determinants such as per capita income, health care, education, and others. This suggests that these states may have better resources for testing and reaching out to COVID patients, which may explain why they have such high death counts. Nonetheless, there are several states such as Michigan and Lousianna that have higher than average percentage of the smoking population and higher than average COVID 19 death. (See Appendix A for a map of US states' HDI)
+
+To further analyze the connection between smoking and COVID 19 death, I would look into the average household income and availability of medical resources for each state and compare that with smoking behaviors and COVID 19 death. These data are available in the health dataset from America's Health Ranking. 
+
+One major limitation of my analysis is that causation is not proven. Although there seems to be a loose association between some regions of high smoking disparity index and high COVID 19 death disparity index, correlation does not conclude causation. I will need more rigorous statistical tools and data to test for the covariance, temporal precedence, and internal validity to confidently say smoking is a potential determinant for COVID 19 death. 
+
+## Problem 2
+Physical activity is a crucial part of maintaining a healthy lifestyle. According to health.gov, being physically active can help reduce the risk of cardiovascular diseases and diabetes, improve the body's immune system and physical function. Being too sedentary on the other hand can lead to the development of high blood pressure, diabetes, and heart disease according to John Hopkins Medicine. 
+
+Since physical inactivity has a negative impact on a person's health, analyzing the percentage of female and male adults in the US can provide insights into the health conditions of Americans in different regions. Additionally, the separation for female and male adults can let us have a clearer understanding of the overall sedentary behavior of the two genders and whether such poor health decision has any connection with the COVID 19 death count for each gender. 
+
+### Methods
+Note: The data source America's Health Ranking defines physical inactivity for adults as one "who reported doing no physical activity or exercise other than their regular job in the past 30 days". 
+
+First I separate the data on physical inactivity in the US from the data set by females and males. Then I calculated the inactivity disparity index for each state using the formula $Inactivity~Disparity ~Index = \frac{\%~adult~report ~no~exercise~in~state}{median~\%~adult~report~no~exercise~in~US}$ for both female and male. I used the same bin size for the indices as the ones used in COVIDMinder and problem 1 for proportionate comparison across the maps. Next, I visualized the disparity indices for states on a US map, one for each gender. 
+
+To see the connection for physical inactivity with COVID 19 death, I compared the map for physical inactivity with the map for COVID death count. There is no need to recreate the maps here because the data on COVID 19 death count remains the same, so I can use the maps from problem 1. 
+
+### Results
+
+```{r, fig.width=10, fig.height=10}
+# US_inactivity value is the median value of states and DC
+US_inactivity<- US_behavior %>% filter(grepl(paste("Physical Inactivity", collapse="|"), Measure.Name))
+
+# Filter out information about physical inactivity 
+inactivity.df<- behaviors_sex.df %>%
+  filter(grepl(paste("Physical Inactivity", collapse="|"), Measure.Name))
+inactivity.df$value.disparity<- log(inactivity.df$Value/US_inactivity$Value)
+
+# Filter data that pertains to female
+finactivity.df<- inactivity.df %>% 
+  filter(grepl(paste("Female", collapse="|"), Measure.Name))
+finactivity.df$region<- tolower(finactivity.df$State.Name)
+# Categorize female physical inactivity percentage into 8 groups
+finactivity.df$vgroup<- as.numeric(cut(finactivity.df$value.disparity, breaks = cut_by))
+
+# Filter data that pertains to male
+minactivity.df<- inactivity.df %>% 
+  filter(grepl(paste("Male", collapse="|"), Measure.Name))
+minactivity.df$region<- tolower(minactivity.df$State.Name)
+minactivity.df$vgroup<- as.numeric(cut(minactivity.df$value.disparity, breaks = cut_by))
+
+# Merge US map data and physical inactivity data for female and male
+us_finactivity<- left_join(us_states, finactivity.df)
+us_minactivity<- left_join(us_states, minactivity.df)
+
+# Plot female and male physical inactivity disparity
+inactivity_1<- ggplot(us_finactivity, aes(x=long,y=lat,group=group,fill=as.factor(vgroup),colour=as.factor(vgroup))) + 
+  geom_polygon(color = "gray90", size = 0.2) + 
+  with(cnames, annotate(geom="text", x = long, y=lat, label = abbrev, size = 2.5))+ 
+  coord_quickmap() + theme_map()+
+  labs(title = "US Female Physical Inactivity Disparity Index")+ labs(fill = "Disparity Index") +
+  scale_color_manual(name = "Disparity Index", aesthetics = c("colour", "fill"), breaks = as.factor(1:8), 
+                     limits= lim, labels= label, values = match)
+inactivity_2<- ggplot(us_minactivity, aes(x=long,y=lat,group=group,fill=as.factor(vgroup),colour=as.factor(vgroup))) + 
+  geom_polygon(color = "gray90", size = 0.2) + 
+  with(cnames, annotate(geom="text", x = long, y=lat, label = abbrev, size = 2.5))+ 
+  coord_quickmap() + theme_map()+
+  labs(title = "US Male Physical Inactivity Disparity Index")+ labs(fill = "Disparity Index") +
+  scale_color_manual(name = "Disparity Index", aesthetics = c("colour", "fill"), breaks = as.factor(1:8), 
+                     limits= lim, labels= label, values = match)
+
+# Combine the two maps
+plot_grid(inactivity_1, inactivity_2, ncol = 1)
+```
+
+### Discussion
+On the maps for physical inactivity disparity index, several states in the deep South have a higher disparity index for the percentage of a sedentary population for both female and male adults. These states are Arizona, Louisiana, Mississippi, Alabama, Kentucky, and Tennessee. Female adults have a lower percentage of physical inactivity disparity index in  North Dakota, Minnesota, Vermont, and Maine as compared to the male adult population. 
+
+By comparing the physical inactivity disparity index maps with the two maps in problem 1, I see that the same states with a high percentage of smokers also have a high percentage of the physically inactive population for both females and males. In a joint journal on health disparity from the National Academies of Sciences, Engineering, and Medicine, the Health and Medicine Division, the Board on Population Health and Public Health Practice, and the Committee on Community-Based Solutions to Promote Health Equity in the United States, the south and midwest are identified with the highest concentration of obese population. Furthermore, the south also had the lowest HDI in the US according to research by Measure of America. Therefore even though the south appears to have a lower COVID 19 death disparity index, it is likely not the precise measurements of the impact of the pandemic in that region. 
+
+To further analyze the connection between physical inactivity and COVID 19 death, I would use the same approach mentioned in problem 1's discussion, with the addition of education level. Average household income, availability of medical resources, and education level can provide insight into people's access and awareness of health issues. This is especially important during an international health crisis where the populations indicated by those 3 factors are more vulnerable than others.  These data are available in the health dataset from America's Health Ranking. 
+
+In addition to the limitation mentioned in problem 1's discussion, my visualization maps also have a lot of room for improvement. For one, I should recreate the map using the leaflet package to make it an interactive map that provides the exact disparity indices for each state. Moreover, Alaska and Hawaii are not included in the maps. Although these states have a much smaller population, health information on these distant states can provide insights into the range of US health disparity.
+
+## Problem 3
+According to the National Institute on Alcohol Abuse and Alcoholism, excessive drinking is the third leading cause of preventable death in the United States. This poor health behavior can lead to short term risks such as alcohol poisoning and severe long term risks such as alcohol use disorder, cancer in various organs, heart, and liver diseases. These consequences damage the body's immune system, making the person extremely vulnerable to during the COVID 19 pandemic.
+
+By analyzing the percentage of female and male adults who report as excessive drinkers and calculate the disparity indices for each state and gender, it offers insight into the distribution of regions facing alcoholism issues. Additionally, the separation for female and male adults can let us have a clearer understanding of the excessive drinking behavior of the two genders and whether such poor health decision has any connection with the COVID 19 death for each gender. 
+
+### Methods
+Note: The data source America's Health Ranking defines excessive drinking for adults as one "who reported either binge drinking (having four or more [women] or five or more [men] drinks on one occasion in the past 30 days) or chronic drinking (having eight or more [women] or 15 or more [men] drinks per week)". 
+
+First I separate the data on excessive drinking in the US from the data set by females and males. Then I calculated the drinking disparity index for each state using the formula $Drinking~Disparity ~Index = \frac{\%~adult~report ~excessive~drinking~behavior~in~state}{median~\%~adult~report~excessive~drinking~behavior~in~US}$ for both female and male. I used the same bin size for the indices as the ones used in COVIDMinder and previous 2 problems for proportionate comparison across the maps. Next, I visualized the disparity indices for states on a US map, one for each gender. 
+
+To see the connection for excessive drinking with COVID 19 death, I compared the map for excessive drinking with the map for COVID death count. There is no need to recreate the maps here because the data on COVID 19 death count remains the same, so I can use the maps from problem 1. 
+
+### Results
+```{r, fig.width=10, fig.height=10}
+# US_drinking value is the median value of states and DC
+US_drinking<- US_behavior %>% filter(grepl(paste("Excessive Drinking", collapse="|"), Measure.Name))
+
+# Filter out information about excessive drinking
+drinking.df<- behaviors_sex.df %>%
+  filter(grepl(paste("Excessive Drinking", collapse="|"), Measure.Name))
+drinking.df$value.disparity<- log(drinking.df$Value/US_drinking$Value)
+
+# Filter data that pertains to female
+fdrinking.df<- drinking.df %>% 
+  filter(grepl(paste("Female", collapse="|"), Measure.Name))
+fdrinking.df$region<- tolower(fdrinking.df$State.Name)
+# Categorize female excessive drinking percentage into 8 groups
+fdrinking.df$vgroup<- as.numeric(cut(fdrinking.df$value.disparity, breaks = cut_by))
+
+# Filter data that pertains to male
+mdrinking.df<- drinking.df %>% 
+  filter(grepl(paste("Male", collapse="|"), Measure.Name))
+mdrinking.df$region<- tolower(mdrinking.df$State.Name)
+mdrinking.df$vgroup<- as.numeric(cut(mdrinking.df$value.disparity, breaks = cut_by))
+
+# Merge US map data and excessive drinking data for female and male
+us_fdrinking<- left_join(us_states, fdrinking.df)
+us_mdrinking<- left_join(us_states, mdrinking.df)
+
+# Plot femake and male excessive drinking disparity
+drinking_1<- ggplot(us_fdrinking, aes(x=long,y=lat,group=group,fill=as.factor(vgroup),colour=as.factor(vgroup))) + 
+  geom_polygon(color = "gray90", size = 0.2) + 
+  with(cnames, annotate(geom="text", x = long, y=lat, label = abbrev, size = 2.5))+ 
+  coord_quickmap() + theme_map()+
+  labs(title = "US Female Excessivd Drinking Disparity Index")+ labs(fill = "Disparity Index") +
+  scale_color_manual(name = "Disparity Index", aesthetics = c("colour", "fill"), breaks = as.factor(1:8), 
+                     limits= lim, labels= label, values = match)
+drinking_2<- ggplot(us_mdrinking, aes(x=long,y=lat,group=group,fill=as.factor(vgroup),colour=as.factor(vgroup))) + 
+  geom_polygon(color = "gray90", size = 0.2) + 
+  with(cnames, annotate(geom="text", x = long, y=lat, label = abbrev, size = 2.5))+ 
+  coord_quickmap() + theme_map()+
+  labs(title = "US Female Excessivd Drinking Disparity Index")+ labs(fill = "Disparity Index") +
+  scale_color_manual(name = "Disparity Index", aesthetics = c("colour", "fill"), breaks = as.factor(1:8), 
+                     limits= lim, labels= label, values = match)
+
+# Combine the two maps
+plot_grid(drinking_1, drinking_2, ncol = 1)
+```
+
+### Discussion
+On the maps for excessive drinking disparity index, several states in the midwest and the rocky mountain region have a higher disparity index for the percentage of the population with excessive drinking behaviors for both females and males. These states are North Dakota, South Dakota, Nebraska, Lowa, and Wisconsin. In addition to those states, Montana and Minnesota also have a higher percentage of excessive drinkers for their female population. Utah and Oklahoma have a lowe disparity index for both female and male adult population for excessive drinking behavior. Several other states have lower than average disparity indices for excessive drinking for one gender only. 
+
+By comparing the excessive drinking disparity index maps with the maps in problems 1 and 2, states that have high disparity indices for smoking and physical inactivity are now around the US median for excessive drinking. Meanwhile, some states that did not have a high percentage of the population with smoking and sedentary behaviors now have a higher percentage of excessive drinking. A study by Kerr in 2010 reports that the North Central region shows a higher proportion of the population with excessive drinking behavior. On the contrast, southern states have a relatively low measure. My findings are consistent with the results of this study. 
+
+From a study by Sudhinaraset, Wigglesworth, and Takeuchi in 2016 about the social and cultural impact on alcohol use, alcohol consumption is heavily influenced by the communities and cultural norms an individual is engaged with. This may explain why states with a higher percentage of excessive drinking populations are clustered around the same region. In another study by Cerdá, Johnson-Lawrence, and Galea in 2011, income level is identified to have a high association with heavy drinking behaviors. From discussions in problems 1 and 2, household income is noted to have an association with one's access to medical resources. For future analysis, it would be useful to look at the percentage of excessive drinking behavior for different income levels. 
+
+In addition to the limitation mentioned in problem 1 and 2's discussion, my visualization maps can be further enhanced by using a better approach in placing the state labels on the map. Currently, I just set the mean value of the longitude and latitude from the state data to be the location of the label. However, as we can see for weirdly shaped states such as Florida and Michigan, this method is very off in labeling. In addition, in the Northeast region, several states label is clustered together due to the proximity of the states, making it very difficult to read the labels. As an alternative, I should try offsetting the label in empty spaces around the map. The package ggrepel offers the function geom_text_repel that does this. Future work can be done to include this function with the current code. 
+
+# Summary and COVIDMINDER Recommendations
+Poor lifestyle choices have been proven to hurt the human immune system. In an article from Harvard Health Publishing, not smoking, regular exercise, and drink in moderation are among the top recommendation to improve one's immune system. In this project, I analyzed the disparity index on the percentage of the female and male population in the United States that does not do what was recommended. By comparing the behavioral disparity index maps with the disparity index map for COVID 19 death count, visually I see little connection between the smoking, physical inactivity, and excessive drinking with COVID 19 death. However, as my discussion has mentioned, it is expected that the visualization maps show contrasting results. This is because regions that engage in poorer lifestyle choices tend to be regions with lower HDI, suggesting that they may have limited access to medical resources to test for the virus in the first place. To improve my findings, I would like to investigate the connection between income level, access to medical resources, and education level to better show that poor lifestyle choices do affect a person's vulnerability to the Coronavirus. 
+
+# References
+**Website references**\
+https://www.americashealthrankings.org/explore/annual/measure/Smoking \
+https://www.cdc.gov/tobacco/data_statistics/fact_sheets/secondhand_smoke/health_effects/index.htm \
+https://www.cdc.gov/tobacco/data_statistics/fact_sheets/fast_facts/index.htm \
+https://www.americashealthrankings.org/explore/annual/measure/ExcessDrink \
+https://www.americashealthrankings.org/explore/annual/measure/Sedentary \
+https://health.gov/sites/default/files/2019-09/Physical_Activity_Guidelines_2nd_edition.pdf#page=32 \
+https://www.hopkinsmedicine.org/health/conditions-and-diseases/risks-of-physical-inactivity  \
+https://www.niaaa.nih.gov/publications/brochures-and-fact-sheets/alcohol-facts-and-statistics  \
+http://measureofamerica.org/10yearsandcounting/ 
+
+**Research reference**\
+
+Cerdá, M., Johnson-Lawrence, V. D., & Galea, S. (2011). Lifetime income patterns and alcohol consumption: investigating the association between long- and short-term income trajectories and drinking. Social science & medicine (1982), 73(8), 1178–1185. https://doi.org/10.1016/j.socscimed.2011.07.025
+
+Kerr W. C. (2010). Categorizing US state drinking practices and consumption trends. International journal of environmental research and public health, 7(1), 269–283. https://doi.org/10.3390/ijerph7010269
+
+National Academies of Sciences, Engineering, and Medicine; Health and Medicine Division; Board on Population Health and Public Health Practice; Committee on Community-Based Solutions to Promote Health Equity in the United States; Baciu A, Negussie Y, Geller A, et al., editors. Communities in Action: Pathways to Health Equity. Washington (DC): National Academies Press (US); 2017 Jan 11. 2, The State of Health Disparities in the United States. Available from: https://www.ncbi.nlm.nih.gov/books/NBK425844/
+
+Sudhinaraset, M., Wigglesworth, C., & Takeuchi, D. T. (2016). Social and Cultural Contexts of Alcohol Use: Influences in a Social-Ecological Framework. Alcohol research : current reviews, 38(1), 35–45.
+
+**R code references**\
+https://socviz.co/maps.html \
+https://cran.r-project.org/web/packages/ggplot2/ggplot2.pdf 
+
+# Appendix
+## Appendix A
+```{r, echo=FALSE,out.width = '75%'}
+include_graphics("C:/Users/chent/OneDrive/Documents/GitHub/COVID-Notebooks/MATP-4400-FINAL/HDI_image.jpeg")
+```
