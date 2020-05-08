@@ -1,12 +1,12 @@
 ---
 title: 'Final Project: Initial impact of COVID-19 on higher Education, as seen through the Twittersphere'
 author: "Abraham Sanders"
-date: "May 2020"
+date: "May 7, 2020"
 subtitle: Introduction to Data Mathematics 2020
 output:
-  html_document: default
-  toc: yes
-  toc_depth: 2
+  html_document:
+    toc: yes
+    toc_depth: 2
 ---
 
 # Final Project: Submission Links
@@ -25,7 +25,7 @@ Code is mostly excluded from the knit .html version of this notebook to maintain
 To run the .Rmd file, make sure the included dependencies Elasticsearch.R and elasticsearch_queries.R are in the same directory as the Rmd, and make sure to set "elasticsearch_host" to the approriate value here (this is not included in the github version for security reasons).
 
 ```{r}
-elasticsearch_host <- ""
+elasticsearch_host <- "PLACEHOLDER"
 ```
 
 #  Overview
@@ -37,7 +37,7 @@ Social media provides a rich corpus of text characterizing a real-time view of d
 ##The dataset
 A method for gathering topic-focused tweet datasets was originally developed as part of a separate undergraduate research project this term here at RPI. This effort was initially focused on using the Twitter streaming API [2] to gather tweets related to the opioid crisis in an effort to reproduce results in classifying indicators of opioid abuse on Twitter published by researchers at the University of Pennsylvania [1]. The tooling built for that goal was later repurposed to gather tweets related to the COVID-19 pandemic, and the [resulting dataset](https://github.com/TheRensselaerIDEA/COVID-TweetIDs) contains over 40 million tweets gathered between March 17th and April 15th 2020. This dataset also includes tweets prior to March 17th that were retweeted during the gathering interval. All of the tweets in this repository were selected by a filter keyword list targeting areas of interest with respect to COVID-19. The keyword list can be found [here](https://github.com/TheRensselaerIDEA/COVID-TweetIDs/blob/master/keywords.txt).
 
-For this exploratory analysis, tweets pertaining to higher education will be sampled from the COVID-19 tweet dataset from a three-day period in mid-March. By studying the themes, topics, and sentiments being discussed on Twitter with respect to higher education between at this point in time, a sense of the initial impact of COVID-19 on higher education can be established.
+For this exploratory analysis, tweets pertaining to higher education will be sampled from the COVID-19 tweet dataset from a three-day period in mid-March. By studying the themes, topics, and sentiments being discussed on Twitter with respect to higher education at this point in time, a sense of the initial impact of COVID-19 in this area can be established.
 
 ## Semantic search
 A method for sampling tweets from the dataset by relevance to a semantic phrase was also developed as part of the aforementioned undergraduate research project. To get samples of tweets pertaining to higher education, we embed the phrase "colleges and universities" into a high-dimensional vector space and calculate the cosine similarity between that phrase and all the tweets in the dataset for the requested time range. This query is executed on our dataset using Elasticsearch [3].
@@ -122,7 +122,7 @@ display.df <- results$df[, c("cosine_similarity", "full_text", "created_at", "us
 kable(display.df) %>% kable_styling()
 ```
 
-Tweets with higher cosine similarity scores are more semantically relevant to the search phrase "colleges and universities". The embedding vectors are provided by Universal Sentence Encoder [4], a transformer [6] neural network architecture pre-trained on a text similarity ranking task. Tensorflow [5] is used to run this embedding model.
+Tweets with higher cosine similarity scores are more semantically relevant to the search phrase "colleges and universities". The embedding vectors are provided by Universal Sentence Encoder [4], a transformer [6] neural network architecture pre-trained on a text similarity ranking task. Tensorflow [5] is used to run this embedding model, and the vectors are stored in Elasticsearch alongside the tweets for quick retrieval.
 
 ## Analyzing Themes and Topics
 
@@ -253,7 +253,7 @@ tweet.vectors.df <- rbind(tweet.vectors.df, centers.df)
 tweet.vectors.matrix <- rbind(tweet.vectors.matrix, km$centers)
 ```
 
-To find the optimal number of topic subclusters for each theme cluster, another elbow plot is generated with a curve for each theme cluster: 
+To find the optimal number of topic subclusters for each theme cluster, another elbow plot is generated with a separate curve for each theme cluster. Since the within sums of squares can be on different scales for theme clusters of different sizes and levels of diversity, the withinss metric is scaled to 0 mean and unit variance: 
 
 ```{r, echo=FALSE}
 wssplot2 <- function(data, fc=1, nc=40, seed=20){
@@ -442,7 +442,7 @@ Inspection of the master plot shows that the main themes being discussed with re
 * Cancellation of exams and modification of grading policies
 * Impact on student finances
 
-The nearest neighbors to these theme cluster centers display some of the discourse central to these issues:
+The nearest neighbors to the theme cluster centers display some of the discourse central to these issues. Using a combination of nearest neighbor review and manual survey of the plotted tweets, the following theme descriptions are easily derived:
 
 ```{r, echo=FALSE}
 n_nearest_neighbors <- 5
@@ -483,7 +483,7 @@ kable(clusters[[6]]$nearest_center[1:n_nearest_neighbors,], caption=theme_captio
 
 ## Topics
 
-Within each theme, we can dig into specific topics by inspecting topic subclusters. An exhaustive review of the topic subclusters is beyond the scope of this report, however it is prudent to display some of the interesting ones.
+Within each theme, we can dig into specific topics by inspecting topic subclusters. An exhaustive review of the topic subclusters is beyond the scope of this report, however it is prudent to display some of the most interesting ones:
 
 ### Topic: Cancellations of college athletic events (ncaa / high / althletes)
 
@@ -543,15 +543,16 @@ kable(clusters[[4]]$subclusters[[2]]$nearest_center[1:n_nearest_neighbors,], cap
 
 # Discussion
 
-By examining a three-day window of time in mid-March 2020, we are able to get a sense of some of the most important issues being faced by colleges, universities, and students in the face of the onset of the COVID-19 pandemic.
+By examining a three-day window of time in mid-March 2020, we are able to get a sense of some of the most important issues being faced by colleges, universities, and students in the face of the onset of the COVID-19 pandemic. We were also able to gauge sentiments of certain groups with respect to some of these issues when digging into the subcluster topics.
 
-The technique used here is generalizable to any social media dataset. However, it is  important to discuss some of the ways in which the analysis presented here can be extended, as well as some of the technical limitations of the system.
+The technique used here is generalizable to any social media dataset. However, it is important to discuss some of the ways in which the analysis presented here can be extended, as well as some of the technical limitations of the system.
 
 ## Next steps for this analysis
 
 The logical next step is to run the same analysis on several three-day windows after the initial onset of the pandemic - one in mid-April and one in early May. The shift in orientation of the high-level theme clusters should show the evolution of the discussion of the impact of the pandemic on higher education. For example, we should expect discussion on school closures to be less focused on initial logistics and more focused on the uncertainty around fall re-opening.
 
 Additionally, each cluster and subcluster can be augmented with the following information:
+
 * An average sentiment score, as computed by a sentiment analysis classifier.
 * A measure of how many tweets in the cluster or subcluster originate from official accounts.
 * A breakdown of user locations. It is hard to tell by looking at a cluster whether the majority of the content pertains to the higher education systems in the US, UK, EU, or other parts of the world.
