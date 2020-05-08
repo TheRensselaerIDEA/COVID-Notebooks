@@ -34,8 +34,6 @@ source("modules/preprocessing.R")
 
 # Final Project: Submission Links
 
-*This should be the first section of your final project notebook. Fill out the following according to how you submitted your notebook!*
-
 * github repository: https://github.com/TheRensselaerIDEA/COVID-Notebooks
 * My github ID: *awi100*
 * github issues addressed by this work: `#8` 
@@ -46,15 +44,14 @@ source("modules/preprocessing.R")
 
 # Overview & Problems Tackled
 
-There has been so much talk in the news about unemployment and the numbers are staggering. I wanted to look at the trends from the last few years as well as the last few months to visualize the immediate impact COVID has had on unemployment. I also wanted to see if there was any strong correlation between the increase in the unemployment numbers and the number of covid cases in each state. Given the time and correct data sources, I would also like to dive deeper in New York state's data, and see if there are any specific groups where the economic impact is more severe. These potential groups include but are not limited to race, age, or gender. 
+There has been so much talk in the news about unemployment and the numbers are staggering. I wanted to look at the trends from the last few years as well as the last few months to visualize the immediate impact COVID has had on unemployment. I also wanted to see if there was any strong correlation between the increase in the unemployment numbers and the number of covid cases in each state. Given the time and correct data sources, I would also like to dive deeper in New York state's data, and see if there are big discrepancies between upstate New York and New York City unemployment.
 
 # Data Description
 
-*Include data sources/locations, versions/dates, etc.* 
 
 The first dataset I used is from the Bureau of Labor Statistics website. It is the monthly unemployment rate per state from 1976-present. It also included regional and national statistics. The data was only available as a txt file on the BLS website, so I downloaded it and wrote a Python script in order to clean the data. The cleaned data only has state data from 2018-present. In the Python script, I also created a dictionary of state codes and their respective states, and then added a state column to the filtered csv. I have attached screenshots of the Python script below.
 
-(../pictures/uninsured_DI.png)
+![Python Unemployment Filter](../pictures/python_unemployment_filter.PNG)
 
 
 This data was pulled from the BLS website on April 28th 2020, and as such, it does not contain the unemployment data for April 2020. That data is set to be released on May 8th 2020, which is the due date of this project. The columns of the data breakdown as such:
@@ -74,90 +71,87 @@ This data was pulled from the BLS website on April 28th 2020, and as such, it do
 
 *value*: value is a numeric value that is the measured unemployment value. Because there are many different measurement types in the data set, the values for this column cannot be strictly defined. However, in this analysis we will be dealing with solely the unemployment rate data, which will simply be somewhere between 0.0 and about 25.0 (estimated max limit is based on the Great Depression maximum unemployment rate of 24.9).
 
-The next data set I used is also from the Bureau of Labor Statistics website. It is simply the national unemployment rate by month. As with the previous dataset, I also had to write a Python script to clean this and convert it from .txt to .csv. 
+The next data set I used is also from the Bureau of Labor Statistics website. It is simply the national unemployment rate by month. As with the previous dataset, I also had to write a Python script to clean this and convert it from .txt to .csv. This dataset is used in conjunction with the previously mentioned dataset in problem 1.
+
+My last data set is used for problem 2 and that is for New York state unemployment. It is the county and the unemployment rate for the month of March. It was easily obtained on the New York state website, and was available as a csv, however the csv had the counties ranked by unemployment rate, which I removed.
 
 # Results
 
-*Break out your results by each problem you attacked*
-
 ## Problem 1 
 
-*Describe the problem you are examining.  If there is background that is necessary for this problem, then put it here. Include any references.* 
-The first problem that I am examining is the disparity index between state's unemployement rates and the US national average unemployment. Specifically, I am looking at maps of the months from Jan 2020 - March 2020. COVID-19 began to severely impact the United States in March, so this gives us two months of data just prior to when COVID-19 hit as well as a month of data from COVID-19 picking up. Personally, I believe the April 2020 data will tell a much more detailed story, but as previously mentioned, that data will only be available hours after the submission deadline.
+The first problem that I am examining is the disparity index between state's unemployement rates and the US national average unemployment. Specifically, I am looking at maps of the months from Jan 2020 - March 2020. COVID-19 began to severely impact the United States in March, so this gives us two months of data just prior to when COVID-19 hit as well as a month of data from COVID-19 picking up. I was looking for trends in states who's unemployment disparity index increased as COVID-19 worsened, and if that has to do more with the severity of the outbreak in that state, the economic outlook of that state, or some other factor. Personally, I believe the April 2020 data will tell a much more detailed story, but as previously mentioned, that data will only be available hours after the submission deadline. 
  
 ### Methods
 
-*How did you address the problem? What data did you use exactly? What methods did you use?* 
-I addressed the problem by making a visualization of the disparity indexes amongst the states' unemployment rates vs. the national average. Before I could do this, I had to make a visualization of all the state's unemployment rates as well as the national average. After looking this visualization, I tested a few bin sizes and decided use a bin size of 0.2 in order to categorize each state. Once I did that, I used what COVIDMinder has been using for disparty index, which is ln(x/y). In this case, x will be the state's unemployment rate, and y will be the national average. 
+I addressed the problem by making a visualization of the disparity indexes amongst the states' unemployment rates vs. the national average. I used what COVIDMinder has been using for disparty index, which is ln(x/y). In this case, x will be the state's unemployment rate, and y will be the national average because having a greater positive disparity will mean the state's unemployment is higher than the national average, which is unfavorable. After calculating and observing the disparities, I tested a few bin sizes and decided use a bin size of 0.2 in order to categorize each state. I found that the bigger bin sizes for the extrememe cases where the disparity index is more than +/- 2 did not tell a detailed story in this data. That is mainly due to the fact that no one state can drop severely away from the national average, as that is not how our economy and government is designed. In effort to provide more clarity in which states are doing better or worse than others, I used the following bin sizes (1, .6, .4, .3, .2, -.2, -.3, -.4, -.6, -1). 
 
 	
 ### Results
 
+Below is the R code that sets up my matrices, vectors, and variables that will be used in the visualizations.
+
 ```{r}
-# Get unemployment data and name columns
+# Get state unemployment data and name columns
 Unemployment = read.csv('../data/csv/allstates_unemployment_filtered_s.csv', row.names = NULL)
 colnames(Unemployment) = c("series_id", "state_id", "state", "year", "period", "value")
 
-# Get state codes and name columns
-state_codes = read.csv('../data/csv/states_unemployment_codes.csv', row.names = NULL)
-colnames(state_codes) = c("state_id", "state")
-
+# Get national unemployment data and name columns
 national_avgs = read.csv('../data/csv/national_unemployment.csv', row.names = NULL)
 colnames(national_avgs) = c("year", "month", "rate")
 
 ```
 
 ```{r}
-
-# months = c("M01", "M02", "M03", "M04", "M05", "M06", "M07", "M08", "M09", "M10", "M11", "M12")
-# years = c("2018", "2019", "2020")
-
+# Create Jan, Feb, and Mar
 jan_differences = c()
 jan_disparity = c()
 
 feb_differences = c()
 feb_disparity = c()
 
-march_differences = c()
-march_disparity = c()
+mar_differences = c()
+mar_disparity = c()
 
+# Get national rate for Jan, Feb, Mar
 jan_2020_national <- national_avgs$rate[(national_avgs$year == "2020") & (national_avgs$month == "M01")]
 jan_2020_national <- as.numeric((jan_2020_national))
 
 feb_2020_national <- national_avgs$rate[(national_avgs$year == "2020") & (national_avgs$month == "M02")]
 feb_2020_national <- as.numeric((feb_2020_national))
 
-march_2020_national <- national_avgs$rate[(national_avgs$year == "2020") & (national_avgs$month == "M03")]
-march_2020_national <- as.numeric((march_2020_national))
+mar_2020_national <- national_avgs$rate[(national_avgs$year == "2020") & (national_avgs$month == "M03")]
+mar_2020_national <- as.numeric((mar_2020_national))
 
+# Get unemployment rate for each state in each of the observed months, calculate the disparity, and add it to the corresponded disparity vector
 for (current_state in states$NAME){
   
   jan_2020_current_state <- Unemployment$value[Unemployment$state == current_state & Unemployment$year == "2020" & Unemployment$period == "M01"]
   jan_2020_current_state <- as.numeric(jan_2020_current_state)
   jan_diff <- jan_2020_national - jan_2020_current_state
-  jan_disp <- log(jan_2020_national/jan_2020_current_state)
+  jan_disp <- log(jan_2020_current_state/jan_2020_national)
   jan_differences <- c(jan_differences,  jan_diff)
   jan_disparity <- c(jan_disparity, jan_disp)
   
   feb_2020_current_state <- Unemployment$value[Unemployment$state == current_state & Unemployment$year == "2020" & Unemployment$period == "M02"]
   feb_2020_current_state <- as.numeric(feb_2020_current_state)
   feb_diff <- feb_2020_national - feb_2020_current_state
-  feb_disp <- log(feb_2020_national/feb_2020_current_state)
+  feb_disp <- log(feb_2020_current_state/feb_2020_national)
   feb_differences <- c(feb_differences, feb_diff)
   feb_disparity <- c(feb_disparity, feb_disp)
   
-  march_2020_current_state <- Unemployment$value[Unemployment$state == current_state & Unemployment$year == "2020" & Unemployment$period == "M03"]
-  march_2020_current_state <- as.numeric(march_2020_current_state)
-  march_diff <- march_2020_national - march_2020_current_state
-  march_disp <- log(march_2020_national/march_2020_current_state)
-  march_differences <- c(march_differences,  march_diff)
-  march_disparity <- c(march_disparity, march_disp)
+  mar_2020_current_state <- Unemployment$value[Unemployment$state == current_state & Unemployment$year == "2020" & Unemployment$period == "M03"]
+  mar_2020_current_state <- as.numeric(mar_2020_current_state)
+  mar_diff <- mar_2020_national - mar_2020_current_state
+  mar_disp <- log(mar_2020_current_state/mar_2020_national)
+  mar_differences <- c(mar_differences,  mar_diff)
+  mar_disparity <- c(mar_disparity, mar_disp)
 }
 ```
 
 ```{r}
 
-all_months <- cbind.data.frame(states$NAME, jan_disparity, feb_disparity, march_disparity)
+# Create a master data frame that has all three months of disparities and the corresponding state name
+all_months <- cbind.data.frame(states$NAME, jan_disparity, feb_disparity, mar_disparity)
 colnames(all_months) = c("state", "Jan2020_ldi", "Feb2020_ldi", "Mar2020_ldi")
 all_months$Jan2020_ldi <- as.numeric(all_months$Jan2020_ldi)
 all_months$Feb2020_ldi <- as.numeric(all_months$Feb2020_ldi)
@@ -166,13 +160,12 @@ all_months$Mar2020_ldi <- as.numeric(all_months$Mar2020_ldi)
 ```
 
 
-*What were the results on this problem?*
 ```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
 ### Text used for captions and explanations
 
 ldi_explanation_text <- "<h4><b>EXPLANATION OF VISUALIZATIONS:</b></h4> The goal of these visualizations is to examine 
 the serverity of the economic impact COVID-19 has had across the states in terms of unemployment rates. There are three maps, 
-which represent data from A common measure, the <i>disparity index</i> 
+which represent data from a common measure, the <i>disparity index</i> 
 is used to represent thedifference between the observed unemployment rate in the state and the national unemployment rate.</p>
 <p>The advantage of the disparity index is that represents how far off a target standard the observed rate is. </p>
 <p>Mathematically,
@@ -184,7 +177,7 @@ depending upon whether being above or below the target is preferred.
 </p>
 <p>&nbsp;</p>"
 
-### MEDIATION: Hospital Beds (USA)
+### Unemployment (USA)
 
 us_unemployment_text <- "<h4><b>How does the unemployement rate across the United States compare to the national average?</b></h4>
 <i>These maps compare the unemployment rate in US states vs the national unemployment rate 
@@ -193,7 +186,9 @@ state's unemployment rate is lower than the national rate<br/><br>
 Data sources: <br/><a href='https://download.bls.gov/pub/time.series/la/la.data.3.AllStatesS'>Bureau of Labor Statistics</a>"
 
 
-jan_2020_text <- "<h2>January 2020</h4>"
+jan_2020_text <- "<h2>January 2020</h2>"
+feb_2020_text <- "<h2>February 2020</h2>"
+mar_2020_text <- "<h2>March 2020</h2>"
 
 ```
 
@@ -204,8 +199,8 @@ jan_2020_text <- "<h2>January 2020</h4>"
  `r jan_2020_text` 
 
 ```{r}
-    colors <- c("#253494","#4575B4", "#74ADD1","#ABD9E9","#f7f7f7","#FDAE61","#F46D43", "#D73027", "#BD0026")
-    bins <- c(1, .8, .4, .2, .1, -.1, -.2, -.4, -.8, -1)
+    colors <- c("#BD0026", "#D73027", "#F46D43", "#FDAE61", "#f7f7f7", "#ABD9E9", "#74ADD1", "#4575B4", "#253494")
+    bins <- bins <- c(1, .6, .4, .3, .2, -.2, -.3, -.4, -.6, -1)
     pal2 <- leaflet::colorBin(colors, domain = all_months$Jan2020_ldi, bins = bins, reverse=TRUE)
     labels2 <- sprintf(
       "<strong>%s</strong><br/>
@@ -236,7 +231,7 @@ jan_2020_text <- "<h2>January 2020</h4>"
       addLegend(pal = pal2, 
                 values = ~all_months$Jan2020_ldi, 
                 opacity = 0.7, 
-                title = "Disparity Index<br/>US vs State Unemployment Rate",
+                title = "Disparity Index<br/>US Unemployment Rates",
                 position = "bottomright",
                 labFormat = function(type, cuts, p) { n = length(cuts) 
                 cuts[n] = paste0(cuts[n]," lower") 
@@ -250,10 +245,10 @@ jan_2020_text <- "<h2>January 2020</h4>"
 
 ```
 
-
+ `r feb_2020_text` 
 ```{r}
-    colors <- c("#253494","#4575B4", "#74ADD1","#ABD9E9","#f7f7f7","#FDAE61","#F46D43", "#D73027", "#BD0026")
-    bins <- c(1, .8, .4, .2, .1, -.1, -.2, -.4, -.8, -1)
+    colors <- c("#BD0026", "#D73027", "#F46D43", "#FDAE61", "#f7f7f7", "#ABD9E9", "#74ADD1", "#4575B4", "#253494")
+    bins <- bins <- c(1, .6, .4, .3, .2, -.2, -.3, -.4, -.6, -1)
     pal2 <- leaflet::colorBin(colors, domain = all_months$Feb2020_ldi, bins = bins, reverse=TRUE)
     labels2 <- sprintf(
       "<strong>%s</strong><br/>
@@ -284,7 +279,7 @@ jan_2020_text <- "<h2>January 2020</h4>"
       addLegend(pal = pal2, 
                 values = ~all_months$Feb2020_ldi, 
                 opacity = 0.7, 
-                title = "Disparity Index<br/>US vs State Unemployment Rate",
+                title = "Disparity Index<br/>US Unemployment Rates",
                 position = "bottomright",
                 labFormat = function(type, cuts, p) { n = length(cuts) 
                 cuts[n] = paste0(cuts[n]," lower") 
@@ -299,11 +294,11 @@ jan_2020_text <- "<h2>January 2020</h4>"
 ```
 
 
-
+ `r mar_2020_text` 
 
 ```{r}
-    colors <- c("#253494","#4575B4", "#74ADD1","#ABD9E9","#f7f7f7","#FDAE61","#F46D43", "#D73027", "#BD0026")
-    bins <- c(1, .8, .4, .2, .1, -.1, -.2, -.4, -.8, -1)
+    colors <- c("#BD0026", "#D73027", "#F46D43", "#FDAE61", "#f7f7f7", "#ABD9E9", "#74ADD1", "#4575B4", "#253494")
+    bins <- bins <- c(1, .6, .4, .3, .2, -.2, -.3, -.4, -.6, -1)
     pal2 <- leaflet::colorBin(colors, domain = all_months$Mar2020_ldi, bins = bins, reverse=TRUE)
     labels2 <- sprintf(
       "<strong>%s</strong><br/>
@@ -334,7 +329,7 @@ jan_2020_text <- "<h2>January 2020</h4>"
       addLegend(pal = pal2, 
                 values = ~all_months$Mar2020_ldi, 
                 opacity = 0.7, 
-                title = "Disparity Index<br/>US vs State Unemployment Rate",
+                title = "Disparity Index<br/>US Unemployment Rates",
                 position = "bottomright",
                 labFormat = function(type, cuts, p) { n = length(cuts) 
                 cuts[n] = paste0(cuts[n]," lower") 
@@ -350,38 +345,141 @@ jan_2020_text <- "<h2>January 2020</h4>"
 
 
 
-
-
 ### Discussion
 
 *Interpret results.  What were your findings?  What do they say about COVID-19?   What are the strengths and limitations of these results? Is there support for your findings from other sources? Include references as appropriate.*
 
+  Unlike with some other measures using disparity indexes, the national avgerage that we are comparing to is changing as the states change their unemployment rate every month. Because of this the data does not get too skewed, but that is the whole point of averages. The national unemployment rate went from 3.6 to 3.5 to 4.4 during the span of Janurary-March 2020. The highest disparity index we see in the month of March is Louisiana at 0.45, followed by Nevada at 0.36. The lowest disparity index we see is North Dakota at -0.69, followed by Idaho, New Hampshire, and South Carolina, all tied at -0.53. 
+  When analyzing the findings by state, it is important to note if the disparity index in March 2020 is abnormal, or if that state is normally well above or below the national average. For example, Alaska habitually sits above the national average, and while their disparity index is the sixth highest, their unemployment rate in March 2020 is actually the lowest it has been all year. North Dakota is consistently well under the national average, and also had their best month all year in March 2020. A good indicator for whether the economic impact of COVID-19 has been more severe on a certain state is whether or not there was a major change from where it was sitting for Janurary and February compared to March. For instance, Nevada sits white on the Janurary and February 2020 maps, and then has the second highest disparity index in March 2020. Colorado sits in a middle blue range during January and February and then goes to white in March, indicating a significant rise in unemployment since the national rate also rose.
+  Comparing the map produced to some of the maps on the COVIDMinder app, there does not seem to be much correlation between unemployment rate disparity and mortality rate disparity. This makes sense, as the nonessential employees in every state have been told to work from home or have been laid off, no matter the rate of spread of the disease in that state. As we get more data, for at least the months of April, May, and June, I believe we will be able to see a connection between the states open their economies faster, the unemployment rate, and the mortality rate. In theory, states that open up faster will start reducing their unemployment quicker than other states who remain closed, but at the same time their mortality rate will increase.
+  Some of the drastic jumps in the states can be explained by what their economy looks like. The second highest disparity is Nevada, however Louisiana's disparity in Janurary and February indicates that they were already significantly above the national average, so we will take Nevada to have had the biggest hit in March 2020. In January, Nevada actually set an all time low for unemployment claims. This makes sense as gambling had a big year in 2019, with many states legalizing sports gambling as well as authorizing more casinos. The gambling center of the world is Vegas, which makes up a huge chunk of Nevada's economy, and when gambling does well, Vegas does well, and when Vegas does well, Nevada does well. As expecting, Vegas has almost no ability to operate during the lockdown, with all casinos being close and no active sports to bet on. The Vegas shutdown clearly brought Nevada's economy down with it. It will be awhile before people are mentally comfortable travelling, as well as financially able to leisurely gamble. Because of this, I would expect to continue to see Nevada's disparity index in the high positive range.
+  The second highest jump in disparity is Colorado, as their unemployment rate went from 2.5 to 4.5 between February and March. Looking deeper into their economy, especially at this time of year, it seems a large portion of it is from skiing and marijuana. The ski slopes were not officially shut down until March 14th in Colorado, however many opted to close well before that. As for the marijuana, canabis stores were actually deemed able to stay open, but with severe social distancing protocols, and like most restaurants, they likely furloughed most employees and had the owners run the store. 
+    There are limitations to these results as the March unemployment data only includes the first pay period in March, so by then the impact was not nearly as bad as it was by the end of the month. The April unemployment data will undoubtably be a bombshell, and it will be interesting to see how particular states do and what they look like compared to the severly raised national rate. The strengths of these results are that they lay out a great start to continue to look at unemployment data as we continue in this pandemic. While their are only a few results that stand out from the March data, the April data will give us a much better picture of the unemployment impact. This setup can also be used to continually look at unemployment and see what states start to rebound quicker compared to the rest of the nation, when we get to that stage of course. 
+    
+Other references used in report: nevada.gov and colorado.gov march unemployment summaries
+
+
 ## Problem 2
+
+The second problem that I am examining is the disparity index between New York state's unemployement rate and each county in NY in March 2020. I chose to only look at March 2020, as opposed to Janurary-March 2020 because in this analysis, I am not trying to show counties that have gotten worse. I am trying to purely show disparities in New York state. Because the data is county based, I do not believe the changes between Janurary, February, and March would be significant. Any big changes would likely be due to one or two big employers letting go of employees all at once in the county. Instead, I am looking at the March data with the hope to also look at the April data in the future. From this, I would like to see whether counties that are wealthier suffer from significantly less unemployment after the major layoffs have gone through. Presumably, this will be the case as higher paying jobs tend to be ones that can be worked remotely. 
  
 ### Methods
+
+I addressed the problem by making a visualization of the disparity indexes for the state unemployment rate vs. the counties unemployment rate. I used what COVIDMinder has been using for disparty index, which is ln(x/y). In this case, x will be the county's unemployment rate, and y will the New York state average because having a greater positive disparity will mean the county's unemployment is higher than the national average, which is unfavorable. After calculating and observing the disparities, I tested a few bin sizes and decided use a bin size of 0.2 in order to categorize each state. I found that the bigger bin sizes for the extrememe cases where the disparity index is more than +/- 2 did not tell a detailed story in this data. That is mainly due to the fact that no one state can drop severely away from the national average, as that is not how our economy and government is designed. In effort to provide more clarity in which states are doing better or worse than others, I used the following bin sizes (1, .6, .4, .3, .2, -.2, -.3, -.4, -.6, -1). 
 	
 ### Results
 
+```{r}
+Unemployment_NY = read.csv('../data/csv/unemployment_ny_march_2020.csv', row.names = NULL)
+colnames(Unemployment_NY) = c("county", "rate")
+
+```
+
+
+```{r}
+
+ny_mar_differences = c()
+ny_mar_disparity = c()
+
+mar_2020_ny <- Unemployment$value[(Unemployment$state == "New York") & (Unemployment$period == "M03") & (Unemployment$year == "2020")]
+mar_2020_ny <- as.numeric((mar_2020_ny))
+
+# Get unemployment rate for each state in each of the observed months, calculate the disparity, and add it to the corresponded disparity vector
+for (current_county in NY.data$County){
+  mar_2020_current_county <- Unemployment_NY$rate[Unemployment_NY$county == current_county]
+  mar_2020_current_county <- as.numeric(mar_2020_current_county)
+  mar_diff <- mar_2020_ny - mar_2020_current_county
+  mar_disp <- log(mar_2020_current_county/mar_2020_ny)
+  ny_mar_differences <- c(ny_mar_differences,  mar_diff)
+  ny_mar_disparity <- c(ny_mar_disparity, mar_disp)
+}
+
+```
+
+
+```{r}
+# Create a data frame that has march months of disparities and the corresponding state name
+ny_march <- cbind.data.frame(NY.data$County, ny_mar_disparity)
+colnames(ny_march) = c("state", "Mar2020_ldi")
+ny_march$Mar2020_ldi <- as.numeric(ny_march$Mar2020_ldi)
+```
+
+
+```{r}
+ colors <- c("#253494","#4575B4", "#74ADD1","#ABD9E9","#f7f7f7","#FDAE61","#F46D43", "#D73027", "#BD0026")
+    bins <- c(1, .6, .4, .3, .1, -.1, -.3, -.4, -.6, -1)
+    
+    pal2 <- leaflet::colorBin(colors, domain = ny_march$Mar2020_ldi, bins = bins, reverse=FALSE)
+    
+    NY.shape$county_fips <- paste(as.data.frame(NY.shape)$STATEFP, as.data.frame(NY.shape)$COUNTYFP, sep = '')
+    NY.data.p <- dplyr::left_join(as.data.frame(NY.shape), as.data.frame(NY.data), by = c("county_fips" = "FIPS"))
+    
+    labels <- sprintf(
+      "<strong>%s</strong><br/>
+      NY Unemployment Rate DI: %.2g<br>",
+      NY.data.p$County, ny_march$Mar2020_ldi
+    ) %>% lapply(htmltools::HTML)
+    
+    leaflet(NY.shape) %>%
+      setView(-76.071782, 42.991989, 6) %>%  # Set to the geographic center of NY
+      addPolygons(
+        fillColor = ~pal2(ny_march$Mar2020_ldi),
+        weight = 1,
+        opacity = 1,
+        color = "#330000",
+        dashArray = "1",
+        fillOpacity = 0.7,
+        highlight = highlightOptions(
+          weight = 5,
+          color = "#666",
+          dashArray = "",
+          fillOpacity = 0.7,
+          bringToFront = TRUE),
+        label = labels,
+        labelOptions = labelOptions(
+          style = list("font-weight" = "normal", padding = "3px 8px"),
+          textsize = "15px",
+          direction = "auto")) %>% 
+      addLegend(pal = pal2, 
+                values = ~ny_march$Mar2020_ldi, 
+                opacity = 0.7, 
+                title = "Disparity Index<br/>NY Unemployment Rate",
+                position = "bottomright",
+                labFormat = function(type, cuts, p) { n = length(cuts) 
+                cuts[n] = paste0(cuts[n]," lower") 
+                # for (i in c(1,seq(3,(n-1)))){cuts[i] = paste0(cuts[i],"—")} 
+                for (i in c(1,seq(2,(n-1)))){cuts[i] = paste0(cuts[i]," — ")} 
+                cuts[2] = paste0(cuts[2]," higher") 
+                paste0(str_remove(cuts[-n],"higher"), str_remove(cuts[-1],"—"))
+                }
+      ) %>%
+      addProviderTiles("MapBox", options = providerTileOptions(
+        id = "mapbox.light"))
+
+```
+
+
 ### Discussion
 
-*Do at least 2 problems. Add more as necessary *
+From the map of NY counties that has been developed, we can see that Otsego county has the greatest disparity at 0.76, and Livingston county has the least disparity at -0.2. Most of what I am looking for will come when the April data is released, but the thing that stands out to me purely based on the March data is how the New York City areas are not doing worse. They are all within 0.2 of the state average. This could be for a few reasons. The first may be that New York City is responsible for such a large portion of the state's job force that it strongly pulls the average with it. The other is that New York City only become the epicenter in the United States around mid March, and because of this, the impact does not show up in the March numbers. Another potential idea is that a big portion of New York City jobs are finance or technology, which likely did not result in unemployment and rather a work from home order. I have also read that many of New York City's workers in restaurants are undocumented, and because of that the official unemployment numbers are lower than what they actually are as the undocumented workers cannot file for unemployment. When the April data is released on May 8th, I believe we will see a bigger disparity between New York City and the rest of the state. 
 
 
 # Summary and COVIDMINDER Recommendations
 
 * Overall, what insights did you find  about the  COVID-19 epidemic in your analysis?    
 
+In my analysis, I found out what is the hot button topic of the news this week and that is the unemployment impact of COVID-19. With the job report coming out tomorrow, May 8th, all week the news has been warning us about how bad it will be. Unemployment rates potentially as high as 15-20%. My analysis of the March data showed some of the states that got hit earlier than others, such as Nevada or Colorado. It also highlighted which states may be depending on tourism or travel and which are not. States like Alaska and North Dakota did just fine, and those states economies do not revolve around much travel.
+
 * What recommendations do you have for COVIDMINDER for  Data utilization, Analytics, Visualizations, User interface design, etc.
 
-    + Would you recommend that your analysis be included in COVIDMINDER?  Why or Why not?  
-    + If not, is there additional work that might  improve the results?  Note that it is perfectly okay for you to recommend to not to include your analysis. Research doesn't always work out.  As a team we need to try a lot of different ideas in hopes of finding a few good ones to pursue.  *
-
-*Think of yourself as a consultant reporting back on a particular aspect of the analysis and application design!*
+    + Would you recommend that your analysis be included in COVIDMINDER?  Why or Why not?
+    
+    I believe my analysis could be included, as I used the USA and NY maps that are used in the app for my disparity indexes, and I am showing an economic side of things that COVIDMINDER currently does not show. The debate rages on today as to how fast and how much we can open up, and the answer comes down to valuing lives over the economy. No one wants to stay shut down for long, but also no one wants to increase the number of COVID-19 cases. The fact is, if we open up too soon, then the case and death numbers will go up, but our economy will get back to where it was quicker. If we stay locked up longer, the case and death numbers will go down but we will see a greater rate of unemployment and take a deeper dive into a potential recession. From my analysis and visualizations, and the one that is to come with the April numbers, I believe it is important to show people a side by side comparison of the two sides of the story. Having a map that shows the mortality rate and a map that shows the unemployment rates will help people make their own conclusions as to what they believe is the best way to move forward. We live in a world where every news outlet has become politically associated and no matter where you look someone is pushed an agenda on you. This analysis is pure data, and it will let people decide for themselves whether we should open the economy back up quickly, slowly, or not for awhile.
 
 # References
 
-*Include any references to literature in support of your work*
-*You might also wish to include references to unusual R packages essential to your work*
+Nevada.gov (mentioned in Problem 1 Discussion)
+Colorado.gov (mentioned in Problem 1 Discussion)
 
 # Appendix
 
