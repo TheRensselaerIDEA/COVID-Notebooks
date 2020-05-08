@@ -83,11 +83,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 * github repository: https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/state-report-card-daniel-tabin-project 
 * My github ID: *Darokrithia*
-* github issues addressed by this work: `#31` (example)
-* Github branch name of my submitted notebook: *state-report-card-daniel-tabin-project* (example)
-* link to merged notebook (post these to LMS!: 
-    + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/state-report-card-daniel-tabin-project/MATP-4400-FINAL/COVID_FINAL_2020_Daniel_Tabin.Rmd (example; Rmd version)
-    + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/state-report-card-daniel-tabin-project/MATP-4400-FINAL/COVID_FINAL_2020_Daniel_Tabin.html (example; HTML version)
+* github issues addressed by this work: `#31`
+* Github branch name of my submitted notebook: *state-report-card-daniel-tabin-project* 
+* link to merged notebook: 
+    + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/state-report-card-daniel-tabin-project/MATP-4400-FINAL/COVID_FINAL_2020_Daniel_Tabin.Rmd (Rmd version)
+    + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/state-report-card-daniel-tabin-project/MATP-4400-FINAL/COVID_FINAL_2020_Daniel_Tabin.html (HTML version)
 
 # Overview & Problems Tackled
 
@@ -105,7 +105,7 @@ After my first problem was brought to completion, I realized that I would not be
 
 Due to the fact that I was analysing multiple factors, I used a large number of data sets.  All of these were obtained from the /data/csv/ folder in the COVID-Notebooks repository.  These include at_risk_adults.csv, uninsured_by_state.csv, states_abbreviations.csv, provider_capacity.csv, hypertension_mortality.csv, diabetes_data_states.csv, covid_data_states.csv.  I later added the following time_series_covid19_deaths_US.csv and time_series_covid19_confirmed_US.csv when I was working on the second problem.
 
-I used at_risk_adults.csv to get the population of adults at risk by state, uninsured_by_state.csv to get the amount of uninsured by people per state, states_abbreviations.csv to help merge the data, provider_capacity.csv to find hospital beds per 100 people by state, hypertension_mortality.csv to find heart disease data per state, diabetes_data_states.csv to find diabetes data per state, covid_data_states.csv to find covid deaths per state, time_series_covid19_deaths_US.csv to get deaths per day per US county, and time_series_covid19_confirmed_US.csv to get new covid cases per day per US county.
+I used at_risk_adults.csv to get the population of adults at risk by state, uninsured_by_state.csv to get the amount of uninsured by people per state, states_abbreviations.csv to help merge the data, provider_capacity.csv to find hospital beds per 1000 people by state, hypertension_mortality.csv to find heart disease data per state, diabetes_data_states.csv to find diabetes data per state, covid_data_states.csv to find covid deaths per state, time_series_covid19_deaths_US.csv to get deaths per day per US county, and time_series_covid19_confirmed_US.csv to get new covid cases per day per US county.
 
 # Results
 
@@ -113,11 +113,12 @@ I used at_risk_adults.csv to get the population of adults at risk by state, unin
 
 *Describe the problem you are examining.  If there is background that is necessary for this problem, then put it here. Include any references.* 
 
-It is well known that certain prexisting conditions such as heard disease, obesity, diabetes, and age can put people at a much higher risk of dying.  More over a big cause of death with COVID is a lack of hospital beds and general medical access.  As such I would like to explore if the rates of any of these features are correlated with state-wide COVID spread or COVID death.  I plan on doing this by creating a combined data-frame, and then running a PCA and heatmap on said data-frame.
+It is well known that certain prexisting conditions such as heard disease, obesity, diabetes, and age can put people at a much higher risk of dying from COVID.  Moreover a big cause of death with COVID is a lack of hospital beds and general medical access.  As such I would like to explore if the rates of any of these features are correlated with state-wide COVID spread or COVID death.  I plan on doing this by creating a combined data-frame, and then running a PCA and heatmap on said data-frame.
 
  
 ### Methods
 The first thing I did was load in the data from all the csv files I found
+
 ```{r}
 #load in each data set
 at_risk_adults <- read.csv('../data/csv/at_risk_adults.csv')
@@ -134,7 +135,9 @@ time_series_covid19_deaths_US <- read.csv('../data/csv/time_series/time_series_c
 time_series_covid19_confirmed_US <- read.csv('../data/csv/time_series/time_series_covid19_confirmed_US.csv')
 
 ```
-I then combined the data into a single master data matrix
+
+I then combined the data into a single master data frame
+
 ```{r}
 #renamed the columns on the broken piece of data
 colnames(uninsured_by_state) = c("NAME", "Status", "Employer", "Non-group", "Medicaid", "Medicare", "Military", "Uninsured", "number_uninsured")
@@ -179,7 +182,9 @@ master_data <- merge(master_data, latest_confirmed, by="NAME", type="inner")
 master_data <- merge(master_data, latest_deaths, by="NAME", type="inner")
 
 ```
-Make "gradable" matrixes which will consist of only the data I will use
+
+I then made "gradable" matrixes which will consist of only the data I will use
+
 ```{r}
 # The "original" gradable data, with no COVID attached
 gradable_data <- master_data[, c("p_at_risk_adults", "p_older_at_risk_adults", "Uninsured", "hosp_beds_per_1000", "p_ht_death_rate", "pct_Adults_with_Diabetes")]
@@ -193,7 +198,9 @@ colnames(gradable_data2) = c("At risk Adults", "Older at risk Adults", "Uninsure
 gradable_data3 <- master_data[, c("p_at_risk_adults", "p_older_at_risk_adults", "Uninsured", "hosp_beds_per_1000", "p_ht_death_rate", "pct_Adults_with_Diabetes", "daily_confirmed", "daily_deaths")]
 colnames(gradable_data3) = c("At risk Adults", "Older at risk Adults", "Uninsured", "Hospital Beds", "Heart Disease", "Diabetes", "Covid Cases", "Covid Deaths")
 ```
-Form kmeans PCA's and heatmaps.  I use a kmean of 5 because I want to break the states down into 5 "grades" A, B, C, D, and F.  As seen below, this did not work out exactly as planned
+
+After that I formed kmeans PCA's and heatmaps.  I used a kmean of 5 because I wanted to break the states down into 5 "grades" A, B, C, D, and F.  As seen below, this did not work out exactly as planned
+
 ```{r}
 set.seed(300)
 #use k-means to generate clusers
@@ -277,15 +284,16 @@ heatmap.2(km3$centers,
           main = "Heatmap of gradable features (including latest COVID data)",
           trace ="none")
 ```
+
 ### Results
 
 *What were the results on this problem?*
 
-It can be seen that almost all features are nearly orthagonal to COVID cases and deaths.  Moreover the features themselves don't seem to be highly correlated.  Some interesting semi-correlations is the lack of older at risk adults in states with higher Diabetes and Heart disease.  This makes sense as states with worse general health will have less people who live to a long age.  As mentioned there was almost corrlation with COVID death or COVID rates, except for the very strong corelation between COVID death and COVID rates.
+It can be seen that almost all features are nearly orthagonal to COVID cases and deaths in the PCA.  Moreover the features themselves don't seem to be highly correlated.  Some interesting semi-correlations is the lack of older at risk adults in states with higher Diabetes and Heart disease.  This makes sense as states with worse general health will have less people who live to a long age.  As mentioned there was almost no correlation between features and COVID death or COVID rates.  The only correlation involving those two was the very strong corelation between COVID death and COVID rates.
 
-The lack of a strong correlation implies that what matters most for states is actions, and not underlying conditions.  I was most suprised by the lack of correlation with hospital beds and insurance.  I was fairly confident that states with less access to health care would end up with worse outcomes, but this overall does not seem to be the case.
+The lack of a strong correlation implies that what matters most for states is actions, and not underlying conditions.  I was most suprised by the lack of correlation between COVID outcomes and hospital beds and insurance.  I was fairly confident that states with less access to health care would end up with worse outcomes, but this overall does not seem to be the case.
 
-I originally only did the first two gradable dates to try and find correlations between the factors and each other, and between the factors and COVID.  After this failed to generate the resutls I wanted, I tried generating only recent COVID death data; however, this data ended up looking strikingly similar to the total COVID data.
+I originally only did the first two gradable data sets to try and find correlations between the factors and each other, and between the factors and COVID.  After this failed to generate the resutls I wanted, I tried generating only recent COVID death data; however, this data ended up looking strikingly similar to the total COVID data.
 
 ### Discussion
 
@@ -297,6 +305,7 @@ In this problem I wanted to create a Map showing how well a state was doing curr
 
 ### Methods
 First I loaded in similar data to the third part of problem 1
+
 ```{r}
 # Like in problem one, rename the columns so they play nice together
 names(time_series_covid19_confirmed_US)[names(time_series_covid19_confirmed_US) == 'Province_State'] <- 'NAME'
@@ -313,7 +322,9 @@ names(last_week_confirmed)[2] <- 'total_c'
 names(last_week_deaths)[2] <- 'total_d'
 
 ```
+
 I then did a bunch of calculations to generate percent increases and recent changes
+
 ```{r}
 # Take only relevant columns
 latest_death_percent <- last_week_deaths[, c("NAME", "prev_d", "total_d")]
@@ -329,7 +340,9 @@ last_week_confirmed$percent_confirmed <- (last_week_confirmed$last_week_confirme
 death_df <- last_week_deaths[complete.cases(last_week_deaths), ]
 confirmed_df <- last_week_confirmed[complete.cases(last_week_confirmed), ]
 ```
+
 After this I attempted to plot my Data 
+
 ```{r}
 # Density plots
 ggplot(confirmed_df) +
@@ -344,7 +357,9 @@ ggplot(death_df) +
 boxplot(percent_confirmed~NAME, data=confirmed_df, main="Boxplot of growth by states")
 boxplot(percent_deaths~NAME, data=death_df, main="Boxplot of deaths by stae")
 ```
+
 This did not generate any satisfactory or usable results as there were too many states to make sense of anything so I decided to see if I could get a better results via aggrgation and kmeans
+
 ```{r}
 # aggregate data
 state_covid_growth <- aggregate(list(last_week_confirmed['prev_c'], last_week_confirmed['total_c']), by=last_week_confirmed['NAME'], sum)
@@ -409,7 +424,7 @@ ggplot(kmeans_dth) +
   ggtitle("Distribution of death growth by kclass")
 ```
 
-These plots also weren't very promising.  The kmeans didn't form into 5 nice humps.  This may be due to the fact that I didn't use the elbow method, but either way I decided to not use kmeans and isntead use a map for grading.
+These plots also weren't very promising.  The kmeans didn't form into 5 nice humps which could represent a grading.  This may be due to the fact that I didn't use the elbow method, but either way I decided to not use kmeans and isntead use a map for grading.
 
 I started doing this by loading in the Map Data and then combining it with the other data I had
 
@@ -513,7 +528,7 @@ I took some time to adjust the values of each color in order to get a nice and r
 
 ### Results
 
-The maps I created were quite sucessful.  They show which states are controlling their outbreaks and which ones are getting worse.  New York for example is the epicenter of the outbreak; however the growth of new cases and deaths is fairly low.  3,000 new cases isn't that mahy when you have over 250,000 cases already.  This clearly shows New York doing well.  Other states like Minnesota and South Dakota are not doing as well at controlling their outbreaks, even though they aren't as far along into the cycle.  Meanwhile states like Vermont and Montana also are not very far into their outbreaks but are still keeping things under control.
+The maps I created were quite sucessful.  They show which states are controlling their outbreaks and which ones are getting worse.  New York for example is the epicenter of the outbreak; however the growth of new cases and deaths is fairly low.  3,000 new cases isn't that many when you have over 250,000 cases already.  This clearly shows New York doing well.  Other states like Minnesota and South Dakota are not doing as well at controlling their outbreaks, even though they aren't as far along into the cycle.  Meanwhile states like Vermont and Montana also are not very far into their outbreaks but are still keeping things under control.
 
 ### Discussion
 
