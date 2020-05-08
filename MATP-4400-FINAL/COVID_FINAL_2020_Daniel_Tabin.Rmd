@@ -77,78 +77,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```
 
-# Final Project: Guidance for Students (DELETE)
-
-*DELETE THIS SECTION IN FINAL NOTEBOOK!*
-
-##GENERAL INSTRUCTIONS (DELETE)##
-
-* This notebook serves as a written presentation of your work so it should be written like a research paper.
-* The rubric for evaluating this project is on LMS.
-* The R code that executes the results should be embedded in this notebook if possible. It's also okay to "source" external scripts from within your notebook, including those provided by your instructors. 
-* If there is work that is not appropriate to be embedded on your final notebook, then you can describe the work in the notebook and provide figures generated elsewhere (e.g. screen shots, graphs). Indicate if that work has been committed to github. If necessary put details in Appendix.    
-* Your wording should be suitable for sharing with external partners/mentors and useful to future contributors.
-* Please don't summarize everything you did; discuss only the *most important* aspects of your work. Ask yourself *what really matters?*
-* IMPORTANT: Discuss any insights you found regarding COVID-19.
-* If there are limitations to your work, discuss. 
-* Include any background or support for your work. For example, mention any relevant research articles you found -- and be sure to include references!
-* Include your recommendations for extending the COVIDMINDER app:
-    + Data utilization...
-    + Analytics...
-    + Visualizations
-    + User interface design...
-* **Expect internet problems!** Commit versions of this notebook to the IDEA github *early and often*. You can continue to refine and update; that is the point of github!
-
-##SUBMISSION CHECKLIST: Things to check before you submit (DELETE)##
-
-* Have you given your file(s) a clear, sensible name? `my_notebook.Rmd` or `joey.Rmd` are **not* acceptable!
-* Is every figure clearly labeled and titled? 
-* Does every figure serve a purpose? 
-     + What question does it answer? 
-     + You can put extra (non-essential) figues in the Appendix.
-* Are your tables clearly labelled and legible?
-     + We recommend using `kable()` (built into `knitr`)
-     + `xtable()` might also work for you (not as easy as `kable()`)
-* **CRITICAL:** Have you given enough information for someone to reproduce, understand and extend your results?
-     + Where can they *find* the data that you used?
-     + Have you *described* the data that used?
-     + Have you *documented* your code? 
-     + Are your figures *clearly labeled*?
-     + Did you *discuss your findings*?
-     + Did you use good grammar and *proofread* your results?
-     + Finally, have you *committed* your work to github and made a *pull request*?
-     
-## github Submission Instructions (DELETE!)
-
-Fill out the bullets at the beginning of this notebook...
-
-* Provide your github ID. 
-* Indicate the issues associated with this work on github. 
-* Commit the Rmd and html versions of this notebook to the `MATP-4400-FINAL` directory on github and make a pull request.  
-* Provide the link to your github submission on LMS. 
-    + **NOTE:** You can post your link any time after it exists  
-    + We will grade the latest version available on Github starting at 3:00 on Thursday, 7 May.  
-* **NOTE:** RStudio Server will be unavailable due to maintenance for up to a week beginning the weekend of 9 May,  so there can be no extensions or late submissions. 
-
-##github help (DELETE!)
-
-* DO THIS FIRST:
-    + `git clone https://github.com/TheRensselaerIDEA/COVID-Notebooks` (if you haven't already)
-        + NOTE: We may have added to the master since your last `git pull` so make sure to do a `git pull origin master`
-    + `git checkout -b <your-new-branch>` (more instructions immediately below)
-    + In R, create a new R notebook (ie a `.Rmd` file) in the subdirectory `MATP-4400-FINAL`
-    + `git add` it to the repo (make sure you're in the correct directory when you do this!)
-    + `git commit -a -m 'Created my notebook!'` as soon as you do this! 
-    + `git push origin <your-new-branch>` so we see you're working on something
-    + Post a link in LMS; it will remain valid as you update (and check in) your work to github
-    + for details, see instructions in next few bullets
-    + Contact John Erickson erickj4@rpi.edu for further github questions
-* See: **HOW TO USE THIS NOTEBOOK AND REPOSITORY** https://bit.ly/2wYQGXP
-* See also: **git Cheat Sheet** https://bit.ly/2yCBSi8 
-
-*DELETE THE SECTIONS ABOVE!*
-<hr>
-
 # Final Project: Submission Links
 
 *This should be the first section of your final project notebook. Fill out the following according to how you submitted your notebook!*
@@ -401,7 +329,7 @@ last_week_confirmed$percent_confirmed <- (last_week_confirmed$last_week_confirme
 death_df <- last_week_deaths[complete.cases(last_week_deaths), ]
 confirmed_df <- last_week_confirmed[complete.cases(last_week_confirmed), ]
 ```
-After this I attempted to plot my Data
+After this I attempted to plot my Data 
 ```{r}
 # Density plots
 ggplot(confirmed_df) +
