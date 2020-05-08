@@ -1,0 +1,453 @@
+---
+title: "COVIDMINDER Bootcamp Notebook"
+author: "Alex Chan"
+date: "5/05/2020"
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+    toc_depth: 2
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+#### Library and Data Imports ####
+
+## Load essential R packages
+source("modules/Source.R")
+
+## Load stored data (see `data` subdirectory)
+source("modules/data_load.R")
+
+## Create dataframes; perform desparity index calcuations; prep for plotting
+source("modules/preprocessing.R")
+
+```
+
+<hr>
+
+# Final Project: Submission Links
+
+*This should be the first section of your final project notebook. Fill out the following according to how you submitted your notebook!*
+
+* github repository: https://github.com/TheRensselaerIDEA/COVID-Notebooks (for reference)
+* My github ID: *alexchan18*
+* github issues addressed by this work: `#27`
+* Github branch name of my submitted notebook: *feature-27*
+* link to merged notebook (post these to LMS!: 
+    + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/feature-27/MATP-4400-FINAL/covid-notebook-Chana6.Rmd 
+    + https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/feature-27/MATP-4400-FINAL/covid-notebook-Chana6.pdf 
+
+# Overview & Problems Tackled
+
+*On March 11, 2020, the World Health Organization declared COVID-19 a global pandemic. The number of cases reached a point where the entire world needed to take action. In the United States, state governors began closing down states to reduce the rate of infection. This meant that all citizens had to remain in their homes until further notice. Fast forward 6 weeks, the citizens of the United States are eager to leave their homes and return to normal life. The decision to do open up the country will be made based on the rate of infection and the increase in new cases. I looked at the data for this in New York State to see if Governor Cuomo should make the decision to open.*
+
+*The first problem was visualizing the number of new deaths per day.*
+
+*The second problem was visualizing the number of deaths per 100k.*
+
+
+# Data Description
+
+*I used the data for every county in the United States that was updated daily*
+
+*From this large dataset, I extracted the data for every county in New York State*
+
+*Then, I had to extract the FIPS code, confirmed cases, and deaths for each county and store this information in a data frame because the other information was not of use.*
+
+
+# Results
+
+The graphs show that there is a significant decrease in new deaths per day in the counties that are located below Weschester. These counties were largely affected by COVID-19 and the number of cases increased significantly. This could be due to the high population density of these areas. As for the counties north of Weschester, the number of new deaths were very small and the changes between days were either positive or negative. The only county that showed a significant number of deaths each day was Buffalo, located in western New York on the NY/Canadian border.
+
+## Problem 1 
+
+We need to visualize the number of new deaths per days in New York, separated by counties. The graph will be represented 5 times, every 3 days since April 23rd.
+
+### Methods
+
+Take country data for April 23rd, April 26, April 29th, May 2nd, and May 5th. Extract data for only New York counties. Create graphs from data frames created through extraction. Then, find difference in number of deaths between days to determine number of new deaths per day.
+
+For each day:
+
+1. Read in dataset for desired date
+
+2. Extract data for all rows with New York as state
+
+3. Extract FIPS code, number of confirmed cases, and number of deaths for each county
+
+4. Remove NULL rows from data frame
+
+5. Determine number of new deaths by subtracting cumulative deaths of old day from new day
+
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+
+April22 <- read_csv("data/csv/04-22-2020.csv")
+Ap22 <- April22[April22$Province_State == "New York",]
+A22 <- data.frame(Ap22$Admin2, Ap22$Confirmed, Ap22$Deaths)
+A22 <- A22[rowSums(is.na(Ap22)) == 0,] #April 22nd NY Counties Confirmed and Deaths
+A22Deaths = sum(A22$Ap22.Deaths)
+
+Deaths = 19413
+
+April23 <- read_csv("data/csv/04-23-2020.csv") 
+Ap23 <- April23[April23$Province_State == "New York",]
+A23 <- data.frame(Ap23$Admin2, Ap23$Confirmed, Ap23$Deaths)
+A23 <- A23[rowSums(is.na(Ap23)) == 0,] #April 23rd NY Counties Confirmed and Deaths
+A23Deaths = sum(A23$Ap23.Deaths) - Deaths
+A23Change = A23$Ap23.Deaths - A22$Ap22.Deaths
+A23 <- data.frame(A23, A23Change)
+
+April26 <- read_csv("data/csv/04-26-2020.csv")
+Ap26 <- April26[April26$Province_State == "New York",]
+A26 <- data.frame(Ap26$Admin2, Ap26$Confirmed, Ap26$Deaths)
+A26 <- A26[rowSums(is.na(A26)) == 0,] #April 26th NY Counties Confirmed and Deaths
+A26 <- A26[-c(53),]
+A26Deaths = sum(A26$Ap26.Deaths) - Deaths
+A26Change = A26$Ap26.Deaths - A23$Ap23.Deaths
+A26 <- data.frame(A26, A26Change)
+
+April29 <- read_csv("data/csv/04-29-2020.csv")
+Ap29 <- April29[April29$Province_State == "New York",]
+A29 <- data.frame(Ap29$Admin2, Ap29$Confirmed, Ap29$Deaths)
+A29 <- A29[rowSums(is.na(A29)) == 0,] #April 29th NY Counties Confirmed and Deaths
+A29 <- A29[-c(53),]
+A29Deaths = sum(A29$Ap29.Deaths) - Deaths
+A29Change = A29$Ap29.Deaths - A26$Ap26.Deaths
+A29 <- data.frame(A29, A29Change)
+
+May2 <- read_csv("data/csv/05-02-2020.csv")
+Ma2 <- May2[May2$Province_State == "New York",]
+M2 <- data.frame(Ma2$Admin2, Ma2$Confirmed, Ma2$Deaths)
+M2 <- M2[rowSums(is.na(M2)) == 0,] #May 2nd NY Counties Confirmed and Deaths
+M2 <- M2[-c(53),]
+M2Deaths = sum(M2$Ma2.Deaths) - Deaths
+M2Change = M2$Ma2.Deaths - A29$Ap29.Deaths
+M2 <- data.frame(M2, M2Change)
+
+May5 <- read_csv("data/csv/05-05-2020.csv")
+Ma5 <- May5[May5$Province_State == "New York",]
+M5 <- data.frame(Ma5$Admin2, Ma5$Confirmed, Ma5$Deaths)
+M5 <- M5[rowSums(is.na(M5)) == 0,] #May 5th NY Counties Confirmed and Deaths
+M5 <- M5[-c(53),]
+M5Deaths = sum(M5$Ma5.Deaths) - Deaths
+M5Change = M5$Ma5.Deaths - M2$Ma2.Deaths
+M5 <- data.frame(M5, M5Change)
+
+#Put the number of new deaths for each day into a csv file
+DaysDeaths <- read_csv("data/csv/DaysDeaths.csv")
+
+```
+
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+library(usmap)
+library(ggplot2)
+```
+
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+Ap23 <-Ap23[rowSums(is.na(Ap23)) == 0,]
+fips <- Ap23$FIPS
+s <- rep("ny", length(fips))
+AP23names <- Ap23$Admin2
+AP23deaths <- A23$A23Change
+AP23combined <- data.frame(fips,s,AP23names,AP23deaths) #Combined Data Frame for April 23th
+AP23combined <- AP23combined[-c(29),]
+AP23combined <- add_row(AP23combined, fips = 36005, s = "ny", AP23names = "Bronx", AP23deaths = 329)
+AP23combined <- add_row(AP23combined, fips = 36061, s = "ny", AP23names = "Manhattan", AP23deaths = 329)
+AP23combined <- add_row(AP23combined, fips = 36085, s = "ny", AP23names = "Staten Island", AP23deaths = 329)
+AP23combined <- add_row(AP23combined, fips = 36047, s = "ny", AP23names = "Brooklyn", AP23deaths = 329)
+AP23combined <- add_row(AP23combined, fips = 36081, s = "ny", AP23names = "Queens", AP23deaths = 329)
+```
+
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+Ap26 <-Ap26[rowSums(is.na(Ap26)) == 0,]
+fips <- Ap26$FIPS
+s <- rep("ny", length(fips))
+AP26names <- Ap26$Admin2
+AP26deaths <- A26$A26Change
+AP26combined <- data.frame(fips,s,AP26names,AP26deaths) #Combined Data Frame for April 26th
+AP26combined <- AP26combined[-c(29),]
+AP26combined <- add_row(AP26combined, fips = 36005, s = "ny", AP26names = "Bronx", AP26deaths = 223)
+AP26combined <- add_row(AP26combined, fips = 36061, s = "ny", AP26names = "Manhattan", AP26deaths = 223)
+AP26combined <- add_row(AP26combined, fips = 36085, s = "ny", AP26names = "Staten Island", AP26deaths = 223)
+AP26combined <- add_row(AP26combined, fips = 36047, s = "ny", AP26names = "Brooklyn", AP26deaths = 223)
+AP26combined <- add_row(AP26combined, fips = 36081, s = "ny", AP26names = "Queens", AP26deaths = 223)
+
+```
+
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+Ap29 <-Ap29[rowSums(is.na(Ap29)) == 0,]
+fips <- Ap29$FIPS
+s <- rep("ny", length(fips))
+AP29names <- Ap29$Admin2
+AP29deaths <- A29$A29Change
+AP29combined <- data.frame(fips,s,AP29names,AP29deaths) #Combined Data Frame for April 29th
+AP29combined <- AP29combined[-c(29),]
+AP29combined <- add_row(AP29combined, fips = 36005, s = "ny", AP29names = "Bronx", AP29deaths = 199)
+AP29combined <- add_row(AP29combined, fips = 36061, s = "ny", AP29names = "Manhattan", AP29deaths = 199)
+AP29combined <- add_row(AP29combined, fips = 36085, s = "ny", AP29names = "Staten Island", AP29deaths = 199)
+AP29combined <- add_row(AP29combined, fips = 36047, s = "ny", AP29names = "Brooklyn", AP29deaths = 199)
+AP29combined <- add_row(AP29combined, fips = 36081, s = "ny", AP29names = "Queens", AP29deaths = 199)
+```
+
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+Ma2 <-Ma2[rowSums(is.na(Ma2)) == 0,]
+fips <- Ma2$FIPS
+s <- rep("ny", length(fips))
+M2names <- Ma2$Admin2
+M2deaths <- M2$M2Change
+M2combined <- data.frame(fips,s,M2names,M2deaths) #Combined Data Frame for April 29th
+M2combined <- M2combined[-c(29),]
+M2combined <- add_row(M2combined, fips = 36005, s = "ny", M2names = "Bronx", M2deaths = 104)
+M2combined <- add_row(M2combined, fips = 36061, s = "ny", M2names = "Manhattan", M2deaths = 104)
+M2combined <- add_row(M2combined, fips = 36085, s = "ny", M2names = "Staten Island", M2deaths = 104)
+M2combined <- add_row(M2combined, fips = 36047, s = "ny", M2names = "Brooklyn", M2deaths = 104)
+M2combined <- add_row(M2combined, fips = 36081, s = "ny", M2names = "Queens", M2deaths = 104)
+```
+
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+Ma5 <-Ma5[rowSums(is.na(Ma5)) == 0,]
+fips <- Ma5$FIPS
+s <- rep("ny", length(fips))
+M5names <- Ma5$Admin2
+M5deaths <- M5$M5Change
+M5combined <- data.frame(fips,s,M5names,M5deaths) #Combined Data Frame for May 5th
+M5combined <- M5combined[-c(29),]
+M5combined <- add_row(M5combined, fips = 36005, s = "ny", M5names = "Bronx", M5deaths = 144)
+M5combined <- add_row(M5combined, fips = 36061, s = "ny", M5names = "Manhattan", M5deaths = 144)
+M5combined <- add_row(M5combined, fips = 36085, s = "ny", M5names = "Staten Island", M5deaths = 144)
+M5combined <- add_row(M5combined, fips = 36047, s = "ny", M5names = "Brooklyn", M5deaths = 144)
+M5combined <- add_row(M5combined, fips = 36081, s = "ny", M5names = "Queens", M5deaths = 144)
+```
+
+The Following 5 graphs show the number new deaths in each county north of Weschester
+
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+plot_usmap(
+    data = AP23combined, values = "AP23deaths", include = c("NY"), exclude = c("36005", "36061", "36085", "36047", "36081", "36059", "36103", "36119", "36087"), color = "royalblue"
+  ) + 
+  scale_fill_continuous(
+    low = "white", high = "royalblue", name = "Deaths", label = scales::comma, limit = c(-2,50)
+  ) + 
+  labs(title = "April 23rd") +
+  theme(legend.position = "right")
+```
+
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+
+plot_usmap(
+    data = AP26combined, values = "AP26deaths", include = c("NY"), exclude = c("36005", "36061", "36085", "36047", "36081", "36059", "36103", "36119", "36087"), color = "royalblue"
+  ) + 
+  scale_fill_continuous(
+    low = "white", high = "royalblue", name = "Deaths", label = scales::comma, limit = c(-2,50)
+  ) + 
+  labs(title = "Aril 26th") +
+  theme(legend.position = "right")
+```
+
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+plot_usmap(
+    data = AP29combined, values = "AP29deaths", include = c("NY"), exclude = c("36005", "36061", "36085", "36047", "36081", "36059", "36103", "36119", "36087"), color = "royalblue"
+  ) + 
+  scale_fill_continuous(
+    low = "white", high = "royalblue", name = "Deaths", label = scales::comma, limit = c(-2,50)
+  ) + 
+  labs(title = "Aril 29th") +
+  theme(legend.position = "right")
+
+```
+
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+plot_usmap(
+    data = M2combined, values = "M2deaths", include = c("NY"), exclude = c("36005", "36061", "36085", "36047", "36081", "36059", "36103", "36119", "36087"), color = "royalblue"
+  ) + 
+  scale_fill_continuous(
+    low = "white", high = "royalblue", name = "Deaths", label = scales::comma, limit = c(-2,50)
+  ) + 
+  labs(title = "May 2nd") +
+  theme(legend.position = "right")
+```
+
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+plot_usmap(
+    data = M5combined, values = "M5deaths", include = c("NY"), exclude = c("36005", "36061", "36085", "36047", "36081", "36059", "36103", "36119", "36087"), color = "royalblue"
+  ) + 
+  scale_fill_continuous(
+    low = "white", high = "royalblue", name = "Deaths", label = scales::comma, limit = c(-2,50)
+  ) + 
+  labs(title = "May 5th") +
+  theme(legend.position = "right")
+
+```
+	
+The following 5 graphs show the number of new deaths in the counties south of and including Weschester	
+	
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+plot_usmap(
+    data = AP23combined, values = "AP23deaths", include = c("36005", "36061", "36085", "36047", "36081", "36059", "36103", "36119", "36087"), color = "royalblue3"
+  ) + 
+  scale_fill_continuous(
+    low = "white", high = "royalblue3", name = "Deaths", label = scales::comma, limit = c(-10, 400)
+  ) + 
+  labs(title = "April 23rd") +
+  theme(legend.position = "right")
+
+
+plot_usmap(
+    data = AP26combined, values = "AP26deaths", include = c("36005", "36061", "36085", "36047", "36081", "36059", "36103", "36119", "36087"), color = "royalblue3"
+  ) + 
+  scale_fill_continuous(
+    low = "white", high = "royalblue3", name = "Deaths", label = scales::comma, limit = c(-10, 400)
+  ) + 
+  labs(title = "April 26th") +
+  theme(legend.position = "right")
+
+
+plot_usmap(
+    data = AP29combined, values = "AP29deaths", include = c("36005", "36061", "36085", "36047", "36081", "36059", "36103", "36119", "36087"), color = "royalblue3"
+  ) + 
+  scale_fill_continuous(
+    low = "white", high = "royalblue3", name = "Deaths", label = scales::comma, limit = c(-10, 400)
+  ) + 
+  labs(title = "April 29th") +
+  theme(legend.position = "right")
+
+plot_usmap(
+    data = M2combined , values = "M2deaths", include = c("36005", "36061", "36085", "36047", "36081", "36059", "36103", "36119", "36087"), color = "royalblue3"
+  ) + 
+  scale_fill_continuous(
+    low = "white", high = "royalblue3", name = "Deaths", label = scales::comma, limit = c(-10, 400)
+  ) + 
+  labs(title = "May 2nd") +
+  theme(legend.position = "right")
+
+plot_usmap(
+    data = M5combined , values = "M5deaths", include = c("36005", "36061", "36085", "36047", "36081", "36059", "36103", "36119", "36087"), color = "royalblue3"
+  ) + 
+  scale_fill_continuous(
+    low = "white", high = "royalblue3", name = "Deaths", label = scales::comma, limit = c(-10, 400)
+  ) + 
+  labs(title = "May 5th") +
+  theme(legend.position = "right")
+```
+
+*Note: When extracting the county data from the overall country data, the 5 bouroughs of New York City were grouped together under one county. I needed to divide the number of deaths in New York City by 5 to be able to map the counties in the plot_usmap function*
+	
+### Results
+
+*For the counties north of Weschester, all but 2 had less than 10 new deaths every 3 days, showing that these areas were not largely impacted by COVID-19. The 2 counties that had a relatively high number of deaths during these days were Buffalo and Rockland. However, the range for the number of new deaths in these 2 counties varied, from around 50 to as low as 20.*
+
+*For the counties south of Weschester, the number of new deaths every 3 days started very high, but gradually decreased over time. The 5 boroughs in particular had very high number of deaths, starting at 400 on April 23. Over the course of the past 2 weeks, however, the number of new deaths decreased, especially in the Suffolk and Nassau counties.*
+
+### Discussion
+
+*These graphs show that the number of new deaths has decreased since New York was declared a hot zone. In terms of reopening, the decision should be to remain closed until number of new cases is small. The number of new deaths just shows how fatal the virus is. Until a vaccine is discovered, the number of deaths will always be greater than 0 because people who have the virus are not safe from it.*
+
+*There are some strengths to these results. By mapping out each county in New York we can determine which counties are vunerable to fatalities and therefore pay more attention to slowing down the rate of infection. Clearly, the areas with high population densities are suffering the most, while the counties north of Westchester have little to no fatalities.*
+
+*There are also some limitations to these results. The graphs do not account for population density, which could help explain the reason for such high numbers of deaths in the souther counties of New York. New York City has 20,000 people per square mile which would clearly lead to an increase in the number of cases and furthermore the number of deaths.*
+
+## Problem 2
+Similar to the first problem, except we are graphing deaths per 100k. Normalizing the data this way will allow us to see a better visualization of the data.
+ 
+### Methods
+
++ I plotted a line graph of the new deaths per day in the top 5 worst counties. This included New York City, Nassau, Rockland, Suffolk, and Westchester. 
+
++ Then, I normalized the data so that the graph represented deaths per 100,000 people. This was based on the populations for each county
+
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+Top5Counties <- read_csv("data/csv/Top5.csv")
+
+ggplot(data = Top5Counties, aes(x=Top5Counties$Date, y = Top5Counties$Deaths, group = Top5Counties$County)) +
+  geom_line(aes(color=Top5Counties$County)) +
+  geom_point(aes(color=Top5Counties$County)) +
+  labs(title="New Deaths Per Top 5 Counties",x="Date", y = "Deaths")
+```
+
++ I had to extract the population data for each county, then divide it by 100,000.
++ I took the number of deaths for each county for each day and divided it by these new numbers.
+
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+NyPop <- read_csv("data/csv/NY_County_Population.csv")
+
+BrooklynPop <- NyPop[1,2]
+QueensPop <- NyPop[2,2]
+BronxPop <- NyPop[5,2]
+SIManPop <- NyPop[3,2]
+NYCPop <- as.numeric((BrooklynPop+QueensPop+BronxPop+SIManPop) / 100000)
+NYCPop <- round(NYCPop, digits = 2)
+
+NassauPop <- as.numeric(NyPop[6,2] / 100000)
+NassauPop <- round(NassauPop, digits = 2)
+
+SuffolkPop <- as.numeric(NyPop[4,2] / 100000)
+SuffolkPop <- round(SuffolkPop, digits = 2)
+
+WestchesterPop <- as.numeric(NyPop[7,2] / 100000)
+WestchesterPop <- round(WestchesterPop, digits = 2)
+
+RocklandPop <- as.numeric(NyPop[13,2] / 100000)
+RocklandPop <- round(RocklandPop, digits = 2)
+
+Top5Pop100k = data.frame(NYCPop, SuffolkPop, WestchesterPop, RocklandPop, NassauPop)
+
+NYCData <- Top5Counties[1:5,]
+NYC100k <- NYCData$Deaths / NYCPop
+
+NassauData <- Top5Counties[6:10,]
+Nassau100k <- NassauData$Deaths / NassauPop
+
+SuffolkData <- Top5Counties[11:15,]
+Suffolk100k <- SuffolkData$Deaths / SuffolkPop
+
+WestchesterData <- Top5Counties[16:20,]
+Westchester100k <- WestchesterData$Deaths / WestchesterPop
+
+RocklandData <- Top5Counties[21:25,]
+Rockland100k <- RocklandData$Deaths / RocklandPop
+
+Top5Counties100k <- data.frame(NYC100k, Nassau100k, Suffolk100k, Westchester100k, Rockland100k)
+
+Top5Counties100kUpdated <- read_csv("data/csv/Top5Counties100k.csv")
+
+ggplot(data = Top5Counties, aes(x=Top5Counties100kUpdated$Date, y = Top5Counties100kUpdated$Deaths100k, group = Top5Counties100kUpdated$County)) +
+  geom_line(aes(color=Top5Counties100kUpdated$County)) +
+  geom_point(aes(color=Top5Counties100kUpdated$County)) +
+  labs(title="New Deaths Per Top 5 Counties Per 100K",x="Date", y = "Deaths")
+```
+
+	
+### Results
+
+Based on the first graph, it is easy to see that New York City completely skews the data. This is because the number of deaths was significantly larger than the remaining counties in the top 5. Nonetheless, the line for NYC slopes downward, meaning the number of new deaths decreases.
+
+For the remaining 4 counties, the lines are relatively flat, showing the number of new deaths does not change significantly. However, this is only how it appears. Again, NYC skews the data so the shape of the lines for the 4 other counties appear to be flat.
+
+### Discussion
+
+We can see that normalizing the data based on population showed us a better representation of the change in the number of deaths for the top 5 worst counties in New York. For NYC, the number of new deaths per 100k drops significantly over time. For the remaining 4 counties, the number of new deaths per 100k varies, but is on average around 6.
+
+# Summary and COVIDMINDER Recommendations
+* Overall, what insights did you find  about the  COVID-19 epidemic in your analysis?    
+    + I discovered that the number of deaths due to COVID is steadily decreasing in New York, which was considered a       hot zone recently. This is a good sign and shows that the work Governor Cuomo is doing to slow the rate of           infection/death is really working.
+    + I also realized that graphing data can be useful but also misleading. It is important to understand the scale        of what is being represented and to know when to normalize data. It's easy to look at a graph and determine          that a certain county is doing well because the slope of their line is close to 0. But normalizing the data          will give us a better picture of the fatalities of a certain area.
+* What recommendations do you have for COVIDMINDER for  Data utilization, Analytics, Visualizations, User interface design, etc.
+    + I would recommend creating an animation with a slider of a map of New York or even the entire country that             includes the changes in cases/deaths/active.
+    + Would you recommend that your analysis be included in COVIDMINDER?  Why or Why not?  
+        + Yes, I would recommend that my analysis be included in COVIDMINDER. It is important to have visualizations
+          of deaths in a certain area in order to decide where to focus attention. Also, when deciding, on a larger            scale, when to reopen the country, it is important to look at the number of new deaths over time.                    Obviously, we would want to reopen when the number of new deaths is 0. This would mean a vaccine is                  available and those who are infected would have the chance to get cured. 
+
+# References
+
+None
+
+# Appendix
+
+None
