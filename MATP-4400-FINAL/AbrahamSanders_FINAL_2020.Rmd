@@ -1,0 +1,598 @@
+---
+title: 'Final Project: Initial impact of COVID-19 on higher Education, as seen through the Twittersphere'
+author: "Abraham Sanders"
+date: "May 7, 2020"
+subtitle: Introduction to Data Mathematics 2020
+output:
+  html_document:
+    toc: yes
+    toc_depth: 2
+---
+
+# Final Project: Submission Links
+
+* Github repository: [https://github.com/TheRensselaerIDEA/COVID-Twitter](https://github.com/TheRensselaerIDEA/COVID-Twitter)
+* Github issues addressed by this work: [#4](https://github.com/TheRensselaerIDEA/COVID-Twitter/issues/4)
+* Github branch name: sandea5_final
+* Link to merged notebook: 
+    
+    +[https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/master/MATP-4400-FINAL/AbrahamSanders_FINAL_2020.Rmd](https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/master/MATP-4400-FINAL/AbrahamSanders_FINAL_2020.Rmd)
+    +[https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/master/MATP-4400-FINAL/AbrahamSanders_FINAL_2020.html](https://github.com/TheRensselaerIDEA/COVID-Notebooks/blob/master/MATP-4400-FINAL/AbrahamSanders_FINAL_2020.html)
+
+## Dependencies for running the Rmd
+Code is mostly excluded from the knit .html version of this notebook to maintain a clean presentation. It is included in a few places that make sense for demonstrative purposes. The full code is provided in the accompanying .Rmd file.
+
+To run the .Rmd file, make sure the included dependencies Elasticsearch.R and elasticsearch_queries.R are in the same directory as the Rmd, and make sure to set "elasticsearch_host" to the approriate value here (this is not included in the github version for security reasons).
+
+```{r}
+elasticsearch_host <- "PLACEHOLDER"
+```
+
+#  Overview
+
+Social media provides a rich corpus of text characterizing a real-time view of daily happenings and current events within our communities. We happen to be living through what may turn out to be a historically significant current event - that is, the COVID-19 pandemic. The pandemic, which originated in the Wuhan area of China in December of 2019, began making a significant impact in the United States in mid March 2020. This project explores the impact that COVID-19 has had on higher education both in the United States and worldwide by studying themes and topics being discussed on Twitter in the midst of that mid-March inflection point as people were grappling with the new reality of a quarantined society.
+
+# Methodology
+
+##The dataset
+A method for gathering topic-focused tweet datasets was originally developed as part of a separate undergraduate research project this term here at RPI. This effort was initially focused on using the Twitter streaming API [2] to gather tweets related to the opioid crisis in an effort to reproduce results in classifying indicators of opioid abuse on Twitter published by researchers at the University of Pennsylvania [1]. The tooling built for that goal was later repurposed to gather tweets related to the COVID-19 pandemic, and the [resulting dataset](https://github.com/TheRensselaerIDEA/COVID-TweetIDs) contains over 40 million tweets gathered between March 17th and April 15th 2020. This dataset also includes tweets prior to March 17th that were retweeted during the gathering interval. All of the tweets in this repository were selected by a filter keyword list targeting areas of interest with respect to COVID-19. The keyword list can be found [here](https://github.com/TheRensselaerIDEA/COVID-TweetIDs/blob/master/keywords.txt).
+
+For this exploratory analysis, tweets pertaining to higher education will be sampled from the COVID-19 tweet dataset from a three-day period in mid-March. By studying the themes, topics, and sentiments being discussed on Twitter with respect to higher education at this point in time, a sense of the initial impact of COVID-19 in this area can be established.
+
+## Semantic search
+A method for sampling tweets from the dataset by relevance to a semantic phrase was also developed as part of the aforementioned undergraduate research project. To get samples of tweets pertaining to higher education, we embed the phrase "colleges and universities" into a high-dimensional vector space and calculate the cosine similarity between that phrase and all the tweets in the dataset for the requested time range. This query is executed on our dataset using Elasticsearch [3].
+
+For example, here are tweets relevant to the phrase "colleges and universities" tweeted between March 1st and March 15th 2020:
+
+```{r setup, include=FALSE}
+# Required R package installation:
+# These will install packages if they are not already installed
+# Set the correct default repository
+r = getOption("repos")
+r["CRAN"] = "http://cran.rstudio.com"
+options(repos = r)
+
+if (!require("ggplot2")) {
+  install.packages("ggplot2")
+  library(ggplot2)
+}
+
+if (!require("knitr")) {
+  install.packages("knitr")
+  library(knitr)
+}
+
+if(!require('dplyr')) {
+  install.packages("dplyr")
+  library(dplyr)
+}
+
+if(!require('stringr')) {
+  install.packages("stringr")
+  library(stringr)
+}
+
+if(!require('Rtsne')) {
+  install.packages("Rtsne")
+  library(Rtsne)
+}
+
+if(!require('stopwords')) {
+  install.packages("stopwords")
+  library(stopwords)
+}
+
+if(!require('plotly')) {
+  install.packages("plotly")
+  library(plotly)
+}
+
+if (!require("kableExtra")) {
+  install.packages("kableExtra")
+  library(kableExtra)
+}
+
+knitr::opts_chunk$set(echo = TRUE)
+
+source("Elasticsearch.R")
+```
+
+```{r}
+elasticsearch_indexname <- "coronavirus-data-all"
+
+results <- do_search(indexname=elasticsearch_indexname, 
+                     rangestart="2020-03-01 00:00:00",
+                     rangeend="2020-03-16 00:00:00",
+                     semantic_phrase="colleges and universities",
+                     resultsize=10,
+                     resultfields='"created_at", "user.screen_name", "text", "extended_tweet.full_text"',
+                     elasticsearch_host=elasticsearch_host,
+                     elasticsearch_path="elasticsearch",
+                     elasticsearch_port=443,
+                     elasticsearch_schema="https")
+
+#print results
+params.df <- data.frame(from=results$params$rangestart, 
+                        to=results$params$rangeend, 
+                        phrase=results$params$semantic_phrase,
+                        results.count=paste(nrow(results$df), "/", results$total))
+kable(params.df) %>% kable_styling()
+
+display.df <- results$df[, c("cosine_similarity", "full_text", "created_at", "user_screen_name")]
+kable(display.df) %>% kable_styling()
+```
+
+Tweets with higher cosine similarity scores are more semantically relevant to the search phrase "colleges and universities". The embedding vectors are provided by Universal Sentence Encoder [4], a transformer [6] neural network architecture pre-trained on a text similarity ranking task. Tensorflow [5] is used to run this embedding model, and the vectors are stored in Elasticsearch alongside the tweets for quick retrieval.
+
+## Analyzing Themes and Topics
+
+To organize a large sample of higher-education related tweets, k-means [7] clustering is used on the embedding vector space to group together semantically related tweets. We call the resulting high-level clusters "themes". These clusters are labeled using a term-frequency ranking - the top three most frequently used non-stopword terms in each cluster become the respective theme label.
+
+Within each theme cluster, k-means is run again to organize the theme cluster into subclusters which we call "topics". Topic subclusters are labeled in the same manner as theme clusters, with the restriction that a topic cluster may not contain any terms in its label that are already in the theme cluster label.
+
+For example, if a theme is "health / medical / workers", these three terms may not be included in any of the topic subclusters within.
+
+## Visualization
+
+To visualize theme clusters and topic labels, T-SNE [8] is used to project points from the original 512 dimensional embedding vector space into two dimensions.
+
+# Results
+
+## Query setup
+```{r}
+# query start date/time (inclusive)
+rangestart <- "2020-03-18 00:00:00"
+
+# query end date/time (exclusive)
+rangeend <- "2020-03-21 00:00:00"
+
+# query semantic similarity phrase
+semantic_phrase <- "colleges and universities"
+
+# number of results to return (max 10,000)
+resultsize <- 10000
+```
+
+```{r, echo=FALSE}
+###############################################################################
+# Get the tweets from Elasticsearch using the search parameters defined above
+###############################################################################
+
+results <- do_search(indexname=elasticsearch_indexname, 
+                     rangestart=rangestart,
+                     rangeend=rangeend,
+                     semantic_phrase=semantic_phrase,
+                     resultsize=resultsize,
+                     resultfields='"user.screen_name", "user.verified", "user.location", "place.full_name", "place.country", "text", "extended_tweet.full_text", "embedding.use_large.primary"',
+                     elasticsearch_host=elasticsearch_host,
+                     elasticsearch_path="elasticsearch",
+                     elasticsearch_port=443,
+                     elasticsearch_schema="https")
+
+# this dataframe contains the tweet text and other metadata
+tweet.vectors.df <- results$df[,c("full_text", "user_screen_name", "user_verified", "user_location", "place.country", "place.full_name")]
+
+# this matrix contains the embedding vectors for every tweet in tweet.vectors.df
+tweet.vectors.matrix <- t(simplify2array(results$df[,"embedding.use_large.primary"]))
+```
+
+```{r, echo=FALSE}
+###############################################################################
+# Clean the tweet and user location text, and set up tweet.vectors.df 
+# the way we want it by consolidating the location field and computing
+# location type
+###############################################################################
+
+tweet.vectors.df$user_location <- ifelse(is.na(tweet.vectors.df$place.full_name), tweet.vectors.df$user_location, paste(tweet.vectors.df$place.full_name, tweet.vectors.df$place.country, sep=", "))
+tweet.vectors.df$user_location[is.na(tweet.vectors.df$user_location)] <- ""
+tweet.vectors.df$user_location_type <- ifelse(is.na(tweet.vectors.df$place.full_name), "User", "Place")
+tweet.vectors.df <- tweet.vectors.df[, c("full_text", "user_screen_name", "user_verified", "user_location", "user_location_type")]
+
+clean_text <- function(text, for_freq=FALSE) {
+  text <- str_replace_all(text, "[\\s]+", " ")
+  text <- str_replace_all(text, "http\\S+", "")
+  if (isTRUE(for_freq)) {
+    text <- tolower(text)
+    text <- str_replace_all(text, "’", "'")
+    text <- str_replace_all(text, "_", "-")
+    text <- str_replace_all(text, "[^a-z1-9 ']", "")
+  } else {
+    text <- str_replace_all(text, "[^a-zA-Z1-9 `~!@#$%^&*()-_=+\\[\\];:'\",./?’]", "")
+  }
+  text <- str_replace_all(text, " +", " ")
+  text <- trimws(text)
+}
+tweet.vectors.df$full_text <- sapply(tweet.vectors.df$full_text, clean_text)
+tweet.vectors.df$user_location <- sapply(tweet.vectors.df$user_location, clean_text)
+```
+
+## Selection of optimal number of clusters and subclusters
+
+To find the optimal number of high-level theme clusters for this sample, an elbow plot is used:
+
+```{r, echo=FALSE}
+wssplot <- function(data, fc=1, nc=40, seed=20){
+  wss <- data.frame(k=fc:nc, withinss=c(0))
+  for (i in fc:nc){
+    set.seed(seed)
+    wss[i-fc+1,2] <- sum(kmeans(data, centers=i, iter.max=30)$withinss)}
+  ggplot(data=wss,aes(x=k,y=withinss)) + 
+    geom_line() + 
+    ggtitle("Quality (within sums of squares) of k-means by choice of k")
+}
+# Generate the plot
+wssplot(tweet.vectors.matrix)
+```
+
+The plot mostly represents a smooth curve, although there is a distinct "elbow" point between k=8 and k=10. We will select k=8:
+
+```{r}
+k <- 8
+```
+
+```{r, echo=FALSE}
+###############################################################################
+# Run K-means on all the tweet embedding vectors
+###############################################################################
+
+set.seed(300)
+km <- kmeans(tweet.vectors.matrix, centers=k, iter.max=30)
+
+tweet.vectors.df$vector_type <- factor("tweet", levels=c("tweet", "cluster_center", "subcluster_center"))
+tweet.vectors.df$cluster <- as.factor(km$cluster)
+
+#append cluster centers to dataset for visualization
+centers.df <- data.frame(full_text=paste("Cluster (", rownames(km$centers), ") Center", sep=""),
+                         user_screen_name="[N/A]",
+                         user_verified="[N/A]",
+                         user_location="[N/A]",
+                         user_location_type = "[N/A]",
+                         vector_type = "cluster_center",
+                         cluster=as.factor(rownames(km$centers)))
+tweet.vectors.df <- rbind(tweet.vectors.df, centers.df)
+tweet.vectors.matrix <- rbind(tweet.vectors.matrix, km$centers)
+```
+
+To find the optimal number of topic subclusters for each theme cluster, another elbow plot is generated with a separate curve for each theme cluster. Since the within sums of squares can be on different scales for theme clusters of different sizes and levels of diversity, the withinss metric is scaled to 0 mean and unit variance: 
+
+```{r, echo=FALSE}
+wssplot2 <- function(data, fc=1, nc=40, seed=20){
+  clusters <- max(data[,1])
+  wss <- data.frame(cluster=as.factor(sort(rep(1:clusters, nc-fc+1))), k=rep(fc:nc, clusters), withinss=c(0))
+  for (i in 1:clusters) {
+    for (j in fc:nc){
+      set.seed(seed)
+      wss[wss$cluster==i,][j,"withinss"] <- sum(kmeans(data[data[,1]==i,2:ncol(data)], centers=j, iter.max=30)$withinss)
+      }
+  }
+  wss$withinss.scaled <- unlist(lapply(1:clusters, function(n) scale(wss$withinss[wss$cluster==n])))
+  ggplot(data=wss,aes(x=k,y=withinss.scaled)) + 
+    geom_line(aes(color=cluster, linetype=cluster)) + 
+    ggtitle("Quality (scaled within sums of squares) of k-means by choice of k")
+}
+# Generate the plot
+wssplot2(cbind(tweet.vectors.df$cluster, tweet.vectors.matrix))
+```
+
+Each theme cluster follows a similar plot, again representing a smooth curve. This time there is no clear "elbow" point. A reasonable choice of k can be selected anywhere between 8 and 15. We will select cluster.k=8 for the topic subclusters:
+
+```{r}
+cluster.k <- 8
+```
+
+## Visualization of theme clusters and topic subclusters
+
+```{r, echo=FALSE}
+###############################################################################
+# Run K-means again on all the tweet embedding vectors in each cluster
+# to create subclusters of tweets
+###############################################################################
+
+tweet.vectors.df$subcluster <- c(0)
+
+for (i in 1:k){
+ print(paste("Subclustering cluster", i, "..."))
+ cluster.matrix <- tweet.vectors.matrix[tweet.vectors.df$cluster == i,]
+ set.seed(500)
+ cluster.km <- kmeans(cluster.matrix, centers=cluster.k, iter.max=30)
+ tweet.vectors.df[tweet.vectors.df$cluster == i, "subcluster"] <- cluster.km$cluster
+ 
+ #append subcluster centers to dataset for visualization
+ centers.df <- data.frame(full_text=paste("Subcluster (", rownames(cluster.km$centers), ") Center", sep=""),
+                         user_screen_name="[N/A]",
+                         user_verified="[N/A]",
+                         user_location="[N/A]",
+                         user_location_type = "[N/A]",
+                         vector_type = "subcluster_center",
+                         cluster=as.factor(i),
+                         subcluster=rownames(cluster.km$centers))
+ tweet.vectors.df <- rbind(tweet.vectors.df, centers.df)
+ tweet.vectors.matrix <- rbind(tweet.vectors.matrix, cluster.km$centers)
+}
+tweet.vectors.df$subcluster <- as.factor(tweet.vectors.df$subcluster)
+```
+
+```{r, echo=FALSE}
+###############################################################################
+# Compute labels for each cluster and subcluster based on word frequency
+# and identify the nearest neighbors to each cluster and subcluster center
+###############################################################################
+
+stop_words <- stopwords("en", source="snowball")
+stop_words <- union(stop_words, stopwords("en", source="nltk"))
+stop_words <- union(stop_words, stopwords("en", source="smart"))
+stop_words <- union(stop_words, stopwords("en", source="marimo"))
+stop_words <- union(stop_words, c(",", ".", "!", "-", "?", "&amp;", "amp"))
+
+get_word_freqs <- function(full_text) {
+  word_freqs <- table(unlist(strsplit(clean_text(full_text, TRUE), " ")))
+  word_freqs <- cbind.data.frame(names(word_freqs), as.integer(word_freqs))
+  colnames(word_freqs) <- c("word", "count")
+  word_freqs <- word_freqs[!(word_freqs$word %in% stop_words),]
+  word_freqs <- word_freqs[order(word_freqs$count, decreasing=TRUE),]
+}
+
+get_label <- function(word_freqs, exclude_from_labels=NULL, top_k=3) {
+  words <- as.character(word_freqs$word)
+  exclude_words <- NULL
+  if (!is.null(exclude_from_labels)) {
+    exclude_words <- unique(unlist(lapply(strsplit(exclude_from_labels, "/"), trimws)))
+  }
+  label <- paste(setdiff(words, exclude_words)[1:top_k], collapse=" / ")
+}
+
+get_nearest_center <- function(df, mtx, center) {
+  df$center_cosine_similarity <- apply(mtx, 1, function(v) (v %*% center)/(norm(v, type="2")*norm(center, type="2")))
+  nearest_center <- df[order(df$center_cosine_similarity, decreasing=TRUE),]
+  nearest_center <- nearest_center[nearest_center$vector_type=="tweet", c("center_cosine_similarity", "full_text", "user_location")]
+}
+
+master.word_freqs <- get_word_freqs(tweet.vectors.df$full_text)
+master.label <- get_label(master.word_freqs, top_k=6)
+
+clusters <- list()
+for (i in 1:k) {
+  cluster.df <- tweet.vectors.df[tweet.vectors.df$cluster == i,]
+  cluster.matrix <- tweet.vectors.matrix[tweet.vectors.df$cluster == i,]
+    
+  cluster.word_freqs <- get_word_freqs(cluster.df$full_text)
+  cluster.label <- get_label(cluster.word_freqs, master.label)
+  cluster.center <- cluster.matrix[cluster.df$vector_type=="cluster_center",]
+  cluster.nearest_center <- get_nearest_center(cluster.df, cluster.matrix, cluster.center)
+  
+  cluster.subclusters <- list()
+  for (j in 1:cluster.k) {
+    subcluster.df <- cluster.df[cluster.df$subcluster == j,]
+    subcluster.matrix <- cluster.matrix[cluster.df$subcluster == j,]
+    
+    subcluster.word_freqs <- get_word_freqs(subcluster.df$full_text)
+    subcluster.label <- get_label(subcluster.word_freqs, c(master.label, cluster.label))
+    subcluster.center <- subcluster.matrix[subcluster.df$vector_type=="subcluster_center",]
+    subcluster.nearest_center <- get_nearest_center(subcluster.df, subcluster.matrix, subcluster.center)
+    
+    cluster.subclusters[[j]] <- list(word_freqs=subcluster.word_freqs, label=subcluster.label, nearest_center=subcluster.nearest_center)
+  }
+  
+  clusters[[i]] <- list(word_freqs=cluster.word_freqs, label=cluster.label, nearest_center=cluster.nearest_center, subclusters=cluster.subclusters)
+}
+
+```
+
+```{r, echo=FALSE}
+###############################################################################
+# Run T-SNE on all the tweets and then again on each cluster to get
+# plot coordinates for each tweet. We output a master plot with all clusters
+# and a cluster plot with all subclusters for each cluster.
+###############################################################################
+
+set.seed(700)
+tsne <- Rtsne(tweet.vectors.matrix, dims=2, perplexity=25, max_iter=750, check_duplicates=FALSE)
+tsne.plot <- cbind(tsne$Y, tweet.vectors.df)
+colnames(tsne.plot)[1:2] <- c("X", "Y")
+tsne.plot$full_text <- sapply(tsne.plot$full_text, function(t) paste(strwrap(t ,width=60), collapse="<br>"))
+tsne.plot$cluster.label <- sapply(tsne.plot$cluster, function(c) clusters[[c]]$label)
+
+taglist <- htmltools::tagList()
+
+#Master high level plot
+fig <- plot_ly(tsne.plot, x=~X, y=~Y, 
+               text=~paste("Cluster:", cluster, "<br>Text:", full_text), 
+               color=~cluster.label, type="scatter", mode="markers")
+fig <- fig %>% layout(title=paste("Master Plot:", master.label, "(high level clusters)"), 
+                        yaxis=list(zeroline=FALSE), 
+                        xaxis=list(zeroline=FALSE))
+fig <- fig %>% toWebGL()
+taglist[[1]] <- fig
+
+#Cluster plots
+plot_index <- 2
+for (i in 1:k) {
+  print(paste("Plotting cluster", i, "..."))
+  cluster.matrix <- tweet.vectors.matrix[tsne.plot$cluster == i,]
+  
+  set.seed(900)
+  cluster.tsne <- Rtsne(cluster.matrix, dims=2, perplexity=12, max_iter=500, check_duplicates=FALSE)
+  cluster.tsne.plot <- cbind(cluster.tsne$Y, tsne.plot[tsne.plot$cluster == i,])
+  colnames(cluster.tsne.plot)[1:2] <- c("cluster.X", "cluster.Y")
+  cluster.tsne.plot$subcluster.label <- sapply(cluster.tsne.plot$subcluster, function(c) clusters[[i]]$subclusters[[c]]$label)
+  
+  #Cluster plot with regrouped positions by subcluster
+  fig <- plot_ly(cluster.tsne.plot, x=~cluster.X, y=~cluster.Y, 
+                 text=~paste("Subcluster:", subcluster, "<br>Text:", full_text), 
+                 color=~subcluster.label, type="scatter", mode="markers")
+  fig <- fig %>% layout(title=paste('Cluster ', i, ": ", clusters[[i]]$label, " (regrouped by subcluster)", sep=""), 
+                        yaxis=list(zeroline=FALSE), 
+                        xaxis=list(zeroline=FALSE))
+  #fig <- fig %>% toWebGL()
+  taglist[[plot_index]] <- fig
+  plot_index <- plot_index + 1
+}
+
+taglist
+```
+
+# Analysis
+
+## Themes
+
+Inspection of the master plot shows that the main themes being discussed with respect to higher education at this  point in mid-March are:
+
+* School closures
+* Transition to online classes
+* Cancellation of exams and modification of grading policies
+* Impact on student finances
+
+The nearest neighbors to the theme cluster centers display some of the discourse central to these issues. Using a combination of nearest neighbor review and manual survey of the plotted tweets, the following theme descriptions are easily derived:
+
+```{r, echo=FALSE}
+n_nearest_neighbors <- 5
+
+theme_caption <- paste(n_nearest_neighbors, "closest tweets to theme cluster center")
+topic_caption <- paste(n_nearest_neighbors, "closest tweets to topic subcluster center")
+```
+
+### Theme: School closures (closed / close / open)
+
+```{r, echo=FALSE}
+kable(clusters[[1]]$nearest_center[1:n_nearest_neighbors,], caption=theme_caption) %>% kable_styling()
+```
+
+### Theme: Transition to online classes (semester / classes / online)
+
+```{r, echo=FALSE}
+kable(clusters[[3]]$nearest_center[1:n_nearest_neighbors,], caption=theme_caption) %>% kable_styling()
+```
+
+### Theme: Cancellation of exams and modification of grading policies (exams / grades / cancelled)
+
+```{r, echo=FALSE}
+kable(clusters[[7]]$nearest_center[1:n_nearest_neighbors,], caption=theme_caption) %>% kable_styling()
+```
+
+### Theme: Impact on student finances (student / loans / debt)
+
+```{r, echo=FALSE}
+kable(clusters[[4]]$nearest_center[1:n_nearest_neighbors,], caption=theme_caption) %>% kable_styling()
+```
+
+### Theme: General discussion about the impact of the virus on colleges and universities (covid19 / universities / coronavirus)
+
+```{r, echo=FALSE}
+kable(clusters[[6]]$nearest_center[1:n_nearest_neighbors,], caption=theme_caption) %>% kable_styling()
+```
+
+## Topics
+
+Within each theme, we can dig into specific topics by inspecting topic subclusters. An exhaustive review of the topic subclusters is beyond the scope of this report, however it is prudent to display some of the most interesting ones:
+
+### Topic: Cancellations of college athletic events (ncaa / high / althletes)
+
+Within theme: General discussion (covid19 / universities / coronavirus)
+
+```{r, echo=FALSE}
+kable(clusters[[6]]$subclusters[[8]]$nearest_center[1:n_nearest_neighbors,], caption=topic_caption) %>% kable_styling()
+```
+
+### Topic: Information about online resources for students (information / check / online)
+
+Within theme: General discussion (covid19 / universities / coronavirus)
+
+```{r, echo=FALSE}
+kable(clusters[[6]]$subclusters[[5]]$nearest_center[1:n_nearest_neighbors,], caption=topic_caption) %>% kable_styling()
+```
+
+### Topic: Sadness over not being able to attend school in person (miss / time / back)
+
+Within theme: Transition to online classes (semester / classes / online)
+
+```{r, echo=FALSE}
+kable(clusters[[3]]$subclusters[[8]]$nearest_center[1:n_nearest_neighbors,], caption=topic_caption) %>% kable_styling()
+```
+
+### Topic: Frustration over cancelled commencement ceremonies and graduations (graduation / cancelled / graduating)
+
+Within theme: Transition to online classes (semester / classes / online)
+
+```{r, echo=FALSE}
+kable(clusters[[3]]$subclusters[[4]]$nearest_center[1:n_nearest_neighbors,], caption=topic_caption) %>% kable_styling()
+```
+
+### Topic: Anger over lack of university tuition refunds (tuition / refund / money)
+
+Within theme: Impact on student finances (student / loans / debt)
+
+```{r, echo=FALSE}
+kable(clusters[[4]]$subclusters[[7]]$nearest_center[1:n_nearest_neighbors,], caption=topic_caption) %>% kable_styling()
+```
+
+### Topic: Discussion on federal student loan relief (cancel / loan / people)
+
+Within theme: Impact on student finances (student / loans / debt)
+
+```{r, echo=FALSE}
+kable(clusters[[4]]$subclusters[[6]]$nearest_center[1:n_nearest_neighbors,], caption=topic_caption) %>% kable_styling()
+```
+
+### Topic: Discussion on 60 day student loan deferral announced by Trump (trump / loan / coronavirus)
+
+Within theme: Impact on student finances (student / loans / debt)
+
+```{r, echo=FALSE}
+kable(clusters[[4]]$subclusters[[2]]$nearest_center[1:n_nearest_neighbors,], caption=topic_caption) %>% kable_styling()
+```
+
+# Discussion
+
+By examining a three-day window of time in mid-March 2020, we are able to get a sense of some of the most important issues being faced by colleges, universities, and students in the face of the onset of the COVID-19 pandemic. We were also able to gauge sentiments of certain groups with respect to some of these issues when digging into the subcluster topics.
+
+The technique used here is generalizable to any social media dataset. However, it is important to discuss some of the ways in which the analysis presented here can be extended, as well as some of the technical limitations of the system.
+
+## Next steps for this analysis
+
+The logical next step is to run the same analysis on several three-day windows after the initial onset of the pandemic - one in mid-April and one in early May. The shift in orientation of the high-level theme clusters should show the evolution of the discussion of the impact of the pandemic on higher education. For example, we should expect discussion on school closures to be less focused on initial logistics and more focused on the uncertainty around fall re-opening.
+
+Additionally, each cluster and subcluster can be augmented with the following information:
+
+* An average sentiment score, as computed by a sentiment analysis classifier.
+* A measure of how many tweets in the cluster or subcluster originate from official accounts.
+* A breakdown of user locations. It is hard to tell by looking at a cluster whether the majority of the content pertains to the higher education systems in the US, UK, EU, or other parts of the world.
+
+## System limitations
+
+### Term frequency vs. nearest neighbors.
+
+As previously mentioned, term frequency analysis is done to determine the dominant topics of discussion within a cluster and generate the cluster label. The term frequency analysis is done across each whole cluster, leaving the possibility open that the dominant terms do not lie close to the cluster center. This is prone to happen on large, diverse clusters. The result of this sort of occurance is that the top-k nearest neighbors will not contain discourse related to the label of the cluster.
+
+This can be remediated by ensuring a very good balance between cluster and subcluster diversity and homogeneity. However, this causes the labeling quality to be very sensitive to the choice of k for k-means.
+
+### Quote tweets.
+
+Quote tweets contain two text sequences – the quoted text and the tweet text. We embed these tweets in two ways - once using a concatenation of the quoted and tweet text and once using the sum of their individual embeddings. However, the system does not use these combined embeddings yet. Instead, only the tweet text embedding is used in the clustering.
+
+The result is what appears to be a "garbage" cluster such as "covid19 / president / gentlemen", where almost all tweets are only several words in length: 
+
+```{r, echo=FALSE}
+kable(clusters[[5]]$nearest_center[1:n_nearest_neighbors,]) %>% kable_styling()
+```
+
+The full quoted portion of the tweet must be included and one version of the combined embedding must be included in the clustering. This is an open area of investigation, as tracked in the Github repo [how to effectively embed quote tweets](https://github.com/TheRensselaerIDEA/COVID-Twitter/issues/1).
+
+# References
+
+[1] Sarker A, Gonzalez-Hernandez G, Ruan Y, Perrone J. Machine Learning and Natural Language Processing for Geolocation-Centric Monitoring and Characterization of Opioid-Related Social Media Chatter. JAMA Netw
+Open. 2019;2(11):e1914672. doi:10.1001/jamanetworkopen.2019.14672
+
+[2] “Consuming Streaming Data.” Twitter, Twitter, developer.twitter.com/en/docs/tutorials/consuming-streaming-data.
+
+[3] “Elasticsearch: The Official Distributed Search & Analytics Engine.” Elastic, www.elastic.co/elasticsearch/.
+
+[4] Daniel Cer, Yinfei Yang, Sheng-yi Kong, Nan Hua, Nicole Limtiaco, Rhomni St. John, Noah Constant, Mario Guajardo-Céspedes, Steve Yuan, Chris Tar, Yun-Hsuan Sung, Brian Strope, Ray Kurzweil. Universal Sentence Encoder.
+arXiv:1803.11175, 2018.
+
+[5] Abadi, Martín, et al. "Tensorflow: A system for large-scale machine learning." 12th {USENIX} Symposium on Operating Systems Design and Implementation ({OSDI} 16). 2016.
+
+[6] Vaswani, Ashish, et al. "Attention is all you need." Advances in neural information processing systems. 2017.
+
+[7] “Stats.” Function | R Documentation, www.rdocumentation.org/packages/stats/versions/3.6.2/topics/kmeans.
+
+[8] Maaten, Laurens van der, and Geoffrey Hinton. "Visualizing data using t-SNE." Journal of machine learning research 9.Nov (2008): 2579-2605.

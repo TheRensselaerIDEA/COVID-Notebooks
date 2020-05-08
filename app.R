@@ -3,7 +3,7 @@ source("modules/Source.R")
 source("modules/data_load.R")
 source("modules/preprocessing.R")
 
-update_date <- "04-27-2020" # makes it easy to change all occurances when we update
+update_date <- "05-05-2020" # makes it easy to change all occurances when we update
 
 # Leaving this in case we need it
 # TODO: Implement other text as strings like this...
@@ -15,8 +15,9 @@ footer_text <- "<br><div style='font-size: 80%;'><b>COVIDMINDER analysis and vis
                                 <b>COVIDMINDER</b> is an open source project implemented on the <a href='https://shiny.rstudio.com/'>R Shiny platform</a>;
                                 see the <a href='https://github.com/TheRensselaerIDEA/COVIDMINDER'>COVIDMINDER github</a>
                                 for more information. <br><br>
+                                <a href='https://forms.gle/8LwiYAVXXN7mu9wR6'><img src='comment.png' style='float:left;width:40px;padding-right:2px;' ></a>
                                 Thanks for using <b>COVIDMINDER!</b> Please take a few moments 
-                                to fill out our short <a href='https://forms.gle/8LwiYAVXXN7mu9wR6'>comments form.</a><br>
+                                to fill out our short <a href='https://forms.gle/8LwiYAVXXN7mu9wR6'>comments form.</a><br><br>
                                 <i><a href='https://info.rpi.edu/statement-of-accessibility'>Rensselaer Statement 
                                 of Accessibility</a></i></div>"
 
@@ -25,7 +26,11 @@ whatisit_text <-"<div style='font-size:80%;line-height:1.3;'><strong>COVIDMINDER
                                 effects of COVID-19. Social and Economic Determinants are pre-existing risk factors that impact 
                                 COVID-19 outcomes. Mediations are resources and programs used to combat the pandemic.</div><br>"
 
-comments_link <-"<div style='font-size:80%;line-height:1.3;'>Thanks for using <b>COVIDMINDER!</b> Please take a few moments to fill out our short <a href='https://forms.gle/8LwiYAVXXN7mu9wR6'>comments form.</a></div>"
+comments_link <-"<a href='https://forms.gle/8LwiYAVXXN7mu9wR6'><img src='comment.png' style='float:left;width:40px;padding-right:2px;' ></a>
+                                Thanks for using <b>COVIDMINDER!</b> Please take a few moments 
+                                to fill out our short <a href='https://forms.gle/8LwiYAVXXN7mu9wR6'>comments form.</a><br><br>
+                                <i><a href='https://info.rpi.edu/statement-of-accessibility'>Rensselaer Statement 
+                                of Accessibility</a></i>"
 
 # For URL parameterization
 url1 <- url2 <- ""
@@ -37,7 +42,7 @@ ui <-
       tags$title("COVIDMINDER: Where you live matters")
     ),
     navbarPage(
-      id="home",
+      id="tab",
       theme="style.css",
       title=tags$div(class="title-text",
                      img(class="logo", src="Rensselaer_round.png"),
@@ -368,28 +373,36 @@ ui <-
                                id = "sidebar_us_test",
                                HTML(whatisit_text),
                                HTML(paste0("<div style='font-weight:bold;line-height:1.3;'>
-                              Mediation: What are the disparities between states  in  rates of COVID-19 testing per 1k population 
-                              when compared to the South Korean rate? </div><br>
+                              Mediation: What are the disparities between US states  in  their rates of COVID-19 testing per 1k population 
+                              when compared to the average rates from other countries? When compared with the current average
+                              US rate?</div><br>
                               <div style='font-size:90%;line-height:1.2;'>
-                              South Korea is used as our testing reference rate (10.9/1000 as of 04/19/2020) because South 
-                              Korea is regarded as successfully having used testing to “flatten the curve”.<br><br>
+                              Several countries significantly effected by COVID-19 can be used as testing reference rates. 
+                              Some of these countries are regarded as having successfully  used testing to “flatten the curve”,
+                              while others are still in the midst of dealing with the crisis.<br><br>
                                The rate of testing per 1k in a state is: <br>
-                                 <div>&nbsp;&nbsp;&nbsp;<span style='background: #253494; border-radius: 50%; font-size: 11px; opacity: 0.7;'>&nbsp&nbsp&nbsp&nbsp</span><strong> Higher</strong> than South Korean testing rate for disparity index &gt; 0.2</div>
-                                 <div>&nbsp;&nbsp;&nbsp;<span style='background: #ffffff; border-radius: 50%; font-size: 11px; opacity: 0.7;'>&nbsp&nbsp&nbsp&nbsp</span><strong> About equal</strong> to South Korean testing rate for -0.2 &lt; disparity index &lt; 0.2</div>
-                                 <div>&nbsp;&nbsp;&nbsp;<span style='background: #BD0026; border-radius: 50%; font-size: 11px; opacity: 0.7;'>&nbsp&nbsp&nbsp&nbsp</span><strong> Lower</strong> than South Korean testing rate for disparity index &lt; -0.2</div>
+                                 <div>&nbsp;&nbsp;&nbsp;<span style='background: #253494; border-radius: 50%; font-size: 11px; opacity: 0.7;'>&nbsp&nbsp&nbsp&nbsp</span><strong> Higher</strong> than selected country testing rate for disparity index &gt; 0.2</div>
+                                 <div>&nbsp;&nbsp;&nbsp;<span style='background: #ffffff; border-radius: 50%; font-size: 11px; opacity: 0.7;'>&nbsp&nbsp&nbsp&nbsp</span><strong> About equal</strong> to selected country testing rate for -0.2 &lt; disparity index &lt; 0.2</div>
+                                 <div>&nbsp;&nbsp;&nbsp;<span style='background: #BD0026; border-radius: 50%; font-size: 11px; opacity: 0.7;'>&nbsp&nbsp&nbsp&nbsp</span><strong> Lower</strong> than selected country testing rate for disparity index &lt; -0.2</div>
                                <i>Darker shades indicate greater disparity.</i><br><br>
                                
                                <strong>Testing Rate</strong> = number of COVID-19 tests per 1K population <br>
-                               <strong>Testing Rate Disparity Index</strong> = log(Testing Rate  in state/Testing Rate in South Korea) <br>
+                               <strong>Testing Rate Disparity Index</strong> = log(Testing Rate  in state/Testing Rate in selected country) <br>
                     <strong>Date: </strong>",update_date,"<br><br>
                                
-                               <b>DATA SOURCE:</b> <a href='http://bit.ly/39PMWpD'>JHU CSSE (daily)</a><br>
+                               <b>DATA SOURCES:</b> <a href='http://bit.ly/39PMWpD'>JHU CSSE (daily)</a>, 
+                               <a href='https://bit.ly/2yMyjFX'>Statista.com (04/29/2020)</a>
                                </div>")),
                                HTML(footer_text),
                                width=4),
                              
                              mainPanel(id = "mainpanel_us_test",
-                               tags$h4(class="map-title", "COVID-19 Testing Rate Disparities by State Compared to Average South Korean Rate"),
+                               tags$h4(class="map-title", paste0("COVID-19 Testing Rate Disparities by State Compared to Selected Country (",update_date,")")),
+                               HTML("<br><br>"),
+                               selectInput(inputId = "country",
+                                           label = "",
+                                           choices = country_testing_choices,
+                                           selected = "de"),
                                        leafletOutput(outputId = "map.testing", height="100%"), width=8)
                )
       ),
@@ -543,15 +556,24 @@ server <- function(input, output, session) {
   
   # Render leaflet plot with all information in hover
   output$map.testing <- renderLeaflet({
+    # browser()
+    country <- input$country # selected country
+    
+    # modify states to have selected columns for our plot
+    tests_ldi <- states %>% 
+      select(starts_with("tests_ldi")) %>%
+      select(ends_with(country))
+    
+    states <- data.frame(states, "tests_ldi"=unlist(tests_ldi)) # Append to states
     
     colors <- c("#253494","#4575B4", "#74ADD1","#ABD9E9","#f7f7f7","#FDAE61","#F46D43", "#D73027", "#BD0026")
     bins <- c(5, 3, 2, 1, .2, -.2, -1, -2, -3, -5)
     pal2 <- leaflet::colorBin(colors, domain = states$tests_ldi, bins = bins, reverse=TRUE)
 #    browser()
     labels2 <- sprintf(
-      "<strong>%s</strong> State<br/>
-      Testing Rate vs South Korea DI: %.2g<br>
-      Testing Rate: %.1f /1000",
+      paste0("<strong>%s</strong> State<br/>
+      Testing Rate vs ", toupper(country)," DI: %.2g<br>
+      Testing Rate: %.1f /1000"),
       states$NAME, states$tests_ldi, states$tests_per_1000*1000
     ) %>% lapply(htmltools::HTML)
     
@@ -578,7 +600,7 @@ server <- function(input, output, session) {
       addLegend(pal = pal2, 
                 values = ~states$tests_ldi, 
                 opacity = 0.7, 
-                title = "Disparity Index<br/>US Total Tests vs. South Korea",
+                title = paste0("Disparity Index<br/>US Total Tests vs. ",toupper(country)),
                 position = "bottomright",
                 labFormat = function(type, cuts, p) { n = length(cuts) 
                    cuts[n] = paste0(cuts[n]," lower") 
@@ -927,7 +949,8 @@ server <- function(input, output, session) {
       "<strong>%s</strong><br/>
       COVID-19 Case Rate DI: %.2g<br>
       COVID-19 Case Rate: %.1f /100k",
-      NY.data$County, NY.data$case_rate_ldi, (NY.data$cases/NY.data$Population)*100000
+#      NY.data$County, NY.data$case_rate_ldi, (NY.data$cases/NY.data$Population)*100000
+      NY.data$County, NY.data$case_rate_ldi, NY.data$case_rate*100000
     ) %>% lapply(htmltools::HTML)
     
     leaflet(NY.shape) %>%
@@ -1534,65 +1557,77 @@ server <- function(input, output, session) {
     
   })
   
-  # For URL parameterization
-
-  values <- reactiveValues(myurl = c(), parent_tab = "")
+  ### The following code deals with setting or responding to parameterized URLs
+  observe(print(input$tab))
   
   observe({
-    
-    # WORK IN PROGRESS! Based on
-    # https://stackoverflow.com/questions/33021757/externally-link-to-specific-tabpanel-in-shiny-app
-    #
-    # make sure this is called on pageload (to look at the query string)
-    # and whenever any tab is successfully changed.
-    # If you want to stop running this code after the initial load was
-    # successful so that further manual tab changes don't run this,
-    # maybe just have some boolean flag for that.
-    
-    input$home
-    input$tab_sub_tabs
+    # This "does the right thing" for an incoming URL
+    # suppose url is http://127.0.0.1:5682/?tab=tab3c/plot
     query <- parseQueryString(session$clientData$url_search)
-    url <- query$url
-    if (is.null(url)) {
-      url <- ""
-    }
     
-    # "depth" is how many levels the url in the query string is
-    depth <- function(x) length(unlist(strsplit(x,"/")))
-    
-    # if we reached the end, done!
-    if (length(values$myurl) == depth(url)) {
-      return()
+    if(!is.null(query$tab)) {
+      url <- strsplit(query$tab,"/")[[1]]
+      url1 <<- url[1]
+      url2 <<- url[2]
+      updateTabsetPanel(session, 'tab', url1)
     }
-    # base case - need to tell it what the first main nav name is
-    else if (length(values$myurl) == 0) {
-      values$parent_tab <- "outcome_maps_menu"
-    }
-    # if we're waiting for a tab switch but the UI hasn't updated yet
-    else if (is.null(input[[values$parent_tab]])) {
-      return()
-    }
-    # same - waiting for a tab switch
-    else if (tail(values$myurl, 1) != input[[values$parent_tab]]) {
-      return()
-    }
-    # the UI is on the tab that we last switched to, and there are more
-    # tabs to switch inside the current tab
-    # make sure the tabs follow the naming scheme
-    else {
-      values$parent_tab <- paste0(tail(values$myurl, 1), "_tabs")
-    }
-    
-    # figure out the id/value of the next tab
-    new_tab <- unlist(strsplit(url, "/"))[length(values$myurl)+1]
-    
-    # easy peasy.
-    updateTabsetPanel(session, values$parent_tab, new_tab)
-    values$myurl <- c(values$myurl, new_tab)
-    
   })
   
+  
+  observe({
+    # Trigger this observer every time an input changes
+    params <- reactiveValuesToList(input)
+    session$doBookmark()
+  })
+  
+  onBookmarked(function(url) {
+    # Construct the replacement URL:
+    url.new <- paste0(
+      session$clientData$url_protocol,"//",
+      session$clientData$url_hostname,
+      session$clientData$url_pathname,
+      "?tab=",
+      session$clientData$url_port,
+      session$input$tab
+    )
+    #TODO: Special handling for tabs with selectors!
+    # browser()
+    updateQueryString(url.new)
+  })
+  
+  observe({ # this observer executes once, when the page loads
+    
+    data <- parseQueryString(session$clientData$url_search)
+    
+    # browser()
+    # the navbar tab and tabpanel variables are two variables 
+    # we have to pass to the client for the update to take place
+    # if nav is defined, send a message to the client to set the nav tab
+    if (! is.null(data$page)) {
+      session$sendCustomMessage(type='setNavbar', data)
+    }
+    
+    # if the tab variable is defined, send a message to client to update the tab
+    if (any(sapply(data[c('outcome_usa_mortality', 
+                          'outcome_usa_racial_disparity',
+                          'outcome_ny_mortality',
+                          'outcome_ny_cases', 
+                          'outcome_ny_racial_disparity',
+                          'outcome_ct_racial_disparity',
+                          'outcome_ny_cases_rate',
+                          'outcome_ny_cases_time',
+                          'mediation_usa_testing',
+                          'mediation_usa_hospital_beds',
+                          'determinant_usa_diabetes',
+                          'determinant_ny_diabetes'
+    )], 
+    Negate(is.null)))) {
+      # browser()
+      session$sendCustomMessage(type='setTab', data)
+    }
+    
+  })
 }
 
 #### Set up Shiny App ####
-shinyApp(ui = ui, server = server)
+shinyApp(ui = ui, server = server, enableBookmarking = "url")
