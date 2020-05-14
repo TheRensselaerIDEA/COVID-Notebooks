@@ -34,40 +34,58 @@ state_covid_testing <- left_join(state_covid_testing, population, by = c('NAME')
 # TODO: This is really just the test rate, not "per 1000"
 state_covid_testing <- state_covid_testing %>% 
   mutate(tests_per_1000 = total_num_tests / Population)  # This is actual rate, not "per 1000"
+state_covid_testing$tests_per_1000 <- state_covid_testing$tests_per_1000 * 1000
 
 # Use current US rate
 pUS.2 <- as.numeric(state_covid_testing[which(state_covid_testing$NAME=="United States"),"tests_per_1000"])
 
 # Scraped values (updated every few days): see https://bit.ly/2yMyjFX
-# Checked: 30 Apr 2020
-#pUS.2 <- 18.5 / 1000
-pPR.2 <- 37.2 / 1000
-pIT.2 <- 31.6 / 1000
-pIR.2 <- 31.2 / 1000
-pDE.2 <- 30.4 / 1000
-pSP.2 <- 30.3 / 1000
-pCH.2 <- 30.1 / 1000
-pRU.2 <- 23.9 / 1000
-pCA.2 <- 20.7 / 1000
-pUK.2 <- 12.1 / 1000
+# Checked: 13 May 2020
+total_test_rates.df <- read_csv("data/csv/owid_glb_test_rates.csv")
+
+#pUS.2 <- total_test_rates.df[total_test_rates.df$iso_code == "USA",]$total_tests_per_thousand #/ 1000
+pPR.2 <- total_test_rates.df[total_test_rates.df$iso_code == "PRT",]$total_tests_per_thousand #/ 1000
+pSP.2 <- total_test_rates.df[total_test_rates.df$iso_code == "ESP",]$total_tests_per_thousand #/ 1000
+pBE.2 <- total_test_rates.df[total_test_rates.df$iso_code == "BEL",]$total_tests_per_thousand #/ 1000
+pIT.2 <- total_test_rates.df[total_test_rates.df$iso_code == "ITA",]$total_tests_per_thousand #/ 1000
+pRU.2 <- total_test_rates.df[total_test_rates.df$iso_code == "RUS",]$total_tests_per_thousand #/ 1000
+pCH.2 <- total_test_rates.df[total_test_rates.df$iso_code == "CHE",]$total_tests_per_thousand #/ 1000
+pDE.2 <- total_test_rates.df[total_test_rates.df$iso_code == "DEU",]$total_tests_per_thousand #/ 1000
+pIR.2 <- total_test_rates.df[total_test_rates.df$iso_code == "IRL",]$total_tests_per_thousand #/ 1000
+pCA.2 <- total_test_rates.df[total_test_rates.df$iso_code == "CAN",]$total_tests_per_thousand #/ 1000
+pUK.2 <- total_test_rates.df[total_test_rates.df$iso_code == "GBR",]$total_tests_per_thousand #/ 1000
+
+#pUS.2 <- 30.0 / 1000
+#pPR.2 <- 54.3 / 1000
+#pSP.2 <- 52.8 / 1000
+#pBE.2 <- 51.4 / 1000
+#pIT.2 <- 44.2 / 1000
+#pRU.2 <- 39.8 / 1000
+#pCH.2 <- 36.6 / 1000
+#pDE.2 <- 32.9 / 1000
+#pIR.2 <- 31.2 / 1000
+#pCA.2 <- 30.4 / 1000
+#pUK.2 <- 29.6 / 1000
 
 # for drop-down
-country_testing_choices <- c("us","pr","ch","it","sp","ir","de","ca","ru","uk")
+country_testing_choices <- c("us","pr","sp","be","ch","it","ru","ir","de","ca","uk")
 
-names(country_testing_choices) <- c(paste0("United States (" ,round(pUS.2*1000),"/1000)"),
-                             paste0("Portugal ("      ,pPR.2*1000,"/1000)"),
-                             paste0("Switzerland ("   ,pCH.2*1000,"/1000)"),
-                             paste0("Italy ("         ,pIT.2*1000,"/1000)"),
-                             paste0("Spain ("         ,pSP.2*1000,"/1000)"),
-                             paste0("Ireland ("       ,pIR.2*1000,"/1000)"),
-                             paste0("Germany ("       ,pDE.2*1000,"/1000)"),
-                             paste0("Canada ("        ,pCA.2*1000,"/1000)"),
-                             paste0("Russia ("        ,pRU.2*1000,"/1000)"),
-                             paste0("United Kingdom (",pUK.2*1000,"/1000)"))
+names(country_testing_choices) <- c(paste0("United States (" ,round(pUS.2),"/1000)"),
+                                    paste0("Portugal ("      ,round(pPR.2),"/1000)"),
+                                    paste0("Spain ("         ,round(pSP.2),"/1000)"),
+                                    paste0("Belgium ("       ,round(pBE.2),"/1000)"),
+                             paste0("Switzerland ("   ,round(pCH.2),"/1000)"),
+                             paste0("Italy ("         ,round(pIT.2),"/1000)"),
+                             paste0("Russia ("        ,round(pRU.2),"/1000)"),
+                             paste0("Ireland ("       ,round(pIR.2),"/1000)"),
+                             paste0("Germany ("       ,round(pDE.2),"/1000)"),
+                             paste0("Canada ("        ,round(pCA.2),"/1000)"),
+                             paste0("United Kingdom (",round(pUK.2),"/1000)"))
 
 # Calculate state DIs based on a country's selected rate
 # UPDATE: make several values available . See https://bit.ly/2yMyjFX for current rates!
 tests_ldi.us <- unlist(lapply(state_covid_testing$tests_per_1000, FUN=function(x){log(x/pUS.2)}))
+tests_ldi.be <- unlist(lapply(state_covid_testing$tests_per_1000, FUN=function(x){log(x/pBE.2)}))
 tests_ldi.pr <- unlist(lapply(state_covid_testing$tests_per_1000, FUN=function(x){log(x/pPR.2)}))
 tests_ldi.ch <- unlist(lapply(state_covid_testing$tests_per_1000, FUN=function(x){log(x/pCH.2)}))
 tests_ldi.it <- unlist(lapply(state_covid_testing$tests_per_1000, FUN=function(x){log(x/pIT.2)}))
@@ -80,6 +98,7 @@ tests_ldi.ru <- unlist(lapply(state_covid_testing$tests_per_1000, FUN=function(x
 
 # Write to data frame
 state_covid_testing <- data.frame(state_covid_testing, tests_ldi.us)
+state_covid_testing <- data.frame(state_covid_testing, tests_ldi.be)
 state_covid_testing <- data.frame(state_covid_testing, tests_ldi.pr)
 state_covid_testing <- data.frame(state_covid_testing, tests_ldi.ch)
 state_covid_testing <- data.frame(state_covid_testing, tests_ldi.it)
@@ -96,6 +115,7 @@ state_covid_testing <- state_covid_testing[1:51,]
 
 state_covid_testing <- state_covid_testing %>% 
   mutate(tests_ldi.us = replace(tests_ldi.us, tests_ldi.us < -5, -5)) %>%
+  mutate(tests_ldi.be = replace(tests_ldi.pr, tests_ldi.be < -5, -5)) %>%
   mutate(tests_ldi.pr = replace(tests_ldi.pr, tests_ldi.pr < -5, -5)) %>%
   mutate(tests_ldi.ch = replace(tests_ldi.ch, tests_ldi.ch < -5, -5)) %>%
   mutate(tests_ldi.it = replace(tests_ldi.it, tests_ldi.it < -5, -5)) %>%
@@ -110,6 +130,7 @@ states <- data.frame(states, "tests_per_1000"=state_covid_testing$tests_per_1000
 states <- data.frame(states, "Population"=state_covid_testing$Population) # Append to states (reference)
 
 states <- data.frame(states, "tests_ldi.us"=state_covid_testing$tests_ldi.us) # Append to states
+states <- data.frame(states, "tests_ldi.be"=state_covid_testing$tests_ldi.be) # Append to states
 states <- data.frame(states, "tests_ldi.pr"=state_covid_testing$tests_ldi.pr) # Append to states
 states <- data.frame(states, "tests_ldi.ch"=state_covid_testing$tests_ldi.ch) # Append to states
 states <- data.frame(states, "tests_ldi.it"=state_covid_testing$tests_ldi.it) # Append to states
@@ -276,6 +297,25 @@ diabetes_data_states <- diabetes_data_states[1:51,]
 states <- data.frame(states, "diabetes_rate_ldi"=diabetes_data_states$diabetes_rate_ldi) # Append to states
 states <- data.frame(states, "pct_Adults_with_Diabetes"=diabetes_data_states$pct_Adults_with_Diabetes) # Append to states
 
+### NEW: US Obesity Rates
+pUS.8.obesity <- as.numeric(obesity_data_states[which(obesity_data_states$State=="United States"),"pct_Adults_with_Obesity"])
+
+obesity_rate_ldi <- unlist(lapply(obesity_data_states$pct_Adults_with_Obesity, FUN=function(x){-log(pUS.8.obesity/x)}))
+
+obesity_data_states <- data.frame(obesity_data_states, obesity_rate_ldi)
+
+obesity_data_states <- obesity_data_states %>% 
+  mutate(obesity_rate_ldi = replace(obesity_rate_ldi, obesity_rate_ldi < -5, -5)) 
+
+# RE-order to match states ordering
+obesity_data_states <- obesity_data_states[match(states$NAME, obesity_data_states$State),]
+
+# Append the new column to states
+obesity_data_states <- obesity_data_states[1:51,]
+
+states <- data.frame(states, "obesity_rate_ldi"=obesity_data_states$obesity_rate_ldi) # Append to states
+states <- data.frame(states, "pct_Adults_with_Obesity"=obesity_data_states$pct_Adults_with_Obesity) # Append to states
+
 
 ## Needed for NY TS plot
 
@@ -300,3 +340,28 @@ covid_NY_TS_counties_long.cases <- dplyr::inner_join(covid_NY_TS_counties_long.c
 #   group_by(date)
 # Do it this way to be safe:
 covid_NY_TS_plot.cases <- read_csv("data/csv/time_series/covid_NY_TS_plot.cases.csv")
+
+# Creates difference in cases from previous recorded date. First date is equal to case reported
+covid_NY_TS_plot.cases %>% group_by(County) %>% 
+  mutate(diff = ifelse(as.Date(date - 1) == lag(date), cases - lag(cases), cases)) -> 
+  covid_NY_TS_plot.cases
+
+covid_NY_TS_plot.cases %>% 
+  mutate(p_diff = ifelse(as.Date(date - 1) == lag(date), p_cases - lag(p_cases), p_cases)) %>%
+  ungroup() -> covid_NY_TS_plot.cases
+
+covid_NY_TS_plot.cases$diff <- ifelse(is.na(covid_NY_TS_plot.cases$diff), covid_NY_TS_plot.cases$cases, covid_NY_TS_plot.cases$diff)
+covid_NY_TS_plot.cases$p_diff <- ifelse(is.na(covid_NY_TS_plot.cases$p_diff), covid_NY_TS_plot.cases$p_cases, covid_NY_TS_plot.cases$p_diff)
+
+
+# Legislative action 
+# Executive Orders (EO) and Total Bills
+
+# RE-order EO to match states ordering
+covid_eo_bills <- covid_eo_bills[match(states$NAME, covid_eo_bills$NAME),]
+
+# Append the new column to states
+covid_eo_bills <- covid_eo_bills[1:51,]
+
+states <- data.frame(states, "covid_eo"=covid_eo_bills$Total_EO) # Append to states
+states <- data.frame(states, "covid_bills"=covid_eo_bills$Total_Bills) # Append to states
