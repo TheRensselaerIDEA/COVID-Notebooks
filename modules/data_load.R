@@ -70,8 +70,12 @@ covid_data_states$calc_death_rate <- covid_data_states$covid19_deaths/covid_data
 covid_data_states$p_death_rate <- covid_data_states$calc_death_rate
 
 # Import US Diabetes data
+# Diabetes is a comorbitity of severe COVID-19 cases
 diabetes_data_states <- read_csv("data/csv/diabetes_data_states.csv")
 
+# Import US Obesity data: see https://stateofchildhoodobesity.org/adult-obesity/
+# Obesity is a comorbitity of severe COVID-19 cases
+obesity_data_states <- read_csv("data/csv/obesity_data_states.csv")
 
 # Import NYS TS cases (for plotting) 
 covid_NY_TS_counties_long <- read_csv("data/csv/time_series/covid_NY_TS_counties_long.csv")
@@ -81,3 +85,7 @@ covid_NY_TS_plot.cases <- read_csv("data/csv/time_series/covid_NY_TS_plot.cases.
 
 # Import per-state per-race disparity data
 covid_racial_data_states.wide <- read_csv("data/csv/states_cdc_racial_wide.csv")
+
+# Important per-state legislative and EO data
+covid_eo_bills <- read_csv("data/csv/Covid_EO.csv")
+
