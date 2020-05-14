@@ -1,0 +1,64 @@
+---
+title: "Deltas in cases/NY"
+author: "Jose Figueroa"
+date: 05/14/2020
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+#### Library and Data Imports ####
+library(here)
+
+## Load essential R packages
+source(here("modules","Source.R"))
+
+## Load stored data (see `data` subdirectory)
+source(here("modules","data_load.R"))
+
+## Create dataframes; perform desparity index calcuations; prep for plotting
+source(here("modules","preprocessing.R"))
+```
+
+Dataset will be primarily covid_NY_TS_plot.cases
+
+```{r}
+covid_NY_TS_plot.cases %>% glimpse()
+```
+
+```{r}
+covid_NY_TS_plot.cases %>% summary()
+```
+
+```{r}
+covid_NY_TS_plot.cases %>%
+  ggplot(
+    aes(
+      x = date,
+      y = diff,
+      color = Region,
+      group = County
+    )
+  ) +
+  geom_line(size = 1) + 
+    NULL
+```
+
+```{r}
+covid_NY_TS_plot.cases %>%
+  ggplot(
+    aes(
+      x = date,
+      y = p_diff,
+      color = Region,
+      group = County
+    )
+  ) +
+  geom_line(size = 1) + 
+    NULL
+```
+
+Interesting discrepencies...
