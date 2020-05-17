@@ -21,6 +21,8 @@ source("modules/data_load.R")
 
 ## Create dataframes; perform desparity index calcuations; prep for plotting
 source("modules/preprocessing.R")
+
+library(zoo)
 ```
 
 Dataset will be primarily covid_NY_TS_plot.cases
