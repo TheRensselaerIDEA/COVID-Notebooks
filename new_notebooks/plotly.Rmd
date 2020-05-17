@@ -1,0 +1,25 @@
+---
+title: "Plotly test"
+author: "Jose Figueroa"
+date: 05/17/2020
+output: html_notebook
+---
+
+Testing plotly [interactive tooltip](https://plotly.com/ggplot2/interactive-tooltip/)
+
+
+```{r setup, echo=FALSE, include=FALSE}
+if(!require("plotly")) {
+  install.packages("plotly")
+  library(plotly)
+}
+knitr::opts_knit$set(root.dir = "../")
+```
+
+
+```{r imports, echo=FALSE}
+source("modules/Source.R")
+source("modules/data_load.R")
+source("modules/preprocessing.R")
+```
+
