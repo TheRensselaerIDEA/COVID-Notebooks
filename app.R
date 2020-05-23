@@ -474,8 +474,7 @@ ui <-
                  column(4,
                    id = "sidebar_ny_race",
                    #HTML(whatisit_text),
-                   HTML("
-                        <div>
+                   HTML("<div>
                         <a href='https://bit.ly/2Krl5RG'>Evidence suggests</a> that COVID-19 deaths may be higher for certain racial/ethnic groups.<br><br>
                         If the percentage  of COVID-19 deaths experienced by a racial/ethnic group is higher than that 
                         group’s population percentage for a region, this suggests that COVID-19 may have a disparate 
