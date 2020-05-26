@@ -1,12 +1,14 @@
 ---
 title: "COVIDMINDER Bootcamp Notebook"
 author: "John Erickson"
-date: "4/28/2020"
+date: "5/26/2020"
 output: html_document
 ---
 
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = "../")
 ```
 
 ```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
@@ -288,7 +290,7 @@ Data source: <a href='https://bit.ly/3dMWRP6'>JHU daily reports</a> (04-06-2020)
       states$NAME, states$tests_ldi, states$tests_per_1000*1000
     ) %>% lapply(htmltools::HTML)
     
-    leaflet(states.shapes, width="100%", height="100%") %>%
+    leaflet(states.shapes) %>%
       setView(-96, 37.8, 4) %>% # TODO: Doesn't seem to do anything
       addPolygons(
         fillColor = ~pal2(states$tests_ldi),
@@ -322,8 +324,8 @@ Data source: <a href='https://bit.ly/3dMWRP6'>JHU daily reports</a> (04-06-2020)
                 }
                 ) %>%
       addProviderTiles("MapBox", options = providerTileOptions(
-        id = "mapbox.light"))
-
+        id = "mapbox.light",
+        accessToken = Sys.getenv('MAPBOX_ACCESS_TOKEN')))
 ```
 
   `r us_cardio_deaths_rates_text` 
