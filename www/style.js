@@ -11,22 +11,23 @@ var ids = {
   "sidebar_ny_CoT": "#mainpanel_ny_CoT",
   "sidebar_ny_CoT_region": "#mainpanel_ny_CoT_region",
   "sidebar_ny_det": "#mainpanel_ny_det", 
-  "sidebar_ny_CoT_rates": "#mainpanel_ny_CoT_rates", 
-  "sidebar_ny_CoT_rates_regions": "#mainpanel_ny_CoT_rates_regions",
+  //"sidebar_ny_CoT_rates": "#mainpanel_ny_CoT_rates", 
+  //"sidebar_ny_CoT_rates_regions": "#mainpanel_ny_CoT_rates_regions",
   "sidebar_ny_race": "#mainpanel_ny_race", 
   "sidebar_us_mort_race": "#mainpanel_us_mort_race", 
-  "sidebar_ct_race": "#mainpanel_ct_race"
+  "sidebar_ct_race": "#mainpanel_ct_race",
+  "sidebar_ny_new_case": "#mainpanel_ny_new_case"
 };
 
 
 function resize_plot() {
   for (var key in ids) {
-  var sidebar0 = document.getElementById("sidebar_us_mort");
-  var sidebar1 = document.getElementById(key);
-  if(sidebar1) {
-    var positionInfo0 = sidebar0.getBoundingClientRect();
-    var positionInfo1 = sidebar1.getBoundingClientRect();
-    var height = Math.max(positionInfo0.height,positionInfo1.height);
+  //var sidebar0 = document.getElementById("sidebar_us_mort");
+  var sidebar = document.getElementById(key);
+  if(sidebar) {
+    //var positionInfo0 = sidebar0.getBoundingClientRect();
+    var positionInfo = sidebar.getBoundingClientRect();
+    var height = Math.max(600,positionInfo.height);
     $(ids[key]).height(height);
   }
   }

@@ -1,6 +1,70 @@
+@charset "UTF-8";
+/* CSS Document */
+/*
+ * This style guideline is to create uniformity and legibility across COVIDMINDER
+ * It also closely follows RPI's style guide. Please refer to the Brand guideline as necessary.
+ */
+
+html, .input-sm {
+ font-size: 12px;
+}
+
+body, p {
+  font-family: "Source Sans Pro", sans-serif;
+  font-weight: 300;
+  font-size: 12px;
+  color: #222;
+  line-height: 1.3em;
+  letter-spacing: normal;
+  padding: 2%;
+}
+
+h1 {
+  font-weight: 200;
+  font-size: 2.5rem;
+  line-height: 1.1em;
+  font-family: "Source Sans Pro", sans-serif;
+}
+
+h2 {
+  font-weight:600;
+  font-size: 1.4rem;
+  line-height: 1.1em;
+  font-family: "Source Sans Pro", sans-serif;
+}
+
+h3 {
+  line-height: 1.5em;
+  font-size: 1.3rem;
+  font-family: "Source Sans Pro", sans-serif;
+}
+
+p {
+  padding-bottom: 6.9px;
+}
+
+.navbar-default .navbar-nav .active a {
+  font-weight: 400;
+  background-color: #fff;
+  color: #222;
+  padding: 13px 10px;
+}
+
+.navbar-default .navbar-nav li a {
+  font-weight: 400;
+  background-color: #fff;
+  color: #222;
+  padding: 13px 10px;
+}
+
+.navbar-default .navbar-nav li a:hover {
+  background-color: #e7e7e7;
+}
+
 /* Page styles */
-.container-fluid {
-  padding: 0 5px;
+
+.page_title {
+  padding-left: 2rem;
 }
 
 /* Navbar styles */
@@ -9,23 +73,34 @@
   margin: 0;
 }
 
-.logo {
-  height: 100%;
-  padding-left: 15px;
+.navbar-default {
+  background-color: white;
+  border-color: white;
+  padding: 5px 10px;
 }
 
-.ny-map {
-  height: 20%;
+.navbar-nav .li a {
+  padding-left:10px;
+  padding-right:10px;
+}
+
+.logo {
+  height: 100%;
   padding-left: 15px;
 }
 
 .title-text {
   display: inline-block;
   vertical-align: middle;
+  height: 50px;
   line-height: 100%;
-  height: 65px;
   padding-right: 10px;
   color:black;
+}
+
+.ny-map {
+  height: 20%;
+  padding-left: 15px;
 }
 
 .tab-title {
@@ -38,21 +113,30 @@
   height:100%;
 }
 
-.footer {
-  margin-left:0;
-  margin-right:0;
-  margin-bottom:0;
-  font-size:12px;
-  color:black;
+.gg_tooltip {
+    background-color: #f7f7f7;
+    background-color: rgba(245, 245, 245, 0.85);
+    padding: 0 10px;
+    margin: 10px 0;
+    line-height: 1.5em;
 }
+
+.footer {
+  text-align: center;
+  margin-bottom: 20px;
+  position: absolute;
+  width:100%;
+}
+
+
+/*.about {
+  font-size: 18px;
+  padding-top: 18px;
+}
+*/
 
 .navbar {
   margin-bottom:10px;
-}
-
-.navbar-nav .li a {
-  padding-left:10px;
-  padding-right:10px;
 }
 
 .map-title {
@@ -68,6 +152,7 @@
   height: Calc(90% - 65px);
 }
 
+
 .form-group{
   margin-bottom:0;
   float:left;
@@ -76,16 +161,12 @@
 .select-bar {
   position:absolute;
   right:25px;
-  margin-top: 10px;
+  margin-top: 60px;
   z-index: 999;
 }
 
 .leaflet-container {
   background:none;
-}
-
-.well {
-  background-color: #dddddd;
 }
 
 .dropdown-toggle > div:first-child {
@@ -96,19 +177,49 @@
   z-index: 999;
 }
 
-
-@media screen and (min-width:1085px){
-  /*
-  .title-text {
-    height: 70px;
-  }
-  */
-  body {
-    font-size: 15px;
-  }
+.shiny-options-group {
+  padding-left:10px;
 }
 
-@media screen and (max-width:925px){
+.selectize-control.single .selectize-input {
+    width: 250px;
+    max-height: 50px;
+}
+.shiny-input-container:not(.shiny-input-container-inline) {
+    width: 250px;
+}
+
+
+.tab-content {
+    min-height:75vh;
+  }
+
+@media screen and (min-width:768px){
+.map-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+}
+
+@media screen and (min-width:1085px){
+  .navbar-nav {
+  float: right;
+}
+  
+}
+
+@media screen and (min-width:1600px) {
+  html, body, p, .input-sm {
+  font-size: 16px;
+}
+}
+
+
+@media screen and (max-width:1160px){
+  .title-text {
+    height: 50px;
+  }
   .NY_case_plots {
   height: Calc(90% - 140px);
 }
