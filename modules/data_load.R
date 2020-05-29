@@ -10,9 +10,9 @@ NY.tests <- read_csv("data/csv/time_series/NY_county_data.csv")
 
 NY.deaths.cases <- read_csv("data/csv/time_series/covid_NY_counties.csv")
 
-# Update with manual deaths; don't use new date field (yet)
-covid_NY_counties.deaths <- read_csv("data/csv/time_series/covid_NY_counties.deaths.manual.csv") %>%
-  select(county, deaths)
+# Update with manual deaths; don't use new date field (yet) - Testing without
+#covid_NY_counties.deaths <- read_csv("data/csv/time_series/covid_NY_counties.deaths.manual.csv") %>%
+#  select(county, deaths)
 
 # Import county regions and join them is
 NY_counties_regions <- read_csv("data/csv/time_series/NY_counties_regions.csv")
@@ -20,11 +20,11 @@ NY_counties_regions <- read_csv("data/csv/time_series/NY_counties_regions.csv")
 # Import NY Diabetes 
 NY_counties_diabetes <- read_csv("data/csv/time_series/NY_counties_diabetes.csv")
 
-NY.deaths.cases <- dplyr::inner_join(NY.deaths.cases[,-2], covid_NY_counties.deaths, by = c("county" = "county"))
+#NY.deaths.cases <- dplyr::inner_join(NY.deaths.cases[,-2], covid_NY_counties.deaths, by = c("county" = "county"))
 
 NY.data <- dplyr::inner_join(as.data.frame(NY.tests), as.data.frame(NY.deaths.cases), by = c("County" = "county"))
 
-NY.data <- dplyr::inner_join(NY.data, as.data.frame(NY_counties_diabetes[,2:3]), by = c("County" = "County"))
+NY.data <- dplyr::inner_join(NY.data, as.data.frame(NY_counties_diabetes[,c(2,3,6)]), by = c("County" = "County"))
 
 NY.data <- dplyr::inner_join(NY.data, as.data.frame(NY_counties_regions), by = c("County" = "County"))
 
@@ -89,3 +89,9 @@ covid_racial_data_states.wide <- read_csv("data/csv/states_cdc_racial_wide.csv")
 # Important per-state legislative and EO data
 covid_eo_bills <- read_csv("data/csv/Covid_EO.csv")
 
+# Test rates from countries we are comparing to 
+total_test_rates.df <- read_csv("data/csv/owid_glb_test_rates.csv")
+
+# Obesity rates from countries we are comparing to
+owid_data.obesity.rate <- read.csv("data/csv/owid_obese_pct_2016.csv")
+colnames(owid_data.obesity.rate) <- c("Entity", "Code", "Year", "Pct_obese_adult")
