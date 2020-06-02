@@ -32,9 +32,21 @@ bins <- c(5, 3, 2, 1, .2, -.2, -1, -2, -3, -5)
 ```
 
 Function to be generalized
+```{r}
+get_ldi <- function(feature) {
+  rate <- paste0(feature,"_rate")
+  ldi <- paste0(rate, "_ldi")
+  return(c(ldi, rate))
+}
+```
+
+
 
 ```{r}
-geo.plot <- function(state.choice) {
+geo.plot <- function(state.choice, feature) {
+  # Feature: Case, Mortality...
+  ldi_feature <- get_ldi(feature)
+  
   dataset <- todays.case.data %>%
     filter(State == state.choice)
   shapes <- readRDS(paste("data/shape_files/", state.choice, ".Rds", sep = ""))
@@ -42,20 +54,19 @@ geo.plot <- function(state.choice) {
   
   dataset <- dplyr::left_join(as.data.frame(shapes), as.data.frame(dataset), by = c("countyFIPS" = "countyFIPS"))
   
-  pal2 <- leaflet::colorBin(colors, domain = dataset$case_rate_ldi, bins = bins, reverse=FALSE)
+  pal2 <- leaflet::colorBin(colors, domain = dataset[,ldi_feature[1]], bins = bins, reverse=FALSE)
     
   labels <- sprintf(
-    "<strong>%s</strong><br/>
-    COVID-19 Mortality Rate DI: %.2g<br>
-    COVID-19 Mortality Rate: %.1f /100k",
-    dataset$County, dataset$case_rate_ldi, (dataset$case_rate)*100000
+    paste0("<strong>%s</strong><br/>
+    COVID-19 ",feature," Rate DI: %.2g<br>
+    COVID-19 ",feature," Rate: %.1f /100k"),
+    dataset$County, dataset[,ldi_feature[1]], (dataset[,ldi_feature[2]])*100000
   ) %>% lapply(htmltools::HTML)
   
 
   return (leaflet(shapes) %>%
-  #setView(-76.071782, 42.991989, 6) %>%  # Set to the geographic center of NY
   addPolygons(
-    fillColor = ~pal2(dataset$case_rate_ldi),
+    fillColor = ~pal2(dataset[,ldi_feature[1]]),
     weight = 1,
     opacity = 1,
     color = "#330000",
@@ -73,9 +84,9 @@ geo.plot <- function(state.choice) {
       textsize = "15px",
       direction = "auto")) %>% 
   addLegend(pal = pal2, 
-            values = ~dataset$case_rate_ldi, 
+            values = ~dataset[ldi_feature[1]], 
             opacity = 0.7, 
-            title = paste0("Disparity Index<br/>",state.choice," COVID-19 Case Rates"),
+            title = paste0("Disparity Index<br/>",state.choice," COVID-19 ",feature," Rates"),
             position = "bottomright",
             labFormat = function(type, cuts, p) { n = length(cuts) 
             cuts[n] = paste0(cuts[n]," lower") 
@@ -137,15 +148,26 @@ population <- read_csv("data/csv/time_series/covid_county_population_usafacts.cs
 todays.case.data <- inner_join(todays.case.data, population[c(1,4)], by=c("countyFIPS" = "countyFIPS")) %>%
   filter(population > 0)
 
-# todays.death.data <- read_csv("data/csv/time_series/covid_confirmed_usafacts.csv")
+todays.death.data <- read_csv("data/csv/time_series/covid_deaths_usafacts.csv")
+todays.death.data <- todays.death.data %>%
+  filter(countyFIPS > 1000) %>%
+  select(1, ncol(todays.death.data))
+colnames(todays.death.data)[2] <- "Mortality"
+
+todays.case.data <- inner_join(todays.case.data, todays.death.data, by=c("countyFIPS" = "countyFIPS"))
 
 todays.case.data$date <- update_date
-todays.case.data$case_rate <- todays.case.data$Cases/todays.case.data$population
 
-todays.case.data$case_rate_ldi <- unlist(lapply(todays.case.data$case_rate, FUN=function(x){-log(pUS.6.cases/x)})) 
+todays.case.data$Case_rate <- todays.case.data$Cases/todays.case.data$population
+todays.case.data$Case_rate_ldi <- unlist(lapply(todays.case.data$Case_rate, FUN=function(x){-log(pUS.6.cases/x)})) 
+todays.case.data <- todays.case.data %>%
+ mutate(Case_rate_ldi = replace(Case_rate_ldi, Case_rate_ldi < -5, -5))
+
+todays.case.data$Mortality_rate <- todays.case.data$Mortality/todays.case.data$population
+todays.case.data$Mortality_rate_ldi <- unlist(lapply(todays.case.data$Mortality_rate, FUN=function(x){-log(pUS.6.deaths/x)}))
 
 todays.case.data <- todays.case.data %>%
- mutate(case_rate_ldi = replace(case_rate_ldi, case_rate_ldi < -5, -5))
+ mutate(Mortality_rate_ldi = replace(Mortality_rate_ldi, Mortality_rate_ldi < -5, -5))
 
 todays.case.data <- todays.case.data %>%
   mutate(County = str_remove_all(County, regex(" County", ignore_case = T)))
@@ -153,8 +175,9 @@ todays.case.data <- todays.case.data %>%
 ```
 
 ```{r}
-selected_state <- "MI"
-geo.plot(selected_state)
+selected_state <- "CT"
+selected_feature <- "Mortality"
+geo.plot(selected_state, selected_feature)
 ```
 
 
