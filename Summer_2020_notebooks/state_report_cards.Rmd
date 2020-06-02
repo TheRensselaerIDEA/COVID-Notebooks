@@ -1,5 +1,7 @@
 ---
 title: "State Report Cards"
+author: "Jose Figueroa"
+date: 06/02/20
 output: html_notebook
 ---
 
@@ -27,14 +29,6 @@ source("modules/preprocessing.R")
 ```{r}
 colors <- c("#253494","#4575B4", "#74ADD1","#ABD9E9","#f7f7f7","#FDAE61","#F46D43", "#D73027", "#BD0026")
 bins <- c(5, 3, 2, 1, .2, -.2, -1, -2, -3, -5)
-```
-
-NY State example (Mortality)
-```{r}
-
-
-
-#Remove personal API key
 ```
 
 Function to be generalized
