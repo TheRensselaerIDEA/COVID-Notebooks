@@ -257,7 +257,6 @@ write_csv(covid_NY_TS_counties_long.cases,"data/csv/time_series/covid_NY_TS_coun
 
 covid_NY_TS_counties_long.deaths <- read_csv("data/csv/time_series/covid_NY_TS_counties_long.deaths.csv")
 # Create COMBINED data frame
-covid_NY_TS_counties_long <- left_join(covid_NY_TS_counties_long.deaths, covid_NY_TS_counties_long.cases, by = c('County', 'date'))
 
 write_csv(read_csv("data/csv/time_series/covid_NY_TS_counties_long.csv"),"data/csv/time_series/covid_NY_TS_counties_long.csv.bak")
 write_csv(covid_NY_TS_counties_long,"data/csv/time_series/covid_NY_TS_counties_long.csv")

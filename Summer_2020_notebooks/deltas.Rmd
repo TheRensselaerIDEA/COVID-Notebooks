@@ -146,4 +146,224 @@ covid_NY_TS_plot.cases %>%
       NULL
 ```
 
+```{r}
+covid_NY_TS_plot %>% glimpse()
+```
+
+
+
+```{r}
+# PROCESSING
+# Take care of this on downloader script.
+covid_NY_TS_counties_long.deaths <- read_csv("data/csv/time_series/covid_NY_TS_counties_long.deaths.csv")
+covid_NY_TS_counties_long.deaths <- covid_NY_TS_counties_long.deaths %>%
+    dplyr::filter(deaths > 0)%>%
+    dplyr::filter(County != "Unassigned")
+covid_NY_TS_plot.deaths <- covid_NY_TS_counties_long.deaths %>%
+    dplyr::group_by(date)
+covid_NY_TS_plot.deaths$log_deaths <- log10(covid_NY_TS_plot.deaths$deaths)
+NY_population <- read_csv("data/csv/time_series/NY_population.csv")
+covid_NY_TS_plot.deaths <- dplyr::inner_join(covid_NY_TS_plot.deaths, as.data.frame(NY_population), by = c("County" = "County"))
+covid_NY_TS_plot.deaths <- covid_NY_TS_plot.deaths %>% 
+  dplyr::select(-FIPS)
+
+# Append death rates per county!
+covid_NY_TS_plot.deaths <- covid_NY_TS_plot.deaths %>%
+  dplyr::mutate(p_deaths = (deaths/Population)*100000) %>%
+  dplyr::mutate(log_p_deaths = log10(p_deaths)) 
+
+# Regions for plots
+NY_counties_regions <- read_csv("data/csv/time_series/NY_counties_regions.csv")
+
+covid_NY_TS_plot.deaths <- dplyr::inner_join(covid_NY_TS_plot.deaths, as.data.frame(NY_counties_regions), by = c("County" = "County"))
+
+# make sure we have the same version for our app plot!
+write_csv(covid_NY_TS_plot.deaths, "data/csv/time_series/covid_NY_TS_plot.deaths.csv")
+
+# Take care of this in preprocessing
+# Creates difference in deaths from previous recorded date. First date is equal to deaths reported
+covid_NY_TS_plot.deaths %>% group_by(County) %>% 
+  mutate(diff = ifelse(as.Date(date - 1) == lag(date), deaths - lag(deaths), deaths)) -> 
+  covid_NY_TS_plot.deaths
+
+covid_NY_TS_plot.deaths %>% 
+  mutate(p_diff = ifelse(as.Date(date - 1) == lag(date), p_deaths - lag(p_deaths), p_deaths)) %>%
+  ungroup() -> covid_NY_TS_plot.deaths
+
+covid_NY_TS_plot.deaths$diff <- ifelse(is.na(covid_NY_TS_plot.deaths$diff), covid_NY_TS_plot.deaths$deaths, covid_NY_TS_plot.deaths$diff)
+covid_NY_TS_plot.deaths$p_diff <- ifelse(is.na(covid_NY_TS_plot.deaths$p_diff), covid_NY_TS_plot.deaths$p_deaths, covid_NY_TS_plot.deaths$p_diff)
+
+```
+
+
+```{r}
+# RAW DEATH TOTALS
+
+NY_region_palette.df <- NY_counties_regions %>%
+dplyr::select(Region,Color) %>% 
+dplyr::distinct(Region,Color)
+
+NY_region_palette <- setNames(as.character(NY_region_palette.df$Color), as.character(NY_region_palette.df$Region))
+
+NYC <- covid_NY_TS_plot.deaths %>%
+  filter(Region == "New York City") %>%
+  group_by(Region, Color, date) %>%
+  summarise(deaths = sum(deaths),
+            Population = sum(Population),
+            p_deaths = mean(p_deaths),
+            diff = sum(diff),
+            p_diff = mean(p_diff),
+            log_deaths = sum(log_deaths),
+            log_p_deaths = mean(log_p_deaths)) %>%
+  mutate(County = "New York City")
+
+covid_NY_TS_plot.deaths <- covid_NY_TS_plot.deaths %>%
+  filter(Region != "New York City") %>%
+  rbind.data.frame(NYC)
+  
+
+labels = covid_NY_TS_plot.deaths %>% group_by(County) %>% summarise_all(max) %>% filter(deaths > 10)
+
+covid_NY_TS_plot.deaths %>%
+  filter(deaths > 10) %>%
+      ggplot(aes(date, 
+                 deaths, 
+                 color = Region,
+                 group = County)) +
+      scale_color_manual(values=NY_region_palette) +
+      geom_line(size = 1) +
+      geom_label(
+        data = labels,
+        aes(label = County, x=date, y=deaths),
+        box.padding = unit(1.75, 'lines')) +
+      scale_y_continuous(
+        trans = "log10",
+        breaks = c(10,100,500,1000,5000,10000, 50000)
+      ) +
+      scale_x_datetime(date_breaks = "1 week", date_minor_breaks = "1 day", date_labels = "%b %d") +
+      coord_cartesian(expand = TRUE) +
+      ylab("Deaths") + 
+      xlab("Date") +
+      ggtitle("New York State COVID-19 deaths over time") +
+      geom_vline(aes(xintercept=as_datetime("2020-03-20"), linetype="Gov. Cuomo issues stay-at-home order"), color = "black") + 
+      geom_vline(aes(xintercept=as_datetime("2020-05-15"), linetype="Gov. Cuomo issues Phase 1 Reopening (5 Regions)"), color = "blue") + 
+      scale_linetype_manual(name = "Events", 
+                            values = c(2,2), 
+                            guide = guide_legend(override.aes = list(color = c("blue","black")))) +
+      NULL
+```
+
+
+```{r}
+# DEATHS PER 100k
+NY_region_palette.df <- NY_counties_regions %>%
+dplyr::select(Region,Color) %>% 
+dplyr::distinct(Region,Color)
+
+NY_region_palette <- setNames(as.character(NY_region_palette.df$Color), as.character(NY_region_palette.df$Region))
+
+labels = covid_NY_TS_plot.deaths %>% group_by(County) %>% summarise_all(max) %>% filter(p_deaths > 5)
+
+covid_NY_TS_plot.deaths %>%
+  filter(p_deaths > 5) %>%
+      ggplot(aes(date, 
+                 p_deaths, 
+                 color = Region,
+                 group = County)) +
+      scale_color_manual(values=NY_region_palette) +
+      geom_line(size = 1) +
+      geom_label(
+        data = labels,
+        aes(label = County, x=date, y=p_deaths)) +
+      scale_y_continuous(
+        trans = "log10",
+        breaks = c(10,100,500,1000,5000,10000, 50000)
+      ) +
+      scale_x_datetime(date_breaks = "1 week", date_minor_breaks = "1 day", date_labels = "%b %d") +
+      coord_cartesian(expand = TRUE) +
+      ylab("Deaths/100k") + 
+      xlab("Date") +
+      ggtitle("New York State COVID-19 deaths rate over time") +
+      geom_vline(aes(xintercept=as_datetime("2020-03-20"), linetype="Gov. Cuomo issues stay-at-home order"), color = "black") + 
+      geom_vline(aes(xintercept=as_datetime("2020-05-15"), linetype="Gov. Cuomo issues Phase 1 Reopening (5 Regions)"), color = "blue") + 
+      scale_linetype_manual(name = "Events", 
+                            values = c(2,2), 
+                            guide = guide_legend(override.aes = list(color = c("blue","black")))) +
+      NULL
+```
+
+
+
+
+
+```{r}
+# rollmean from zoo::rollmean
+# DEATHS ROLLING AVERAGE (Region)
+
+NY_region_palette.df <- NY_counties_regions %>%
+dplyr::select(Region,Color) %>% 
+dplyr::distinct(Region,Color)
+
+NY_region_palette <- setNames(as.character(NY_region_palette.df$Color), as.character(NY_region_palette.df$Region))
+
+covid_NY_TS_plot.deaths %>%
+  group_by(Region, date) %>%
+  summarise(diff = sum(diff)) %>%
+  mutate(ma = c(numeric(6),rollmean(diff, 7, align = "right"))) %>%
+  filter(ma > 0) %>%
+      ggplot(aes(date, 
+                 ma, 
+                 color = Region)) +
+      scale_color_manual(values=NY_region_palette) +
+      geom_line(size = 1) +
+      scale_y_continuous(
+        trans = "log10",
+        breaks = c(10,100,500,1000,5000,10000,50000)
+      ) +
+      scale_x_datetime(date_breaks = "1 week", date_minor_breaks = "1 day", date_labels = "%b %d") +
+      ylab("New deaths") + 
+      xlab("Date") +
+      ggtitle("New York State NEW COVID-19 deaths") +
+      geom_vline(aes(xintercept=as_datetime("2020-03-20"), linetype="Gov. Cuomo issues stay-at-home order"), color = "black") + 
+      geom_vline(aes(xintercept=as_datetime("2020-05-15"), linetype="Gov. Cuomo issues Phase 1 Reopening (5 Regions)"), color = "blue") + 
+      scale_linetype_manual(name = "Events", 
+                            values = c(2,2), 
+                            guide = guide_legend(override.aes = list(color = c("blue","black")))) +
+      NULL
+```
+
+```{r}
+# rollmean from zoo::rollmean
+
+NY_region_palette.df <- NY_counties_regions %>%
+dplyr::select(Region,Color) %>% 
+dplyr::distinct(Region,Color)
+
+NY_region_palette <- setNames(as.character(NY_region_palette.df$Color), as.character(NY_region_palette.df$Region))
+
+covid_NY_TS_plot.deaths %>%
+  group_by(Region, date) %>%
+  summarise(p_diff = sum(p_diff)) %>%
+  mutate(ma = c(numeric(6),rollmean(p_diff, 7, align = "right"))) %>%
+  filter(ma > 0) %>%
+      ggplot(aes(date, 
+                 ma, 
+                 color = Region)) +
+      scale_color_manual(values=NY_region_palette) +
+      geom_line(size = 1) +
+      #scale_y_continuous(
+      #  trans = "log10",
+      #  breaks = c(10,100,500,1000,5000,10000,50000)
+      #) +
+      scale_x_datetime(date_breaks = "1 week", date_minor_breaks = "1 day", date_labels = "%b %d") +
+      ylab("New cases per 100k") + 
+      xlab("Date") +
+      ggtitle("New York State NEW COVID-19 deaths per 100k") +
+      geom_vline(aes(xintercept=as_datetime("2020-03-20"), linetype="Gov. Cuomo issues stay-at-home order"), color = "black") + 
+      geom_vline(aes(xintercept=as_datetime("2020-05-15"), linetype="Gov. Cuomo issues Phase 1 Reopening (5 Regions)"), color = "blue") + 
+      scale_linetype_manual(name = "Events", 
+                            values = c(2,2), 
+                            guide = guide_legend(override.aes = list(color = c("blue","black")))) +
+      NULL
+```
 

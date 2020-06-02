@@ -1,0 +1,154 @@
+---
+title: "State Report Cards"
+output: html_notebook
+---
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = "../")
+```
+
+```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+#### Library and Data Imports ####
+
+## Load essential R packages
+source("modules/Source.R")
+
+## Load stored data (see `data` subdirectory)
+source("modules/data_load.R")
+
+## Create dataframes; perform desparity index calcuations; prep for plotting
+source("modules/preprocessing.R")
+
+```
+
+```{r}
+colors <- c("#253494","#4575B4", "#74ADD1","#ABD9E9","#f7f7f7","#FDAE61","#F46D43", "#D73027", "#BD0026")
+bins <- c(5, 3, 2, 1, .2, -.2, -1, -2, -3, -5)
+```
+
+NY State example (Mortality)
+```{r}
+
+
+
+#Remove personal API key
+```
+
+Function to be generalized
+
+```{r}
+geo.plot <- function(state.choice) {
+  dataset <- todays.case.data %>%
+    filter(State == state.choice)
+  shapes <- readRDS(paste("data/shape_files/", state.choice, ".Rds", sep = ""))
+  # Join moved to processing
+  shapes$countyFIPS <- as.numeric(paste(as.data.frame(shapes)$STATEFP, as.data.frame(shapes)$COUNTYFP, sep = ''))
+  dataset <- dplyr::left_join(as.data.frame(shapes), as.data.frame(dataset), by = c("countyFIPS" = "countyFIPS"))
+  
+  pal2 <- leaflet::colorBin(colors, domain = NY.data$death_rate_ldi, bins = bins, reverse=FALSE)
+    
+  labels <- sprintf(
+    "<strong>%s</strong><br/>
+    COVID-19 Mortality Rate DI: %.2g<br>
+    COVID-19 Mortality Rate: %.1f /100k",
+    dataset$County, dataset$case_rate_ldi, (dataset$case_rate)*100000
+  ) %>% lapply(htmltools::HTML)
+  
+
+  return (leaflet(shapes) %>%
+  #setView(-76.071782, 42.991989, 6) %>%  # Set to the geographic center of NY
+  addPolygons(
+    fillColor = ~pal2(dataset$case_rate_ldi),
+    weight = 1,
+    opacity = 1,
+    color = "#330000",
+    dashArray = "1",
+    fillOpacity = 0.7,
+    highlight = highlightOptions(
+      weight = 5,
+      color = "#666",
+      dashArray = "",
+      fillOpacity = 0.7,
+      bringToFront = TRUE),
+    label = labels,
+    labelOptions = labelOptions(
+      style = list("font-weight" = "normal", padding = "3px 8px"),
+      textsize = "15px",
+      direction = "auto")) %>% 
+  addLegend(pal = pal2, 
+            values = ~dataset$case_rate_ldi, 
+            opacity = 0.7, 
+            title = paste0("Disparity Index<br/>",state.choice," COVID-19 Case Rates"),
+            position = "bottomright",
+            labFormat = function(type, cuts, p) { n = length(cuts) 
+            cuts[n] = paste0(cuts[n]," lower") 
+            # for (i in c(1,seq(3,(n-1)))){cuts[i] = paste0(cuts[i],"—")} 
+            for (i in c(1,seq(2,(n-1)))){cuts[i] = paste0(cuts[i]," — ")} 
+            cuts[2] = paste0(cuts[2]," higher") 
+            paste0(str_remove(cuts[-n],"higher"), str_remove(cuts[-1],"—"))
+            }
+  ) %>%
+  addProviderTiles("MapBox", options = providerTileOptions(
+    id = "mapbox.light"))
+    )
+}
+
+```
+
+covid_confirmed_usafacts metadata:
++ countyFIPS: 0 for statewide unallocated, 1 for NYC unallocated, otherwise>1000
++ County Name: Format is "x County", i.e. "Albany County"
++ State: 2 letter initial
++ stateFIPS: 1-56
++ 1/22/20..MostRecentDate: Time series case data (aggregate)
+
+NY.data (to replicate):
++ 10 NY.shape columns (inner join on county fips?)
++ County: County Name without 'County' in strings
++ Population
++ Date
++ Cases/Case Rate/LDI (Basically any data I want to show)
+
+Population
++ countyFIPS: 0 for statewide unallocated, 1 for NYC unallocated, otherwise>1000
++ County Name: Format is "x County", i.e. "Albany County"
++ State: 2 letter initial
++ Population: of county
+
+
+```{r}
+update_date <- "5/28/20"
+
+todays.case.data <- read_csv("data/csv/time_series/covid_confirmed_usafacts.csv") %>%
+  filter(countyFIPS > 1000) %>%
+  select(countyFIPS, `County Name`, State, update_date) %>%
+  rename(c("Cases" = update_date, "County" = "County Name"))
+
+population <- read_csv("data/csv/time_series/covid_county_population_usafacts.csv") %>%
+  filter(countyFIPS > 1000)
+
+todays.case.data <- inner_join(todays.case.data, population[c(1,4)], by=c("countyFIPS" = "countyFIPS")) %>%
+  filter(population > 0)
+
+todays.case.data$date <- update_date
+todays.case.data$case_rate <- todays.case.data$Cases/todays.case.data$population
+
+todays.case.data$case_rate_ldi <- unlist(lapply(todays.case.data$case_rate, FUN=function(x){-log(pUS.6.cases/x)})) 
+
+todays.case.data <- todays.case.data %>%
+ mutate(case_rate_ldi = replace(case_rate_ldi, case_rate_ldi < -5, -5))
+
+todays.case.data <- todays.case.data %>%
+  mutate(County = str_remove_all(County, regex(" County", ignore_case = T)))
+
+```
+
+```{r}
+selected_state <- "FL"
+geo.plot(selected_state)
+```
+
+
