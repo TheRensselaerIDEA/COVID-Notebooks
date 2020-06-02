@@ -43,7 +43,7 @@ get_ldi <- function(feature) {
 
 
 ```{r}
-geo.plot <- function(state.choice, feature) {
+geo.plot <- function(state.choice, feature, reverse=F) {
   # Feature: Case, Mortality...
   ldi_feature <- get_ldi(feature)
   
@@ -54,7 +54,7 @@ geo.plot <- function(state.choice, feature) {
   
   dataset <- dplyr::left_join(as.data.frame(shapes), as.data.frame(dataset), by = c("countyFIPS" = "countyFIPS"))
   
-  pal2 <- leaflet::colorBin(colors, domain = dataset[,ldi_feature[1]], bins = bins, reverse=FALSE)
+  pal2 <- leaflet::colorBin(colors, domain = dataset[,ldi_feature[1]], bins = bins, reverse=reverse)
     
   labels <- sprintf(
     paste0("<strong>%s</strong><br/>
@@ -175,7 +175,7 @@ todays.case.data <- todays.case.data %>%
 ```
 
 ```{r}
-selected_state <- "CT"
+selected_state <- "MA"
 selected_feature <- "Mortality"
 geo.plot(selected_state, selected_feature)
 ```
