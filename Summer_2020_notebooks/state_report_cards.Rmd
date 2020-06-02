@@ -143,6 +143,8 @@ population <- read_csv("data/csv/time_series/covid_county_population_usafacts.cs
 todays.case.data <- inner_join(todays.case.data, population[c(1,4)], by=c("countyFIPS" = "countyFIPS")) %>%
   filter(population > 0)
 
+# todays.death.data <- read_csv("data/csv/time_series/covid_confirmed_usafacts.csv")
+
 todays.case.data$date <- update_date
 todays.case.data$case_rate <- todays.case.data$Cases/todays.case.data$population
 
@@ -157,7 +159,7 @@ todays.case.data <- todays.case.data %>%
 ```
 
 ```{r}
-selected_state <- "GA"
+selected_state <- "MI"
 geo.plot(selected_state)
 ```
 
