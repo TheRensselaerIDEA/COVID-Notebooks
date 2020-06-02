@@ -147,7 +147,7 @@ todays.case.data <- todays.case.data %>%
 ```
 
 ```{r}
-selected_state <- "FL"
+selected_state <- "GA"
 geo.plot(selected_state)
 ```
 

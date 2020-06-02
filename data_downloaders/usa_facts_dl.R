@@ -16,6 +16,7 @@
 # "data/csv/time_series/covid_NY_TS_counties_long.deaths.csv.bak"
 
 library(dplyr)
+library(lubridate)
 library(stringr)
 
 base.url <- "https://usafactsstatic.blob.core.windows.net/public/data/covid-19/"
