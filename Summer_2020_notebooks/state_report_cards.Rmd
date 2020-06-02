@@ -44,11 +44,11 @@ geo.plot <- function(state.choice) {
   dataset <- todays.case.data %>%
     filter(State == state.choice)
   shapes <- readRDS(paste("data/shape_files/", state.choice, ".Rds", sep = ""))
-  # Join moved to processing
   shapes$countyFIPS <- as.numeric(paste(as.data.frame(shapes)$STATEFP, as.data.frame(shapes)$COUNTYFP, sep = ''))
+  
   dataset <- dplyr::left_join(as.data.frame(shapes), as.data.frame(dataset), by = c("countyFIPS" = "countyFIPS"))
   
-  pal2 <- leaflet::colorBin(colors, domain = NY.data$death_rate_ldi, bins = bins, reverse=FALSE)
+  pal2 <- leaflet::colorBin(colors, domain = dataset$case_rate_ldi, bins = bins, reverse=FALSE)
     
   labels <- sprintf(
     "<strong>%s</strong><br/>
@@ -118,14 +118,24 @@ Population
 + State: 2 letter initial
 + Population: of county
 
+covid_deaths_usafacts metadata:
++ countyFIPS: 0 for statewide unallocated, 1 for NYC unallocated, otherwise>1000
++ County Name: Format is "x County", i.e. "Albany County"
++ State: 2 letter initial
++ stateFIPS: 1-56
++ 1/22/20..MostRecentDate: Time series case data (aggregate)
+
 
 ```{r}
-update_date <- "5/28/20"
+update_date <- "06/02/20"
 
-todays.case.data <- read_csv("data/csv/time_series/covid_confirmed_usafacts.csv") %>%
+todays.case.data <- read_csv("data/csv/time_series/covid_confirmed_usafacts.csv") 
+
+todays.case.data <- todays.case.data %>%
   filter(countyFIPS > 1000) %>%
-  select(countyFIPS, `County Name`, State, update_date) %>%
-  rename(c("Cases" = update_date, "County" = "County Name"))
+  select(countyFIPS, `County Name`, State, ncol(todays.case.data)) %>%
+  rename(c("County" = "County Name"))
+colnames(todays.case.data)[4] <- "Cases"
 
 population <- read_csv("data/csv/time_series/covid_county_population_usafacts.csv") %>%
   filter(countyFIPS > 1000)
