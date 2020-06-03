@@ -2,6 +2,7 @@
 source("modules/Source.R")
 source("modules/data_load.R")
 source("modules/preprocessing.R")
+#source("modules/leaflet_gen.R")
 
 update_date <- "06-02-2020" # makes it easy to change all occurances when we update
 
@@ -1100,53 +1101,9 @@ server <- function(input, output, session) {
   })
   
   output$map.NY.deaths <- renderLeaflet({
-    
-    
-    pal2 <- leaflet::colorBin(colors, domain = NY.data$death_rate_ldi, bins = bins, reverse=FALSE)
-    
-    labels <- sprintf(
-      "<strong>%s</strong><br/>
-      COVID-19 Mortality Rate DI: %.2g<br>
-      COVID-19 Mortality Rate: %.1f /100k",
-      NY.data$County, NY.data$death_rate_ldi, (NY.data$deaths/NY.data$Population)*100000
-    ) %>% lapply(htmltools::HTML)
-    
-    leaflet(NY.shape) %>%
-      setView(-76.071782, 42.991989, 6) %>%  # Set to the geographic center of NY
-      addPolygons(
-        fillColor = ~pal2(NY.data$death_rate_ldi),
-        weight = 1,
-        opacity = 1,
-        color = "#330000",
-        dashArray = "1",
-        fillOpacity = 0.7,
-        highlight = highlightOptions(
-          weight = 5,
-          color = "#666",
-          dashArray = "",
-          fillOpacity = 0.7,
-          bringToFront = TRUE),
-        label = labels,
-        labelOptions = labelOptions(
-          style = list("font-weight" = "normal", padding = "3px 8px"),
-          textsize = "15px",
-          direction = "auto")) %>% 
-      addLegend(pal = pal2, 
-                values = ~NY.data$death_rate_ldi, 
-                opacity = 0.7, 
-                title = "Disparity Index<br/>NY COVID-19 Mortality Rates",
-                position = "bottomright",
-                labFormat = function(type, cuts, p) { n = length(cuts) 
-                cuts[n] = paste0(cuts[n]," lower") 
-                # for (i in c(1,seq(3,(n-1)))){cuts[i] = paste0(cuts[i],"—")} 
-                for (i in c(1,seq(2,(n-1)))){cuts[i] = paste0(cuts[i]," — ")} 
-                cuts[2] = paste0(cuts[2]," higher") 
-                paste0(str_remove(cuts[-n],"higher"), str_remove(cuts[-1],"—"))
-                }
-      ) %>%
-      addProviderTiles("MapBox", options = providerTileOptions(
-        id = "mapbox.light"))
-    #Remove personal API key
+    selected_state <- "NY"
+    selected_feature <- "Mortality"
+    geo.plot(selected_state, selected_feature)
   })
   
   output$map.NY.cases <- renderLeaflet({

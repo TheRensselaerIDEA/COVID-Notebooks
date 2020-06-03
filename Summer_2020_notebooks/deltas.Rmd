@@ -234,8 +234,7 @@ covid_NY_TS_plot.deaths %>%
       geom_line(size = 1) +
       geom_label(
         data = labels,
-        aes(label = County, x=date, y=deaths),
-        box.padding = unit(1.75, 'lines')) +
+        aes(label = County, x=date, y=deaths)) +
       scale_y_continuous(
         trans = "log10",
         breaks = c(10,100,500,1000,5000,10000, 50000)
