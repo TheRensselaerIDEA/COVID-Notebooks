@@ -1,10 +1,12 @@
-library(data.table)
-library(NSAPHutils)
-library(lubridate)
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = "../")
+
+source("modules/Source.R")
+
 
 set_threads()
 
-temp_data <- fread("../data/temperature/temp_daily_county.csv")
+temp_data <- fread("./data/temperature/temp_daily_county.csv")
 temp_data[, fips := paste0(sprintf("%02d", STATEFP), sprintf("%03d", COUNTYFP))]
 temp_data[, date := ymd(date)]
 
@@ -29,4 +31,4 @@ for (year_ in 2000:2016) {
 }
 
 out <- merge(summer, winter, by = c("fips", "year"))
-fwrite(out, "../data/temperature/temp_seasonal_county.csv")
+fwrite(out, "./data/temperature/temp_seasonal_county.csv")

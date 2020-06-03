@@ -1,14 +1,8 @@
-library(tidyverse)
-library(sp)
-library("raster")
-library("dplyr")
-library("sf")
-library("stringr")
-library("ggplot2")
-library(grid) 
-library(pBrackets) 
-library(gridExtra)
-library("lme4")
+
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = "./")
+
+source("./Modules/Source.R")
 
 # Figure 1 the US PM2.5 and COVID-19 death maps
 us<-map_data('state')

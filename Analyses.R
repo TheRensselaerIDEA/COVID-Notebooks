@@ -1,8 +1,8 @@
-library("dplyr")
-library("MASS")
-library("lme4")
-library("glmmTMB")
-library("gamm4")
+
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = "./")
+
+source("./Modules/Source.R")
 
 # Main
 mode.nb.random.off.main = glmer.nb(Deaths ~ mean_pm25 + factor(q_popdensity)
