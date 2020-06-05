@@ -491,7 +491,7 @@ get_dif <- function(y.value) {
   }
 }
 
-ggbar.overall <- function(selected.state, y.value="cases", moving.avg.window=7, remove.title = F) {
+ggbar.overall <- function(selected.state, y.value="cases", moving.avg.window=14, remove.title = F) {
   state <- covid_TS_state_long.cases %>%
     filter(State == selected.state)
   
