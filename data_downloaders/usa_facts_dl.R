@@ -14,10 +14,14 @@
 # "data/csv/time_series/covid_NY_counties.deaths.csv.bak"
 # "data/csv/time_series/covid_NY_TS_counties_long.deaths.csv"
 # "data/csv/time_series/covid_NY_TS_counties_long.deaths.csv.bak"
+# "data/csv/time_series/covid_NY_TS_plot.deaths.csv"
+# "data/csv/time_series/covid_NY_TS_plot.deaths.csv.bak"
+# "data/csv/todays_case_data.csv"
+# "data/csv/todays_case_data.csv.bak"
 
 library(dplyr)
-library(lubridate)
 library(stringr)
+library(lubridate)
 
 base.url <- "https://usafactsstatic.blob.core.windows.net/public/data/covid-19/"
 case.file <- "covid_confirmed_usafacts.csv"
@@ -32,13 +36,15 @@ download.file(paste0(base.url,death.file), paste0(file.dir,death.file))
 # download.file(paste0(base.url,pop.file), paste0(file.dir,pop.file))
 
 # Read in latest data
-#cases.TS <- read_csv(paste0(file.dir,case.file))
+cases.TS <- read_csv(paste0(file.dir,case.file))
 deaths.TS <- read_csv(paste0(file.dir,death.file))
 population <- read_csv(paste0(file.dir,pop.file))
 
 #cases.TS$population <- population$population
 #deaths.TS$population <- population$population
 
+
+# PLOT implimentation
 deaths.TS <- deaths.TS %>%
   mutate(`County Name` = str_remove_all(`County Name`, regex(" County", ignore_case = T)))
 
@@ -130,7 +136,58 @@ write_csv(read_csv("data/csv/time_series/covid_NY_TS_counties_long.deaths.csv"),
 # write out new LONG dataframe to file system
 write_csv(covid_NY_TS_counties_long.deaths,"data/csv/time_series/covid_NY_TS_counties_long.deaths.csv")
 
+covid_NY_TS_counties_long.deaths <- covid_NY_TS_counties_long.deaths %>%
+  dplyr::filter(deaths > 0)%>%
+  dplyr::filter(County != "Unassigned")
+covid_NY_TS_plot.deaths <- covid_NY_TS_counties_long.deaths %>%
+  dplyr::group_by(date)
+covid_NY_TS_plot.deaths$log_deaths <- log10(covid_NY_TS_plot.deaths$deaths)
+NY_population <- read_csv("data/csv/time_series/NY_population.csv")
+covid_NY_TS_plot.deaths <- dplyr::inner_join(covid_NY_TS_plot.deaths, as.data.frame(NY_population), by = c("County" = "County"))
+covid_NY_TS_plot.deaths <- covid_NY_TS_plot.deaths %>% 
+  dplyr::select(-FIPS)
 
+# Append death rates per county!
+covid_NY_TS_plot.deaths <- covid_NY_TS_plot.deaths %>%
+  dplyr::mutate(p_deaths = (deaths/Population)*100000) %>%
+  dplyr::mutate(log_p_deaths = log10(p_deaths)) 
 
+# Regions for plots
+NY_counties_regions <- read_csv("data/csv/time_series/NY_counties_regions.csv")
+
+covid_NY_TS_plot.deaths <- dplyr::inner_join(covid_NY_TS_plot.deaths, as.data.frame(NY_counties_regions), by = c("County" = "County"))
+
+# Make backup of existing LONG data
+write_csv(read_csv("data/csv/time_series/covid_NY_TS_plot.deaths.csv"),"data/csv/time_series/covid_NY_TS_plot.deaths.csv.bak")
+
+# make sure we have the same version for our app plot!
+write_csv(covid_NY_TS_plot.deaths, "data/csv/time_series/covid_NY_TS_plot.deaths.csv")
+
+# State report card implimentation
+todays.case.data <- cases.TS %>%
+  filter(countyFIPS > 1000) %>%
+  select(countyFIPS, `County Name`, State, ncol(cases.TS)) %>%
+  rename(c("County" = "County Name"))
+colnames(todays.case.data)[4] <- "Cases"
+
+# Filter population data for non-county reports
+population <- population %>%
+  filter(countyFIPS > 1000)
+
+todays.case.data <- inner_join(todays.case.data, population[c(1,4)], by=c("countyFIPS" = "countyFIPS")) %>%
+  filter(population > 0)
+
+todays.death.data <- deaths.TS %>%
+  filter(countyFIPS > 1000) %>%
+  select(1, ncol(deaths.TS))
+colnames(todays.death.data)[2] <- "Mortality"
+
+todays.case.data <- inner_join(todays.case.data, todays.death.data, by=c("countyFIPS" = "countyFIPS"))
+todays.case.data$Case_rate <- todays.case.data$Cases/todays.case.data$population
+todays.case.data$Mortality_rate <- todays.case.data$Mortality/todays.case.data$population
+
+# Backup case data
+write_csv(read_csv("data/csv/todays_case_data.csv"), "data/csv/todays_case_data.csv.bak")
+write_csv(todays.case.data, "data/csv/todays_case_data.csv")
 
 

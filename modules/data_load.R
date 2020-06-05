@@ -30,6 +30,21 @@ NY.data <- dplyr::inner_join(NY.data, as.data.frame(NY_counties_regions), by = c
 
 NY.data$FIPS <- as.character(NY.data$FIPS)
 
+#Dataset for all state mortality/cases at county level
+todays.case.data <- read_csv("data/csv/todays_case_data.csv")
+
+library(datasets)
+state.abr <- cbind.data.frame(state.abb, state.name, state.center$x, state.center$y)
+colnames(state.abr) <- c("abr", "name", "lon", "lat")
+state.abr[state.abr$abr == "AK", "lon"] <- -153.4937
+state.abr[state.abr$abr == "AK", "lat"] <- 64.2008
+state.abr[state.abr$abr == "HI", "lon"] <- -157.532
+state.abr[state.abr$abr == "HI", "lat"] <- 20.57503
+state.abr[state.abr$abr == "MI", "lon"] <- -86.41704
+state.abr[state.abr$abr == "MI", "lat"] <- 44.9534
+
+
+
 # Convert to dataframe state data
 states <- states.shapes
 states <- data.frame(states)

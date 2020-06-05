@@ -193,6 +193,14 @@ pUS.6.deaths <- as.numeric(covid_data_states[which(covid_data_states$NAME=="Unit
 case_rate_ldi <- unlist(lapply(covid_data_states$calc_case_rate, FUN=function(x){-log(pUS.6.cases/x)}))
 death_rate_ldi <- unlist(lapply(covid_data_states$p_death_rate, FUN=function(x){-log(pUS.6.deaths/x)}))
 
+#ldi's for individual state report cards - Jose
+todays.case.data$Case_rate_ldi <- unlist(lapply(todays.case.data$Case_rate, FUN=function(x){-log(pUS.6.cases/x)})) 
+todays.case.data <- todays.case.data %>%
+  mutate(Case_rate_ldi = replace(Case_rate_ldi, Case_rate_ldi < -5, -5))
+todays.case.data$Mortality_rate_ldi <- unlist(lapply(todays.case.data$Mortality_rate, FUN=function(x){-log(pUS.6.deaths/x)}))
+todays.case.data <- todays.case.data %>%
+  mutate(Mortality_rate_ldi = replace(Mortality_rate_ldi, Mortality_rate_ldi < -5, -5))
+
 covid_data_states <- data.frame(covid_data_states, death_rate_ldi)
 covid_data_states <- data.frame(covid_data_states, case_rate_ldi)
 
@@ -375,6 +383,19 @@ covid_NY_TS_plot.cases %>%
 
 covid_NY_TS_plot.cases$diff <- ifelse(is.na(covid_NY_TS_plot.cases$diff), covid_NY_TS_plot.cases$cases, covid_NY_TS_plot.cases$diff)
 covid_NY_TS_plot.cases$p_diff <- ifelse(is.na(covid_NY_TS_plot.cases$p_diff), covid_NY_TS_plot.cases$p_cases, covid_NY_TS_plot.cases$p_diff)
+
+covid_NY_TS_plot.deaths <- read_csv("data/csv/time_series/covid_NY_TS_plot.deaths.csv")
+# Creates difference in deaths from previous recorded date. First date is equal to deaths reported
+covid_NY_TS_plot.deaths %>% group_by(County) %>% 
+  mutate(diff = ifelse(as.Date(date - 1) == lag(date), deaths - lag(deaths), deaths)) -> 
+  covid_NY_TS_plot.deaths
+
+covid_NY_TS_plot.deaths %>% 
+  mutate(p_diff = ifelse(as.Date(date - 1) == lag(date), p_deaths - lag(p_deaths), p_deaths)) %>%
+  ungroup() -> covid_NY_TS_plot.deaths
+
+covid_NY_TS_plot.deaths$diff <- ifelse(is.na(covid_NY_TS_plot.deaths$diff), covid_NY_TS_plot.deaths$deaths, covid_NY_TS_plot.deaths$diff)
+covid_NY_TS_plot.deaths$p_diff <- ifelse(is.na(covid_NY_TS_plot.deaths$p_diff), covid_NY_TS_plot.deaths$p_deaths, covid_NY_TS_plot.deaths$p_diff)
 
 
 # Legislative action 
