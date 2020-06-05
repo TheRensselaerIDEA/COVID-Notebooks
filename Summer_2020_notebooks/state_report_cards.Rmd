@@ -31,7 +31,7 @@ colors <- c("#253494","#4575B4", "#74ADD1","#ABD9E9","#f7f7f7","#FDAE61","#F46D4
 bins <- c(5, 3, 2, 1, .2, -.2, -1, -2, -3, -5)
 ```
 
-Function to be generalized
+Functions to be generalized
 ```{r get_ldi}
 get_ldi <- function(feature) {
   rate <- paste0(feature,"_rate")
@@ -171,7 +171,7 @@ todays.case.data <- todays.case.data %>%
 ```
 
 ```{r Cases}
-selected_state <- "AL"
+selected_state <- "NJ"
 selected_feature <- "Case"
 geo.plot(selected_state, selected_feature)
 ```
@@ -192,6 +192,7 @@ state_policy.df[as.vector(state_policy.md[4,] == "date")] <- lapply(state_policy
 ```
 
 ```{r plot processing}
+### County Level ###
 covid_TS_counties_long.cases <- todays.raw.case.data %>%
   tidyr::gather(date,cases,5:ncol(todays.raw.case.data))
 covid_TS_counties_long.death <- todays.raw.death.data %>%
@@ -222,6 +223,7 @@ covid_TS_counties_long.cases$p_cases <- covid_TS_counties_long.cases$cases/covid
 
 covid_TS_counties_long.cases$p_deaths <- covid_TS_counties_long.cases$deaths/covid_TS_counties_long.cases$population*100000
 
+# Changes in cases
 covid_TS_counties_long.cases %>% group_by(County, State) %>% 
   mutate(diff = ifelse(as.Date(date - 1) == lag(date), cases - lag(cases), cases)) -> 
   covid_TS_counties_long.cases
@@ -232,38 +234,139 @@ covid_TS_counties_long.cases %>%
 
 covid_TS_counties_long.cases$diff <- ifelse(is.na(covid_TS_counties_long.cases$diff), covid_TS_counties_long.cases$cases, covid_TS_counties_long.cases$diff)
 covid_TS_counties_long.cases$p_diff <- ifelse(is.na(covid_TS_counties_long.cases$p_diff), covid_TS_counties_long.cases$p_cases, covid_TS_counties_long.cases$p_diff)
+
+# Changes in deaths
+covid_TS_counties_long.cases %>% group_by(County, State) %>% 
+  mutate(d_diff = ifelse(as.Date(date - 1) == lag(date), deaths - lag(deaths), deaths)) -> 
+  covid_TS_counties_long.cases
+
+covid_TS_counties_long.cases %>% 
+  mutate(p.d_diff = ifelse(as.Date(date - 1) == lag(date), p_deaths - lag(p_deaths), p_deaths)) %>%
+  ungroup() -> covid_TS_counties_long.cases
+
+covid_TS_counties_long.cases$d_diff <- ifelse(is.na(covid_TS_counties_long.cases$d_diff), covid_TS_counties_long.cases$deaths, covid_TS_counties_long.cases$d_diff)
+covid_TS_counties_long.cases$p.d_diff <- ifelse(is.na(covid_TS_counties_long.cases$p.d_diff), covid_TS_counties_long.cases$p_deaths, covid_TS_counties_long.cases$p.d_diff)
+
+### State Level ###
+
+covid_TS_state_long.cases <- todays.raw.case.data %>%
+  tidyr::gather(date,cases,5:ncol(todays.raw.case.data))
+covid_TS_state_long.death <- todays.raw.death.data %>%
+  tidyr::gather(date,deaths,5:ncol(todays.raw.death.data))
+
+# Make date column an actual R date_time
+covid_TS_state_long.cases$date <- parse_date_time(covid_TS_state_long.cases$date, c("%m/%d/%y"))
+covid_TS_state_long.death$date <- parse_date_time(covid_TS_state_long.death$date, c("%m/%d/%y"))
+
+# Factor does not make sense here as there may be distint, same named counties
+covid_TS_state_long.cases <- covid_TS_state_long.cases %>%
+  group_by(State, date) %>%
+  summarise(cases = sum(cases))
+
+covid_TS_state_long.death <- covid_TS_state_long.death %>%
+  group_by(State, date) %>%
+  summarise(deaths = sum(deaths))
+
+# Join death data
+covid_TS_state_long.cases <- inner_join(
+  covid_TS_state_long.cases, covid_TS_state_long.death, by=c("State" = "State", "date" = "date"))
+
+# Filter small data
+covid_TS_state_long.cases <- covid_TS_state_long.cases %>%
+  filter(cases > 5)
+
+# Join population data
+covid_TS_state_long.cases <- left_join(
+  covid_TS_state_long.cases, 
+  population %>% group_by(State) %>% summarise(population = sum(population)), 
+  by=c("State" = "State"))
+
+# Per100k columns
+covid_TS_state_long.cases$p_cases <- covid_TS_state_long.cases$cases/covid_TS_state_long.cases$population*100000
+
+covid_TS_state_long.cases$p_deaths <- covid_TS_state_long.cases$deaths/covid_TS_state_long.cases$population*100000
+
+# Changes in cases
+covid_TS_state_long.cases %>% group_by(State) %>% 
+  mutate(diff = ifelse(as.Date(date - 1) == lag(date), cases - lag(cases), cases)) -> 
+  covid_TS_state_long.cases
+
+covid_TS_state_long.cases %>% 
+  mutate(p_diff = ifelse(as.Date(date - 1) == lag(date), p_cases - lag(p_cases), p_cases)) %>%
+  ungroup() -> covid_TS_state_long.cases
+
+covid_TS_state_long.cases$diff <- ifelse(is.na(covid_TS_state_long.cases$diff), covid_TS_state_long.cases$cases, covid_TS_state_long.cases$diff)
+covid_TS_state_long.cases$p_diff <- ifelse(is.na(covid_TS_state_long.cases$p_diff), covid_TS_state_long.cases$p_cases, covid_TS_state_long.cases$p_diff)
+
+# Changes in deaths
+covid_TS_state_long.cases %>% group_by(State) %>% 
+  mutate(d_diff = ifelse(as.Date(date - 1) == lag(date), deaths - lag(deaths), deaths)) -> 
+  covid_TS_state_long.cases
+
+covid_TS_state_long.cases %>% 
+  mutate(p.d_diff = ifelse(as.Date(date - 1) == lag(date), p_deaths - lag(p_deaths), p_deaths)) %>%
+  ungroup() -> covid_TS_state_long.cases
+
+covid_TS_state_long.cases$d_diff <- ifelse(is.na(covid_TS_state_long.cases$d_diff), covid_TS_state_long.cases$deaths, covid_TS_state_long.cases$d_diff)
+covid_TS_state_long.cases$p.d_diff <- ifelse(is.na(covid_TS_state_long.cases$p.d_diff), covid_TS_state_long.cases$p_deaths, covid_TS_state_long.cases$p.d_diff)
+
+# State ranking
+ranking <- covid_TS_state_long.cases %>%
+  group_by(State) %>%
+  filter(State != "DC") %>%
+  top_n(7, wt=date) %>%
+  summarise(
+    population = max(population),
+    cases.mAvg = sum(diff)*100000/(7*max(population)),
+    deaths.mAvg = sum(d_diff)*100000/(7*max(population))
+    ) %>%
+  mutate(points = 0.5*cases.mAvg + 0.5*deaths.mAvg) %>%
+  arrange(points) %>%
+  mutate(rank = row_number())
+  
 ```
 
 
 ```{r ggplot.state}
-get_title_value <- function(y.value) {
+get_y_label <- function(y.value) {
   if (y.value == "cases") {
-    return("Cases")
+    return("COVID-19 Cases")
   }
   if (y.value == "p_cases") {
-    return("Cases per 100k")
+    return("COVID-19 Cases per 100k")
   }
   if (y.value == "diff") {
-    return("New Cases")
+    return("New COVID-19 Cases")
   }
   if (y.value == "p_diff") {
-    return("New Cases per 100k")
+    return("New COVID-19 Cases per 100k")
   }
   if (y.value == "deaths") {
-    return("Deaths")
+    return("COVID-19 Deaths")
   }
   if (y.value == "p_cases") {
-    return("Deaths per 100k")
+    return("COVID-19 Deaths per 100k")
   }
   else {
     return("")
 s  }
 }
 
-ggplot.state <- function(selected.state="AL", y.value="cases", moving.avg.window=7, case.cut.per.county=10, max.labels=10) {
+ggplot.state <- function(selected.state, y.value="cases", moving.avg.window=7, case.cut.per.county=10, max.labels=10, remove.title = F) {
   
-  # y.value <- "cases", "p_cases", "diff", "p_diff", "deaths", p_deaths"
+  y_label <- get_y_label(y.value)
+  state.name <- state.abr[state.abr$abr==selected.state,"name"]
+  m.a.w <- ""
+  if (y.value == "diff" | y.value == "p_diff") {
+    m.a.w <- paste0(" (",moving.avg.window," day Average)")
+  }
   
+  if (remove.title) {
+    gg_title <- NULL
+  }
+  else {
+    gg_title <- ggtitle(paste0(state.name, " ", y_label, " over time",m.a.w))
+  }
   
   
   covid_TS_counties.cases.plot <- covid_TS_counties_long.cases %>%
@@ -274,15 +377,8 @@ ggplot.state <- function(selected.state="AL", y.value="cases", moving.avg.window
     mutate(p_diff = c(numeric(moving.avg.window-1), zoo::rollmean(p_diff, moving.avg.window, align = "right"))) %>%
     ungroup()
   
-  state_pop <- covid_TS_counties.cases.plot %>%
-    group_by(County) %>%
-    top_n(1, wt=date) %>%
-    ungroup() %>%
-    select(population) %>%
-    sum()
-  
-  
-  
+  state_pop <- ranking[ranking$State == selected.state, "population"]
+
   state <- covid_TS_counties.cases.plot %>%
     group_by(State, date, stateFIPS) %>%
     summarise(
@@ -291,10 +387,12 @@ ggplot.state <- function(selected.state="AL", y.value="cases", moving.avg.window
       cases = sum(cases),
       deaths = sum(deaths),
       population = state_pop,
-      p_cases = mean(p_cases),
-      p_deaths = mean(p_deaths),
+      p_cases = sum(cases)*100000/state_pop,
+      p_deaths = sum(deaths)*100000/state_pop,
       diff = sum(diff),
-      p_diff = mean(p_diff)
+      p_diff = sum(diff)*100000/state_pop,
+      d_diff = sum(d_diff),
+      p.d_diff = sum(p.d_diff)*100000/state_pop
     )
   
   n_county <- covid_TS_counties.cases.plot$County %>% unique() %>% length()
@@ -343,7 +441,7 @@ ggplot.state <- function(selected.state="AL", y.value="cases", moving.avg.window
                   breaks = c(10,100,500,1000,5000,10000, 50000)
                 ) +
                 scale_x_datetime(date_breaks = "1 week", date_minor_breaks = "1 day", date_labels = "%b %d") +
-                ylab("Cases") + 
+                ylab(y_label) + 
                 xlab("Date") +
                 #theme(legend.position = "none") +
                 geom_label_repel(
@@ -354,21 +452,204 @@ ggplot.state <- function(selected.state="AL", y.value="cases", moving.avg.window
                   show.legend = FALSE
                 ) +
                 scale_color_manual(values=region_palette, aesthetics = c("box.padding")) +
-                ggtitle(paste0(selected_state, " cases over time"))  +
-                geom_vline(aes(xintercept=state_policy.df[state_policy.df$POSTCODE == selected_state,]$STAYHOME, linetype=paste0(selected_state," stay at home order")), color = "black") + 
+                geom_vline(aes(xintercept=state_policy.df[state_policy.df$POSTCODE == selected.state,]$STAYHOME, linetype=paste0(selected.state," stay at home order")), color = "black") + 
                 scale_linetype_manual(name = "Events", 
                                       values = c(2), 
                                       guide = guide_legend(override.aes = list(color = c("black")))) +
+                theme(legend.position = "bottom") +
+                gg_title +
                 NULL
     return(g)
 }
 ```
 
 ```{r}
-selected_state <- "CA"
+selected_state <- "NJ"
 moving.avg.window <- 7
 n_case_cut <- 10
 y.value <- "diff"
-ggplot.state(selected_state, y.value = "cases", case.cut.per.county = n_case_cut)
+ggplot.state(selected_state, y.value=y.value, case.cut.per.county=n_case_cut, moving.avg.window=moving.avg.window)
 ```
+
+```{r Case stacked bar chart}
+get_dif <- function(y.value) {
+  if (y.value == "cases") {
+    return("diff")
+  }
+  if (y.value == "deaths") {
+    return("d_diff")
+  }
+  if (y.value == "p_cases") {
+    return("p_diff")
+  }
+  if (y.value == "p_deaths") {
+    return("p.d_diff")
+  }
+}
+
+ggbar.overall <- function(selected.state, y.value="cases", moving.avg.window=7, remove.title = F) {
+  state <- covid_TS_state_long.cases %>%
+    filter(State == selected.state)
+  
+  diff <- get_dif(y.value)
+  category <- get_y_label(y.value)
+  if (remove.title) {
+    gg_title <- NULL
+  }
+  else {
+    gg_title <- ggtitle(paste0(selected.state, " ", category, " over time"))
+  }
+  
+  
+  state_cases <- state[c("date", y.value)]
+  state_diff <- state[c("date", diff)]
+  
+  state_cases[y.value] <- state_cases[y.value] - state_diff[diff]
+  
+  state_cases$category <- category
+  state_diff$category <- paste0("New ", category)
+  
+  colnames(state_cases)[2] <- "Values"
+  colnames(state_diff)[2] <- "Values"
+  
+  state_cases <- rbind.data.frame(state_cases, state_diff)
+  state_cases$category <- factor(state_cases$category,levels=sort(unique(state_cases$category), decreasing=TRUE))
+  
+  ma <- state[c("date", y.value)] %>%
+    mutate(Values = c(numeric(moving.avg.window-1), zoo::rollmean(eval(parse(text=y.value)), moving.avg.window, align = "right"))) %>%
+    filter(Values > 0) %>%
+    mutate(Values = Values + median(eval(parse(text=y.value)))/4)
+  
+  state_cases %>%
+    ggplot(aes(x=date,
+               y=Values)) +
+    geom_col(aes(fill = category)) +
+    geom_line(data = ma, arrow=arrow(ends = "last")) +
+    scale_fill_manual(values = c("#ff8989","#ff2323")) +
+    scale_x_datetime(date_breaks = "1 week", date_minor_breaks = "1 day", date_labels = "%b %d") +
+    ylab("Deaths") + 
+    xlab("Date") +
+    theme(legend.title = element_blank(),
+          legend.position = "bottom") +
+    gg_title + 
+    NULL
+}
+                
+```
+
+
+```{r}
+ggbar.overall("NY")
+```
+
+```{r}
+shinyApp(
+  ui = fluidPage(
+    includeCSS("www/style.css"),
+    fluidPage(
+      fluidRow(column(12, style="text-align:center;",
+                      selectInput(inputId = "state_name",
+                                  label = "State Selector",
+                                  choices = state.abr$name))),
+      fluidRow(column(12, style="text-align:center;",uiOutput("main_title"))),
+      tags$br(),
+      fluidRow(column(8, style="text-align:center;",
+                      HTML("States are ranked by an aggregate of their average new cases and average new deaths per 100k people related to COVID-19 over the past 14 days."),
+                      offset=2)),
+      fluidRow(column(12, style="text-align:center;",uiOutput("state.CoT.title"),
+                      plotOutput(outputId = "state.CoT"))),
+      fluidRow(column(12, style="text-align:center;",uiOutput("state.DoT.title"),
+                      plotOutput(outputId = "state.DoT"))),
+      fluidRow(column(12, style="text-align:center;",
+                      tags$h1("County Level Breakdown"))),
+      fluidRow(column(6,
+                      uiOutput("state.county.cases"),
+                      leafletOutput("map.cases")),
+               column(6,
+                      uiOutput("state.county.deaths"),
+                      leafletOutput("map.deaths"))),
+      tags$br(),
+      fluidRow(column(8, style="text-align:center;",
+                       HTML("Respective rates per 100k people on maps are: 
+                        <div>
+                       <div>&nbsp;&nbsp;&nbsp;<span style='background: #BD0026; border-radius: 50%; font-size: 11px; opacity: 0.7;'>&nbsp&nbsp&nbsp&nbsp</span><strong> Higher</strong> than US avg. rate for disparity index &gt; 0.2</div>
+                       <div>&nbsp;&nbsp;&nbsp;<span style='background: #f7f7f7; border-radius: 50%; font-size: 11px; opacity: 0.7;'>&nbsp&nbsp&nbsp&nbsp</span><strong> About equal</strong> to US avg. rate for -0.2 &lt; disparity index &lt; 0.2</div>
+                       <div>&nbsp;&nbsp;&nbsp;<span style='background: #253494; border-radius: 50%; font-size: 11px; opacity: 0.7;'>&nbsp&nbsp&nbsp&nbsp</span><strong> Lower</strong> than US avg. rate for disparity index &lt; -0.2</div>
+                       <i>Darker shades indicate greater disparity.</i><br><br>
+                       </div>"), offset=2)),
+      fluidRow(column(12, style="text-align:center;",uiOutput("state.trends.title"),
+                      plotOutput(outputId = "state.trends")))
+    )
+  ),
+  
+  
+  server = function(input, output) {
+    output$main_title <- renderUI({
+      state_name <- input$state_name
+      state_initial <- state.abr[state.abr$name == state_name, "abr"]
+      tagList(
+        tags$h1(paste0(state_name, " Overview")),
+        tags$h2(paste0("State rank: ", ranking[ranking$State == state_initial, "rank"]))
+      )
+    })
+    
+    output$state.CoT.title <- renderUI({
+      state_name <- input$state_name
+      tags$h3(paste0(state_name, " COVID-19 Cases Over Time"))
+    })
+    
+    output$state.DoT.title <- renderUI({
+      state_name <- input$state_name
+      tags$h3(paste0(state_name, " COVID-19 Deaths Over Time"))
+    })
+    
+    output$state.trends.title <- renderUI({
+      state_name <- input$state_name
+      tags$h3(paste0(state_name, " ", get_y_label("diff"), " over time (7 day average)"))
+    })
+    
+    output$state.county.cases <- renderUI({
+      state_name <- input$state_name
+      tags$h3(paste0(state_name, " COVID-19 Case disparities compared to US Average"))
+    })
+    
+    output$state.county.deaths <- renderUI({
+      state_name <- input$state_name
+      tags$h3(paste0(state_name, " COVID-19 Mortality disparities compared to US Average"))
+    })
+    
+    output$map.cases <- renderLeaflet({
+      state_name <- input$state_name
+      state_initial <- state.abr[state.abr$name == state_name, "abr"]
+      geo.plot(state_initial, "Case")
+      })
+    
+    output$map.deaths <- renderLeaflet({
+      state_name <- input$state_name
+      state_initial <- state.abr[state.abr$name == state_name, "abr"]
+      geo.plot(state_initial, "Mortality")
+      })
+    
+    output$state.CoT <- renderPlot({
+      state_name <- input$state_name
+      state_initial <- state.abr[state.abr$name == state_name, "abr"]
+      ggbar.overall(state_initial, remove.title = T)
+    })
+    
+    output$state.DoT <- renderPlot({
+      state_name <- input$state_name
+      state_initial <- state.abr[state.abr$name == state_name, "abr"]
+      ggbar.overall(state_initial, y.value = "deaths", remove.title = T)
+    })
+    
+    output$state.trends <- renderPlot({
+      state_name <- input$state_name
+      state_initial <- state.abr[state.abr$name == state_name, "abr"]
+      ggplot.state(state_initial, y.value = "diff", remove.title = T)
+    })
+  }
+)
+```
+
+
 
