@@ -132,8 +132,14 @@ covid_deaths_usafacts metadata:
 
 
 ```{r data processing}
-
+# Read in data
 todays.raw.case.data <- read_csv("data/csv/time_series/covid_confirmed_usafacts.csv") 
+todays.raw.death.data <- read_csv("data/csv/time_series/covid_deaths_usafacts.csv")
+population <- read_csv("data/csv/time_series/covid_county_population_usafacts.csv") %>%
+  filter(countyFIPS > 1000)
+diabetes_data_counties <- read_csv("Summer_2020_notebooks/DiabetesAtlasCountyData.csv")
+US.diabetes.pt <- 8.5
+
 
 todays.case.data <- todays.raw.case.data %>%
   filter(countyFIPS > 1000) %>%
@@ -141,13 +147,10 @@ todays.case.data <- todays.raw.case.data %>%
   rename(c("County" = "County Name"))
 colnames(todays.case.data)[4] <- "Cases"
 
-population <- read_csv("data/csv/time_series/covid_county_population_usafacts.csv") %>%
-  filter(countyFIPS > 1000)
 
 todays.case.data <- inner_join(todays.case.data, population[c(1,4)], by=c("countyFIPS" = "countyFIPS")) %>%
   filter(population > 0)
 
-todays.raw.death.data <- read_csv("data/csv/time_series/covid_deaths_usafacts.csv")
 todays.death.data <- todays.raw.death.data %>%
   filter(countyFIPS > 1000) %>%
   select(1, ncol(todays.raw.death.data))
@@ -165,14 +168,23 @@ todays.case.data$Mortality_rate_ldi <- unlist(lapply(todays.case.data$Mortality_
 todays.case.data <- todays.case.data %>%
  mutate(Mortality_rate_ldi = replace(Mortality_rate_ldi, Mortality_rate_ldi < -5, -5))
 
+todays.case.data <- inner_join(todays.case.data, 
+                              diabetes_data_counties[c("CountyFIPS","Percentage")], 
+                              by=c("countyFIPS" = "CountyFIPS")) %>%
+  rename(Diabetes_rate = Percentage)
+todays.case.data$Diabetes_rate <- as.numeric(todays.case.data$Diabetes_rate)/100 # Percentage
+todays.case.data$Diabetes_rate_ldi <- unlist(lapply(todays.case.data$Diabetes_rate, FUN=function(x){-log(pUS.7.diabetes/(x*100))}))
+todays.case.data <- todays.case.data %>%
+ mutate(Diabetes_rate_ldi = replace(Diabetes_rate_ldi, Diabetes_rate_ldi < -5, -5))
+
 todays.case.data <- todays.case.data %>%
   mutate(County = str_remove_all(County, regex(" County", ignore_case = T)))
 
 ```
 
 ```{r Cases}
-selected_state <- "NJ"
-selected_feature <- "Case"
+selected_state <- "UT"
+selected_feature <- "Diabetes"
 geo.plot(selected_state, selected_feature)
 ```
 
@@ -318,13 +330,81 @@ ranking <- covid_TS_state_long.cases %>%
   top_n(time.period, wt=date) %>%
   summarise(
     population = max(population),
-    cases.mAvg = sum(diff)*100000/(time.period*max(population)),
-    deaths.mAvg = sum(d_diff)*100000/(time.period*max(population))
+    cases.mAvg = sum(diff)/(max(population)),
+    deaths.mAvg = sum(d_diff)/(max(population))
     ) %>%
-  mutate(points = 0.2*cases.mAvg + 0.8*deaths.mAvg) %>%
+  mutate(cases.mAvg.s = as.vector(scale(cases.mAvg))) %>%
+  mutate(deaths.mAvg.s = as.vector(scale(deaths.mAvg))) %>%
+  mutate(points = 0.5*cases.mAvg.s + 0.5*deaths.mAvg.s) %>%
   arrange(points) %>%
   mutate(rank = row_number())
   
+  #arrange(cases.mAvg) %>%
+  #mutate(CRank = row_number()) %>%
+  #arrange(deaths.mAvg) %>%
+  #mutate(DRank = row_number()) %>%
+  #mutate(rank = floor((CRank + DRank)/2)) %>%
+  #arrange(rank)
+
+### US Level ###
+
+covid_TS_US_long.cases <- todays.raw.case.data %>%
+  tidyr::gather(date,cases,5:ncol(todays.raw.case.data))
+covid_TS_US_long.death <- todays.raw.death.data %>%
+  tidyr::gather(date,deaths,5:ncol(todays.raw.death.data))
+
+# Make date column an actual R date_time
+covid_TS_US_long.cases$date <- parse_date_time(covid_TS_US_long.cases$date, c("%m/%d/%y"))
+covid_TS_US_long.death$date <- parse_date_time(covid_TS_US_long.death$date, c("%m/%d/%y"))
+
+# Factor does not make sense here as there may be distint, same named counties
+covid_TS_US_long.cases <- covid_TS_US_long.cases %>%
+  group_by(date) %>%
+  summarise(cases = sum(cases))
+
+covid_TS_US_long.death <- covid_TS_US_long.death %>%
+  group_by(date) %>%
+  summarise(deaths = sum(deaths))
+
+# Join death data
+covid_TS_US_long.cases <- inner_join(
+  covid_TS_US_long.cases, covid_TS_US_long.death, by=c("date" = "date"))
+
+# Filter small data
+covid_TS_US_long.cases <- covid_TS_US_long.cases %>%
+  filter(cases > 5)
+
+# Join population data
+US.pop <- sum(population$population)
+
+# Per100k columns
+covid_TS_US_long.cases$p_cases <- covid_TS_US_long.cases$cases/US.pop*100000
+
+covid_TS_US_long.cases$p_deaths <- covid_TS_US_long.cases$deaths/US.pop*100000
+
+# Changes in cases
+covid_TS_US_long.cases %>%
+  mutate(diff = ifelse(as.Date(date - 1) == lag(date), cases - lag(cases), cases)) -> 
+  covid_TS_US_long.cases
+
+covid_TS_US_long.cases %>% 
+  mutate(p_diff = ifelse(as.Date(date - 1) == lag(date), p_cases - lag(p_cases), p_cases)) -> 
+  covid_TS_US_long.cases
+
+covid_TS_US_long.cases$diff <- ifelse(is.na(covid_TS_US_long.cases$diff), covid_TS_US_long.cases$cases, covid_TS_US_long.cases$diff)
+covid_TS_US_long.cases$p_diff <- ifelse(is.na(covid_TS_US_long.cases$p_diff), covid_TS_US_long.cases$p_cases, covid_TS_US_long.cases$p_diff)
+
+# Changes in deaths
+covid_TS_US_long.cases %>% 
+  mutate(d_diff = ifelse(as.Date(date - 1) == lag(date), deaths - lag(deaths), deaths)) -> 
+  covid_TS_US_long.cases
+
+covid_TS_US_long.cases %>% 
+  mutate(p.d_diff = ifelse(as.Date(date - 1) == lag(date), p_deaths - lag(p_deaths), p_deaths)) -> 
+  covid_TS_US_long.cases
+
+covid_TS_US_long.cases$d_diff <- ifelse(is.na(covid_TS_US_long.cases$d_diff), covid_TS_US_long.cases$deaths, covid_TS_US_long.cases$d_diff)
+covid_TS_US_long.cases$p.d_diff <- ifelse(is.na(covid_TS_US_long.cases$p.d_diff), covid_TS_US_long.cases$p_deaths, covid_TS_US_long.cases$p.d_diff)
 ```
 
 
@@ -350,7 +430,7 @@ get_y_label <- function(y.value) {
   }
   else {
     return("")
-s  }
+  }
 }
 ```
 
@@ -468,14 +548,14 @@ ggplot.state <- function(selected.state, y.value="cases", moving.avg.window=7, c
 ```
 
 ```{r}
-selected_state <- "NJ"
+#selected_state <- "NJ"
 moving.avg.window <- 7
 n_case_cut <- 10
 y.value <- "p_diff"
 ggplot.state(selected_state, y.value=y.value, case.cut.per.county=n_case_cut, moving.avg.window=moving.avg.window)
 ```
 
-```{r Case stacked bar chart}
+```{r}
 get_dif <- function(y.value) {
   if (y.value == "cases") {
     return("diff")
@@ -490,11 +570,14 @@ get_dif <- function(y.value) {
     return("p.d_diff")
   }
 }
+```
 
+```{r Case stacked bar chart}
 ggbar.overall <- function(selected.state, y.value="cases", moving.avg.window=14, remove.title = F) {
   state <- covid_TS_state_long.cases %>%
     filter(State == selected.state)
   
+  y.max <- max(covid_TS_state_long.cases[y.value])
   diff <- get_dif(y.value)
   category <- get_y_label(y.value)
   if (remove.title) {
@@ -521,36 +604,43 @@ ggbar.overall <- function(selected.state, y.value="cases", moving.avg.window=14,
   
   ma <- state[c("date", y.value)] %>%
     mutate(Values = c(numeric(moving.avg.window-1), zoo::rollmean(eval(parse(text=y.value)), moving.avg.window, align = "right"))) %>%
-    filter(Values > 0) %>%
-    mutate(Values = Values + median(eval(parse(text=y.value)))/4)
+    filter(Values > 0) # %>% 
+    # mutate(Values = Values + median(eval(parse(text=y.value)))/4)
+  US.ma <- covid_TS_US_long.cases[c("date", y.value)] %>%
+    mutate(Values = c(numeric(moving.avg.window-1), zoo::rollmean(eval(parse(text=y.value)), moving.avg.window, align = "right"))) %>%
+    filter(Values > 0) 
   
-  state_cases %>%
+  
+  return(state_cases %>%
     ggplot(aes(x=date,
                y=Values)) +
     geom_col(aes(fill = category)) +
-    geom_line(data = ma, arrow=arrow(ends = "last")) +
     scale_fill_manual(values = c("#ff8989","#ff2323")) +
+    geom_line(data = ma, arrow=arrow(ends = "last"))  + 
+    #geom_line(data = US.ma, arrow=arrow(ends = "last"), color="steelblue", show.legend = F) +
     scale_x_datetime(date_breaks = "1 week", date_minor_breaks = "1 day", date_labels = "%b %d") +
+    scale_y_continuous(limits = c(0, y.max)) +
     ylab(get_y_label(y.value)) + 
     xlab("Date") +
     theme(legend.title = element_blank(),
           legend.position = "bottom") +
     gg_title + 
     NULL
+  )
 }
                 
 ```
 
 
 ```{r}
-ggbar.overall("NY")
+ggbar.overall(selected_state, "p_cases")
 ```
 
 ```{r}
 shinyApp(
   ui = fluidPage(
     includeCSS("www/style.css"),
-    fluidPage(style = "max-width: 1200px;",
+    fluidPage(
       fluidRow(column(12, style="text-align:center;",
                       selectInput(inputId = "state_name",
                                   label = "State Selector",
@@ -579,6 +669,18 @@ shinyApp(
                       uiOutput("state.county.deaths"),
                       leafletOutput("map.deaths"))),
       tags$br(),
+      fluidRow(column(12, style="text-align:center;",
+                      tags$h1("Comorbidities"))),
+      fluidRow(column(12, style="text-align:center;",
+                      tags$h3("Diabetes Rate Disparities Compared to the national average")),
+               column(12,
+                      leafletOutput("maps.diabetes")),
+               column(8, style="text-align:center;",
+                      tags$p("Nationwide, diabetes has been observed as a leading comorbidity of COVID-19.",
+                             tags$br(),
+                             tags$b("Data Source: "), tags$a("CDC", href="www.cdc.gov/diabetes/data")),
+                      offset = 2
+                      )),
       fluidRow(column(8, style="text-align:center;",
                        HTML("Respective rates per 100k people on maps are: 
                         <div>
@@ -639,6 +741,12 @@ shinyApp(
       state_initial <- state.abr[state.abr$name == state_name, "abr"]
       geo.plot(state_initial, "Mortality")
       })
+    
+    output$maps.diabetes <- renderLeaflet({
+      state_name <- input$state_name
+      state_initial <- state.abr[state.abr$name == state_name, "abr"]
+      geo.plot(state_initial, "Diabetes")
+    })
     
     output$state.CoT <- renderPlot({
       state_name <- input$state_name
