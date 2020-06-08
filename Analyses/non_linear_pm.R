@@ -2,6 +2,8 @@ knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_knit$set(root.dir = "../")
 
 source("./Modules/Source.R")
+aggregate_pm_census_cdc_test_beds <- readRDS("./PM25data.Rds")
+
 # non-linear pm
 gamm.off.main.spm25 = gamm4(Deaths ~ s(mean_pm25) + factor(q_popdensity)
                             + scale(poverty)  + scale(log(medianhousevalue))

@@ -199,4 +199,7 @@ aggregate_pm_census_cdc_test_beds$cli  =
              return(mean(sapply(Epidata$covidcast('fb-survey', 'smoothed_cli', 'day', 'county', list(Epidata$range(20200401, paste0(substring(str_remove_all(date_of_study, "-"),5,8),substring(str_remove_all(date_of_study, "-"),1,4)))),fips)[[2]],function(i){i$value}),na.rm=T))
            }else {return(NA)}})
 
+saveRDS(aggregate_pm_census_cdc_test_beds, "PM25data.Rds")
+
+
 
