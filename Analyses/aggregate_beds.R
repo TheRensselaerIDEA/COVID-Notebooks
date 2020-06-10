@@ -3,6 +3,7 @@ knitr::opts_knit$set(root.dir = "../")
 
 source("./Modules/Source.R")
 aggregate_pm_census_cdc_test_beds <- readRDS("./PM25data.Rds")
+#mode.nb.random.off <- mode.nb.random.off
 
 # main analysis with category PM
 aggregate_pm_census_cdc_test_beds$q_pm = 1
@@ -27,7 +28,7 @@ mode.nb.random.off.catepm = glmer.nb(Deaths ~ factor(q_pm) + factor(q_popdensity
                                      + scale(mean_summer_temp) + scale(mean_winter_temp) + scale(mean_summer_rm) + scale(mean_winter_rm)
                                      + (1|state)
                                      + offset(log(population)), data = (aggregate_pm_census_cdc_test_beds)) 
-summary(mode.nb.random.off.urban)
+summary(mode.nb.random.off.catepm)
 exp(summary(mode.nb.random.off.catepm)[10]$coefficients[2,1])
 exp(summary(mode.nb.random.off.catepm)[10]$coefficients[2,1] - 1.96*summary(mode.nb.random.off.catepm)[10]$coefficients[2,2])
 exp(summary(mode.nb.random.off.catepm)[10]$coefficients[2,1] + 1.96*summary(mode.nb.random.off.catepm)[10]$coefficients[2,2])
