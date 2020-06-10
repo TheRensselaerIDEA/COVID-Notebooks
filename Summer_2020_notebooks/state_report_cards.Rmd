@@ -24,6 +24,8 @@ source("modules/data_load.R")
 ## Create dataframes; perform desparity index calcuations; prep for plotting
 source("modules/preprocessing.R")
 
+library(gt)
+
 ```
 
 ```{r map colors}
@@ -173,7 +175,7 @@ todays.case.data <- inner_join(todays.case.data,
                               by=c("countyFIPS" = "CountyFIPS")) %>%
   rename(Diabetes_rate = Percentage)
 todays.case.data$Diabetes_rate <- as.numeric(todays.case.data$Diabetes_rate)/100 # Percentage
-todays.case.data$Diabetes_rate_ldi <- unlist(lapply(todays.case.data$Diabetes_rate, FUN=function(x){-log(pUS.7.diabetes/(x*100))}))
+todays.case.data$Diabetes_rate_ldi <- unlist(lapply(todays.case.data$Diabetes_rate, FUN=function(x){-log(US.diabetes.pt/(x*100))}))
 todays.case.data <- todays.case.data %>%
  mutate(Diabetes_rate_ldi = replace(Diabetes_rate_ldi, Diabetes_rate_ldi < -5, -5))
 
@@ -199,7 +201,7 @@ state_policy <- read_csv("Summer_2020_notebooks/state_policy.csv")
 state_policy.df <- state_policy[5:55,]
 state_policy.md <- state_policy[1:4,]
 state_policy.df
-as.Date(state_policy.df$STAYHOME, format = "%m/%d/%y")
+#as.Date(state_policy.df$STAYHOME, format = "%m/%d/%y")
 state_policy.df[as.vector(state_policy.md[4,] == "date")] <- lapply(state_policy.df[as.vector(state_policy.md[4,] == "date")], function(x){parse_date_time(x, c("%m/%d/%y"))})
 ```
 
@@ -322,6 +324,7 @@ covid_TS_state_long.cases %>%
 covid_TS_state_long.cases$d_diff <- ifelse(is.na(covid_TS_state_long.cases$d_diff), covid_TS_state_long.cases$deaths, covid_TS_state_long.cases$d_diff)
 covid_TS_state_long.cases$p.d_diff <- ifelse(is.na(covid_TS_state_long.cases$p.d_diff), covid_TS_state_long.cases$p_deaths, covid_TS_state_long.cases$p.d_diff)
 
+
 # State ranking
 time.period <- 14
 ranking <- covid_TS_state_long.cases %>%
@@ -330,21 +333,12 @@ ranking <- covid_TS_state_long.cases %>%
   top_n(time.period, wt=date) %>%
   summarise(
     population = max(population),
-    cases.mAvg = sum(diff)/(max(population)),
-    deaths.mAvg = sum(d_diff)/(max(population))
+    cases.delta = (max(p_cases) - min(p_cases))/max(p_cases),
+    deaths.delta =  (max(p_deaths) - min(p_deaths))/max(p_deaths)
     ) %>%
-  mutate(cases.mAvg.s = as.vector(scale(cases.mAvg))) %>%
-  mutate(deaths.mAvg.s = as.vector(scale(deaths.mAvg))) %>%
-  mutate(points = 0.5*cases.mAvg.s + 0.5*deaths.mAvg.s) %>%
+  mutate(points = 0.5*(cases.delta + deaths.delta)) %>%
   arrange(points) %>%
   mutate(rank = row_number())
-  
-  #arrange(cases.mAvg) %>%
-  #mutate(CRank = row_number()) %>%
-  #arrange(deaths.mAvg) %>%
-  #mutate(DRank = row_number()) %>%
-  #mutate(rank = floor((CRank + DRank)/2)) %>%
-  #arrange(rank)
 
 ### US Level ###
 
@@ -435,7 +429,7 @@ get_y_label <- function(y.value) {
 ```
 
 ```{r ggplot.state}
-ggplot.state <- function(selected.state, y.value="cases", moving.avg.window=7, case.cut.per.county=10, max.labels=10, remove.title = F) {
+ggplot.state <- function(selected.state="MT", y.value="cases", moving.avg.window=7, case.cut.per.county=5, max.labels=10, remove.title = F) {
   
   y_label <- get_y_label(y.value)
   state.name <- state.abr[state.abr$abr==selected.state,"name"]
@@ -536,10 +530,11 @@ ggplot.state <- function(selected.state, y.value="cases", moving.avg.window=7, c
                   show.legend = FALSE
                 ) +
                 scale_color_manual(values=region_palette, aesthetics = c("fill")) +
-                geom_vline(aes(xintercept=state_policy.df[state_policy.df$POSTCODE == selected.state,]$STAYHOME, linetype=paste0(selected.state," stay at home order")), color = "black") + 
+                geom_vline(aes(xintercept=state_policy.df[state_policy.df$POSTCODE == selected.state,]$END_STHM, linetype=paste0(selected.state," ends stay at home order")), color = "blue") + 
+                geom_vline(aes(xintercept=state_policy.df[state_policy.df$POSTCODE == selected.state,]$STAYHOME, linetype=paste0(selected.state," begins stay at home order")), color = "black") + 
                 scale_linetype_manual(name = "Events", 
-                                      values = c(2), 
-                                      guide = guide_legend(override.aes = list(color = c("black")))) +
+                                      values = c(2,2), 
+                                      guide = guide_legend(title.position = "top",title.hjust = 0.5,override.aes = list(color = c("black", "blue")), direction = "vertical")) +
                 theme(legend.position = "bottom") +
                 gg_title +
                 NULL
@@ -548,7 +543,7 @@ ggplot.state <- function(selected.state, y.value="cases", moving.avg.window=7, c
 ```
 
 ```{r}
-#selected_state <- "NJ"
+selected_state <- "LA"
 moving.avg.window <- 7
 n_case_cut <- 10
 y.value <- "p_diff"
@@ -573,13 +568,15 @@ get_dif <- function(y.value) {
 ```
 
 ```{r Case stacked bar chart}
-ggbar.overall <- function(selected.state, y.value="cases", moving.avg.window=14, remove.title = F) {
+ggbar.overall <- function(selected.state = "VT", y.value="p_deaths", moving.avg.window=14, remove.title = F) {
   state <- covid_TS_state_long.cases %>%
     filter(State == selected.state)
   
-  y.max <- max(covid_TS_state_long.cases[y.value])
-  diff <- get_dif(y.value)
+  my_diff <- get_dif(y.value)
   category <- get_y_label(y.value)
+  
+  #y.max <- max(covid_TS_state_long.cases[y.value])
+  
   if (remove.title) {
     gg_title <- NULL
   }
@@ -588,42 +585,69 @@ ggbar.overall <- function(selected.state, y.value="cases", moving.avg.window=14,
   }
   
   
-  state_cases <- state[c("date", y.value)]
-  state_diff <- state[c("date", diff)]
+  #state_cases <- state[c("date", y.value)]
+  #state_diff <- state[c("date", diff)]
   
-  state_cases[y.value] <- state_cases[y.value] - state_diff[diff]
   
-  state_cases$category <- category
-  state_diff$category <- paste0("New ", category)
+  #state_cases[y.value] <- state_cases[y.value] - state_diff[diff]
   
-  colnames(state_cases)[2] <- "Values"
-  colnames(state_diff)[2] <- "Values"
+  #state_cases$category <- category
+  #state_diff$category <- paste0("New ", category)
   
-  state_cases <- rbind.data.frame(state_cases, state_diff)
-  state_cases$category <- factor(state_cases$category,levels=sort(unique(state_cases$category), decreasing=TRUE))
+  #colnames(state_cases)[2] <- "Values"
+  #colnames(state_diff)[2] <- "Values"
+  
+  #state_cases <- rbind.data.frame(state_cases, state_diff)
+  #state_cases$category <- factor(state_cases$category,levels=sort(unique(state_cases$category), decreasing=TRUE))
+  state_cases <- state[c("date", y.value, my_diff)]
+  state_cases <- state_cases %>%
+    rename(Values = all_of(y.value)) %>%
+    rename(diff = all_of(my_diff)) %>%
+    mutate(diff.ma =  c(diff[1:7-1], zoo::rollmean(diff, 7, align="right"))) %>%
+    #mutate(pct_increase = diff/Values*100)
+    mutate(pct_increase =diff.ma/Values*100)
+  state_cases[state_cases$diff.ma > 0 & state_cases$pct_increase > 10, "pct_increase"] <- 10
+  state_cases[is.na(state_cases$pct_increase) | state_cases$pct_increase < 0.01, "pct_increase"] <- NA
   
   ma <- state[c("date", y.value)] %>%
-    mutate(Values = c(numeric(moving.avg.window-1), zoo::rollmean(eval(parse(text=y.value)), moving.avg.window, align = "right"))) %>%
-    filter(Values > 0) # %>% 
+    mutate(ma = c(numeric(moving.avg.window-1), zoo::rollmean(eval(parse(text=y.value)), moving.avg.window, align = "right"))) %>%
+    filter(ma > 0) # %>% 
     # mutate(Values = Values + median(eval(parse(text=y.value)))/4)
   US.ma <- covid_TS_US_long.cases[c("date", y.value)] %>%
-    mutate(Values = c(numeric(moving.avg.window-1), zoo::rollmean(eval(parse(text=y.value)), moving.avg.window, align = "right"))) %>%
-    filter(Values > 0) 
+    mutate(US = c(numeric(moving.avg.window-1), zoo::rollmean(eval(parse(text=y.value)), moving.avg.window, align = "right"))) %>%
+    filter(US > 0)
   
+  state_cases <- state_cases %>%
+    left_join(ma, by=c("date" = "date")) %>%
+    left_join(US.ma, by=c("date" = "date"))
+  
+  END_STHM <- paste0(selected.state," ends stay at home order")
+  STHM <- paste0(selected.state," begins stay at home order")
   
   return(state_cases %>%
-    ggplot(aes(x=date,
-               y=Values)) +
-    geom_col(aes(fill = category)) +
-    scale_fill_manual(values = c("#ff8989","#ff2323")) +
-    geom_line(data = ma, arrow=arrow(ends = "last"))  + 
-    #geom_line(data = US.ma, arrow=arrow(ends = "last"), color="steelblue", show.legend = F) +
+    ggplot() +
+    geom_col(aes(x=date, y=Values, fill = pct_increase)) +
+    scale_fill_gradient(high = "#ff0000", 
+                        low = "#ffffff",
+                        limit = c(0,10),
+                        breaks = c(5,10),
+                        labels = c("5%","10%+"),
+                        na.value = "skyblue",
+                        guide = guide_colorbar(title = paste0("Percentage change in ", category),
+                                               title.hjust = 0.5,
+                                               title.position = "top", 
+                                               label.hjust = 0.5, 
+                                               barwidth = 15,
+                                               frame.colour = "black")) +
+    geom_line(aes(x=date, y=ma, linetype="solid"), color="black", arrow=arrow(ends="last"))  + 
+    geom_line(aes(x=date, y=US, linetype="solid"), color="steelblue", arrow=arrow(ends="last")) +
+    geom_vline(aes(xintercept=state_policy.df[state_policy.df$POSTCODE == selected.state,]$END_STHM, linetype = "dashed"), color="blue") +
+    geom_vline(aes(xintercept=state_policy.df[state_policy.df$POSTCODE == selected.state,]$STAYHOME, linetype= "dashed"), color="black") +
+    scale_linetype_identity() +
     scale_x_datetime(date_breaks = "1 week", date_minor_breaks = "1 day", date_labels = "%b %d") +
-    scale_y_continuous(limits = c(0, y.max)) +
     ylab(get_y_label(y.value)) + 
     xlab("Date") +
-    theme(legend.title = element_blank(),
-          legend.position = "bottom") +
+    theme(legend.position = "bottom",legend.direction = "horizontal") +
     gg_title + 
     NULL
   )
@@ -633,8 +657,39 @@ ggbar.overall <- function(selected.state, y.value="cases", moving.avg.window=14,
 
 
 ```{r}
-ggbar.overall(selected_state, "p_cases")
+ggbar.overall("NY", "p_cases")
 ```
+
+
+```{r}
+gt.ranking <- function() {
+  ranking %>%
+    left_join(state.abr[c(1,2)], by=c("State" = "abr")) %>%
+    select(name, cases.delta, deaths.delta, rank) %>%
+    gt() %>%
+    tab_header(
+      title = "State Rankings",
+      subtitle = "Based on 14 day change in COVID-19 Cases and Deaths"
+    ) %>%
+    tab_source_note(
+      source_note = md("Data Source: [USA Facts](https://usafacts.org/visualizations/coronavirus-covid-19-spread-map/)")
+    ) %>%
+    fmt_percent(c("cases.delta", "deaths.delta"), decimals = 1) %>%
+    cols_label(
+      name = "State",
+      cases.delta = "Change in Cases",
+      deaths.delta = "Change in Deaths",
+      rank = "Rank"
+    ) %>%
+    cols_move_to_start(columns = vars(rank)) 
+}
+gt.ranking()
+```
+
+```{r}
+
+```
+
 
 ```{r}
 shinyApp(
@@ -656,9 +711,10 @@ shinyApp(
                column(6, style="text-align:center;",uiOutput("state.DoT.title"),
                       plotOutput(outputId = "state.DoT"))),
       fluidRow(column(8, style="text-align:center;",
-                      tags$h2("Insert title for relevant information"),
-                      tags$p("Here is our information: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam varius dapibus sem quis feugiat. In vestibulum non felis et dignissim. Mauris quis auctor elit. In ultricies viverra enim, vitae aliquam felis aliquet ac. Mauris convallis aliquam erat, eu sagittis ante viverra vel. Mauris ultricies est eu neque fringilla rhoncus. Quisque non lobortis eros, sit amet luctus massa. Maecenas sit amet sagittis erat. Integer tincidunt eget augue eu dictum. Quisque convallis, urna ac interdum finibus, justo dui iaculis sem, sed auctor nulla mauris vel risus. Aenean cursus faucibus sapien, et dapibus massa imperdiet vel. Ut ut nisi finibus enim accumsan lobortis. Nulla tempus euismod magna quis lacinia. Proin at tortor erat."),
-                      tags$p(tags$b("Data Source: "), "Here are our sources."),
+                      tags$h2("Flattening the Curve"),
+                      tags$p("Nationwide, states have taken various approaches to mitigate the spread of coronavirus, such as social distancing interventions and encouraging mask use where social distancing is not possible. Studies by the CDC have shown these methods reduced new cases, hospitalizations, and deaths."),
+                      tags$b("Data Source: "), tags$a("CDC", href="https://wwwnc.cdc.gov/eid/article/26/8/20-1093_article"),
+                      uiOutput("state.report"),
                       offset = 2)),
       fluidRow(column(12, style="text-align:center;",
                       tags$h1("County Level Breakdown"))),
@@ -673,8 +729,8 @@ shinyApp(
                       tags$h1("Comorbidities"))),
       fluidRow(column(12, style="text-align:center;",
                       tags$h3("Diabetes Rate Disparities Compared to the national average")),
-               column(12,
-                      leafletOutput("maps.diabetes")),
+               column(6,
+                      leafletOutput("maps.diabetes"), offset = 3),
                column(8, style="text-align:center;",
                       tags$p("Nationwide, diabetes has been observed as a leading comorbidity of COVID-19.",
                              tags$br(),
@@ -691,6 +747,7 @@ shinyApp(
                        </div>"), offset=2)),
       fluidRow(column(12, style="text-align:center;",uiOutput("state.trends.title"),
                       plotOutput(outputId = "state.trends", height="600px")))
+      #,fluidRow(column(6, gt_output("ranking.table"), offset = 3))
     )
   ),
   
@@ -730,6 +787,30 @@ shinyApp(
       tags$h3(paste0(state_name, " COVID-19 Mortality disparities compared to US Average"))
     })
     
+    output$state.report <- renderUI({
+      state_name <- input$state_name
+      state_initial <- state.abr[state.abr$name == state_name, "abr"]
+      stats <- covid_TS_state_long.cases %>%
+        filter(State == state_initial) %>%
+        top_n(n=1, wt=date) %>%
+        select(cases, deaths, p_cases, p_deaths)
+      policy <- state_policy.df %>%
+        filter(POSTCODE == state_initial)
+      
+      #params <- c("Overall Cases: ", "Cases per 100k: ", "Overall Deaths: ", "Deaths per 100k: ", "Stay At Home Order Start Date: ", "Stay At Home Order End Date: ")
+      tagList(
+        tags$h2(state_name, " Stats"),
+        tags$p(
+        tags$b("Overall Cases: "),format(stats$cases, big.mark = ","), tags$br(),
+        tags$b("Cases per 100k: "),format(round(stats$p_cases), big.mark = ","), tags$br(),
+        tags$b("Overall Deaths: "),format(stats$deaths, big.mark = ","), tags$br(),
+        tags$b("Deaths per 100k: "),format(round(stats$p_deaths), big.mark = ","), tags$br(),
+        tags$b("Stay At Home Order Start Date: "), format(policy$STAYHOME, "%m-%d-%Y"), tags$br(),
+        tags$b("Stay At Home Order End Date: "), format(policy$END_STHM, "%m-%d-%Y")
+        )
+      )
+    })
+    
     output$map.cases <- renderLeaflet({
       state_name <- input$state_name
       state_initial <- state.abr[state.abr$name == state_name, "abr"]
@@ -763,11 +844,20 @@ shinyApp(
     output$state.trends <- renderPlot({
       state_name <- input$state_name
       state_initial <- state.abr[state.abr$name == state_name, "abr"]
-      ggplot.state(state_initial, y.value = "p_diff", remove.title = T)
+      n_case_cut <- 10
+      if (state_initial %in% c("MT")) {
+        n_case_cut <- 5
+      }
+      ggplot.state(state_initial, y.value = "p_diff", case.cut.per.county = n_case_cut,remove.title = T)
     })
+    
+    output$ranking.table <- render_gt(
+    gt.ranking()
+  )
   }
 )
 ```
+
 
 
 
