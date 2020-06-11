@@ -603,7 +603,7 @@ ggbar.overall <- function(selected.state = "VT", y.value="p_deaths", moving.avg.
     mutate(pct_increase =diff.ma/Values*100) %>%
     mutate(ma = c(numeric(moving.avg.window-1), zoo::rollmean(Values, moving.avg.window, align = "right"))) %>%
     filter(ma > 0) %>%
-    filter(date > min(state.us.ma$date))
+    filter(date > min(state_cases$date))
   US.ma$Type <- "US MA"
   state.us.ma <- rbind.data.frame(state_cases, US.ma)
   
@@ -727,7 +727,9 @@ gt.ranking <- function() {
       deaths.delta = "Change in Deaths",
       rank = "Rank"
     ) %>%
-    cols_move_to_start(columns = vars(rank)) 
+    cols_move_to_start(columns = vars(rank)) %>%
+    tab_options(container.width = "100%",
+                table.width = "100%")
 }
 gt.ranking()
 ```
@@ -754,6 +756,14 @@ date_fmt <- function(.x) {
   str.x
 }
 
+sup_fmt <- function(.x, sup=1) {
+  md(glue::glue("{.x}<sup>{sup}</sup>"))
+}
+
+sup2_fmt <- function(.x) {
+  sup_fmt(.x, sup=2)
+}
+
 stats.table <- function(selected_state) {
   # TODO: Instead of row numbers, add aditional column specifying data type
   stats <- covid_TS_state_long.cases %>%
@@ -774,20 +784,25 @@ stats.table <- function(selected_state) {
   
   stats %>%
     mutate(row_num = row_number()) %>%
-    gt(rowname_col = "features") %>%
+    gt() %>%
+    fmt(c("features"), row = row_num < 5, fns = sup_fmt) %>%
+    fmt(c("features"), row = row_num >= 5, fns = sup2_fmt) %>%
+    cols_move_to_start(c("features")) %>%
     tab_header(
       title = md(paste0("**", state.title, "**"))
     ) %>%
     tab_source_note(
-        source_note = md("Data Source: [USA Facts](https://usafacts.org/visualizations/coronavirus-covid-19-spread-map/)")
+        source_note = md("Data Source: [USA Facts<sup>1</sup>](https://usafacts.org/visualizations/coronavirus-covid-19-spread-map/)")
       ) %>%
     tab_source_note(
-        source_note = md("Data Source: Raifman J, Nocka K, Jones D, Bor J, Lipson S, Jay J, and Chan P. (2020). 'COVID-19 US state policy database.' Available at: [www.tinyurl.com/statepolicies](www.tinyurl.com/statepolicies)")
+        source_note = md("Data Source: Raifman J, Nocka K, Jones D, Bor J, Lipson S, Jay J, and Chan P. (2020). 'COVID-19 US state policy database.' Available at: [www.tinyurl.com/statepolicies<sup>2</sup>](www.tinyurl.com/statepolicies)")
       ) %>%
     fmt(c("V1"), row = row_num < 5, fns = numeric_fmt) %>%
     fmt(c("V1"), row = row_num >= 5, fns = date_fmt) %>%
     cols_hide(c("row_num")) %>%
-    tab_options(column_labels.hidden = T)
+    tab_options(column_labels.hidden = T,
+                container.width = "100%",
+                table.width = "100%")
 }
 stats.table("HI")
 ```
@@ -802,11 +817,11 @@ shinyApp(
                       selectInput(inputId = "state_name",
                                   label = "State Selector",
                                   choices = state.abr$name,
-                                  selected = "New York"))),
+                                  selected = "Arizona"))),
       fluidRow(column(12, style="text-align:center;",uiOutput("main_title"))),
       tags$br(),
       fluidRow(column(8, style="text-align:center;",
-                      HTML("States are ranked by an aggregate of their average new cases and average new deaths per 100k people related to COVID-19 over the past 14 days."),
+                      HTML("States are ranked by an aggregate of their percentage change in COVID-19 cases and deaths per 100k people over the past 14 days."),
                       offset=2)),
       fluidRow(column(6, style="text-align:center;",uiOutput("state.CoT.title"),
                       plotOutput(outputId = "state.CoT", height = "600px")),
@@ -814,8 +829,10 @@ shinyApp(
                       plotOutput(outputId = "state.DoT", height = "600px"))),
       fluidRow(column(8, style="text-align:center;",
                       tags$h2("Flattening the Curve"),
-                      tags$p("Nationwide, states have taken various approaches to mitigate the spread of coronavirus, such as social distancing interventions and encouraging mask use where social distancing is not possible. Studies by the CDC have shown these methods reduced new cases, hospitalizations, and deaths."),
+                      tags$p("Nationwide, states have taken various approaches to mitigate the spread of coronavirus, such as social distancing interventions and encouraging mask use where social distancing is not possible. Studies by the CDC have shown these methods reduce new COVID-19 cases, hospitalizations, and deaths."),
                       tags$b("Data Source: "), tags$a("CDC", href="https://wwwnc.cdc.gov/eid/article/26/8/20-1093_article"), offset=2)),
+      fluidRow(column(10, style="text-align:center;",uiOutput("state.trends.title"),
+                      plotOutput(outputId = "state.trends", height="600px"), offset = 1)),
                       tags$br(),
                       tags$br(),
       fluidRow(column(8,gt_output("state.report"),
@@ -849,8 +866,8 @@ shinyApp(
                        <div>&nbsp;&nbsp;&nbsp;<span style='background: #253494; border-radius: 50%; font-size: 11px; opacity: 0.7;'>&nbsp&nbsp&nbsp&nbsp</span><strong> Lower</strong> than US avg. rate for disparity index &lt; -0.2</div>
                        <i>Darker shades indicate greater disparity.</i><br><br>
                        </div>"), offset=2)),
-      fluidRow(column(12, style="text-align:center;",uiOutput("state.trends.title"),
-                      plotOutput(outputId = "state.trends", height="600px")))
+      tags$br(),
+      tags$br()
       ,fluidRow(column(6, gt_output("ranking.table"), offset = 3))
     )
   ),
