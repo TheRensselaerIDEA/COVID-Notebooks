@@ -142,6 +142,9 @@ population <- read_csv("data/csv/time_series/covid_county_population_usafacts.cs
 diabetes_data_counties <- read_csv("Summer_2020_notebooks/DiabetesAtlasCountyData.csv")
 US.diabetes.pt <- 8.5
 
+obesity_data_counties <- read_csv("Summer_2020_notebooks/adultobesity_uscounties.csv")
+US.obesity.pt <- pUS.8.obesity #31.3
+
 
 todays.case.data <- todays.raw.case.data %>%
   filter(countyFIPS > 1000) %>%
@@ -179,14 +182,25 @@ todays.case.data$Diabetes_rate_ldi <- unlist(lapply(todays.case.data$Diabetes_ra
 todays.case.data <- todays.case.data %>%
  mutate(Diabetes_rate_ldi = replace(Diabetes_rate_ldi, Diabetes_rate_ldi < -5, -5))
 
+obesity_data_counties$FIPS <- as.numeric(obesity_data_counties$FIPS)
+todays.case.data <- inner_join(todays.case.data,
+                               obesity_data_counties[c("FIPS", "% Adults with Obesity")] ,
+                               by=c("countyFIPS" = "FIPS")) %>%
+  rename(Obesity_rate = `% Adults with Obesity`)
+todays.case.data$Obesity_rate <- as.numeric(todays.case.data$Obesity_rate)/100 # Percentage
+todays.case.data$Obesity_rate_ldi <- unlist(lapply(todays.case.data$Obesity_rate, FUN=function(x){-log(US.obesity.pt/(x*100))}))
+todays.case.data <- todays.case.data %>%
+ mutate(Obesity_rate_ldi = replace(Obesity_rate_ldi, Obesity_rate_ldi < -5, -5))
+
+
 todays.case.data <- todays.case.data %>%
   mutate(County = str_remove_all(County, regex(" County", ignore_case = T)))
 
 ```
 
 ```{r Cases}
-selected_state <- "AZ"
-selected_feature <- "Diabetes"
+selected_state <- "TX"
+selected_feature <- "Obesity"
 geo.plot(selected_state, selected_feature)
 ```
 
@@ -338,7 +352,9 @@ ranking <- covid_TS_state_long.cases %>%
     ) %>%
   mutate(points = 0.5*(cases.delta + deaths.delta)) %>%
   arrange(points) %>%
-  mutate(rank = row_number())
+  mutate(rank = row_number()) %>%
+  left_join(state.abr[c("abr", "name")],
+            by = c("State" = "abr"))
 
 ### US Level ###
 
@@ -511,7 +527,7 @@ ggplot.state <- function(selected.state="MT", y.value="cases", moving.avg.window
                    y=y.value,
                    color="County",
                    group="County")) +
-                scale_color_manual(values=region_palette) +
+                scale_color_manual(values=region_palette, guide=guide_legend(title.position = "top",title.hjust = 0.5)) +
                 geom_line(size=1) +
                 scale_y_continuous(
                   trans = "log10",
@@ -530,11 +546,11 @@ ggplot.state <- function(selected.state="MT", y.value="cases", moving.avg.window
                   show.legend = FALSE
                 ) +
                 scale_color_manual(values=region_palette, aesthetics = c("fill")) +
-                geom_vline(aes(xintercept=state_policy.df[state_policy.df$POSTCODE == selected.state,]$END_STHM, linetype=paste0(selected.state," ends stay at home order")), color = "blue") + 
-                geom_vline(aes(xintercept=state_policy.df[state_policy.df$POSTCODE == selected.state,]$STAYHOME, linetype=paste0(selected.state," begins stay at home order")), color = "black") + 
+                geom_vline(aes(xintercept=state_policy.df[state_policy.df$POSTCODE == selected.state,]$END_STHM, linetype=paste0(selected.state," ends stay at home order")), color = "red") + 
+                geom_vline(aes(xintercept=state_policy.df[state_policy.df$POSTCODE == selected.state,]$STAYHOME, linetype=paste0(selected.state," begins stay at home order")), color = "blue") + 
                 scale_linetype_manual(name = "Events", 
                                       values = c(2,2), 
-                                      guide = guide_legend(title.position = "top",title.hjust = 0.5,override.aes = list(color = c("black", "blue")), direction = "vertical")) +
+                                      guide = guide_legend(title.position = "top",title.hjust = 0.5,override.aes = list(color = c("blue", "red")), direction = "vertical")) +
                 theme(legend.position = "bottom") +
                 gg_title +
                 NULL
@@ -708,13 +724,14 @@ ma.plot <- function(selected.state = "AZ", y.value="p_deaths", moving.avg.window
 
 
 ```{r gt.ranking}
-gt.ranking <- function() {
+gt.ranking <- function(entries = 50, order=function(x){x}) {
   ranking %>%
-    left_join(state.abr[c(1,2)], by=c("State" = "abr")) %>%
+    arrange(order(rank)) %>%
+    filter(row_number() <= entries) %>%
     select(name, cases.delta, deaths.delta, rank) %>%
     gt() %>%
     tab_header(
-      title = "State Rankings",
+      title = paste0("State Rankings"),
       subtitle = "Based on 14 day change in COVID-19 Cases and Deaths"
     ) %>%
     tab_source_note(
@@ -731,7 +748,7 @@ gt.ranking <- function() {
     tab_options(container.width = "100%",
                 table.width = "100%")
 }
-gt.ranking()
+gt.ranking(10,dplyr::desc)
 ```
 
 ```{r}
@@ -764,41 +781,54 @@ sup2_fmt <- function(.x) {
   sup_fmt(.x, sup=2)
 }
 
+sup3_fmt <- function(.x) {
+  sup_fmt(.x, sup=3)
+}
+
 stats.table <- function(selected_state) {
   # TODO: Instead of row numbers, add aditional column specifying data type
+  state_name <- paste0(state.abr[state.abr$abr == selected_state, "name"])
+  
   stats <- covid_TS_state_long.cases %>%
     filter(State == selected_state) %>%
     top_n(n=1, wt=date) %>%
     select(cases, p_cases, deaths, p_deaths) %>%
     t()
   
+  tests <- state_covid_testing %>%
+    filter(NAME == state_name) %>%
+    select(total_num_tests, tests_per_1000) %>%
+    t()
+  
   policy <- state_policy.df %>%
     filter(POSTCODE == selected_state) %>% 
     select(STAYHOME, END_STHM) %>%
     t()
+  
   stats <- stats %>%
-    rbind.data.frame(policy)
+    rbind.data.frame(tests, policy)
 
-  state.title <- paste0(state.abr[state.abr$abr == selected_state, "name"], " Stats")
-  stats$features <- c("Overall Cases",  "Overall Cases per 100k", "Overall Deaths", "Overall Deaths per 100k", "Stay At Home Order Start Date", "Stay At Home Order End Date")
+  state.title <- paste0(state_name, " Stats")
+  stats$features <- c("Overall Cases",  "Overall Cases per 100k", "Overall Deaths", "Overall Deaths per 100k", "Overall Tests", "Overall Tests per 100k", "Stay At Home Order Start Date", "Stay At Home Order End Date")
   
   stats %>%
     mutate(row_num = row_number()) %>%
     gt() %>%
     fmt(c("features"), row = row_num < 5, fns = sup_fmt) %>%
-    fmt(c("features"), row = row_num >= 5, fns = sup2_fmt) %>%
+    fmt(c("features"), row = row_num >= 5 & row_num < 7, fns = sup2_fmt) %>%
+    fmt(c("features"), row = row_num >= 7, fns = sup3_fmt) %>%
     cols_move_to_start(c("features")) %>%
     tab_header(
       title = md(paste0("**", state.title, "**"))
     ) %>%
     tab_source_note(
-        source_note = md("Data Source: [USA Facts<sup>1</sup>](https://usafacts.org/visualizations/coronavirus-covid-19-spread-map/)")
+        source_note = md("Data Source: [USA Facts<sup>1</sup>](https://usafacts.org/visualizations/coronavirus-covid-19-spread-map/), [OWID<sup>2</sup>](https://covid.ourworldindata.org/data/owid-covid-data.csv)")
       ) %>%
     tab_source_note(
-        source_note = md("Data Source: Raifman J, Nocka K, Jones D, Bor J, Lipson S, Jay J, and Chan P. (2020). 'COVID-19 US state policy database.' Available at: [www.tinyurl.com/statepolicies<sup>2</sup>](www.tinyurl.com/statepolicies)")
+        source_note = md("Data Source: Raifman J, Nocka K, Jones D, Bor J, Lipson S, Jay J, and Chan P. (2020). 'COVID-19 US state policy database.' Available at: [www.tinyurl.com/statepolicies<sup>3</sup>](www.tinyurl.com/statepolicies)")
       ) %>%
-    fmt(c("V1"), row = row_num < 5, fns = numeric_fmt) %>%
-    fmt(c("V1"), row = row_num >= 5, fns = date_fmt) %>%
+    fmt(c("V1"), row = row_num < 7, fns = numeric_fmt) %>%
+    fmt(c("V1"), row = row_num >= 7, fns = date_fmt) %>%
     cols_hide(c("row_num")) %>%
     tab_options(column_labels.hidden = T,
                 container.width = "100%",
@@ -812,16 +842,20 @@ stats.table("HI")
 shinyApp(
   ui = fluidPage(
     includeCSS("www/style.css"),
+    tags$style(HTML(".selectize-control.single .selectize-input {
+    width: 100%;
+    max-height: 50px;
+}")),
     fluidPage(
       fluidRow(column(12, style="text-align:center;",
                       selectInput(inputId = "state_name",
                                   label = "State Selector",
                                   choices = state.abr$name,
-                                  selected = "Arizona"))),
+                                  selected = as.character(unlist(ranking[ranking$rank==50, "name"]))))),
       fluidRow(column(12, style="text-align:center;",uiOutput("main_title"))),
       tags$br(),
       fluidRow(column(8, style="text-align:center;",
-                      HTML("States are ranked by an aggregate of their percentage change in COVID-19 cases and deaths per 100k people over the past 14 days."),
+                      tags$b("States are ranked by an aggregate of their percentage change in COVID-19 cases and deaths per 100k people over the past 14 days."),
                       offset=2)),
       fluidRow(column(6, style="text-align:center;",uiOutput("state.CoT.title"),
                       plotOutput(outputId = "state.CoT", height = "600px")),
@@ -831,14 +865,14 @@ shinyApp(
                       tags$h2("Flattening the Curve"),
                       tags$p("Nationwide, states have taken various approaches to mitigate the spread of coronavirus, such as social distancing interventions and encouraging mask use where social distancing is not possible. Studies by the CDC have shown these methods reduce new COVID-19 cases, hospitalizations, and deaths."),
                       tags$b("Data Source: "), tags$a("CDC", href="https://wwwnc.cdc.gov/eid/article/26/8/20-1093_article"), offset=2)),
-      fluidRow(column(10, style="text-align:center;",uiOutput("state.trends.title"),
-                      plotOutput(outputId = "state.trends", height="600px"), offset = 1)),
                       tags$br(),
                       tags$br(),
       fluidRow(column(8,gt_output("state.report"),
                       offset = 2)),
       fluidRow(column(12, style="text-align:center;",
                       tags$h1("County Level Breakdown"))),
+      fluidRow(column(10, style="text-align:center;",uiOutput("state.trends.title"),
+                      plotOutput(outputId = "state.trends", height="600px"), offset = 1)),
       fluidRow(column(6,
                       uiOutput("state.county.cases"),
                       leafletOutput("map.cases")),
@@ -849,13 +883,19 @@ shinyApp(
       fluidRow(column(12, style="text-align:center;",
                       tags$h1("Comorbidities"))),
       fluidRow(column(12, style="text-align:center;",
-                      tags$h3("Diabetes Rate Disparities Compared to the national average")),
+                      uiOutput("determinant.title")),
                column(6,
-                      leafletOutput("maps.diabetes"), offset = 3),
+                      selectInput(inputId = "determinant",
+                                  label = NULL,
+                                  choices = c("Diabetes", "Obesity"),
+                                  selected = "Obesity"),
+                      leafletOutput("maps.determinant"), offset = 3),
                column(8, style="text-align:center;",
-                      tags$p("Nationwide, diabetes has been observed as a leading comorbidity of COVID-19.",
+                      tags$p(textOutput("determinant.text"),
                              tags$br(),
-                             tags$b("Data Source: "), tags$a("CDC", href="www.cdc.gov/diabetes/data")),
+                             tags$b("Data Source: "), tags$a("CDC", href="www.cdc.gov/diabetes/data"), ", ",
+                             tags$a("CHR", href = 
+                                      "https://www.countyhealthrankings.org/explore-health-rankings/measures-data-sources/county-health-rankings-model/health-factors/health-behaviors/diet-exercise/adult-obesity")), 
                       offset = 2
                       )),
       fluidRow(column(8, style="text-align:center;",
@@ -868,7 +908,24 @@ shinyApp(
                        </div>"), offset=2)),
       tags$br(),
       tags$br()
-      ,fluidRow(column(6, gt_output("ranking.table"), offset = 3))
+      ,fluidRow(column(12, style="text-align:center;",
+                       tags$h1("Rankings")),
+                tags$a(name = "ranking"),
+                column(8,
+                       fluidRow(style="float:right;width:250px;",
+                                selectInput(inputId = "entries",
+                                  label = "Entries",
+                                  choices = c(`Show 10` = 10, 
+                                              `Show 25` = 25,
+                                              `Show 50` = 50),
+                                  selected = 10,
+                                  width = "50%"),
+                                radioButtons(inputId = "rank.order",
+                                             label = "Order",
+                                             choices = c("Ascending", "Descending"),
+                                             selected = "Ascending",
+                                             width="50%")),
+                       gt_output("ranking.table"), offset = 2))
     )
   ),
   
@@ -879,7 +936,7 @@ shinyApp(
       state_initial <- state.abr[state.abr$name == state_name, "abr"]
       tagList(
         tags$h1(paste0(state_name, " Overview")),
-        tags$h2(paste0("State rank: ", ranking[ranking$State == state_initial, "rank"]))
+        tags$h2(tags$a(paste0("State rank: ", ranking[ranking$State == state_initial, "rank"]), href = "#ranking", style="color:black;"))
       )
     })
     
@@ -895,7 +952,7 @@ shinyApp(
     
     output$state.trends.title <- renderUI({
       state_name <- input$state_name
-      tags$h3(paste0(state_name, " ", get_y_label("p_diff"), " over time (7 day average)"))
+      tags$h3(paste0(state_name, " ", get_y_label("diff"), " over time (7 day average)"))
     })
     
     output$state.county.cases <- renderUI({
@@ -906,6 +963,17 @@ shinyApp(
     output$state.county.deaths <- renderUI({
       state_name <- input$state_name
       tags$h3(paste0(state_name, " COVID-19 Mortality disparities compared to US Average"))
+    })
+    
+    output$determinant.title <- renderUI({
+      state_name <- input$state_name
+      det <- input$determinant
+      tags$h3(paste0(state_name, " ", det, " Rate Disparities Compared to the national average"))
+    })
+    
+    output$determinant.text <- renderText({
+      det <- input$determinant
+      paste0("Nationwide, ",det," has been observed as a leading comorbidity of COVID-19.")
     })
     
     output$state.report <- render_gt({
@@ -926,10 +994,11 @@ shinyApp(
       geo.plot(state_initial, "Mortality")
       })
     
-    output$maps.diabetes <- renderLeaflet({
+    output$maps.determinant <- renderLeaflet({
       state_name <- input$state_name
+      det <- input$determinant
       state_initial <- state.abr[state.abr$name == state_name, "abr"]
-      geo.plot(state_initial, "Diabetes")
+      geo.plot(state_initial, det)
     })
     
     output$state.CoT <- renderPlot({
@@ -948,15 +1017,22 @@ shinyApp(
       state_name <- input$state_name
       state_initial <- state.abr[state.abr$name == state_name, "abr"]
       n_case_cut <- 10
-      if (state_initial %in% c("MT")) {
+      if (state_initial %in% c("MT", "WV", "AK", "HI", "MS", "SD")) {
         n_case_cut <- 5
       }
-      ggplot.state(state_initial, y.value = "p_diff", case.cut.per.county = n_case_cut,remove.title = T)
+      ggplot.state(state_initial, y.value = "diff", case.cut.per.county = n_case_cut,remove.title = T)
     })
     
-    output$ranking.table <- render_gt(
-    gt.ranking()
-  )
+    output$ranking.table <- render_gt({
+    entries <- input$entries
+    if ("Ascending" %in% input$rank.order) {
+      order <- function(x){x}
+    }
+    if ("Descending" %in% input$rank.order) {
+      order <- dplyr::desc
+    }
+    gt.ranking(as.numeric(entries), order)
+  })
   }
 )
 ```
