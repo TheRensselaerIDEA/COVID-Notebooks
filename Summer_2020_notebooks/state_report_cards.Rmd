@@ -199,7 +199,7 @@ todays.case.data <- todays.case.data %>%
 ```
 
 ```{r Cases}
-selected_state <- "TX"
+selected_state <- "US"
 selected_feature <- "Obesity"
 geo.plot(selected_state, selected_feature)
 ```
@@ -210,7 +210,7 @@ selected_feature <- "Mortality"
 geo.plot(selected_state, selected_feature)
 ```
 
-```{r}
+```{r State policy processing}
 state_policy <- read_csv("Summer_2020_notebooks/state_policy.csv")
 state_policy.df <- state_policy[5:55,]
 state_policy.md <- state_policy[1:4,]
@@ -350,7 +350,8 @@ ranking <- covid_TS_state_long.cases %>%
     cases.delta = (max(p_cases) - min(p_cases))/max(p_cases),
     deaths.delta =  (max(p_deaths) - min(p_deaths))/max(p_deaths)
     ) %>%
-  mutate(points = 0.5*(cases.delta + deaths.delta)) %>%
+  #mutate(points = 0.5*(cases.delta + deaths.delta)) %>%
+  mutate(points = cases.delta) %>%
   arrange(points) %>%
   mutate(rank = row_number()) %>%
   left_join(state.abr[c("abr", "name")],
@@ -445,7 +446,7 @@ get_y_label <- function(y.value) {
 ```
 
 ```{r ggplot.state}
-ggplot.state <- function(selected.state="MT", y.value="cases", moving.avg.window=7, case.cut.per.county=5, max.labels=10, remove.title = F) {
+ggplot.state <- function(selected.state="NY", y.value="cases", moving.avg.window=7, case.cut=200, max.labels=10, remove.title = F) {
   
   y_label <- get_y_label(y.value)
   state.name <- state.abr[state.abr$abr==selected.state,"name"]
@@ -470,6 +471,36 @@ ggplot.state <- function(selected.state="MT", y.value="cases", moving.avg.window
     mutate(p_diff = c(numeric(moving.avg.window-1), zoo::rollmean(p_diff, moving.avg.window, align = "right"))) %>%
     ungroup()
   
+  if (selected.state == "NY") {
+    nyc.population <- covid_TS_counties.cases.plot %>%
+      filter(County %in% c("New York", "Kings", "Queens", "Bronx", "Richmond")) %>%
+      group_by(County) %>%
+      top_n(n=1, wt=date) %>%
+      select(population)
+    nyc.population <- sum(nyc.population$population)
+      
+    NYC <- covid_TS_counties.cases.plot %>%
+      filter(County %in% c("New York", "Kings", "Queens", "Bronx", "Richmond")) %>%
+      group_by(State, date, stateFIPS) %>%
+      summarise(
+        countyFIPS = 1,
+        County = "New York City",
+        cases = sum(cases),
+        deaths = sum(deaths),
+        population = nyc.population,
+        p_cases = sum(cases)*100000/nyc.population,
+        p_deaths = sum(deaths)*100000/nyc.population,
+        diff = sum(diff),
+        p_diff = sum(diff)*100000/nyc.population,
+        d_diff = sum(d_diff),
+        p.d_diff = sum(p.d_diff)*100000/nyc.population
+      ) 
+    covid_TS_counties.cases.plot <- covid_TS_counties.cases.plot %>%
+      filter(!County %in% c("New York", "Kings", "Queens", "Bronx", "Richmond")) %>%
+      rbind.data.frame(NYC)
+      
+  }
+  
   state_pop <- ranking[ranking$State == selected.state,]$population
 
   state <- covid_TS_counties.cases.plot %>%
@@ -490,8 +521,12 @@ ggplot.state <- function(selected.state="MT", y.value="cases", moving.avg.window
   
   n_county <- covid_TS_counties.cases.plot$County %>% unique() %>% length()
   covid_TS_counties.cases.plot <-  covid_TS_counties.cases.plot %>%
-    filter(cases > case.cut.per.county*n_county) %>%
-    rbind.data.frame(state)
+    group_by(County) %>%
+    filter(max(cases) > case.cut) %>%
+    ungroup() %>%
+    rbind.data.frame(state) %>%
+    filter(get(y.value) > 0)
+    
   
   county.num <- covid_TS_counties.cases.plot %>% 
         select(County) %>%
@@ -521,7 +556,6 @@ ggplot.state <- function(selected.state="MT", y.value="cases", moving.avg.window
   region_palette[selected.state] <- "#A8A8A8"
 
   g <- covid_TS_counties.cases.plot %>%
-        filter(cases > case.cut.per.county*n_county) %>%
           ggplot(aes_string(
                    x="date",
                    y=y.value,
@@ -559,14 +593,14 @@ ggplot.state <- function(selected.state="MT", y.value="cases", moving.avg.window
 ```
 
 ```{r}
-selected_state <- "AZ"
+selected_state <- "WV"
 moving.avg.window <- 7
-n_case_cut <- 10
-y.value <- "p_diff"
-ggplot.state(selected_state, y.value=y.value, case.cut.per.county=n_case_cut, moving.avg.window=moving.avg.window)
+n_case_cut <- 100
+y.value <- "diff"
+ggplot.state(selected_state, y.value=y.value, case.cut=n_case_cut, moving.avg.window=moving.avg.window)
 ```
 
-```{r}
+```{r get_dif (label)}
 get_dif <- function(y.value) {
   if (y.value == "cases") {
     return("diff")
@@ -583,7 +617,7 @@ get_dif <- function(y.value) {
 }
 ```
 
-```{r Case stacked bar chart}
+```{r Case bar chart}
 ggbar.overall <- function(selected.state = "VT", y.value="p_deaths", moving.avg.window=14, remove.title = F) {
   state <- covid_TS_state_long.cases %>%
     filter(State == selected.state)
@@ -641,6 +675,11 @@ ggbar.overall <- function(selected.state = "VT", y.value="p_deaths", moving.avg.
                                                label.hjust = 0.5, 
                                                barwidth = 15,
                                                frame.colour = "black")) +
+    geom_point(data = state_cases, aes(x=date, y=Values, size = ""), shape = NA, colour = "skyblue") +
+    guides(size=guide_legend(title = "No Change", 
+                             override.aes=list(shape=15, size = 8), 
+                             title.position = "top",
+                             title.hjust = 0.5)) +
     geom_line(data = state.us.ma,aes( x=date, y=ma, color=Type, group=Type), arrow=arrow(ends="last"), show.legend = F)  + 
     geom_line(data = state.us.ma,aes( x=date, y=ma, color=Type, group=Type)) +
     geom_vline(aes(xintercept=state_policy.df[state_policy.df$POSTCODE == selected.state,]$END_STHM, color = END_STHM), linetype="longdash", size = 1, show.legend = F) +
@@ -663,7 +702,7 @@ ggbar.overall <- function(selected.state = "VT", y.value="p_deaths", moving.avg.
 
 
 ```{r}
-ggbar.overall("AZ", "p_cases")
+ggbar.overall("HI", "p_deaths")
 ```
 
 ```{r}
@@ -751,7 +790,7 @@ gt.ranking <- function(entries = 50, order=function(x){x}) {
 gt.ranking(10,dplyr::desc)
 ```
 
-```{r}
+```{r State stats chart}
 #New York Stats
 # tags$b("Overall Cases: "),format(stats$cases, big.mark = ","), tags$br(),
 #        tags$b("Cases per 100k: "),format(round(stats$p_cases), big.mark = ","), tags$br(),
@@ -798,6 +837,7 @@ stats.table <- function(selected_state) {
   tests <- state_covid_testing %>%
     filter(NAME == state_name) %>%
     select(total_num_tests, tests_per_1000) %>%
+    mutate(tests_per_1000 = tests_per_1000 * 100) %>%
     t()
   
   policy <- state_policy.df %>%
@@ -838,7 +878,7 @@ stats.table("HI")
 ```
 
 
-```{r}
+```{r shinyApp}
 shinyApp(
   ui = fluidPage(
     includeCSS("www/style.css"),
@@ -855,7 +895,7 @@ shinyApp(
       fluidRow(column(12, style="text-align:center;",uiOutput("main_title"))),
       tags$br(),
       fluidRow(column(8, style="text-align:center;",
-                      tags$b("States are ranked by an aggregate of their percentage change in COVID-19 cases and deaths per 100k people over the past 14 days."),
+                      tags$b(tags$sup("*"),"States are ranked best to worst by their percentage change in COVID-19 cases over the past 14 days."),
                       offset=2)),
       fluidRow(column(6, style="text-align:center;",uiOutput("state.CoT.title"),
                       plotOutput(outputId = "state.CoT", height = "600px")),
@@ -936,7 +976,7 @@ shinyApp(
       state_initial <- state.abr[state.abr$name == state_name, "abr"]
       tagList(
         tags$h1(paste0(state_name, " Overview")),
-        tags$h2(tags$a(paste0("State rank: ", ranking[ranking$State == state_initial, "rank"]), href = "#ranking", style="color:black;"))
+        tags$h2(tags$a(paste0("State rank: ", ranking[ranking$State == state_initial, "rank"]), tags$sup("*"), href = "#ranking", style="color:black;"))
       )
     })
     
@@ -1016,11 +1056,11 @@ shinyApp(
     output$state.trends <- renderPlot({
       state_name <- input$state_name
       state_initial <- state.abr[state.abr$name == state_name, "abr"]
-      n_case_cut <- 10
-      if (state_initial %in% c("MT", "WV", "AK", "HI", "MS", "SD")) {
-        n_case_cut <- 5
+      n_case_cut <- 500
+      if (state_initial %in% c("MT", "WV", "AK", "HI", "SD", "WY")) {
+        n_case_cut <- 100
       }
-      ggplot.state(state_initial, y.value = "diff", case.cut.per.county = n_case_cut,remove.title = T)
+      ggplot.state(state_initial, y.value = "diff", case.cut = n_case_cut,remove.title = T)
     })
     
     output$ranking.table <- render_gt({

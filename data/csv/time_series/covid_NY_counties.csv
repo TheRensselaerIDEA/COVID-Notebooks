@@ -1,9 +1,9 @@
 county,deaths,cases
-New York State,30363,2729005
-Albany,102,34153
+New York State,30417,2729005
+Albany,103,34153
 Allegany,2,3602
-Bronx,4564,233940
-Broome,54,25216
+Bronx,4574,233940
+Broome,55,25216
 Cattaraugus,5,7682
 Cayuga,2,7743
 Chautauqua,3,10362
@@ -14,7 +14,7 @@ Columbia,45,6802
 Cortland,1,5843
 Delaware,3,4798
 Dutchess,145,42269
-Erie,541,91895
+Erie,542,91895
 Essex,0,4255
 Franklin,0,5116
 Fulton,25,5481
@@ -23,35 +23,35 @@ Greene,13,4215
 Hamilton,1,603
 Herkimer,3,7932
 Jefferson,0,9182
-Kings,6872,357556
+Kings,6886,357556
 Lewis,5,3094
 Livingston,4,5686
 Madison,9,6998
-Monroe,222,86766
+Monroe,225,86766
 Montgomery,4,5837
 Nassau,2151,225712
-New York,2996,223256
-Niagara,76,20842
-Oneida,71,29567
-Onondaga,143,56834
+New York,3002,223256
+Niagara,79,20842
+Oneida,73,29567
+Onondaga,146,56834
 Ontario,23,10271
-Orange,389,58886
+Orange,390,58886
 Orleans,48,3592
 Oswego,2,10067
 Otsego,4,5686
 Putnam,62,12268
-Queens,6389,334164
+Queens,6404,334164
 Rensselaer,27,13967
-Richmond,1018,74731
+Richmond,1019,74731
 Rockland,503,62553
 St. Lawrence,2,12847
 Saratoga,15,19163
-Schenectady,31,18078
+Schenectady,32,18078
 Schoharie,2,2117
 Schuyler,0,2068
 Seneca,1,3548
 Steuben,29,7952
-Suffolk,1941,234109
+Suffolk,1945,234109
 Sullivan,35,10276
 Tioga,19,4823
 Tompkins,0,14047
@@ -59,6 +59,6 @@ Ulster,80,25933
 Warren,30,7019
 Washington,14,6160
 Wayne,2,9493
-Westchester,1399,195936
+Westchester,1400,195936
 Wyoming,5,3690
 Yates,6,2257
