@@ -55,8 +55,10 @@ library("httr")
 # in additional preprocessing... 
 library("data.table")
 library("devtools")
-devtools::install_github("NSAPH/NSAPHutils") # need to be accessed via devtools
-library("NSAPHutils")
+if (!require("NSAPHutils")){
+  devtools::install_github("NSAPH/NSAPHutils") # need to be accessed via devtools
+  library("NSAPHutils")
+}
 #set_threads()
 #devtools::install_github("NSAPH/NSAPHplatform")
 #library("NSAPHplatform")
