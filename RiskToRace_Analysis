@@ -1,0 +1,552 @@
+library("dplyr")
+library("MASS")
+library("lme4")
+library("glmmTMB")
+library("gamm4")
+library('caret')
+library('blmeco')
+library(pROC)
+library(VineCopula)
+library("PerformanceAnalytics")
+library(glmmTMB)
+#extra#
+library(ggplot2)
+library(gridExtra)
+library(ggfortify)
+library(foreign)
+library(psych)
+library(ResourceSelection)
+library(ROCR)
+library(ggplot2)
+library(foreign)
+library(klaR)
+library(heplots)
+library(hermite)
+library(lattice)
+library(plyr)
+library(boot)
+library(DescTools)
+library(car)
+library(multcompView)
+library(emmeans)
+library(MASS)
+library(pscl)
+library(psych)
+library(rcompanion)
+library(robust)
+library(AER)
+
+# Main- mixed effects negative binomial, deaths from percent black to identify risk to specific race
+mode.nb.random.off.main = glmer.nb(Deaths ~ pct_blk + factor(q_popdensity)
+                                   + scale(log(medhouseholdincome))+scale(education)
+                                   + scale(date_since_social) + scale(date_since)
+                                   + (1|state)+ scale(beds/population) 
+                                   + offset(log(population)), data = aggregate_pm_census_cdc_test_beds)
+summary(mode.nb.random.off.main)
+exp(summary(mode.nb.random.off.main)[10]$coefficients[2,1])
+exp(summary(mode.nb.random.off.main)[10]$coefficients[2,1] - 1.96*summary(mode.nb.random.off.main)[10]$coefficients[2,2])
+exp(summary(mode.nb.random.off.main)[10]$coefficients[2,1] + 1.96*summary(mode.nb.random.off.main)[10]$coefficients[2,2])
+summary(mode.nb.random.off.main)[10]$coefficients[2,4]
+
+#zero-inflated for race- nearly the same result as the main analysis
+glmmTMB.off.main = glmmTMB(Deaths ~ pct_blk + factor(q_popdensity)
+                           + scale(log(medhouseholdincome))+scale(education)
+                           + scale(date_since_social) + scale(date_since)
+                           + (1|state) + scale(beds/population) 
+                           + offset(log(population)), data = aggregate_pm_census_cdc_test_beds,
+                           family = nbinom2, ziformula  = ~ 1)
+summary(glmmTMB.off.main)
+exp(summary(glmmTMB.off.main)[6]$coefficients$cond[2,1])
+exp(summary(glmmTMB.off.main)[6]$coefficients$cond[2,1] - 1.96*summary(glmmTMB.off.main)[6]$coefficients$cond[2,2])
+exp(summary(glmmTMB.off.main)[6]$coefficients$cond[2,1] + 1.96*summary(glmmTMB.off.main)[6]$coefficients$cond[2,2])
+summary(glmmTMB.off.main)[6]$coefficients$cond[2,4]
+
+# exclude NY Metro- slighlty lower MMR for pct_blk, possibly due to high pct_blk incidence in high mortality area like nyc
+mode.nb.random.off.nyc = glmer.nb(Deaths ~ pct_blk + factor(q_popdensity)
+                                  + scale(log(medhouseholdincome))+scale(education)
+                                  + scale(date_since_social) + scale(date_since)
+                                  + (1|state) + scale(beds/population)                           + (1|state)
+                                  + offset(log(population)),data = subset(aggregate_pm_census_cdc_test_beds,!(fips %in% c("09001","42089","36111","09009","36059","36103","34013",
+                                                                                               "36079","36081",  "36085",  "36087",  "36119",  "36027",                                                                                                                           "36071",  "09005",  "34021"))))
+summary(mode.nb.random.off.nyc)
+exp(summary(mode.nb.random.off.nyc)[10]$coefficients[2,1])
+exp(summary(mode.nb.random.off.nyc)[10]$coefficients[2,1] - 1.96*summary(mode.nb.random.off.nyc)[10]$coefficients[2,2])
+exp(summary(mode.nb.random.off.nyc)[10]$coefficients[2,1] + 1.96*summary(mode.nb.random.off.nyc)[10]$coefficients[2,2])
+summary(mode.nb.random.off.nyc)[10]$coefficients[2,4]
+
+#Assumptions
+
+Deaths1<-aggregate_pm_census_cdc_test_beds$Deaths
+pct_blk1<-aggregate_pm_census_cdc_test_beds$pct_blk
+#vuong
+BiCopVuongClarke(
+  Deaths1,
+  pct_blck1,
+  familyset = NA,
+  correction = FALSE,
+  level = 0.05,
+  rotations = TRUE
+)
+
+#hosmer-lem. p-value over .05 means good fit, but we get neg chi square so the tst stat of Pr will always be above neg chi square
+hoslem.test(aggregate_pm_census_cdc_test_beds$Deaths, fitted(mode.nb.random.off.main), g=10)
+
+
+##DISPERSION TEST
+
+Mean<-mean(aggregate_pm_census_cdc_test_beds$Deaths) # calculate mean
+
+Variance<-var(aggregate_pm_census_cdc_test_beds$Deaths) # calculate variance
+
+#Ratio=Dispersion- heavy overdispersion, neg binomial or quasipoisson more appropriate than poisson
+Ratio<-(Variance/Mean)
+Ratio
+
+
+
+
+#ANOVA for glmer packages, use for F-stat
+anova(mode.nb.random.off.main)
+
+#Prediction- Need to understand better, seems like will 
+#predict whether or not someone will die, rather than death count
+p <- as.numeric(predict(mode.nb.random.off.main, type="response")>.5)
+mean(p==aggregate_pm_census_cdc_test_beds$Deaths)
+table1<-table(p,aggregate_pm_census_cdc_test_beds$Deaths)
+plot (p)
+
+
+#ROC/AUC Analysis of True positive vs False positive hit rate
+pred.fit.glmer <- predict(mode.nb.random.off.main, newdata = aggregate_pm_census_cdc_test_beds, type = "response")
+roccurve<-(roc(aggregate_pm_census_cdc_test_beds$Deaths, pred.fit.glmer))
+auc(roc(aggregate_pm_census_cdc_test_beds$Deaths, pred.fit.glmer))
+#AUC of .78, not bad but ideally over .8
+
+#roccurve<-roccurve@y.values[[1]]
+#Graph ROC curve
+plot(roccurve)
+
+
+##secondary performance measure, currently non-funcitonal
+pr <- prediction(pred.fit.glmer,aggregate_pm_census_cdc_test_beds$Deaths)
+prf <- performance(pr, measure = "tpr", x.measure = "fpr")
+plot(prf)
+
+
+
+
+
+
+###Other checks (non functional) + models,
+#trying to reveal correlation -> tried correlation graph matrix but crashed (due to large data size?)
+'chart.Correlation(aggregate_pm_census_cdc_test_beds$pct_blk,aggregate_pm_census_cdc_test_beds$q_popdensity,aggregate_pm_census_cdc_test_beds$medhouseholdincome, 
+                  aggregate_pm_census_cdc_test_beds$education, aggregate_pm_census_cdc_test_beds$date_since_social, aggregate_pm_census_cdc_test_beds$date_since,
+                  aggregate_pm_census_cdc_test_beds$beds,aggregate_pm_census_cdc_test_beds$population, histogram=TRUE, pch=19)
+
+cortest<-select_if(aggregate_pm_census_cdc_test_beds,is.numeric)
+cor(cortest,method=c('pearson'))
+
+
+cor(aggregate_pm_census_cdc_test_beds$pct_blk,aggregate_pm_census_cdc_test_beds$q_popdensity,aggregate_pm_census_cdc_test_beds$medhouseholdincome, 
+    aggregate_pm_census_cdc_test_beds$education, aggregate_pm_census_cdc_test_beds$date_since_social, aggregate_pm_census_cdc_test_beds$date_since,
+    aggregate_pm_census_cdc_test_beds$beds,aggregate_pm_census_cdc_test_beds$population,method=c('pearson'))
+
+#without q_pop- note that this increases ratio of pct_blk but not necessarily better model
+mode.nb.random.off.main = glmer.nb(Deaths ~ pct_blk 
+                                   + scale(log(medhouseholdincome))+scale(education)
+                                   + scale(date_since_social) + scale(date_since)
+                                   + (1|state)+ scale(beds/population) 
+                                   + offset(log(population)), data = aggregate_pm_census_cdc_test_beds)
+summary(mode.nb.random.off.main)
+exp(summary(mode.nb.random.off.main)[10]$coefficients[2,1])
+exp(summary(mode.nb.random.off.main)[10]$coefficients[2,1] - 1.96*summary(mode.nb.random.off.main)[10]$coefficients[2,2])
+exp(summary(mode.nb.random.off.main)[10]$coefficients[2,1] + 1.96*summary(mode.nb.random.off.main)[10]$coefficients[2,2])
+summary(mode.nb.random.off.main)[10]$coefficients[2,4]
+
+#Both types of ANOVA are significant- p-values should be less than .05.
+#ANOVA- linear regression
+#Anova(mode.nb.random.off.main,test="LR")
+
+#ANOVA from slides- f test
+#Anova(mode.nb.random.off.main, test="F")
+########################################################################################################
+
+#Parition data 
+Training_data_set<- createDataPartition(y=aggregate_pm_census_cdc_test_beds$Deaths,p=0.7, list=FALSE)
+Prediction_data_set<- createDataPartition(y=aggregate_pm_census_cdc_test_beds$Deaths,p=0.3, list=FALSE)
+
+
+#Partitioned analysis
+
+mode.nb.random.off.main = glmer.nb(Deaths ~ pct_blk + factor(q_popdensity)
+                                   + scale(log(medhouseholdincome))+scale(education)
+                                   + scale(date_since_social) + scale(date_since)
+                                   + (1|state)+ scale(beds/population) 
+                                   + offset(log(population)), data = aggregate_pm_census_cdc_test_beds)
+summary(mode.nb.random.off.main)
+exp(summary(mode.nb.random.off.main)[10]$coefficients[2,1])
+exp(summary(mode.nb.random.off.main)[10]$coefficients[2,1] - 1.96*summary(mode.nb.random.off.main)[10]$coefficients[2,2])
+exp(summary(mode.nb.random.off.main)[10]$coefficients[2,1] + 1.96*summary(mode.nb.random.off.main)[10]$coefficients[2,2])
+summary(mode.nb.random.off.main)[10]$coefficients[2,4]
+
+#PLOT PREDICTION LINE- Must partition data --> call it Prediction_data_set
+
+Prediction_data_set<-seq(0,100,.5)
+
+PredictCases <- predict(mode.nb.random.off.main, list(pct_blk = Prediction_data_set))
+
+lines(Prediction_data_set,exp(PredictCases),lwd=2,col="blue")'
+
+
+########################################################
+# - beds
+'mode.nb.random.off.beds = glmer.nb(Deaths ~ mean_pm25 + factor(q_popdensity)
+                                   + scale(poverty) + scale(log(medianhousevalue))
+                                   + scale(log(medhouseholdincome)) + scale(pct_owner_occ) 
+                                   + scale(education) + scale(pct_blk) + scale(hispanic)
+                                   + scale(older_pecent) + scale(prime_pecent) + scale(mid_pecent) 
+                                   + scale(date_since_social) + scale(date_since)
+                                   #+ scale(beds/population) 
+                                   + scale(obese) + scale(smoke)
+                                   + scale(mean_summer_temp) + scale(mean_winter_temp) + scale(mean_summer_rm) + scale(mean_winter_rm)
+                                   + (1|state)
+                                   + offset(log(population)), data = aggregate_pm_census_cdc_test_beds)
+summary(mode.nb.random.off.beds)
+exp(summary(mode.nb.random.off.beds)[10]$coefficients[2,1])
+exp(summary(mode.nb.random.off.beds)[10]$coefficients[2,1] - 1.96*summary(mode.nb.random.off.beds)[10]$coefficients[2,2])
+exp(summary(mode.nb.random.off.beds)[10]$coefficients[2,1] + 1.96*summary(mode.nb.random.off.beds)[10]$coefficients[2,2])
+summary(mode.nb.random.off.beds)[10]$coefficients[2,4]
+
+# - smoking + bmi
+mode.nb.random.off.brfss = glmer.nb(Deaths ~ mean_pm25 + factor(q_popdensity)
+                                    + scale(poverty)  + scale(log(medianhousevalue))
+                                    + scale(log(medhouseholdincome)) + scale(pct_owner_occ) 
+                                    + scale(education) + scale(pct_blk) + scale(hispanic)
+                                    + scale(older_pecent) + scale(prime_pecent) + scale(mid_pecent) 
+                                    + scale(date_since_social) + scale(date_since)
+                                    + scale(beds/population) 
+                                    #+ scale(obese) + scale(smoke)
+                                    + scale(mean_summer_temp) + scale(mean_winter_temp) + scale(mean_summer_rm) + scale(mean_winter_rm)
+                                    + (1|state)
+                                    + offset(log(population)), data = aggregate_pm_census_cdc_test_beds)
+summary(mode.nb.random.off.brfss)
+exp(summary(mode.nb.random.off.brfss)[10]$coefficients[2,1])
+exp(summary(mode.nb.random.off.brfss)[10]$coefficients[2,1] - 1.96*summary(mode.nb.random.off.brfss)[10]$coefficients[2,2])
+exp(summary(mode.nb.random.off.brfss)[10]$coefficients[2,1] + 1.96*summary(mode.nb.random.off.brfss)[10]$coefficients[2,2])
+summary(mode.nb.random.off.brfss)[10]$coefficients[2,4]
+
+
+# - temp + humidity
+mode.nb.random.off.weather = glmer.nb(Deaths ~ mean_pm25 + factor(q_popdensity)
+                                      + scale(poverty)  + scale(log(medianhousevalue))
+                                      + scale(log(medhouseholdincome)) + scale(pct_owner_occ) 
+                                      + scale(education) + scale(pct_blk) + scale(hispanic)
+                                      + scale(older_pecent) + scale(prime_pecent) + scale(mid_pecent) 
+                                      + scale(date_since_social) + scale(date_since)
+                                      + scale(beds/population) 
+                                      + scale(obese) + scale(smoke)
+                                      #+ scale(mean_summer_temp) + scale(mean_winter_temp) + scale(mean_summer_rm) + scale(mean_winter_rm)
+                                      + (1|state)
+                                      + offset(log(population)), data = aggregate_pm_census_cdc_test_beds)
+summary(mode.nb.random.off.weather)
+exp(summary(mode.nb.random.off.weather)[10]$coefficients[2,1])
+exp(summary(mode.nb.random.off.weather)[10]$coefficients[2,1] - 1.96*summary(mode.nb.random.off.weather)[10]$coefficients[2,2])
+exp(summary(mode.nb.random.off.weather)[10]$coefficients[2,1] + 1.96*summary(mode.nb.random.off.weather)[10]$coefficients[2,2])
+summary(mode.nb.random.off.weather)[10]$coefficients[2,4]
+
+# - outbreak
+mode.nb.random.off.outbreak = glmer.nb(Deaths ~ mean_pm25 + factor(q_popdensity)
+                                       + scale(poverty)  + scale(log(medianhousevalue))
+                                       + scale(log(medhouseholdincome)) + scale(pct_owner_occ) 
+                                       + scale(education) + scale(pct_blk) + scale(hispanic)
+                                       + scale(older_pecent) + scale(prime_pecent) + scale(mid_pecent) 
+                                       + scale(date_since_social) #+ scale(date_since)
+                                       + scale(beds/population) 
+                                       + scale(obese) + scale(smoke)
+                                       + scale(mean_summer_temp) + scale(mean_winter_temp) + scale(mean_summer_rm) + scale(mean_winter_rm)
+                                       + (1|state)
+                                       + offset(log(population)), data = aggregate_pm_census_cdc_test_beds)
+summary(mode.nb.random.off.outbreak)
+exp(summary(mode.nb.random.off.outbreak)[10]$coefficients[2,1])
+exp(summary(mode.nb.random.off.outbreak)[10]$coefficients[2,1] - 1.96*summary(mode.nb.random.off.outbreak)[10]$coefficients[2,2])
+exp(summary(mode.nb.random.off.outbreak)[10]$coefficients[2,1] + 1.96*summary(mode.nb.random.off.outbreak)[10]$coefficients[2,2])
+summary(mode.nb.random.off.outbreak)[10]$coefficients[2,4]
+
+
+# exclude NY Metro
+mode.nb.random.off.nyc = glmer.nb(Deaths ~ mean_pm25 + factor(q_popdensity)
+                                  + scale(poverty)  + scale(log(medianhousevalue))
+                                  + scale(log(medhouseholdincome)) + scale(pct_owner_occ) 
+                                  + scale(education) + scale(pct_blk) + scale(hispanic)
+                                  + scale(older_pecent) + scale(prime_pecent) + scale(mid_pecent) 
+                                  + scale(date_since_social) + scale(date_since)
+                                  + scale(beds/population) 
+                                  + scale(obese) + scale(smoke)
+                                  + scale(mean_summer_temp) + scale(mean_winter_temp) + scale(mean_summer_rm) + scale(mean_winter_rm)
+                                  + (1|state)
+                                  + offset(log(population)),data = subset(aggregate_pm_census_cdc_test_beds,!(fips %in% c("09001","42089","36111","09009","36059","36103","34013",
+                                                                                                                          "34019","34027","34037","34039","42103","34023","34025","34029",
+                                                                                                                          "34035", "34003", "34017", "34031","36005","36047","36061",
+                                                                                                                          "36079","36081",  "36085",  "36087",  "36119",  "36027", 
+                                                                                                                          "36071",  "09005",  "34021"))))
+summary(mode.nb.random.off.nyc)
+exp(summary(mode.nb.random.off.nyc)[10]$coefficients[2,1])
+exp(summary(mode.nb.random.off.nyc)[10]$coefficients[2,1] - 1.96*summary(mode.nb.random.off.nyc)[10]$coefficients[2,2])
+exp(summary(mode.nb.random.off.nyc)[10]$coefficients[2,1] + 1.96*summary(mode.nb.random.off.nyc)[10]$coefficients[2,2])
+summary(mode.nb.random.off.nyc)[10]$coefficients[2,4]
+
+# exclude <10 confirmed
+mode.nb.random.off.large = glmer.nb(Deaths ~ mean_pm25 + factor(q_popdensity)
+                                    + scale(poverty)  + scale(log(medianhousevalue))
+                                    + scale(log(medhouseholdincome)) + scale(pct_owner_occ) 
+                                    + scale(education) + scale(pct_blk) + scale(hispanic)
+                                    + scale(older_pecent) + scale(prime_pecent) + scale(mid_pecent) 
+                                    + scale(date_since_social) + scale(date_since)
+                                    + scale(beds/population) 
+                                    + scale(obese) + scale(smoke)
+                                    + scale(mean_summer_temp) + scale(mean_winter_temp) + scale(mean_summer_rm) + scale(mean_winter_rm)
+                                    + (1|state)
+                                    + offset(log(population)), data = subset(aggregate_pm_census_cdc_test_beds,Confirmed >=10)) 
+summary(mode.nb.random.off.large)
+exp(summary(mode.nb.random.off.large)[10]$coefficients[2,1])
+exp(summary(mode.nb.random.off.large)[10]$coefficients[2,1] - 1.96*summary(mode.nb.random.off.large)[10]$coefficients[2,2])
+exp(summary(mode.nb.random.off.large)[10]$coefficients[2,1] + 1.96*summary(mode.nb.random.off.large)[10]$coefficients[2,2])
+summary(mode.nb.random.off.large)[10]$coefficients[2,4]
+
+# rural
+mode.nb.random.off.rural = glmer.nb(Deaths ~ mean_pm25 + factor(q_popdensity)
+                                    + scale(poverty)  + scale(log(medianhousevalue))
+                                    + scale(log(medhouseholdincome)) + scale(pct_owner_occ) 
+                                    + scale(education) + scale(pct_blk) + scale(hispanic)
+                                    + scale(older_pecent) + scale(prime_pecent) + scale(mid_pecent) 
+                                    + scale(date_since_social) + scale(date_since)
+                                    + scale(beds/population) 
+                                    + scale(obese) + scale(smoke)
+                                    + scale(mean_summer_temp) + scale(mean_winter_temp) + scale(mean_summer_rm) + scale(mean_winter_rm)
+                                    + (1|state)
+                                    + offset(log(population)), data = subset(aggregate_pm_census_cdc_test_beds,X2013.code>4)) 
+summary(mode.nb.random.off.rural)
+exp(summary(mode.nb.random.off.rural)[10]$coefficients[2,1])
+exp(summary(mode.nb.random.off.rural)[10]$coefficients[2,1] - 1.96*summary(mode.nb.random.off.rural)[10]$coefficients[2,2])
+exp(summary(mode.nb.random.off.rural)[10]$coefficients[2,1] + 1.96*summary(mode.nb.random.off.rural)[10]$coefficients[2,2])
+summary(mode.nb.random.off.rural)[10]$coefficients[2,4]
+
+#urban
+mode.nb.random.off.urban = glmer.nb(Deaths ~ mean_pm25 + factor(q_popdensity)
+                                    + scale(poverty)  + scale(log(medianhousevalue))
+                                    + scale(log(medhouseholdincome)) + scale(pct_owner_occ) 
+                                    + scale(education) + scale(pct_blk) + scale(hispanic)
+                                    + scale(older_pecent) + scale(prime_pecent) + scale(mid_pecent) 
+                                    + scale(date_since_social) + scale(date_since)
+                                    + scale(beds/population) 
+                                    + scale(obese) + scale(smoke)
+                                    + scale(mean_summer_temp) + scale(mean_winter_temp) + scale(mean_summer_rm) + scale(mean_winter_rm)
+                                    + (1|state)
+                                    + offset(log(population)), data = subset(aggregate_pm_census_cdc_test_beds,X2013.code<=4)) 
+summary(mode.nb.random.off.urban)
+exp(summary(mode.nb.random.off.urban)[10]$coefficients[2,1])
+exp(summary(mode.nb.random.off.urban)[10]$coefficients[2,1] - 1.96*summary(mode.nb.random.off.urban)[10]$coefficients[2,2])
+exp(summary(mode.nb.random.off.urban)[10]$coefficients[2,1] + 1.96*summary(mode.nb.random.off.urban)[10]$coefficients[2,2])
+summary(mode.nb.random.off.urban)[10]$coefficients[2,4]
+
+
+
+# main analysis with category PM
+aggregate_pm_census_cdc_test_beds$q_pm = 1
+quantile_pm = quantile(aggregate_pm_census_cdc_test_beds$mean_pm25,c(0.2,0.4,0.6,0.8))
+aggregate_pm_census_cdc_test_beds$q_pm[aggregate_pm_census_cdc_test_beds$mean_pm25<=quantile_pm[1]] = 1
+aggregate_pm_census_cdc_test_beds$q_pm[aggregate_pm_census_cdc_test_beds$mean_pm25>quantile_pm[1] &
+                                         aggregate_pm_census_cdc_test_beds$mean_pm25<=quantile_pm[2]] = 2
+aggregate_pm_census_cdc_test_beds$q_pm[aggregate_pm_census_cdc_test_beds$mean_pm25>quantile_pm[2] &
+                                         aggregate_pm_census_cdc_test_beds$mean_pm25<=quantile_pm[3]] = 3
+aggregate_pm_census_cdc_test_beds$q_pm[aggregate_pm_census_cdc_test_beds$mean_pm25>quantile_pm[3] &
+                                         aggregate_pm_census_cdc_test_beds$mean_pm25<=quantile_pm[4]] = 4
+aggregate_pm_census_cdc_test_beds$q_pm[aggregate_pm_census_cdc_test_beds$mean_pm25>quantile_pm[4]] = 5
+
+mode.nb.random.off.catepm = glmer.nb(Deaths ~ factor(q_pm) + factor(q_popdensity)
+                                     + scale(poverty)  + scale(log(medianhousevalue))
+                                     + scale(log(medhouseholdincome)) + scale(pct_owner_occ) 
+                                     + scale(education) + scale(pct_blk) + scale(hispanic)
+                                     + scale(older_pecent) + scale(prime_pecent) + scale(mid_pecent) 
+                                     + scale(date_since_social) + scale(date_since)
+                                     + scale(beds/population) 
+                                     + scale(obese) + scale(smoke)
+                                     + scale(mean_summer_temp) + scale(mean_winter_temp) + scale(mean_summer_rm) + scale(mean_winter_rm)
+                                     + (1|state)
+                                     + offset(log(population)), data = (aggregate_pm_census_cdc_test_beds)) 
+summary(mode.nb.random.off.urban)
+exp(summary(mode.nb.random.off.catepm)[10]$coefficients[2,1])
+exp(summary(mode.nb.random.off.catepm)[10]$coefficients[2,1] - 1.96*summary(mode.nb.random.off.catepm)[10]$coefficients[2,2])
+exp(summary(mode.nb.random.off.catepm)[10]$coefficients[2,1] + 1.96*summary(mode.nb.random.off.catepm)[10]$coefficients[2,2])
+summary(mode.nb.random.off.catepm)[10]$coefficients[2,4]
+
+exp(summary(mode.nb.random.off.catepm)[10]$coefficients[3,1])
+exp(summary(mode.nb.random.off.catepm)[10]$coefficients[3,1] - 1.96*summary(mode.nb.random.off.catepm)[10]$coefficients[3,2])
+exp(summary(mode.nb.random.off.catepm)[10]$coefficients[3,1] + 1.96*summary(mode.nb.random.off.catepm)[10]$coefficients[3,2])
+summary(mode.nb.random.off.catepm)[10]$coefficients[3,4]
+
+exp(summary(mode.nb.random.off.catepm)[10]$coefficients[4,1])
+exp(summary(mode.nb.random.off.catepm)[10]$coefficients[4,1] - 1.96*summary(mode.nb.random.off.catepm)[10]$coefficients[4,2])
+exp(summary(mode.nb.random.off.catepm)[10]$coefficients[4,1] + 1.96*summary(mode.nb.random.off.catepm)[10]$coefficients[4,2])
+summary(mode.nb.random.off.catepm)[10]$coefficients[4,4]
+
+exp(summary(mode.nb.random.off.catepm)[10]$coefficients[5,1])
+exp(summary(mode.nb.random.off.catepm)[10]$coefficients[5,1] - 1.96*summary(mode.nb.random.off.catepm)[10]$coefficients[5,2])
+exp(summary(mode.nb.random.off.catepm)[10]$coefficients[5,1] + 1.96*summary(mode.nb.random.off.catepm)[10]$coefficients[5,2])
+summary(mode.nb.random.off.catepm)[10]$coefficients[5,4]
+
+# tested
+mode.nb.random.off.tested = glmer.nb(Deaths ~ mean_pm25 + factor(q_popdensity)
+                                     + scale(poverty)  + scale(log(medianhousevalue))
+                                     + scale(log(medhouseholdincome)) + scale(pct_owner_occ) 
+                                     + scale(education) + scale(pct_blk) + scale(hispanic)
+                                     + scale(older_pecent) + scale(prime_pecent) + scale(mid_pecent) 
+                                     + scale(date_since_social) + scale(date_since)
+                                     + scale(beds/population) 
+                                     + scale(obese) + scale(smoke)
+                                     + scale(mean_summer_temp) + scale(mean_winter_temp) + scale(mean_summer_rm) + scale(mean_winter_rm)
+                                     + (1|state)
+                                     + scale(totalTestResults)  
+                                     + offset(log(population)), data = (aggregate_pm_census_cdc_test_beds)) 
+summary(mode.nb.random.off.tested)
+exp(summary(mode.nb.random.off.tested)[10]$coefficients[2,1])
+exp(summary(mode.nb.random.off.tested)[10]$coefficients[2,1] - 1.96*summary(mode.nb.random.off.tested)[10]$coefficients[2,2])
+exp(summary(mode.nb.random.off.tested)[10]$coefficients[2,1] + 1.96*summary(mode.nb.random.off.tested)[10]$coefficients[2,2])
+summary(mode.nb.random.off.tested)[10]$coefficients[2,4]
+
+# cli
+mode.nb.random.off.symptom = glmer.nb(Deaths ~ mean_pm25 + factor(q_popdensity)
+                                      + scale(poverty)  + scale(log(medianhousevalue))
+                                      + scale(log(medhouseholdincome)) + scale(pct_owner_occ) 
+                                      + scale(education) + scale(pct_blk) + scale(hispanic)
+                                      + scale(older_pecent) + scale(prime_pecent) + scale(mid_pecent) 
+                                      + scale(date_since_social) + scale(date_since)
+                                      + scale(beds/population) 
+                                      + scale(obese) + scale(smoke)
+                                      + scale(mean_summer_temp) + scale(mean_winter_temp) + scale(mean_summer_rm) + scale(mean_winter_rm)
+                                      + scale(cli)  
+                                      + (1|Province_State)
+                                      + offset(log(population)), data = (aggregate_pm_census_cdc_test_beds)) 
+summary(mode.nb.random.off.symptom)
+exp(summary(mode.nb.random.off.symptom)[10]$coefficients[2,1])
+exp(summary(mode.nb.random.off.symptom)[10]$coefficients[2,1] - 1.96*summary(mode.nb.random.off.symptom)[10]$coefficients[2,2])
+exp(summary(mode.nb.random.off.symptom)[10]$coefficients[2,1] + 1.96*summary(mode.nb.random.off.symptom)[10]$coefficients[2,2])
+summary(mode.nb.random.off.symptom)[10]$coefficients[2,4]
+
+
+# log(popdensity)
+mode.nb.random.off.main.logpopdensity = glmer.nb(Deaths ~ mean_pm25 + scale(log(popdensity))
+                                                 + scale(poverty)  + scale(log(medianhousevalue))
+                                                 + scale(log(medhouseholdincome)) + scale(pct_owner_occ) 
+                                                 + scale(education) + scale(pct_blk) + scale(hispanic)
+                                                 + scale(older_pecent) + scale(prime_pecent) + scale(mid_pecent) 
+                                                 + scale(date_since_social) + scale(date_since)
+                                                 + scale(beds/population) 
+                                                 + scale(obese) + scale(smoke)
+                                                 + scale(mean_summer_temp) + scale(mean_winter_temp) + scale(mean_summer_rm) + scale(mean_winter_rm)
+                                                 + (1|state)
+                                                 + offset(log(population)), data = aggregate_pm_census_cdc_test_beds)
+summary(mode.nb.random.off.main.logpopdensity)
+exp(summary(mode.nb.random.off.main.logpopdensity)[10]$coefficients[2,1])
+exp(summary(mode.nb.random.off.main.logpopdensity)[10]$coefficients[2,1] - 1.96*summary(mode.nb.random.off.main.logpopdensity)[10]$coefficients[2,2])
+exp(summary(mode.nb.random.off.main.logpopdensity)[10]$coefficients[2,1] + 1.96*summary(mode.nb.random.off.main.logpopdensity)[10]$coefficients[2,2])
+summary(mode.nb.random.off.main.logpopdensity)[10]$coefficients[2,4]
+
+
+# log
+mode.nb.random.log = glmer.nb(Deaths ~ mean_pm25 + factor(q_popdensity)
+                              + scale(poverty)  + scale(log(medianhousevalue))
+                              + scale(log(medhouseholdincome)) + scale(pct_owner_occ) 
+                              + scale(education) + scale(pct_blk) + scale(hispanic)
+                              + scale(older_pecent) + scale(prime_pecent) + scale(mid_pecent) 
+                              + scale(date_since_social) + scale(date_since)
+                              + scale(beds/population) 
+                              + scale(obese) + scale(smoke)
+                              + scale(mean_summer_temp) + scale(mean_winter_temp) + scale(mean_summer_rm) + scale(mean_winter_rm)
+                              + (1|state)
+                              + scale(log(population)), data = (aggregate_pm_census_cdc_test_beds)) 
+summary(mode.nb.random.log)
+exp(summary(mode.nb.random.log)[10]$coefficients[2,1])
+exp(summary(mode.nb.random.log)[10]$coefficients[2,1] - 1.96*summary(mode.nb.random.log)[10]$coefficients[2,2])
+exp(summary(mode.nb.random.log)[10]$coefficients[2,1] + 1.96*summary(mode.nb.random.log)[10]$coefficients[2,2])
+summary(mode.nb.random.log)[10]$coefficients[2,4]
+
+mode.nb.random.nonlog = glmer.nb(Deaths ~ mean_pm25 + factor(q_popdensity)
+                                 + scale(poverty)  + scale(log(medianhousevalue))
+                                 + scale(log(medhouseholdincome)) + scale(pct_owner_occ) 
+                                 + scale(education) + scale(pct_blk) + scale(hispanic)
+                                 + scale(older_pecent) + scale(prime_pecent) + scale(mid_pecent) 
+                                 + scale(date_since_social) + scale(date_since)
+                                 + scale(beds/population) 
+                                 + scale(obese) + scale(smoke)
+                                 + scale(mean_summer_temp) + scale(mean_winter_temp) + scale(mean_summer_rm) + scale(mean_winter_rm)
+                                 + (1|state)
+                                 + scale((population)), data = (aggregate_pm_census_cdc_test_beds)) 
+summary(mode.nb.random.nonlog)
+exp(summary(mode.nb.random.nonlog)[10]$coefficients[2,1])
+exp(summary(mode.nb.random.nonlog)[10]$coefficients[2,1] - 1.96*summary(mode.nb.random.nonlog)[10]$coefficients[2,2])
+exp(summary(mode.nb.random.nonlog)[10]$coefficients[2,1] + 1.96*summary(mode.nb.random.nonlog)[10]$coefficients[2,2])
+summary(mode.nb.random.nonlog)[10]$coefficients[2,4]
+
+# zero inflated
+glmmTMB.off.main = glmmTMB(Deaths ~ mean_pm25 + factor(q_popdensity)
+                           + scale(poverty)  + scale(log(medianhousevalue))
+                           + scale(log(medhouseholdincome)) + scale(pct_owner_occ) 
+                           + scale(education) + scale(pct_blk) + scale(hispanic)
+                           + scale(older_pecent) + scale(prime_pecent) + scale(mid_pecent) 
+                           + scale(date_since_social) + scale(date_since)
+                           + scale(beds/population) 
+                           + scale(obese) + scale(smoke)
+                           + scale(mean_summer_temp) + scale(mean_winter_temp) + scale(mean_summer_rm) + scale(mean_winter_rm)
+                           + offset(log(population)) + (1 | state), data = aggregate_pm_census_cdc_test_beds, 
+                           family = nbinom2, ziformula  = ~ 1
+)
+exp(summary(glmmTMB.off.main)[6]$coefficients$cond[2,1])
+exp(summary(glmmTMB.off.main)[6]$coefficients$cond[2,1] - 1.96*summary(glmmTMB.off.main)[6]$coefficients$cond[2,2])
+exp(summary(glmmTMB.off.main)[6]$coefficients$cond[2,1] + 1.96*summary(glmmTMB.off.main)[6]$coefficients$cond[2,2])
+summary(glmmTMB.off.main)[6]$coefficients$cond[2,4]
+
+# fixed NB
+glm.nb.off = glm.nb(Deaths ~  mean_pm25 + factor(q_popdensity)
+                    + scale(poverty)  + scale(log(medianhousevalue))
+                    + scale(log(medhouseholdincome)) + scale(pct_owner_occ) 
+                    + scale(education) + scale(pct_blk) + scale(hispanic) 
+                    + scale(older_pecent) + scale(prime_pecent) + scale(mid_pecent) 
+                    + scale(date_since_social) + scale(date_since)
+                    + scale(beds/population) 
+                    + scale(obese) + scale(smoke)
+                    + scale(mean_summer_temp) + scale(mean_winter_temp) + scale(mean_summer_rm) + scale(mean_winter_rm)
+                    + factor(state)
+                    + offset(log(population)), data = aggregate_pm_census_cdc_test_beds)
+summary(glm.nb.off)
+
+
+# spatial-correlation gamm
+gamm.off.main = gamm4(Deaths ~ mean_pm25 + factor(q_popdensity)
+                      + scale(poverty)  + scale(log(medianhousevalue))
+                      + scale(log(medhouseholdincome)) + scale(pct_owner_occ) 
+                      + scale(education) + scale(pct_blk) + scale(hispanic) 
+                      + scale(older_pecent) + scale(prime_pecent) + scale(mid_pecent) 
+                      + scale(date_since_social) + scale(date_since)
+                      + scale(beds/population) 
+                      + scale(obese) + scale(smoke)
+                      + scale(mean_summer_temp) + scale(mean_winter_temp) + scale(mean_summer_rm) + scale(mean_winter_rm)
+                      + offset(log(population)) + s(Lat) + s(Long_), data = aggregate_pm_census_cdc_test_beds, 
+                      family=negbin(1), random = ~(1|state))
+exp(summary(gamm.off.main.bi))
+
+
+# non-linear pm
+gamm.off.main.spm25 = gamm4(Deaths ~ s(mean_pm25) + factor(q_popdensity)
+                            + scale(poverty)  + scale(log(medianhousevalue))
+                            + scale(log(medhouseholdincome)) + scale(pct_owner_occ) 
+                            + scale(education) + scale(pct_blk) + scale(hispanic) 
+                            + scale(older_pecent) + scale(prime_pecent) + scale(mid_pecent) 
+                            + scale(date_since_social) + scale(date_since)
+                            + scale(beds/population) 
+                            + scale(obese) + scale(smoke)
+                            + scale(mean_summer_temp) + scale(mean_winter_temp) + scale(mean_summer_rm) + scale(mean_winter_rm)
+                            + offset(log(population)) + s(Lat) + s(Long_), data = aggregate_pm_census_cdc_test_beds, 
+                            family=negbin(1), random = ~(1|state))
+
+
