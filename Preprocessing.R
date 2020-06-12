@@ -75,6 +75,7 @@ state_test = merge(state_test,state_policy[,c(1,6)],by = "State")
 state_test$date_since_social = as.numeric(as.Date(Sys.Date()) - as.Date((strptime(state_test$stay_at_home, "%m/%d/%Y"))))
 state_test[is.na(state_test$date_since_social)==T,]$date_since_social = 0
 
+
 # pm2.5 average over 17 years
 county_pm_aggregated = county_pm %>% 
     group_by(fips) %>% 
@@ -118,13 +119,17 @@ aggregate_pm = merge(county_pm_aggregated,covid_us,by.x="fips",by.y = "FIPS")
 aggregate_pm_census = merge(aggregate_pm,county_census_aggregated2,by.x="fips",by.y = "fips")
 
 county_base_mortality$County.Code = str_pad(county_base_mortality$County.Code, 5, pad = "0")
+
 aggregate_pm_census_cdc = merge(aggregate_pm_census,county_base_mortality[,c(1,4,12:15)],by.x = "fips",by.y = "County.Code",all.x = T)
 
 aggregate_pm_census_cdc = aggregate_pm_census_cdc[is.na(aggregate_pm_census_cdc$fips) ==F,]
 
 aggregate_pm_census_cdc_test = merge(aggregate_pm_census_cdc,state_test[,-22],by.x="Province_State",by.y = "State")
 
+colnames(aggregate_pm_census_cdc_test)[2] <- "fips"
+
 aggregate_pm_census_cdc_test_beds = merge(aggregate_pm_census_cdc_test,county_hospitals_aggregated,by.x = "fips",by.y = "COUNTYFIPS",all.x = T)
+
 aggregate_pm_census_cdc_test_beds$beds[is.na(aggregate_pm_census_cdc_test_beds$beds)] = 0
 
 # Import outcome data from JHU CSSE, calculate the timing of the 1st confirmed case for each county
