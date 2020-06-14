@@ -13,8 +13,6 @@ knitr::opts_knit$set(root.dir = "../")
 ```
 
 ```{r imports, echo = F, results = 'hide',  warning=FALSE, message=FALSE}
-#### Library and Data Imports ####
-
 ## Load essential R packages
 source("modules/Source.R")
 
@@ -199,7 +197,7 @@ todays.case.data <- todays.case.data %>%
 ```
 
 ```{r Cases}
-selected_state <- "US"
+selected_state <- "NY"
 selected_feature <- "Obesity"
 geo.plot(selected_state, selected_feature)
 ```
@@ -464,6 +462,7 @@ ggplot.state <- function(selected.state="NY", y.value="cases", moving.avg.window
   
   
   covid_TS_counties.cases.plot <- covid_TS_counties_long.cases %>%
+    select(-c(countyFIPS, stateFIPS)) %>%
     filter(State == selected.state) %>%
     group_by(County) %>% 
     filter(n() >= moving.avg.window) %>%
@@ -481,9 +480,8 @@ ggplot.state <- function(selected.state="NY", y.value="cases", moving.avg.window
       
     NYC <- covid_TS_counties.cases.plot %>%
       filter(County %in% c("New York", "Kings", "Queens", "Bronx", "Richmond")) %>%
-      group_by(State, date, stateFIPS) %>%
+      group_by(State, date) %>%
       summarise(
-        countyFIPS = 1,
         County = "New York City",
         cases = sum(cases),
         deaths = sum(deaths),
@@ -500,26 +498,15 @@ ggplot.state <- function(selected.state="NY", y.value="cases", moving.avg.window
       rbind.data.frame(NYC)
       
   }
-  
-  state_pop <- ranking[ranking$State == selected.state,]$population
 
-  state <- covid_TS_counties.cases.plot %>%
-    group_by(State, date, stateFIPS) %>%
-    summarise(
-      countyFIPS = 0,
-      County = selected.state,
-      cases = sum(cases),
-      deaths = sum(deaths),
-      population = state_pop,
-      p_cases = sum(cases)*100000/state_pop,
-      p_deaths = sum(deaths)*100000/state_pop,
-      diff = sum(diff),
-      p_diff = sum(diff)*100000/state_pop,
-      d_diff = sum(d_diff),
-      p.d_diff = sum(p.d_diff)*100000/state_pop
-    )
+  state <- covid_TS_state_long.cases %>%
+    filter(State == selected.state) %>%
+    filter(n() >= moving.avg.window) %>%
+    mutate(diff = c(numeric(moving.avg.window-1), zoo::rollmean(diff, moving.avg.window, align = "right"))) %>%
+    mutate(p_diff = c(numeric(moving.avg.window-1), zoo::rollmean(p_diff, moving.avg.window, align = "right")))
   
-  n_county <- covid_TS_counties.cases.plot$County %>% unique() %>% length()
+  state$County = selected.state
+  
   covid_TS_counties.cases.plot <-  covid_TS_counties.cases.plot %>%
     group_by(County) %>%
     filter(max(cases) > case.cut) %>%
@@ -643,7 +630,7 @@ ggbar.overall <- function(selected.state = "VT", y.value="p_deaths", moving.avg.
     mutate(pct_increase =diff.ma/Values*100) %>%
     mutate(ma = c(numeric(moving.avg.window-1), zoo::rollmean(Values, moving.avg.window, align = "right")))
   state_cases[state_cases$diff.ma > 0 & state_cases$pct_increase > 10, "pct_increase"] <- 10
-  state_cases[is.na(state_cases$pct_increase) | state_cases$pct_increase < 0.01, "pct_increase"] <- NA
+  state_cases[is.na(state_cases$pct_increase) | state_cases$pct_increase <= 0, "pct_increase"] <- NA
   state_cases$Type <- "State MA"
   
   US.ma <- covid_TS_US_long.cases[c("date", y.value, my_diff)] %>%
@@ -771,7 +758,7 @@ gt.ranking <- function(entries = 50, order=function(x){x}) {
     gt() %>%
     tab_header(
       title = paste0("State Rankings"),
-      subtitle = "Based on 14 day change in COVID-19 Cases and Deaths"
+      subtitle = "Based on 14 day change in COVID-19 Cases"
     ) %>%
     tab_source_note(
       source_note = md("Data Source: [USA Facts](https://usafacts.org/visualizations/coronavirus-covid-19-spread-map/)")
