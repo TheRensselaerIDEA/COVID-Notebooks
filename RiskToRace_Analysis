@@ -9,6 +9,7 @@ library(pROC)
 library(VineCopula)
 library("PerformanceAnalytics")
 library(glmmTMB)
+library(ggplot2)
 #extra#
 library(ggplot2)
 library(gridExtra)
@@ -17,7 +18,7 @@ library(foreign)
 library(psych)
 library(ResourceSelection)
 library(ROCR)
-library(ggplot2)
+
 library(foreign)
 library(klaR)
 library(heplots)
@@ -43,7 +44,8 @@ mode.nb.random.off.main = glmer.nb(Deaths ~ pct_blk + factor(q_popdensity)
                                    + (1|state)+ scale(beds/population) 
                                    + offset(log(population)), data = aggregate_pm_census_cdc_test_beds)
 summary(mode.nb.random.off.main)
-exp(summary(mode.nb.random.off.main)[10]$coefficients[2,1])
+MRR_pct_blk<-exp(summary(mode.nb.random.off.main)[10]$coefficients[2,1])
+MRR_pct_blk
 exp(summary(mode.nb.random.off.main)[10]$coefficients[2,1] - 1.96*summary(mode.nb.random.off.main)[10]$coefficients[2,2])
 exp(summary(mode.nb.random.off.main)[10]$coefficients[2,1] + 1.96*summary(mode.nb.random.off.main)[10]$coefficients[2,2])
 summary(mode.nb.random.off.main)[10]$coefficients[2,4]
@@ -74,7 +76,81 @@ exp(summary(mode.nb.random.off.nyc)[10]$coefficients[2,1] - 1.96*summary(mode.nb
 exp(summary(mode.nb.random.off.nyc)[10]$coefficients[2,1] + 1.96*summary(mode.nb.random.off.nyc)[10]$coefficients[2,2])
 summary(mode.nb.random.off.nyc)[10]$coefficients[2,4]
 
-#Assumptions
+
+
+
+############MODELS FOR OTHER RACES########################################################
+
+#ASIAN--> huge 95% CI (52.9,63989), MRR= 1840, p val sig.
+asian.mode.nb.random.off.main = glmer.nb(Deaths ~ pct_asian + factor(q_popdensity)
+                                   + scale(log(medhouseholdincome))+scale(education)
+                                   + scale(date_since_social) + scale(date_since)
+                                   + (1|state)+ scale(beds/population) 
+                                   + offset(log(population)), data = aggregate_pm_census_cdc_test_beds)
+summary(asian.mode.nb.random.off.main)
+MRR_pct_asian<-exp(summary(asian.mode.nb.random.off.main)[10]$coefficients[2,1])
+MRR_pct_asian
+exp(summary(asian.mode.nb.random.off.main)[10]$coefficients[2,1] - 1.96*summary(asian.mode.nb.random.off.main)[10]$coefficients[2,2])
+exp(summary(asian.mode.nb.random.off.main)[10]$coefficients[2,1] + 1.96*summary(asian.mode.nb.random.off.main)[10]$coefficients[2,2])
+summary(asian.mode.nb.random.off.main)[10]$coefficients[2,4]
+
+#WHITE-MRR=.077, 95% CI=(.048,.122), p val is sig.
+white.mode.nb.random.off.main = glmer.nb(Deaths ~ pct_white + factor(q_popdensity)
+                                   + scale(log(medhouseholdincome))+scale(education)
+                                   + scale(date_since_social) + scale(date_since)
+                                   + (1|state)+ scale(beds/population) 
+                                   + offset(log(population)), data = aggregate_pm_census_cdc_test_beds)
+summary(white.mode.nb.random.off.main)
+MRR_pct_white<-exp(summary(white.mode.nb.random.off.main)[10]$coefficients[2,1])
+MRR_pct_white
+exp(summary(white.mode.nb.random.off.main)[10]$coefficients[2,1] - 1.96*summary(white.mode.nb.random.off.main)[10]$coefficients[2,2])
+exp(summary(white.mode.nb.random.off.main)[10]$coefficients[2,1] + 1.96*summary(white.mode.nb.random.off.main)[10]$coefficients[2,2])
+summary(white.mode.nb.random.off.main)[10]$coefficients[2,4]
+
+#NATIVE- MMR=3.18, 95% CI=(.899,11.28),p-value=.07, not sig.
+native.mode.nb.random.off.main = glmer.nb(Deaths ~ pct_native + factor(q_popdensity)
+                                   + scale(log(medhouseholdincome))+scale(education)
+                                   + scale(date_since_social) + scale(date_since)
+                                   + (1|state)+ scale(beds/population) 
+                                   + offset(log(population)), data = aggregate_pm_census_cdc_test_beds)
+summary(native.mode.nb.random.off.main)
+MRR_pct_native<-exp(summary(native.mode.nb.random.off.main)[10]$coefficients[2,1])
+MRR_pct_native
+exp(summary(native.mode.nb.random.off.main)[10]$coefficients[2,1] - 1.96*summary(native.mode.nb.random.off.main)[10]$coefficients[2,2])
+exp(summary(native.mode.nb.random.off.main)[10]$coefficients[2,1] + 1.96*summary(native.mode.nb.random.off.main)[10]$coefficients[2,2])
+summary(native.mode.nb.random.off.main)[10]$coefficients[2,4]
+
+#HISPANIC- MRR- 1.10, 95% CI= (1.09,1.10), p-value is sig.
+hispanic.mode.nb.random.off.main = glmer.nb(Deaths ~ hispanic + factor(q_popdensity)
+                                   + scale(log(medhouseholdincome))+scale(education)
+                                   + scale(date_since_social) + scale(date_since)
+                                   + (1|state)+ scale(beds/population) 
+                                   + offset(log(population)), data = aggregate_pm_census_cdc_test_beds)
+summary(hispanic.mode.nb.random.off.main)
+e<-exp(summary(hispanic.mode.nb.random.off.main)[10]$coefficients[2,1])
+e
+exp(summary(hispanic.mode.nb.random.off.main)[10]$coefficients[2,1] - 1.96*summary(hispanic.mode.nb.random.off.main)[10]$coefficients[2,2])
+exp(summary(hispanic.mode.nb.random.off.main)[10]$coefficients[2,1] + 1.96*summary(hispanic.mode.nb.random.off.main)[10]$coefficients[2,2])
+summary(hispanic.mode.nb.random.off.main)[10]$coefficients[2,4]
+
+###Comparative Graphs########
+x<-c("% Black", "%Asian","%White","%Native","%Hispanic")
+x<-c(1:5)
+y<-c(17.44,1840,.077,3.19,1.1)
+y_below<-c(10.27,52.9,0.04,0.899,1.09)
+y_above<-c(29.63,63989,0.122,11.28,1.11)
+plot(x,y,xlab = "% Black   %Asian   %White   %Native   %Hispanic", ylab="MRR",pch=16,cex=2)
+arrows(x0=x, y0=y_below, x1=x, y1=y_above, code=3, angle=90, length=0.1)
+
+#graphs w/o %Asian
+x<-c("% Black", "%White","%Native","%Hispanic")
+x<-c(1:4)
+y<-c(17.44,.077,3.19,1.1)
+y_below<-c(10.27,0.04,0.899,1.09)
+y_above<-c(29.63,0.122,11.28,1.11)
+plot(x,y,xlab = "% Black     %White     %Native     %Hispanic", ylab="MRR",xaxt="none", ylim=c(1,30), pch=16,cex=2)
+arrows(x0=x, y0=y_below, x1=x, y1=y_above, code=3, angle=90, length=0.1)
+#Assumptions(only for pct_blk model for now) #############################################
 
 Deaths1<-aggregate_pm_census_cdc_test_beds$Deaths
 pct_blk1<-aggregate_pm_census_cdc_test_beds$pct_blk
