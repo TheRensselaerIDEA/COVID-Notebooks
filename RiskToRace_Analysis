@@ -11,6 +11,7 @@ library("PerformanceAnalytics")
 library(glmmTMB)
 library(ggplot2)
 library(cvms)
+library(sgof)
 #extra#
 library(ggplot2)
 library(gridExtra)
@@ -39,7 +40,7 @@ library(robust)
 library(AER)
 
 # Main- mixed effects negative binomial, deaths from percent black to identify risk to specific race
-mode.nb.random.off.main = glmer.nb(Deaths ~ pct_blk + factor(q_popdensity)
+mode.nb.random.off.main = glmer.nb(Deaths ~ scale(pct_blk) + factor(q_popdensity)
                                    + scale(log(medhouseholdincome))+scale(education)
                                    + scale(date_since_social) + scale(date_since)
                                    + (1|state)+ scale(beds/population) 
@@ -52,7 +53,7 @@ exp(summary(mode.nb.random.off.main)[10]$coefficients[2,1] + 1.96*summary(mode.n
 summary(mode.nb.random.off.main)[10]$coefficients[2,4]
 
 #zero-inflated for race- nearly the same result as the main analysis
-glmmTMB.off.main = glmmTMB(Deaths ~ pct_blk + factor(q_popdensity)
+glmmTMB.off.main = glmmTMB(Deaths ~ scale(pct_blk) + factor(q_popdensity)
                            + scale(log(medhouseholdincome))+scale(education)
                            + scale(date_since_social) + scale(date_since)
                            + (1|state) + scale(beds/population) 
@@ -65,7 +66,7 @@ exp(summary(glmmTMB.off.main)[6]$coefficients$cond[2,1] + 1.96*summary(glmmTMB.o
 summary(glmmTMB.off.main)[6]$coefficients$cond[2,4]
 
 # exclude NY Metro- slighlty lower MMR for pct_blk, possibly due to high pct_blk incidence in high mortality area like nyc
-mode.nb.random.off.nyc = glmer.nb(Deaths ~ pct_blk + factor(q_popdensity)
+mode.nb.random.off.nyc = glmer.nb(Deaths ~ scale(pct_blk) + factor(q_popdensity)
                                   + scale(log(medhouseholdincome))+scale(education)
                                   + scale(date_since_social) + scale(date_since)
                                   + (1|state) + scale(beds/population)                           + (1|state)
@@ -82,8 +83,8 @@ summary(mode.nb.random.off.nyc)[10]$coefficients[2,4]
 
 ############MODELS FOR OTHER RACES########################################################
 
-#ASIAN--> huge 95% CI (52.9,63989), MRR= 1840, p val sig.
-asian.mode.nb.random.off.main = glmer.nb(Deaths ~ pct_asian + factor(q_popdensity)
+#ASIAN--> huge 95% CI (1.07,1.233), MRR= 1.15, p val sig.
+asian.mode.nb.random.off.main = glmer.nb(Deaths ~ scale(pct_asian) + factor(q_popdensity)
                                    + scale(log(medhouseholdincome))+scale(education)
                                    + scale(date_since_social) + scale(date_since)
                                    + (1|state)+ scale(beds/population) 
@@ -96,7 +97,7 @@ exp(summary(asian.mode.nb.random.off.main)[10]$coefficients[2,1] + 1.96*summary(
 summary(asian.mode.nb.random.off.main)[10]$coefficients[2,4]
 
 # exclude NY metro (ASIAN)-MRR:1706.2, 95 CI= (53.47,5443),p-value=sig.
-mode.nb.random.off.nyc = glmer.nb(Deaths ~ pct_asian + factor(q_popdensity)
+mode.nb.random.off.nyc = glmer.nb(Deaths ~ scale(pct_asian) + factor(q_popdensity)
                                   + scale(log(medhouseholdincome))+scale(education)
                                   + scale(date_since_social) + scale(date_since)
                                   + (1|state) + scale(beds/population)                           + (1|state)
@@ -109,7 +110,7 @@ exp(summary(mode.nb.random.off.nyc)[10]$coefficients[2,1] + 1.96*summary(mode.nb
 summary(mode.nb.random.off.nyc)[10]$coefficients[2,4]
 
 #WHITE-MRR=.077, 95% CI=(.048,.122), p val is sig.
-white.mode.nb.random.off.main = glmer.nb(Deaths ~ pct_white + factor(q_popdensity)
+white.mode.nb.random.off.main = glmer.nb(Deaths ~ scale(pct_white) + factor(q_popdensity)
                                    + scale(log(medhouseholdincome))+scale(education)
                                    + scale(date_since_social) + scale(date_since)
                                    + (1|state)+ scale(beds/population) 
@@ -122,7 +123,7 @@ exp(summary(white.mode.nb.random.off.main)[10]$coefficients[2,1] + 1.96*summary(
 summary(white.mode.nb.random.off.main)[10]$coefficients[2,4]
 
 #NATIVE- MMR=3.18, 95% CI=(.899,11.28),p-value=.07, not sig.
-native.mode.nb.random.off.main = glmer.nb(Deaths ~ pct_native + factor(q_popdensity)
+native.mode.nb.random.off.main = glmer.nb(Deaths ~ scale(pct_native) + factor(q_popdensity)
                                    + scale(log(medhouseholdincome))+scale(education)
                                    + scale(date_since_social) + scale(date_since)
                                    + (1|state)+ scale(beds/population) 
@@ -135,7 +136,7 @@ exp(summary(native.mode.nb.random.off.main)[10]$coefficients[2,1] + 1.96*summary
 summary(native.mode.nb.random.off.main)[10]$coefficients[2,4]
 
 #HISPANIC- MRR- 1.10, 95% CI= (1.09,1.10), p-value is sig.
-hispanic.mode.nb.random.off.main = glmer.nb(Deaths ~ hispanic + factor(q_popdensity)
+hispanic.mode.nb.random.off.main = glmer.nb(Deaths ~ scale(hispanic) + factor(q_popdensity)
                                    + scale(log(medhouseholdincome))+scale(education)
                                    + scale(date_since_social) + scale(date_since)
                                    + (1|state)+ scale(beds/population) 
@@ -149,7 +150,7 @@ summary(hispanic.mode.nb.random.off.main)[10]$coefficients[2,4]
 
 
 #########ALL RACES COMBINED####################
-combined.mode.nb.random.off.main = glmer.nb(Deaths ~ hispanic + pct_blk + pct_asian + pct_white + pct_native
+combined.mode.nb.random.off.main = glmer.nb(Deaths ~ scale(hispanic) + scale(pct_blk) + scale(pct_asian) + scale(pct_white) + scale(pct_native)
                                             + factor(q_popdensity)
                                             + scale(log(medhouseholdincome))+scale(education)
                                             + scale(date_since_social) + scale(date_since)
@@ -191,23 +192,47 @@ Variance<-var(aggregate_pm_census_cdc_test_beds$Deaths) # calculate variance
 Ratio<-(Variance/Mean)
 Ratio
 
-#ROC/AUC Analysis of True positive vs False positive hit rate
-blk.pred.fit.glmer <- predict(mode.nb.random.off.main, newdata = aggregate_pm_census_cdc_test_beds, type = "response")
-asian.pred.fit.glmer<-predict(asian.mode.nb.random.off.main, newdata = aggregate_pm_census_cdc_test_beds, type = "response")
-white.pred.fit.glmer<-predict(white.mode.nb.random.off.main, newdata = aggregate_pm_census_cdc_test_beds, type = "response")
-native.pred.fit.glmer<-predict(native.mode.nb.random.off.main, newdata = aggregate_pm_census_cdc_test_beds, type = "response")
-hispanic.pred.fit.glmer<-predict(hispanic.mode.nb.random.off.main, newdata = aggregate_pm_census_cdc_test_beds, type = "response")
-#trying out multiclass.roc-93.4%, MULTICLASS ROC can't be graphed, no difference between 'predict' statements
-multiroccurve<-(multiclass.roc(aggregate_pm_census_cdc_test_beds$Deaths, pred.fit.glmer,percent = TRUE))
-multiroccurve2<-(multiclass.roc(aggregate_pm_census_cdc_test_beds$Deaths, projections,percent = TRUE))
-#asian- 92.97%
-asian.multiroccurve<-(multiclass.roc(aggregate_pm_census_cdc_test_beds$Deaths, asian.pred.fit.glmer,percent = TRUE))
-#white- 93.3%
-white.multiroccurve<-(multiclass.roc(aggregate_pm_census_cdc_test_beds$Deaths, white.pred.fit.glmer,percent = TRUE))
-#native-93.43%
-native.multiroccurve<-(multiclass.roc(aggregate_pm_census_cdc_test_beds$Deaths, native.pred.fit.glmer,percent = TRUE))
-#hispanic-93.39%
-hispanic.multiroccurve<-(multiclass.roc(aggregate_pm_census_cdc_test_beds$Deaths, hispanic.pred.fit.glmer,percent = TRUE))
+#Benjamini-Hochberg, probably need to generalize coeff. term
+#Get p-values of each coefficient-replace first coefficient term to see other terms
+blk.p.val.list<-summary(mode.nb.random.off.main)[10]$coefficients[2:10,4]
+asian.p.val.list<-summary(asian.mode.nb.random.off.main)[10]$coefficients[2:10,4]
+white.p.val.list<-summary(white.mode.nb.random.off.main)[10]$coefficients[2:10,4]
+native.p.val.list<-summary(native.mode.nb.random.off.main)[10]$coefficients[2:10,4]
+hispanic.p.val.list<-summary(hispanic.mode.nb.random.off.main)[10]$coefficients[2:10,4]
+combined.p.val.list<-summary(combined.mode.nb.random.off.main)[10]$coefficients[2:14,4]
+
+#BH Multiple Hyp test
+#Blk- no change in number of significant terms, FDR=2e-04
+blk.MH.test<-BH(p.val.list, alpha = 0.05)
+summary(blk.MH.test)
+plot(blk.MH.test)
+
+#Asian- no change in number of significant terms, FDR=.0011
+asian.MH.test<-BH(asian.p.val.list, alpha = 0.05)
+summary(asian.MH.test)
+plot(asian.MH.test)
+
+#White- no change in number of significant terms, FDR=3e-04
+white.MH.test<-BH(white.p.val.list, alpha = 0.05)
+summary(white.MH.test)
+plot(white.MH.test)
+
+#Native- no change in number of significant terms, FDR=0
+native.MH.test<-BH(native.p.val.list, alpha = 0.05)
+summary(native.MH.test)
+plot(native.MH.test)
+
+#Hispanic- no change in number of significant terms, FDR=0
+hispanic.MH.test<-BH(hispanic.p.val.list, alpha = 0.05)
+summary(hispanic.MH.test)
+plot(hispanic.MH.test)
+
+#Combined- no change in number of significant terms, FDR=.0014
+combined.MH.test<-BH(combined.p.val.list, alpha = 0.05)
+summary(combined.MH.test)
+plot(combined.MH.test)
+
+
 
 
 #vuong-functional, need to interpret resultsmaybe not necessary?
@@ -254,6 +279,24 @@ plot (p)
 
 
 
+#TABLED FOR NOW
+#ROC/AUC Analysis of True positive vs False positive hit rate
+blk.pred.fit.glmer <- predict(mode.nb.random.off.main, newdata = aggregate_pm_census_cdc_test_beds, type = "response")
+asian.pred.fit.glmer<-predict(asian.mode.nb.random.off.main, newdata = aggregate_pm_census_cdc_test_beds, type = "response")
+white.pred.fit.glmer<-predict(white.mode.nb.random.off.main, newdata = aggregate_pm_census_cdc_test_beds, type = "response")
+native.pred.fit.glmer<-predict(native.mode.nb.random.off.main, newdata = aggregate_pm_census_cdc_test_beds, type = "response")
+hispanic.pred.fit.glmer<-predict(hispanic.mode.nb.random.off.main, newdata = aggregate_pm_census_cdc_test_beds, type = "response")
+#trying out multiclass.roc-93.4%, MULTICLASS ROC can't be graphed, no difference between 'predict' statements
+multiroccurve<-(multiclass.roc(aggregate_pm_census_cdc_test_beds$Deaths, pred.fit.glmer,percent = TRUE))
+multiroccurve2<-(multiclass.roc(aggregate_pm_census_cdc_test_beds$Deaths, projections,percent = TRUE))
+#asian- 92.97%
+asian.multiroccurve<-(multiclass.roc(aggregate_pm_census_cdc_test_beds$Deaths, asian.pred.fit.glmer,percent = TRUE))
+#white- 93.3%
+white.multiroccurve<-(multiclass.roc(aggregate_pm_census_cdc_test_beds$Deaths, white.pred.fit.glmer,percent = TRUE))
+#native-93.43%
+native.multiroccurve<-(multiclass.roc(aggregate_pm_census_cdc_test_beds$Deaths, native.pred.fit.glmer,percent = TRUE))
+#hispanic-93.39%
+hispanic.multiroccurve<-(multiclass.roc(aggregate_pm_census_cdc_test_beds$Deaths, hispanic.pred.fit.glmer,percent = TRUE))
 ##hosmer-lem. p-value over .05 means good fit, but we get neg chi square so the tst stat of Pr will always be above neg chi square
 #hoslem.test(aggregate_pm_census_cdc_test_beds$Deaths, fitted(mode.nb.random.off.main), g=10)
 #ANOVA for glmer packages, use for F-stat
@@ -497,8 +540,8 @@ mode.nb.random.off.catepm = glmer.nb(Deaths ~ factor(q_pm) + factor(q_popdensity
                                      + scale(log(medhouseholdincome)) + scale(pct_owner_occ) 
                                      + scale(education) + scale(pct_blk) + scale(hispanic)
                                      + scale(older_pecent) + scale(prime_pecent) + scale(mid_pecent) 
-                                     + scale(date_since_social) + scale(date_since)
-                                     + scale(beds/population) 
+                                     + scale(date_since_social) + "scale(date_since)"
+                                     + "scale(beds/population)"
                                      + scale(obese) + scale(smoke)
                                      + scale(mean_summer_temp) + scale(mean_winter_temp) + scale(mean_summer_rm) + scale(mean_winter_rm)
                                      + (1|state)
