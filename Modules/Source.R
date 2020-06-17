@@ -24,8 +24,35 @@
 # NSAPHutils  # For threading w/ big data
 # NSAPHplatform
 # lubridate
+# eatGet      # Saving glmer models to memory
+#~~~~~~~~~~~~~~~ From Shayom's code
+# caret
+# blmeco
+# pROC
+# VineCopula
+# PerformanceAnalytics
+# ggfortify
+# foreign
+# psych
+# ResourceSelection
+# ROCR
+# klaR
+# heplots
+# hermite
+# lattice
+# plyr
+# boot
+# DescTools
+# car
+# multcompView
+# emmeans
+# pscl
+# rcompanion
+# robust
+# AER
 
-dependencies <- c("devtools", "lubridate", "data.table", "httr", "RCurl", "tidyverse", "sp", "raster", "dplyr", "sf", "stringr" , "ggplot2", "grid", "pBrackets", "gridExtra", "lme4", "maps", "MASS", "gamm4", "glmmTMB")
+
+dependencies <- c("AER" ,"robust", "rcompanion", "pscl",  "emmeans", "multcompView", "car", "DescTools", "boot", "plyr", "lattice", "hermite", "heplots", "klaR", "ROCR", "ResourceSelection", "psych", "foreign", "ggfortify", "PerformanceAnalytics", "VineCopula", "pROC", "blmeco", "caret", "eatGet","devtools", "lubridate", "data.table", "httr", "RCurl", "tidyverse", "sp", "raster", "dplyr", "sf", "stringr" , "ggplot2", "grid", "pBrackets", "gridExtra", "lme4", "maps", "MASS", "gamm4", "glmmTMB")
 
 # Check and install packages not yet available
 install.dependencies <- dependencies[!(dependencies %in% installed.packages()[, "Package"])]
@@ -63,3 +90,32 @@ if (!require("NSAPHutils")){
 #devtools::install_github("NSAPH/NSAPHplatform")
 #library("NSAPHplatform")
 library("lubridate")
+
+
+
+library('caret')
+library('blmeco')
+library(pROC)
+library(VineCopula)
+library("PerformanceAnalytics")
+
+library(ggfortify)
+library(foreign)
+library(psych)
+library(ResourceSelection)
+library(ROCR)
+
+library(klaR)
+library(heplots)
+library(hermite)
+library(lattice)
+library(plyr)
+library(boot)
+library(DescTools)
+library(car)
+library(multcompView)
+library(emmeans)
+library(pscl)
+library(rcompanion)
+library(robust)
+library(AER)
