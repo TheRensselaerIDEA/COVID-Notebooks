@@ -32,6 +32,7 @@ age65plus_data_nyscounty <- rename(age65plus_data_nyscounty, c("pct_age65" = `% 
 
 age65plus_data_uscounty <- read_csv("Data/age65plus_data_uscounty.csv")
 age65plus_data_uscounty <- rename(age65plus_data_uscounty, c("pct_age65" = `% 65 and over`))
+age65plus_data_uscounty$FIPS = str_pad(age65plus_data_uscounty$FIPS, 5, pad = "0")
 
 #------------------------------------------------------------------------------------------------------------------------------------------
 # Heart Disease / Cardiovascular Disease 
