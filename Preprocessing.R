@@ -277,6 +277,15 @@ aggregate_pm_census_cdc_test_beds$cli  =
            }else {return(NA)}})
 
 aggregate_pm_census_cdc_test_beds_age = merge(aggregate_pm_census_cdc_test_beds, age65plus_data_uscounty[, c("pct_age65", "FIPS")], by.x = "fips", by.y = "FIPS", all.x = T)
+<<<<<<< HEAD
+=======
+
+aggregate_pm_census_cdc_test_beds_age_diabete = merge(aggregate_pm_census_cdc_test_beds_age, diabetes_data_uscounty[, c("pct_diabetes", "FIPS")], by.x = "fips", by.y = "FIPS", all.x = T)
+
+aggregate_pm_census_cdc_test_beds_age_diabete_obesity = merge(aggregate_pm_census_cdc_test_beds_age_diabete, obesity_data_uscounty[, c("pct_obesity", "FIPS")], by.x = "fips", by.y = "FIPS", all.x = T)
+
+saveRDS(aggregate_pm_census_cdc_test_beds_age_diabete_obesity, "PM25data.Rds")
+>>>>>>> c57de47e2d15e59f9b6e3151274645e077c2afd6
 
 aggregate_pm_census_cdc_test_beds_age_diabete = merge(aggregate_pm_census_cdc_test_beds_age, diabetes_data_uscounty[, c("pct_diabetes", "FIPS")], by.x = "fips", by.y = "FIPS", all.x = T)
 

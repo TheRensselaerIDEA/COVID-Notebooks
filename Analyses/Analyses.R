@@ -197,7 +197,7 @@ mode.nb.random.off.catepm = glmer.nb(Deaths ~ factor(q_pm) + factor(q_popdensity
                                 + scale(mean_summer_temp) + scale(mean_winter_temp) + scale(mean_summer_rm) + scale(mean_winter_rm)
                                 + (1|state)
                                 + offset(log(population)), data = (aggregate_pm_census_cdc_test_beds)) 
-summary(mode.nb.random.off.urban)
+summary(mode.nb.random.off.catepm)
 exp(summary(mode.nb.random.off.catepm)[10]$coefficients[2,1])
 exp(summary(mode.nb.random.off.catepm)[10]$coefficients[2,1] - 1.96*summary(mode.nb.random.off.catepm)[10]$coefficients[2,2])
 exp(summary(mode.nb.random.off.catepm)[10]$coefficients[2,1] + 1.96*summary(mode.nb.random.off.catepm)[10]$coefficients[2,2])

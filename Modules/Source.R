@@ -90,6 +90,7 @@ if (!require("NSAPHutils")){
 #devtools::install_github("NSAPH/NSAPHplatform")
 #library("NSAPHplatform")
 library("lubridate")
+<<<<<<< HEAD
 
 
 
@@ -119,3 +120,6 @@ library(pscl)
 library(rcompanion)
 library(robust)
 library(AER)
+=======
+library("usmap")
+>>>>>>> c57de47e2d15e59f9b6e3151274645e077c2afd6

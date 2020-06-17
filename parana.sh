@@ -7,3 +7,5 @@ declare -a file_names=("aggregate_beds.R" "log_pop.R" "smoking_bmi.R" "lt_10_con
 for file in "${file_names[@]}"; do {
   echo `Rscript Analyses/$file` &
 } done
+
+#echo `Rscript Figure.R`
