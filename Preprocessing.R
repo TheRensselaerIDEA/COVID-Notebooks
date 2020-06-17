@@ -3,6 +3,77 @@ knitr::opts_knit$set(root.dir = "./")
 
 source("./Modules/Source.R")
 
+# Import social determinants datesets
+#------------------------------------------------------------------------------------------------------------------------------------------
+# COPD datasets
+
+COPD_national <- read_csv("Data/COPD_data_states.csv")
+
+COPD_nys_county <- read_csv("Data/COPD_data_nyscounty.csv")
+COPD_nys_county <- subset(COPD_nys_county, select = -c(`DSRIP Region Sort Key`))
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+# High Cholesterol (Hyperlipidemia) datasets
+
+highcholesterol_data_states <- read_csv("Data/highcholesterol_data_states.csv")
+highcholesterol_data_states <- subset(highcholesterol_data_states, select = -c(Rank))
+
+highcholesterol_data_nyscounty <- read_csv("Data/highcholesterol_data_nyscounty.csv")
+highcholesterol_data_nyscounty <- subset(highcholesterol_data_nyscounty, select = -c(`DSRIP Region Sort Key`))
+#------------------------------------------------------------------------------------------------------------------------------------------
+# Age 65+ datasets
+
+age65plus_data_states <- read_csv("Data/age65plus_data_states.csv")
+age65plus_data_states$pct_age65 <- age65plus_data_states$PopulationEstJuly2018_65plus/age65plus_data_states$PopulationEstJuly2018*100
+
+
+age65plus_data_nyscounty <- read_csv("Data/age65plus_data_nyscounty.csv")
+age65plus_data_nyscounty <- subset(age65plus_data_nyscounty, select = -c(State))
+age65plus_data_nyscounty <- rename(age65plus_data_nyscounty, c(pct_age65 = `% 65 and over`))
+
+age65plus_data_uscounty <- read_csv("Data/age65plus_data_uscounty.csv")
+age65plus_data_uscounty <- rename(age65plus_data_uscounty, c(pct_age65 = `% 65 and over`))
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+# Heart Disease / Cardiovascular Disease 
+
+heartdisease_deaths_data_states <- read_csv("Data/HeartDisease_DeathRate_States_CDC_2015.csv")
+
+heartdisease_deaths_data_nyscounty <- read_csv("Data/heartdiseasedeaths_data_nyscounty.csv")
+
+heartdisease_data_nyscounty <- read_csv("Data/heartdisease_data_nyscounty.csv")
+heartdisease_data_nyscounty <- subset(heartdisease_data_nyscounty, select = -c(`DSRIP Region Sort Key`))
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+# Adult Obesity
+
+obesity_data_states <- read_csv("Data/obesity_data_states.csv")
+obesity_data_states <- rename(obesity_data_states, c(pct_obesity = pct_Adults_with_Obesity))
+
+obesity_data_nyscounty <- read_csv("Data/diabetesobesity_data_nyscounty.csv")
+obesity_data_nyscounty <- subset(obesity_data_nyscounty, select = -c(pct_Adults_with_Diabetes, no_Food_Insecure, pct_Food_Insecure))
+obesity_data_nyscounty <- rename(obesity_data_nyscounty, c(pct_obesity = pct_Adults_with_Obesity))
+
+obesity_data_uscounty <- read_csv("Data/adultobesity_data_uscounty.csv")
+obesity_data_uscounty$FIPS <- age65plus_data_uscounty$FIPS
+obesity_data_uscounty <- rename(obesity_data_uscounty, c(pct_obesity = `% Adults with Obesity`))
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+# Diabetes
+
+diabetes_data_states <- read_csv("Data/diabetes_data_states.csv")
+diabetes_data_states <- rename(diabetes_data_states, c(pct_diabetes = pct_Adults_with_Diabetes))
+
+diabetes_data_nyscounty <- read_csv("Data/diabetesobesity_data_nyscounty.csv")
+diabetes_data_nyscounty <- subset(diabetes_data_nyscounty, select = -c(pct_Adults_with_Obesity, no_Food_Insecure, pct_Food_Insecure))
+diabetes_data_nyscounty <- rename(diabetes_data_nyscounty, c(pct_diabetes = pct_Adults_with_Diabetes))
+
+diabetes_data_uscounty <- read_csv("Data/diabetes_data_uscounty.csv")
+diabetes_data_uscounty$FIPS <- age65plus_data_uscounty$FIPS
+diabetes_data_uscounty <- rename(diabetes_data_uscounty, c(pct_diabetes = `% Adults with Diabetes`))
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+
 date_of_study = "05-05-2020"
 # Historical data
 covid_hist = read.csv(text=getURL("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/03-30-2020.csv"))
@@ -72,14 +143,15 @@ colnames(state_policy)[6] = "stay_at_home"
 # merging data
 state_test = merge(state_test,statecode,by.x = "state" ,by.y = "Code" )
 state_test = merge(state_test,state_policy[,c(1,6)],by = "State")
-state_test$date_since_social = as.numeric(as.Date(Sys.Date()) - as.Date((strptime(state_test$stay_at_home, "%m/%d/%Y"))))
+#state_test$date_since_social = as.numeric(as.Date(Sys.Date()) - as.Date((strptime(state_test$stay_at_home, "%m/%d/%Y"))))
+state_test$date_since_social = as.numeric(as.Date(strptime(date_of_study, "%m-%d-%Y")) - as.Date((strptime(state_test$stay_at_home, "%m/%d/%Y"))))
 state_test[is.na(state_test$date_since_social)==T,]$date_since_social = 0
 
 
 # pm2.5 average over 17 years
 county_pm_aggregated = county_pm %>% 
-    group_by(fips) %>% 
-    summarise(mean_pm25 = mean(pm25))
+  group_by(fips) %>% 
+  summarise(mean_pm25 = mean(pm25))
 
 # temperature and relative humidity average over 17 years
 county_temp_aggregated = county_temp %>% 
@@ -177,19 +249,19 @@ aggregate_pm_census_cdc_test_beds[aggregate_pm_census_cdc_test_beds$Admin2=="New
   subset(aggregate_pm_census_cdc_test_beds, Admin2=="Richmond"& Province_State=="New York")$beds
 
 vars = c("mean_pm25","poverty","medianhousevalue","medhouseholdincome","pct_owner_occ",
-        "education","pct_blk","hispanic","older_pecent","prime_pecent","mid_pecent","obese","smoke",
-       "mean_summer_temp","mean_summer_rm","mean_winter_temp","mean_winter_rm")
+         "education","pct_blk","hispanic","older_pecent","prime_pecent","mid_pecent","obese","smoke",
+         "mean_summer_temp","mean_summer_rm","mean_winter_temp","mean_winter_rm")
 aggregate_pm_census_cdc_test_beds[aggregate_pm_census_cdc_test_beds$Admin2=="New York City",][,vars] = 
-sapply(vars,function(var){
-  (subset(aggregate_pm_census_cdc_test_beds,Admin2=="New York City"& Province_State=="New York")[,var]*subset(aggregate_pm_census_cdc_test_beds,Admin2=="New York City"& Province_State=="New York")$population +
-    subset(aggregate_pm_census_cdc_test_beds, Admin2=="Bronx"& Province_State=="New York")[,var]*subset(aggregate_pm_census_cdc_test_beds,Admin2=="Bronx"& Province_State=="New York")$population +
-    subset(aggregate_pm_census_cdc_test_beds, Admin2=="Kings"& Province_State=="New York")[,var]*subset(aggregate_pm_census_cdc_test_beds,Admin2=="Kings"& Province_State=="New York")$population +
-    subset(aggregate_pm_census_cdc_test_beds, Admin2=="Queens"& Province_State=="New York")[,var]*subset(aggregate_pm_census_cdc_test_beds,Admin2=="Queens"& Province_State=="New York")$population +
-    subset(aggregate_pm_census_cdc_test_beds, Admin2=="Richmond"& Province_State=="New York")[,var]*subset(aggregate_pm_census_cdc_test_beds,Admin2=="Richmond"& Province_State=="New York")$population)/(
-      subset(aggregate_pm_census_cdc_test_beds,Admin2=="New York City"& Province_State=="New York")$population+subset(aggregate_pm_census_cdc_test_beds,Admin2=="Bronx"& Province_State=="New York")$population+
-      subset(aggregate_pm_census_cdc_test_beds, Admin2=="Kings"& Province_State=="New York")$population+ subset(aggregate_pm_census_cdc_test_beds,Admin2=="Queens"& Province_State=="New York")$population +
-        subset(aggregate_pm_census_cdc_test_beds,Admin2=="Richmond"& Province_State=="New York")$population)
-})
+  sapply(vars,function(var){
+    (subset(aggregate_pm_census_cdc_test_beds,Admin2=="New York City"& Province_State=="New York")[,var]*subset(aggregate_pm_census_cdc_test_beds,Admin2=="New York City"& Province_State=="New York")$population +
+       subset(aggregate_pm_census_cdc_test_beds, Admin2=="Bronx"& Province_State=="New York")[,var]*subset(aggregate_pm_census_cdc_test_beds,Admin2=="Bronx"& Province_State=="New York")$population +
+       subset(aggregate_pm_census_cdc_test_beds, Admin2=="Kings"& Province_State=="New York")[,var]*subset(aggregate_pm_census_cdc_test_beds,Admin2=="Kings"& Province_State=="New York")$population +
+       subset(aggregate_pm_census_cdc_test_beds, Admin2=="Queens"& Province_State=="New York")[,var]*subset(aggregate_pm_census_cdc_test_beds,Admin2=="Queens"& Province_State=="New York")$population +
+       subset(aggregate_pm_census_cdc_test_beds, Admin2=="Richmond"& Province_State=="New York")[,var]*subset(aggregate_pm_census_cdc_test_beds,Admin2=="Richmond"& Province_State=="New York")$population)/(
+         subset(aggregate_pm_census_cdc_test_beds,Admin2=="New York City"& Province_State=="New York")$population+subset(aggregate_pm_census_cdc_test_beds,Admin2=="Bronx"& Province_State=="New York")$population+
+           subset(aggregate_pm_census_cdc_test_beds, Admin2=="Kings"& Province_State=="New York")$population+ subset(aggregate_pm_census_cdc_test_beds,Admin2=="Queens"& Province_State=="New York")$population +
+           subset(aggregate_pm_census_cdc_test_beds,Admin2=="Richmond"& Province_State=="New York")$population)
+  })
 aggregate_pm_census_cdc_test_beds = subset(aggregate_pm_census_cdc_test_beds,
                                            !(Admin2=="Bronx"& Province_State=="New York")&
                                              !(Admin2=="Kings"& Province_State=="New York")&
@@ -204,7 +276,10 @@ aggregate_pm_census_cdc_test_beds$cli  =
              return(mean(sapply(Epidata$covidcast('fb-survey', 'smoothed_cli', 'day', 'county', list(Epidata$range(20200401, paste0(substring(str_remove_all(date_of_study, "-"),5,8),substring(str_remove_all(date_of_study, "-"),1,4)))),fips)[[2]],function(i){i$value}),na.rm=T))
            }else {return(NA)}})
 
-saveRDS(aggregate_pm_census_cdc_test_beds, "PM25data.Rds")
+aggregate_pm_census_cdc_test_beds_age = merge(aggregate_pm_census_cdc_test_beds, age65plus_data_uscounty[, c("pct_age65", "FIPS")], by.x = "fips", by.y = "FIPS", all.x = T)
 
+aggregate_pm_census_cdc_test_beds_age_diabete = merge(aggregate_pm_census_cdc_test_beds_age, diabetes_data_uscounty[, c("pct_diabetes", "FIPS")], by.x = "fips", by.y = "FIPS", all.x = T)
 
+aggregate_pm_census_cdc_test_beds_age_diabete_obesity = merge(aggregate_pm_census_cdc_test_beds_age_diabete, obesity_data_uscounty[, c("pct_obesity", "FIPS")], by.x = "fips", by.y = "FIPS", all.x = T)
 
+saveRDS(aggregate_pm_census_cdc_test_beds_age_diabete_obesity, "PM25data.Rds")
