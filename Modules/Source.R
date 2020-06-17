@@ -27,7 +27,6 @@
 # eatGet      # Saving glmer models to memory      # does not work in this version of R
 #~~~~~~~~~~~~~~~ From Shayom's code
 # blmeco
-# pROC
 # VineCopula
 # PerformanceAnalytics
 # ggfortify
@@ -45,12 +44,11 @@
 # multcompView
 # emmeans
 # pscl
-# rcompanion
 # robust
 # AER
 # usmap
 
-dependencies <- c("usmap", "AER" ,"robust", "rcompanion", "pscl",  "emmeans", "multcompView", "car", "DescTools", "boot", "lattice", "hermite", "heplots", "klaR", "ROCR", "ResourceSelection", "foreign", "ggfortify", "PerformanceAnalytics", "VineCopula", "pROC", "blmeco", "devtools", "lubridate", "data.table", "httr", "RCurl", "tidyverse", "sp", "raster", "dplyr", "sf", "stringr" , "ggplot2", "grid", "pBrackets", "gridExtra", "lme4", "maps", "MASS", "gamm4", "glmmTMB")
+dependencies <- c("usmap", "AER" ,"robust", "pscl",  "emmeans", "multcompView", "car", "DescTools", "boot", "lattice", "hermite", "heplots", "klaR", "ROCR", "ResourceSelection", "foreign", "ggfortify", "PerformanceAnalytics", "VineCopula", "blmeco", "devtools", "lubridate", "data.table", "httr", "RCurl", "tidyverse", "sp", "raster", "dplyr", "sf", "stringr" , "ggplot2", "grid", "pBrackets", "gridExtra", "lme4", "maps", "MASS", "gamm4", "glmmTMB")
 
 # Check and install packages not yet available
 install.dependencies <- dependencies[!(dependencies %in% installed.packages()[, "Package"])]
@@ -91,7 +89,6 @@ library("lubridate")
 
 
 library('blmeco')
-library(pROC)
 library(VineCopula)
 library("PerformanceAnalytics")
 
@@ -110,7 +107,6 @@ library(car)
 library(multcompView)
 library(emmeans)
 library(pscl)
-library(rcompanion)
 library(robust)
 library(AER)
 library(usmap)
