@@ -68,7 +68,7 @@ diabetes_data_nyscounty <- subset(diabetes_data_nyscounty, select = -c(pct_Adult
 diabetes_data_nyscounty <- rename(diabetes_data_nyscounty, c("pct_diabetes" = pct_Adults_with_Diabetes))
 
 diabetes_data_uscounty <- read_csv("Data/diabetes_data_uscounty.csv")
-diabetes_data_uscounty$FIPS <- age65plus_data_uscounty$FIPS
+diabetes_data_uscounty$FIPS <- diabetes_data_uscounty$FIPS
 diabetes_data_uscounty <- rename(diabetes_data_uscounty, c("pct_diabetes" = `% Adults with Diabetes`))
 
 #------------------------------------------------------------------------------------------------------------------------------------------
@@ -285,4 +285,5 @@ aggregate_pm_census_cdc_test_beds_age_diabete = merge(aggregate_pm_census_cdc_te
 
 aggregate_pm_census_cdc_test_beds_age_diabete_obesity = merge(aggregate_pm_census_cdc_test_beds_age_diabete, obesity_data_uscounty[, c("pct_obesity", "FIPS")], by.x = "fips", by.y = "FIPS", all.x = T)
 
+head(aggregate_pm_census_cdc_test_beds_age_diabete_obesity)
 saveRDS(aggregate_pm_census_cdc_test_beds_age_diabete_obesity, "PM25data.Rds")
