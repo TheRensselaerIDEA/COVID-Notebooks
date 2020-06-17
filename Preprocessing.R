@@ -143,7 +143,8 @@ colnames(state_policy)[6] = "stay_at_home"
 # merging data
 state_test = merge(state_test,statecode,by.x = "state" ,by.y = "Code" )
 state_test = merge(state_test,state_policy[,c(1,6)],by = "State")
-state_test$date_since_social = as.numeric(as.Date(Sys.Date()) - as.Date((strptime(state_test$stay_at_home, "%m/%d/%Y"))))
+#state_test$date_since_social = as.numeric(as.Date(Sys.Date()) - as.Date((strptime(state_test$stay_at_home, "%m/%d/%Y"))))
+state_test$date_since_social = as.numeric(as.Date(strptime(date_of_study, "%m-%d-%Y")) - as.Date((strptime(state_test$stay_at_home, "%m/%d/%Y"))))
 state_test[is.na(state_test$date_since_social)==T,]$date_since_social = 0
 
 

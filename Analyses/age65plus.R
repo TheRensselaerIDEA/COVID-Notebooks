@@ -23,6 +23,7 @@ glmmTMB.off.age65 = glmmTMB(Deaths ~ pct_age65 + factor(q_popdensity)
                             + (1|state)+ scale(beds/population) 
                             + offset(log(population)), data = aggregated_data, 
                             family = nbinom2, ziformula  = ~ 1)
+summary(glmmTMB.off.age65)
 exp(summary(glmmTMB.off.age65)[6]$coefficients$cond[2,1])
 exp(summary(glmmTMB.off.age65)[6]$coefficients$cond[2,1] - 1.96*summary(glmmTMB.off.age65)[6]$coefficients$cond[2,2])
 exp(summary(glmmTMB.off.age65)[6]$coefficients$cond[2,1] + 1.96*summary(glmmTMB.off.age65)[6]$coefficients$cond[2,2])

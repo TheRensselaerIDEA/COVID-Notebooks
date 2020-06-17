@@ -23,6 +23,7 @@ glmmTMB.off.diabetes = glmmTMB(Deaths ~ pct_diabetes + factor(q_popdensity)
                             + (1|state)+ scale(beds/population) 
                             + offset(log(population)), data = aggregated_data, 
                             family = nbinom2, ziformula  = ~ 1)
+summary(glmmTMB.off.diabetes)
 exp(summary(glmmTMB.off.diabetes)[6]$coefficients$cond[2,1])
 exp(summary(glmmTMB.off.diabetes)[6]$coefficients$cond[2,1] - 1.96*summary(glmmTMB.off.diabetes)[6]$coefficients$cond[2,2])
 exp(summary(glmmTMB.off.diabetes)[6]$coefficients$cond[2,1] + 1.96*summary(glmmTMB.off.diabetes)[6]$coefficients$cond[2,2])
@@ -43,3 +44,8 @@ exp(summary(mode.nb.random.off.nyc)[10]$coefficients[2,1])
 exp(summary(mode.nb.random.off.nyc)[10]$coefficients[2,1] - 1.96*summary(mode.nb.random.off.nyc)[10]$coefficients[2,2])
 exp(summary(mode.nb.random.off.nyc)[10]$coefficients[2,1] + 1.96*summary(mode.nb.random.off.nyc)[10]$coefficients[2,2])
 summary(mode.nb.random.off.nyc)[10]$coefficients[2,4]
+
+library(eatGet)
+save.lmer.effects(mode.nb.random.off.age65, fileName = "./age")
+mode.nb.random.off.test <- load("~/COVID-Notebooks/age.rda")
+mode.nb.random.off.test

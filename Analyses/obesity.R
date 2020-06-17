@@ -23,6 +23,7 @@ glmmTMB.off.obesity = glmmTMB(Deaths ~ pct_obesity + factor(q_popdensity)
                             + (1|state)+ scale(beds/population) 
                             + offset(log(population)), data = aggregated_data, 
                             family = nbinom2, ziformula  = ~ 1)
+summary(glmmTMB.off.obesity)
 exp(summary(glmmTMB.off.obesity)[6]$coefficients$cond[2,1])
 exp(summary(glmmTMB.off.obesity)[6]$coefficients$cond[2,1] - 1.96*summary(glmmTMB.off.obesity)[6]$coefficients$cond[2,2])
 exp(summary(glmmTMB.off.obesity)[6]$coefficients$cond[2,1] + 1.96*summary(glmmTMB.off.obesity)[6]$coefficients$cond[2,2])
