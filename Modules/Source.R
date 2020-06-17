@@ -23,8 +23,8 @@
 # devtools
 # NSAPHutils  # For threading w/ big data
 # NSAPHplatform
-# lubridate
-# eatGet      # Saving glmer models to memory
+# lubridate 
+# eatGet      # Saving glmer models to memory      # does not work in this version of R
 #~~~~~~~~~~~~~~~ From Shayom's code
 # caret
 # blmeco
@@ -33,7 +33,7 @@
 # PerformanceAnalytics
 # ggfortify
 # foreign
-# psych
+# psych                # Could not find this package during install
 # ResourceSelection
 # ROCR
 # klaR
@@ -50,9 +50,9 @@
 # rcompanion
 # robust
 # AER
+# usmap
 
-
-dependencies <- c("AER" ,"robust", "rcompanion", "pscl",  "emmeans", "multcompView", "car", "DescTools", "boot", "plyr", "lattice", "hermite", "heplots", "klaR", "ROCR", "ResourceSelection", "psych", "foreign", "ggfortify", "PerformanceAnalytics", "VineCopula", "pROC", "blmeco", "caret", "eatGet","devtools", "lubridate", "data.table", "httr", "RCurl", "tidyverse", "sp", "raster", "dplyr", "sf", "stringr" , "ggplot2", "grid", "pBrackets", "gridExtra", "lme4", "maps", "MASS", "gamm4", "glmmTMB")
+dependencies <- c("usmap", "AER" ,"robust", "rcompanion", "pscl",  "emmeans", "multcompView", "car", "DescTools", "boot", "plyr", "lattice", "hermite", "heplots", "klaR", "ROCR", "ResourceSelection", "foreign", "ggfortify", "PerformanceAnalytics", "VineCopula", "pROC", "blmeco", "caret", "devtools", "lubridate", "data.table", "httr", "RCurl", "tidyverse", "sp", "raster", "dplyr", "sf", "stringr" , "ggplot2", "grid", "pBrackets", "gridExtra", "lme4", "maps", "MASS", "gamm4", "glmmTMB")
 
 # Check and install packages not yet available
 install.dependencies <- dependencies[!(dependencies %in% installed.packages()[, "Package"])]
@@ -90,8 +90,6 @@ if (!require("NSAPHutils")){
 #devtools::install_github("NSAPH/NSAPHplatform")
 #library("NSAPHplatform")
 library("lubridate")
-<<<<<<< HEAD
-
 
 
 library('caret')
@@ -102,7 +100,6 @@ library("PerformanceAnalytics")
 
 library(ggfortify)
 library(foreign)
-library(psych)
 library(ResourceSelection)
 library(ROCR)
 
@@ -120,6 +117,4 @@ library(pscl)
 library(rcompanion)
 library(robust)
 library(AER)
-=======
 library("usmap")
->>>>>>> c57de47e2d15e59f9b6e3151274645e077c2afd6
