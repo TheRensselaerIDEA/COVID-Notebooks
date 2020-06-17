@@ -26,7 +26,6 @@
 # lubridate 
 # eatGet      # Saving glmer models to memory      # does not work in this version of R
 #~~~~~~~~~~~~~~~ From Shayom's code
-# caret
 # blmeco
 # pROC
 # VineCopula
@@ -40,7 +39,6 @@
 # heplots
 # hermite
 # lattice
-# plyr
 # boot
 # DescTools
 # car
@@ -52,7 +50,7 @@
 # AER
 # usmap
 
-dependencies <- c("usmap", "AER" ,"robust", "rcompanion", "pscl",  "emmeans", "multcompView", "car", "DescTools", "boot", "plyr", "lattice", "hermite", "heplots", "klaR", "ROCR", "ResourceSelection", "foreign", "ggfortify", "PerformanceAnalytics", "VineCopula", "pROC", "blmeco", "caret", "devtools", "lubridate", "data.table", "httr", "RCurl", "tidyverse", "sp", "raster", "dplyr", "sf", "stringr" , "ggplot2", "grid", "pBrackets", "gridExtra", "lme4", "maps", "MASS", "gamm4", "glmmTMB")
+dependencies <- c("usmap", "AER" ,"robust", "rcompanion", "pscl",  "emmeans", "multcompView", "car", "DescTools", "boot", "lattice", "hermite", "heplots", "klaR", "ROCR", "ResourceSelection", "foreign", "ggfortify", "PerformanceAnalytics", "VineCopula", "pROC", "blmeco", "devtools", "lubridate", "data.table", "httr", "RCurl", "tidyverse", "sp", "raster", "dplyr", "sf", "stringr" , "ggplot2", "grid", "pBrackets", "gridExtra", "lme4", "maps", "MASS", "gamm4", "glmmTMB")
 
 # Check and install packages not yet available
 install.dependencies <- dependencies[!(dependencies %in% installed.packages()[, "Package"])]
@@ -92,7 +90,6 @@ if (!require("NSAPHutils")){
 library("lubridate")
 
 
-library('caret')
 library('blmeco')
 library(pROC)
 library(VineCopula)
@@ -107,7 +104,6 @@ library(klaR)
 library(heplots)
 library(hermite)
 library(lattice)
-library(plyr)
 library(boot)
 library(DescTools)
 library(car)

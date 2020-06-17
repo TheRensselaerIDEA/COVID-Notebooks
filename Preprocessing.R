@@ -2,75 +2,74 @@ knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_knit$set(root.dir = "./")
 
 source("./Modules/Source.R")
-
 # Import social determinants datesets
 #------------------------------------------------------------------------------------------------------------------------------------------
 # COPD datasets
 
-COPD_national <- read.csv("Data/COPD_data_states.csv")
+COPD_national <- read_csv("Data/COPD_data_states.csv")
 
-COPD_nys_county <- read.csv("Data/COPD_data_nyscounty.csv")
-COPD_nys_county <- subset(COPD_nys_county, select = -c(`DSRIP.Region.Sort.Key`))
-
+COPD_nys_county <- read_csv("Data/COPD_data_nyscounty.csv")
+COPD_nys_county <- subset(COPD_nys_county, select = -c(`DSRIP Region Sort Key`))
 #------------------------------------------------------------------------------------------------------------------------------------------
 # High Cholesterol (Hyperlipidemia) datasets
 
-highcholesterol_data_states <- read.csv("Data/highcholesterol_data_states.csv")
+highcholesterol_data_states <- read_csv("Data/highcholesterol_data_states.csv")
 highcholesterol_data_states <- subset(highcholesterol_data_states, select = -c(Rank))
 
-highcholesterol_data_nyscounty <- read.csv("Data/highcholesterol_data_nyscounty.csv")
-highcholesterol_data_nyscounty <- subset(highcholesterol_data_nyscounty, select = -c(`DSRIP.Region.Sort.Key`))
+highcholesterol_data_nyscounty <- read_csv("Data/highcholesterol_data_nyscounty.csv")
+highcholesterol_data_nyscounty <- subset(highcholesterol_data_nyscounty, select = -c(`DSRIP Region Sort Key`))
 #------------------------------------------------------------------------------------------------------------------------------------------
 # Age 65+ datasets
 
-age65plus_data_states <- read.csv("Data/age65plus_data_states.csv")
+age65plus_data_states <- read_csv("Data/age65plus_data_states.csv")
 age65plus_data_states$pct_age65 <- age65plus_data_states$PopulationEstJuly2018_65plus/age65plus_data_states$PopulationEstJuly2018*100
 
 
-age65plus_data_nyscounty <- read.csv("Data/age65plus_data_nyscounty.csv")
+age65plus_data_nyscounty <- read_csv("Data/age65plus_data_nyscounty.csv")
 age65plus_data_nyscounty <- subset(age65plus_data_nyscounty, select = -c(State))
-age65plus_data_nyscounty <- rename(age65plus_data_nyscounty, replace = c(`X..65.and.over` = "pct_age65"))
+head(age65plus_data_nyscounty)
+age65plus_data_nyscounty <- rename(age65plus_data_nyscounty, c("pct_age65" = `% 65 and over`))
 
-age65plus_data_uscounty <- read.csv("Data/age65plus_data_uscounty.csv")
-age65plus_data_uscounty <- rename(age65plus_data_uscounty, replace = c(`X..65.and.over` = "pct_age65"))
+age65plus_data_uscounty <- read_csv("Data/age65plus_data_uscounty.csv")
+age65plus_data_uscounty <- rename(age65plus_data_uscounty, c("pct_age65" = `% 65 and over`))
 
 #------------------------------------------------------------------------------------------------------------------------------------------
 # Heart Disease / Cardiovascular Disease 
 
-heartdisease_deaths_data_states <- read.csv("Data/HeartDisease_DeathRate_States_CDC_2015.csv")
+heartdisease_deaths_data_states <- read_csv("Data/HeartDisease_DeathRate_States_CDC_2015.csv")
 
-heartdisease_deaths_data_nyscounty <- read.csv("Data/heartdiseasedeaths_data_nyscounty.csv")
+heartdisease_deaths_data_nyscounty <- read_csv("Data/heartdiseasedeaths_data_nyscounty.csv")
 
-heartdisease_data_nyscounty <- read.csv("Data/heartdisease_data_nyscounty.csv")
-heartdisease_data_nyscounty <- subset(heartdisease_data_nyscounty, select = -c(`DSRIP.Region.Sort.Key`))
+heartdisease_data_nyscounty <- read_csv("Data/heartdisease_data_nyscounty.csv")
+heartdisease_data_nyscounty <- subset(heartdisease_data_nyscounty, select = -c(`DSRIP Region Sort Key`))
 
 #------------------------------------------------------------------------------------------------------------------------------------------
 # Adult Obesity
 
-obesity_data_states <- read.csv("Data/obesity_data_states.csv")
-obesity_data_states <- rename(obesity_data_states, replace = c(pct_Adults_with_Obesity = "pct_obesity"))
+obesity_data_states <- read_csv("Data/obesity_data_states.csv")
+obesity_data_states <- rename(obesity_data_states, c("pct_obesity" = pct_Adults_with_Obesity))
 
-obesity_data_nyscounty <- read.csv("Data/diabetesobesity_data_nyscounty.csv")
+obesity_data_nyscounty <- read_csv("Data/diabetesobesity_data_nyscounty.csv")
 obesity_data_nyscounty <- subset(obesity_data_nyscounty, select = -c(pct_Adults_with_Diabetes, no_Food_Insecure, pct_Food_Insecure))
-obesity_data_nyscounty <- rename(obesity_data_nyscounty, replace = c(pct_Adults_with_Obesity = "pct_obesity"))
+obesity_data_nyscounty <- rename(obesity_data_nyscounty, c("pct_obesity" = pct_Adults_with_Obesity))
 
-obesity_data_uscounty <- read.csv("Data/adultobesity_data_uscounty.csv")
+obesity_data_uscounty <- read_csv("Data/adultobesity_data_uscounty.csv")
 obesity_data_uscounty$FIPS <- age65plus_data_uscounty$FIPS
-obesity_data_uscounty <- rename(obesity_data_uscounty, replace = c(`X..Adults.with.Obesity` = "pct_obesity"))
+obesity_data_uscounty <- rename(obesity_data_uscounty, c("pct_obesity" = `% Adults with Obesity`))
 
 #------------------------------------------------------------------------------------------------------------------------------------------
 # Diabetes
 
-diabetes_data_states <- read.csv("Data/diabetes_data_states.csv")
-diabetes_data_states <- rename(diabetes_data_states, replace = c(pct_Adults_with_Diabetes = "pct_diabetes"))
+diabetes_data_states <- read_csv("Data/diabetes_data_states.csv")
+diabetes_data_states <- rename(diabetes_data_states, c("pct_diabetes" = pct_Adults_with_Diabetes))
 
-diabetes_data_nyscounty <- read.csv("Data/diabetesobesity_data_nyscounty.csv")
+diabetes_data_nyscounty <- read_csv("Data/diabetesobesity_data_nyscounty.csv")
 diabetes_data_nyscounty <- subset(diabetes_data_nyscounty, select = -c(pct_Adults_with_Obesity, no_Food_Insecure, pct_Food_Insecure))
-diabetes_data_nyscounty <- rename(diabetes_data_nyscounty, replace = c(pct_Adults_with_Diabetes = "pct_diabetes"))
+diabetes_data_nyscounty <- rename(diabetes_data_nyscounty, c("pct_diabetes" = pct_Adults_with_Diabetes))
 
-diabetes_data_uscounty <- read.csv("Data/diabetes_data_uscounty.csv")
+diabetes_data_uscounty <- read_csv("Data/diabetes_data_uscounty.csv")
 diabetes_data_uscounty$FIPS <- age65plus_data_uscounty$FIPS
-diabetes_data_uscounty <- rename(diabetes_data_uscounty, replace = c(`X..Adults.with.Diabetes` = "pct_diabetes"))
+diabetes_data_uscounty <- rename(diabetes_data_uscounty, c("pct_diabetes" = `% Adults with Diabetes`))
 
 #------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -86,9 +85,11 @@ covid_us = rbind(covid_us,subset(covid_us_hist, (!(FIPS %in% covid_us$FIPS))  & 
 covid_us$FIPS = str_pad(covid_us$FIPS, 5, pad = "0")
 
 # Import exposure PM2.5 data
-county_pm = read.csv("Data/county_pm25.csv")
+county_pm <- read.csv("./Data/county_pm25.csv")
+county_pm$fips = str_pad(county_pm$fips, 5, pad = "0")
 
-county_temp = read.csv(text=getURL("https://raw.githubusercontent.com/wxwx1993/PM_COVID/master/Data/temp_seasonal_county.csv"))
+county_temp = read.csv("./Data/temp_seasonal_county.csv")
+county_pm$fips = str_pad(county_pm$fips, 5, pad = "0")
 # Import census, brfss, testing, mortality, hosptial beds data as potential confounders
 county_census = read.csv(text=getURL("https://raw.githubusercontent.com/wxwx1993/PM_COVID/master/Data/census_county_interpolated.csv"))
 county_brfss<-read.csv(text=getURL("https://www.countyhealthrankings.org/sites/default/files/media/document/analytic_data2020.csv"),skip = 1)
@@ -98,23 +99,23 @@ county_brfss$fips = str_pad(county_brfss$fips, 5, pad = "0")
 
 state_test = read.csv(text=getURL("https://covidtracking.com/api/v1/states/daily.csv"))
 state_test = subset(state_test, date ==paste0(substring(str_remove_all(date_of_study, "-"),5,8),substring(str_remove_all(date_of_study, "-"),1,4)))[,-20]
-statecode = read.csv(text=getURL("https://raw.githubusercontent.com/wxwx1993/PM_COVID/master/Data/statecode.csv"))
+statecode = read_csv("./Data/statecode.csv")
 
 hospitals = read.csv(text=getURL("https://opendata.arcgis.com/datasets/6ac5e325468c4cb9b905f1728d6fbf0f_0.csv?outSR=%7B%22latestWkid%22%3A3857%2C%22wkid%22%3A102100%7D"))
 hospitals$BEDS[hospitals$BEDS < 0] = NA
 
-county_base_mortality = read.table(text=getURL("https://raw.githubusercontent.com/wxwx1993/PM_COVID/master/Data/county_base_mortality.txt"), sep = "",header = T)
-county_old_mortality = read.table(text=getURL("https://raw.githubusercontent.com/wxwx1993/PM_COVID/master/Data/county_old_mortality.txt"), sep = "",header = T)
-county_014_mortality = read.table("https://raw.githubusercontent.com/wxwx1993/PM_COVID/master/Data/county_014_mortality.txt", sep = "",header = T)
-county_1544_mortality = read.table("https://raw.githubusercontent.com/wxwx1993/PM_COVID/master/Data/county_1544_mortality.txt", sep = "",header = T)
-county_4564_mortality = read.table("https://raw.githubusercontent.com/wxwx1993/PM_COVID/master/Data/county_4564_mortality.txt", sep = "",header = T)
+county_base_mortality = read.table("./Data/county_base_mortality.txt", header = TRUE)
+county_old_mortality = read.table("./Data/county_old_mortality.txt", header = TRUE)
+county_014_mortality = read.table("./Data/county_014_mortality.txt", header = TRUE)
+county_1544_mortality = read.table("./Data/county_1544_mortality.txt", header = TRUE)
+county_4564_mortality = read.table("./Data/county_4564_mortality.txt", header = TRUE)
 
 colnames(county_old_mortality)[4] = c("older_Population")
 colnames(county_014_mortality)[4] = c("014_Population")
 colnames(county_1544_mortality)[4] = c("1544_Population")
 colnames(county_4564_mortality)[4] = c("4564_Population")
 
-county_base_mortality = merge(county_base_mortality,county_old_mortality[,c(2,4)] ,by = "County.Code",all.x = T)
+county_base_mortality = merge(county_base_mortality,county_old_mortality[,c(2,4)] ,by = "County.Code", all.x = T)
 county_base_mortality = merge(county_base_mortality,county_014_mortality[,c(2,4)] ,by = "County.Code",all.x = T)
 county_base_mortality = merge(county_base_mortality,county_1544_mortality[,c(2,4)] ,by = "County.Code",all.x = T)
 county_base_mortality = merge(county_base_mortality,county_4564_mortality[,c(2,4)] ,by = "County.Code",all.x = T)
@@ -129,15 +130,14 @@ county_base_mortality$"mid_pecent"[is.na(county_base_mortality$"mid_pecent")] = 
 county_base_mortality$"young_pecent"[is.na(county_base_mortality$"young_pecent")] = 0
 
 # Import NCHS Urban-Rural Classification Scheme for Counties
-NCHSURCodes2013 = read.csv("https://raw.githubusercontent.com/wxwx1993/PM_COVID/master/Data/NCHSURCodes2013.csv")
+NCHSURCodes2013 = read_csv("./Data/NCHSURCodes2013.csv")
 NCHSURCodes2013$FIPS = str_pad(NCHSURCodes2013$FIPS, 5, pad = "0")
-
 # Import FB survey on covid-like sympton data
 script <- getURL("https://raw.githubusercontent.com/cmu-delphi/delphi-epidata/master/src/client/delphi_epidata.R", ssl.verifypeer = FALSE)
 eval(parse(text = script))
 
 # Import social distancing measure data
-state_policy = read.csv("https://raw.githubusercontent.com/wxwx1993/PM_COVID/master/Data/state_policy0410.csv")
+state_policy = read_csv("./Data/state_policy0410.csv")
 colnames(state_policy)[6] = "stay_at_home"
 
 # merging data
@@ -149,9 +149,12 @@ state_test[is.na(state_test$date_since_social)==T,]$date_since_social = 0
 
 # pm2.5 average over 17 years
 county_pm_aggregated <- county_pm %>% 
+  filter(!is.na(pm25)) %>%
+  filter(!is.na(fips)) %>%
   group_by(fips) %>% 
-  summarize(mean_pm25 = mean(pm25, na.rm=TRUE))
+  dplyr::summarise(mean_pm25 = mean(pm25))
 
+head(county_pm_aggregated)
 # temperature and relative humidity average over 17 years
 
 county_temp_aggregated = county_temp %>% 
