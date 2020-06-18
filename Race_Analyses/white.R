@@ -5,7 +5,7 @@ source("./Modules/Source.R")
 aggregate_pm_census_cdc_test_beds <- readRDS("./PM25data.Rds")
 
 #WHITE-MRR=.077, 95% CI=(.048,.122), p val is sig.
-mode.nb.random.off.white = glmer.nb(Deaths ~ pct_white + factor(q_popdensity)
+white = glmer.nb(Deaths ~ pct_white + factor(q_popdensity)
                                          + scale(log(medhouseholdincome))+scale(education)
                                          + scale(date_since_social) + scale(date_since)
                                          + (1|state)+ scale(beds/population) 
@@ -17,6 +17,8 @@ mode.nb.random.off.white = glmer.nb(Deaths ~ pct_white + factor(q_popdensity)
 #exp(summary(mode.nb.random.off.white)[10]$coefficients[2,1] + 1.96*summary(mode.nb.random.off.white)[10]$coefficients[2,2])
 #summary(mode.nb.random.off.white)[10]$coefficients[2,4]
 
-save(mode.nb.random.off.white, "./Race_Analyses/models/white.RData")
+mode.nb.random.off.white = white
+
+save(white, "./Race_Analyses/models/white.RData")
 save.image()
 unlink("./Race_Analyses/models/white.RData")

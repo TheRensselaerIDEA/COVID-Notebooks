@@ -5,7 +5,7 @@ source("./Modules/Source.R")
 aggregate_pm_census_cdc_test_beds <- readRDS("./PM25data.Rds")
 
 # exclude NY Metro- slighlty lower MMR for pct_blk, possibly due to high pct_blk incidence in high mortality area like nyc
-mode.nb.random.off.nyc_blk = glmer.nb(Deaths ~ pct_blk + factor(q_popdensity)
+nyc_blk = glmer.nb(Deaths ~ pct_blk + factor(q_popdensity)
                                   + scale(log(medhouseholdincome))+scale(education)
                                   + scale(date_since_social) + scale(date_since)
                                   + (1|state) + scale(beds/population)
@@ -17,6 +17,9 @@ mode.nb.random.off.nyc_blk = glmer.nb(Deaths ~ pct_blk + factor(q_popdensity)
 #exp(summary(mode.nb.random.off.nyc_blk)[10]$coefficients[2,1] + 1.96*summary(mode.nb.random.off.nyc_blk)[10]$coefficients[2,2])
 #summary(mode.nb.random.off.nyc_blk)[10]$coefficients[2,4]
 
-save(mode.nb.random.off.nyc_blk, "./Race_Analyses/models/pct_blk_exnyc.RData")
+
+mode.nb.random.off.nyc_blk = nyc_blk
+
+save(nyc_blk, "./Race_Analyses/models/pct_blk_exnyc.RData")
 save.image()
 unlink("./Race_Analyses/models/pct_blk_exnyc.RData")

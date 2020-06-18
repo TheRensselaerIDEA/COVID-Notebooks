@@ -5,7 +5,7 @@ source("./Modules/Source.R")
 aggregate_pm_census_cdc_test_beds <- readRDS("./PM25data.Rds")
 
 # exclude NY metro (ASIAN)-MRR:1706.2, 95 CI= (53.47,5443),p-value=sig.
-mode.nb.random.off.nyc_asian = glmer.nb(Deaths ~ pct_asian + factor(q_popdensity)
+nyc_asian = glmer.nb(Deaths ~ pct_asian + factor(q_popdensity)
                                   + scale(log(medhouseholdincome))+scale(education)
                                   + scale(date_since_social) + scale(date_since)
                                   + (1|state) + scale(beds/population)
@@ -17,7 +17,7 @@ mode.nb.random.off.nyc_asian = glmer.nb(Deaths ~ pct_asian + factor(q_popdensity
 #exp(summary(mode.nb.random.off.nyc_asian)[10]$coefficients[2,1] + 1.96*summary(mode.nb.random.off.nyc_asian)[10]$coefficients[2,2])
 #summary(mode.nb.random.off.nyc_asian)[10]$coefficients[2,4]
 
-
-save(mode.nb.random.off.nyc_asian, "./Race_Analyses/models/asian_exnyc.RData")
+mode.nb.random.off.nyc_asian = nyc_asian
+save(nyc_asian, "./Race_Analyses/models/asian_exnyc.RData")
 save.image()
 unlink("./Race_Analyses/models/asian_exnyc.RData")
