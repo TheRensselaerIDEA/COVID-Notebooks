@@ -74,7 +74,7 @@ diabetes_data_uscounty <- rename(diabetes_data_uscounty, c("pct_diabetes" = `% A
 
 #------------------------------------------------------------------------------------------------------------------------------------------
 
-date_of_study = "05-05-2020"
+date_of_study = "06-16-2020"
 # Historical data
 covid_hist = read.csv(text=getURL("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/03-30-2020.csv"))
 covid_us_hist = subset(covid_hist, Country_Region == "US" & is.na(FIPS)==F)
@@ -287,4 +287,5 @@ aggregate_pm_census_cdc_test_beds_age_diabete = merge(aggregate_pm_census_cdc_te
 aggregate_pm_census_cdc_test_beds_age_diabete_obesity = merge(aggregate_pm_census_cdc_test_beds_age_diabete, obesity_data_uscounty[, c("pct_obesity", "FIPS")], by.x = "fips", by.y = "FIPS", all.x = T)
 
 head(aggregate_pm_census_cdc_test_beds_age_diabete_obesity)
-saveRDS(aggregate_pm_census_cdc_test_beds_age_diabete_obesity, "PM25data.Rds")
+file = paste("./Fixed_Date_Time_Series/", date_of_study, "data.Rds",sep = "")
+saveRDS(aggregate_pm_census_cdc_test_beds_age_diabete_obesity, file)
