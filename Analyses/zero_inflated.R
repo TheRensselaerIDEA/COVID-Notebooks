@@ -17,6 +17,7 @@ glmmTMB.off.main = glmmTMB(Deaths ~ mean_pm25 + factor(q_popdensity)
                            + offset(log(population)) + (1 | state), data = aggregate_pm_census_cdc_test_beds, 
                            family = nbinom2, ziformula  = ~ 1
 )
+summary(glmmTMB.off.main)
 exp(summary(glmmTMB.off.main)[6]$coefficients$cond[2,1])
 exp(summary(glmmTMB.off.main)[6]$coefficients$cond[2,1] - 1.96*summary(glmmTMB.off.main)[6]$coefficients$cond[2,2])
 exp(summary(glmmTMB.off.main)[6]$coefficients$cond[2,1] + 1.96*summary(glmmTMB.off.main)[6]$coefficients$cond[2,2])

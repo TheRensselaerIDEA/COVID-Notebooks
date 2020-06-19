@@ -28,9 +28,9 @@ mode.nb.random.off.catepm = glmer.nb(Deaths ~ factor(q_pm) + factor(q_popdensity
                                      + scale(mean_summer_temp) + scale(mean_winter_temp) + scale(mean_summer_rm) + scale(mean_winter_rm)
                                      + (1|state)
                                      + offset(log(population)), data = (aggregate_pm_census_cdc_test_beds)) 
-<<<<<<< HEAD
+#<<<<<<< HEAD
 summary(mode.nb.random.off.catepm)
-=======
+#=======
 #methods(class="merMod")
 #profile(mode.nb.random.off.catepm)
 #head(model.frame(mode.nb.random.off.catepm))
@@ -42,7 +42,7 @@ summary(mode.nb.random.off.catepm)
 #predict(mode.nb.random.off.catepm)
 #head((mode.nb.random.off.catepm)[10])
 
->>>>>>> 2dc19a6d8c23e33000e8d7a08851c8139049f271
+#>>>>>>> 2dc19a6d8c23e33000e8d7a08851c8139049f271
 exp(summary(mode.nb.random.off.catepm)[10]$coefficients[2,1])
 exp(summary(mode.nb.random.off.catepm)[10]$coefficients[2,1] - 1.96*summary(mode.nb.random.off.catepm)[10]$coefficients[2,2])
 exp(summary(mode.nb.random.off.catepm)[10]$coefficients[2,1] + 1.96*summary(mode.nb.random.off.catepm)[10]$coefficients[2,2])
@@ -62,3 +62,4 @@ exp(summary(mode.nb.random.off.catepm)[10]$coefficients[5,1])
 exp(summary(mode.nb.random.off.catepm)[10]$coefficients[5,1] - 1.96*summary(mode.nb.random.off.catepm)[10]$coefficients[5,2])
 exp(summary(mode.nb.random.off.catepm)[10]$coefficients[5,1] + 1.96*summary(mode.nb.random.off.catepm)[10]$coefficients[5,2])
 summary(mode.nb.random.off.catepm)[10]$coefficients[5,4]
+

@@ -1,0 +1,8 @@
+load("~/COVID-Notebooks/Race_Analyses/models/combined/05-05.rda")
+load("~/COVID-Notebooks/Race_Analyses/models/combined/05-12.rda")
+load("~/COVID-Notebooks/Race_Analyses/models/combined/05-19.rda")
+load("~/COVID-Notebooks/Race_Analyses/models/combined/05-26.rda")
+load("~/COVID-Notebooks/Race_Analyses/models/combined/06-02.rda")
+load("~/COVID-Notebooks/Race_Analyses/models/combined/06-09.rda")
+load("~/COVID-Notebooks/Race_Analyses/models/combined/06-16.rda")
+get("05-05")

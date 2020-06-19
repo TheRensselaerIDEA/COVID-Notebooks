@@ -4,7 +4,6 @@ knitr::opts_knit$set(root.dir = "../")
 source("./Modules/Source.R")
 aggregate_pm_census_cdc_test_beds <- readRDS("./PM25data.Rds")
 
-
 # fixed NB
 glm.nb.off = glm.nb(Deaths ~  mean_pm25 + factor(q_popdensity)
                     + scale(poverty)  + scale(log(medianhousevalue))

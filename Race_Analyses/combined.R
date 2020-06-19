@@ -32,10 +32,9 @@ mode.nb.random.off.combined = glmer.nb(Deaths ~ hispanic + pct_blk + pct_asian +
 #summary(mode.nb.random.off.combined)[10]$coefficients[2,4]
 
 summary(mode.nb.random.off.combined)
-s <- summary(mode.nb.random.off.combined)
+#s <- summary(mode.nb.random.off.combined)
 date = substr(datafile, 26,30)
-fname = paste("./Race_Analyses/models/combined",date,".rda",sep="")
-save(s, file = fname)
-save.image()
-unlink(fname)
+assign(date, summary(mode.nb.random.off.combined))
+fname = paste("./Race_Analyses/models/combined/",date,".rda",sep="")
+do.call(save, list(date, file=fname))
 

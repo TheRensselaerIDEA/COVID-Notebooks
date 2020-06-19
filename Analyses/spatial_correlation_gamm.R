@@ -16,4 +16,5 @@ gamm.off.main = gamm4(Deaths ~ mean_pm25 + factor(q_popdensity)
                       + scale(mean_summer_temp) + scale(mean_winter_temp) + scale(mean_summer_rm) + scale(mean_winter_rm)
                       + offset(log(population)) + s(Lat) + s(Long_), data = aggregate_pm_census_cdc_test_beds, 
                       family=negbin(1), random = ~(1|state))
-exp(summary(gamm.off.main.bi))
+summary(gamm.off.main)
+exp(summary(gamm.off.main))

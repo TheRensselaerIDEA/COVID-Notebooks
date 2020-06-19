@@ -1,0 +1,54 @@
+temp_humidty.RGeneralized linear mixed model fit by maximum likelihood (Laplace
+  Approximation) [glmerMod]
+ Family: Negative Binomial(0.8155)  ( log )
+Formula: Deaths ~ mean_pm25 + factor(q_popdensity) + scale(poverty) +  
+    scale(log(medianhousevalue)) + scale(log(medhouseholdincome)) +  
+    scale(pct_owner_occ) + scale(education) + scale(pct_blk) +  
+    scale(hispanic) + scale(older_pecent) + scale(prime_pecent) +  
+    scale(mid_pecent) + scale(date_since_social) + scale(date_since) +  
+    scale(beds/population) + scale(obese) + scale(smoke) + (1 |  
+    state) + offset(log(population))
+   Data: aggregate_pm_census_cdc_test_beds
+
+     AIC      BIC   logLik deviance df.resid 
+ 11450.1  11588.9  -5702.1  11404.1     3066 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-0.8848 -0.5723 -0.3152 -0.0254 27.6886 
+
+Random effects:
+ Groups Name        Variance Std.Dev.
+ state  (Intercept) 0.5861   0.7656  
+Number of obs: 3089, groups:  state, 49
+
+Fixed effects:
+                                 Estimate Std. Error z value Pr(>|z|)    
+(Intercept)                    -10.841906   0.252489 -42.940  < 2e-16 ***
+mean_pm25                        0.089358   0.026395   3.385 0.000711 ***
+factor(q_popdensity)2           -0.152644   0.151534  -1.007 0.313779    
+factor(q_popdensity)3           -0.257331   0.153730  -1.674 0.094147 .  
+factor(q_popdensity)4           -0.537044   0.158835  -3.381 0.000722 ***
+factor(q_popdensity)5           -0.340269   0.174429  -1.951 0.051086 .  
+scale(poverty)                   0.082451   0.043538   1.894 0.058254 .  
+scale(log(medianhousevalue))     0.096776   0.073617   1.315 0.188645    
+scale(log(medhouseholdincome))   0.276502   0.075183   3.678 0.000235 ***
+scale(pct_owner_occ)             0.055787   0.042181   1.323 0.185980    
+scale(education)                 0.204087   0.051986   3.926 8.64e-05 ***
+scale(pct_blk)                   0.398046   0.042652   9.332  < 2e-16 ***
+scale(hispanic)                  0.060445   0.052514   1.151 0.249720    
+scale(older_pecent)              0.114243   0.066773   1.711 0.087098 .  
+scale(prime_pecent)             -0.153591   0.098045  -1.567 0.117225    
+scale(mid_pecent)               -0.162759   0.067574  -2.409 0.016014 *  
+scale(date_since_social)         0.218057   0.126799   1.720 0.085485 .  
+scale(date_since)                1.094419   0.084495  12.952  < 2e-16 ***
+scale(beds/population)          -0.008322   0.041008  -0.203 0.839186    
+scale(obese)                    -0.056067   0.040837  -1.373 0.169767    
+scale(smoke)                     0.055536   0.072655   0.764 0.444637    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+[1] 1.093472
+[1] 1.038341
+[1] 1.15153
+[1] 0.0007106009

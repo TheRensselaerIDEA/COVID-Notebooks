@@ -1,0 +1,58 @@
+log_pop_dens.R
+
+Generalized linear mixed model fit by maximum likelihood (Laplace
+  Approximation) [glmerMod]
+ Family: Negative Binomial(0.808)  ( log )
+Formula: Deaths ~ mean_pm25 + scale(log(popdensity)) + scale(poverty) +  
+    scale(log(medianhousevalue)) + scale(log(medhouseholdincome)) +  
+    scale(pct_owner_occ) + scale(education) + scale(pct_blk) +  
+    scale(hispanic) + scale(older_pecent) + scale(prime_pecent) +  
+    scale(mid_pecent) + scale(date_since_social) + scale(date_since) +  
+    scale(beds/population) + scale(obese) + scale(smoke) + scale(mean_summer_temp) +  
+    scale(mean_winter_temp) + scale(mean_summer_rm) + scale(mean_winter_rm) +  
+    (1 | state) + offset(log(population))
+   Data: aggregate_pm_census_cdc_test_beds
+
+     AIC      BIC   logLik deviance df.resid 
+ 11465.7  11610.6  -5708.9  11417.7     3065 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-0.8855 -0.5686 -0.3109 -0.0308 27.3903 
+
+Random effects:
+ Groups Name        Variance Std.Dev.
+ state  (Intercept) 0.6318   0.7948  
+Number of obs: 3089, groups:  state, 49
+
+Fixed effects:
+                                Estimate Std. Error z value Pr(>|z|)    
+(Intercept)                    -11.03445    0.28634 -38.536  < 2e-16 ***
+mean_pm25                        0.07951    0.03106   2.559 0.010483 *  
+scale(log(popdensity))          -0.08226    0.06260  -1.314 0.188793    
+scale(poverty)                   0.10328    0.04369   2.364 0.018091 *  
+scale(log(medianhousevalue))     0.11312    0.07895   1.433 0.151911    
+scale(log(medhouseholdincome))   0.28129    0.07664   3.670 0.000242 ***
+scale(pct_owner_occ)             0.04148    0.04446   0.933 0.350791    
+scale(education)                 0.20734    0.05275   3.931 8.47e-05 ***
+scale(pct_blk)                   0.41076    0.04374   9.392  < 2e-16 ***
+scale(hispanic)                  0.04042    0.05488   0.737 0.461401    
+scale(older_pecent)              0.14238    0.06874   2.071 0.038343 *  
+scale(prime_pecent)             -0.12957    0.10104  -1.282 0.199709    
+scale(mid_pecent)               -0.14421    0.07092  -2.034 0.041993 *  
+scale(date_since_social)         0.20943    0.13194   1.587 0.112455    
+scale(date_since)                1.06693    0.08466  12.602  < 2e-16 ***
+scale(beds/population)          -0.01294    0.04129  -0.313 0.753987    
+scale(obese)                    -0.06496    0.04120  -1.577 0.114834    
+scale(smoke)                     0.05560    0.07364   0.755 0.450195    
+scale(mean_summer_temp)          0.06295    0.09096   0.692 0.488905    
+scale(mean_winter_temp)          0.03957    0.12599   0.314 0.753494    
+scale(mean_summer_rm)           -0.09266    0.08640  -1.072 0.283511    
+scale(mean_winter_rm)           -0.02918    0.05752  -0.507 0.611955    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+[1] 1.082753
+[1] 1.018796
+[1] 1.150724
+[1] 0.0104833

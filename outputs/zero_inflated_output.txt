@@ -1,0 +1,62 @@
+zero_inflated.R Family: nbinom2  ( log )
+Formula:          Deaths ~ mean_pm25 + factor(q_popdensity) + scale(poverty) +  
+    scale(log(medianhousevalue)) + scale(log(medhouseholdincome)) +  
+    scale(pct_owner_occ) + scale(education) + scale(pct_blk) +  
+    scale(hispanic) + scale(older_pecent) + scale(prime_pecent) +  
+    scale(mid_pecent) + scale(date_since_social) + scale(date_since) +  
+    scale(beds/population) + scale(obese) + scale(smoke) + scale(mean_summer_temp) +  
+    scale(mean_winter_temp) + scale(mean_summer_rm) + scale(mean_winter_rm) +  
+    offset(log(population)) + (1 | state)
+Zero inflation:          ~1
+Data: aggregate_pm_census_cdc_test_beds
+
+     AIC      BIC   logLik deviance df.resid 
+ 11454.2  11623.1  -5699.1  11398.2     3061 
+
+Random effects:
+
+Conditional model:
+ Groups Name        Variance Std.Dev.
+ state  (Intercept) 0.627    0.7918  
+Number of obs: 3089, groups:  state, 49
+
+Overdispersion parameter for nbinom2 family (): 0.82 
+
+Conditional model:
+                                Estimate Std. Error z value Pr(>|z|)    
+(Intercept)                    -10.75341    0.28024  -38.37  < 2e-16 ***
+mean_pm25                        0.07554    0.02944    2.57 0.010284 *  
+factor(q_popdensity)2           -0.12873    0.15241   -0.84 0.398323    
+factor(q_popdensity)3           -0.22841    0.15481   -1.48 0.140093    
+factor(q_popdensity)4           -0.50214    0.16005   -3.14 0.001705 ** 
+factor(q_popdensity)5           -0.29217    0.17621   -1.66 0.097297 .  
+scale(poverty)                   0.08470    0.04359    1.94 0.051994 .  
+scale(log(medianhousevalue))     0.11711    0.07875    1.49 0.136984    
+scale(log(medhouseholdincome))   0.26438    0.07657    3.45 0.000555 ***
+scale(pct_owner_occ)             0.05949    0.04310    1.38 0.167538    
+scale(education)                 0.20551    0.05243    3.92 8.87e-05 ***
+scale(pct_blk)                   0.38613    0.04402    8.77  < 2e-16 ***
+scale(hispanic)                  0.02981    0.05480    0.54 0.586407    
+scale(older_pecent)              0.12147    0.06841    1.78 0.075817 .  
+scale(prime_pecent)             -0.13290    0.10076   -1.32 0.187182    
+scale(mid_pecent)               -0.14529    0.07074   -2.05 0.039987 *  
+scale(date_since_social)         0.22558    0.13152    1.72 0.086310 .  
+scale(date_since)                1.09969    0.08507   12.93  < 2e-16 ***
+scale(beds/population)          -0.01112    0.04112   -0.27 0.786772    
+scale(obese)                    -0.05314    0.04120   -1.29 0.197054    
+scale(smoke)                     0.06458    0.07321    0.88 0.377760    
+scale(mean_summer_temp)          0.07462    0.08999    0.83 0.406994    
+scale(mean_winter_temp)          0.02218    0.12470    0.18 0.858855    
+scale(mean_summer_rm)           -0.07275    0.08597   -0.85 0.397430    
+scale(mean_winter_rm)           -0.03737    0.05736   -0.65 0.514716    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Zero-inflation model:
+            Estimate Std. Error z value Pr(>|z|)
+(Intercept)   -20.17    1324.66  -0.015    0.988
+
+[1] 1.078463
+[1] 1.018002
+[1] 1.142515
+[1] 0.01028407
