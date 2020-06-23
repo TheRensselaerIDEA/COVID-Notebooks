@@ -48,7 +48,12 @@ s <- load(fname)
 
 `06-16`
 
-CombinedMRR<-exp(`06-16`[10]$coefficients[2,1])
+
+
+
+
+
+CombinedMRR<-`06-16`[10]$coefficients[2,1]
 CombinedMRR
 exp(`06-16`[10]$coefficients[2,1] - 1.96*`06-16`[10]$coefficients[2,2])
 exp(`06-16`[10]$coefficients[2,1] + 1.96*`06-16`[10]$coefficients[2,2])

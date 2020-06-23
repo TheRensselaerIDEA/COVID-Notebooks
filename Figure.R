@@ -17,13 +17,6 @@ covid_us <- mutate(aggregate_pm_census_cdc_test_beds,
 
 
 
-
-
-
-
-
-
-
 # Figure 2 main analyses
 data <- data.frame(method = c("05-05", "05-12", "05-19","05-26",
                               "06-02", "06-09", "6-16"),
@@ -55,6 +48,7 @@ p1 <- ggplot(data[1:7,], aes(x=Methods, y=RR),size= 1) +
         axis.title.y = element_text(size = 20*2),
         plot.title = element_text(size = 20*2),
         legend.position = "none")
+png("RofR_combined.jpeg", height = 1024*0.6*2, width = 1024*2)
 p1
 dev.off()
 
