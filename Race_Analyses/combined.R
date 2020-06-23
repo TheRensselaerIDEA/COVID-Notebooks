@@ -31,10 +31,29 @@ mode.nb.random.off.combined = glmer.nb(Deaths ~ hispanic + pct_blk + pct_asian +
 #exp(summary(mode.nb.random.off.combined)[10]$coefficients[2,1] + 1.96*summary(mode.nb.random.off.combined)[10]$coefficients[2,2])
 #summary(mode.nb.random.off.combined)[10]$coefficients[2,4]
 
+
+
 summary(mode.nb.random.off.combined)
 #s <- summary(mode.nb.random.off.combined)
-date = substr(datafile, 26,30)
+#date = substr(datafile, 26,30)
+date = "06-16"
+
 assign(date, summary(mode.nb.random.off.combined))
 fname = paste("./Race_Analyses/models/combined/",date,".rda",sep="")
-do.call(save, list(date, file=fname))
+#do.call(save, list(date, file=fname))
+
+fname
+
+s <- load(fname)
+
+`06-16`
+
+CombinedMRR<-exp(`06-16`[10]$coefficients[2,1])
+CombinedMRR
+exp(`06-16`[10]$coefficients[2,1] - 1.96*`06-16`[10]$coefficients[2,2])
+exp(`06-16`[10]$coefficients[2,1] + 1.96*`06-16`[10]$coefficients[2,2])
+#`06-02`[10]$coefficients[2,4]
+
+
+
 

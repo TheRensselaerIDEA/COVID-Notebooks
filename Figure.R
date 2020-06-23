@@ -14,6 +14,55 @@ aggregate_pm_census_cdc_test_beds$fips = str_pad(aggregate_pm_census_cdc_test_be
 covid_us <- mutate(aggregate_pm_census_cdc_test_beds,
                    STATEFP = str_sub(fips, 1, 2),
                    COUNTYFP = str_sub(fips, 3, 5))
+
+
+
+
+
+
+
+
+
+
+# Figure 2 main analyses
+data <- data.frame(method = c("05-05", "05-12", "05-19","05-26",
+                              "06-02", "06-09", "6-16"),
+                   RR = log(c(4.137507, 4.818913, 5.078532, 4.56636, 3.24101, 2.906371, 3.082351)
+                   ),
+                   lower_CI = log(c(1.594842, 1.946677, 2.113322, 1.918273, 3.213012, 1.288411, 1.396745)
+                   ),
+                   upper_CI = log(c(10.73396, 11.929, 12.20424, 10.87001, 3.269253, 6.556132, 6.802162)
+                   ),
+                   Methods = c(1:7))
+
+data
+
+pdf("RofR_combined.pdf",width = 28, height = 11)
+p1 <- ggplot(data[1:7,], aes(x=Methods, y=RR),size= 1) + 
+  ylab("Mortality Rate Ratios") +
+  ggtitle("Combined Race Effect on Covid Mortality Rate Over Time" ) + 
+  #theme(plot.title = element_text(lineheight=1.8, face="bold", size = 100)) +
+  geom_point(aes(size = 1)) +
+  geom_errorbar(aes(ymin=lower_CI, ymax=upper_CI), width=.2,size=1) +
+  geom_hline(yintercept = 1.0, linetype="dashed", size=0.8)  +
+  annotate(geom = "text", x = seq_len(nrow(data)), y = 0-.15, label = data$method, size = 10) +
+  coord_cartesian(ylim = c(0.0, 3), xlim = c(0.5, 7.5), expand = FALSE, clip = "off")  +
+  theme_bw() +
+  theme(plot.margin = unit(c(3, 2, 4, 1), "lines"),
+        axis.title.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.text.y = element_text(size=16*2),
+        axis.title.y = element_text(size = 20*2),
+        plot.title = element_text(size = 20*2),
+        legend.position = "none")
+p1
+dev.off()
+
+
+
+
+
+
 str(covid_us)
 str(states)
 states$STATEFP=as.character(states$STATEFP)
