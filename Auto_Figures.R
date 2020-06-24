@@ -25,6 +25,7 @@ number_params = length(c(model_output[10]$coefficients[,1]))
 date_RRs = array(dim = c(length(dates),as.integer(number_params)))
 date_lowers = array(dim = c(length(dates),as.integer(number_params)))
 date_uppers = array(dim = c(length(dates),as.integer(number_params)))
+date_pvals = array(dim = c(length(dates),as.integer(number_params)))
 names = array(dim=as.integer(number_params))
 
 for ( i in 1:length(dates)) {
@@ -35,37 +36,56 @@ for ( i in 1:length(dates)) {
   model_output[10]
   model_output[10]$coefficients[,1]
   
+
+  
   this_date_RR <- model_output[10]$coefficients[,1]
   this_date_lowers <- model_output[10]$coefficients[,1] - 1.96*model_output[10]$coefficients[,2]
   this_date_uppers <- model_output[10]$coefficients[,1] + 1.96*model_output[10]$coefficients[,2]
+  this_date_pvals <- model_output[10]$coefficients[,4]
   
   names <- names(this_date_RR)
   
   date_RRs[i,]    <- unname(this_date_RR)
   date_lowers[i,] <- unname(this_date_lowers)
   date_uppers[i,] <- unname(this_date_uppers)
-  
+  date_pvals[i,] <- unname(this_date_pvals) 
+
 }
 
 
-#date_RRs
-#names
+
+# CREATE A TABLE FOR SIGNIFICANCE VALUES (P-Vals)
+library(expss)
+library(dplyr)
+library(formattable)
+
+t1 <- date_pvals[,]
+output_name = paste("./Figs/combined_temporal.txt")
+write.table(t1, file = output_name, append = FALSE, quote = TRUE, sep = " ",
+            eol = "\n", na = "NA", dec = ".", row.names = FALSE,
+            col.names = FALSE, qmethod = c("escape", "double"),
+            fileEncoding = "")
 
 
-#date_lowers
-#date_uppers
-#names = names(date_RRs[1])
-#names
+output_name = paste("./Figs/combined_temporal.txt")
+cols = (c("(Intercept)", "hispanic", "pct_blk", "pct_asian", "pct_white", "pct_native",
+          "factor(q_popdensity)2", "factor(q_popdensity)3", "factor(q_popdensity)4", "factor(q_popdensity)5",
+          "scale(log(medhouseholdincome))", "scale(education)", "scale(date_since_social)", "scale(date_since)", "scale(beds/population)"))
+rows = (c("03-29", "04-05", "04-12", "04-19", "04-26", "05-03", "05-05", "05-12", "05-19", "05-26", "06-02", "06-09", "06-16"))
+t1 <- read.table(file = output_name, sep = "", quote = "\"'",
+           dec = ".", numerals = c("allow.loss", "warn.loss", "no.loss"),
+           row.names = rows, col.names = cols, )
+t1 <- t(t1)
+significance = formatter("span",
+                         style = x ~ style(color = ifelse(x > 0.05, "red", ifelse(x>0.01, "yellow","green"))))
+t1 <- formattable(t1, formatter = significance)
+#t1 <- formattable( t1, align = l, c, c, c, c, c, c, c, c, c, c, c, c, c)
+t1
+stop()
 
 
-#date_RRs[,2]
-#date_lowers[,2]
-#date_uppers[,2]
-#stop()
-#print(length(date_RRs[,1]))
-#print(date_RRs[,2])
-#print(dates)
 
+stop() 
 for (i in 2:length(names)) {
   title = names[i]
   data <- data.frame(method = c(dates),
