@@ -54,6 +54,18 @@ chr <- subset(chr, select = -c(Population))
 
 #------------------------------------------------------------------------------------------------------------------------------------------
 
+# Lung Disease dataset
+
+lungdisease <- read_csv("Data/lungdiseaseestimates_uscounties.csv")
+lungdisease$PediatricAsthma         <- lungdisease$PediatricAsthma / lungdisease$TotalPopulation
+lungdisease$AdultAsthma             <- lungdisease$AdultAsthma / lungdisease$TotalPopulation
+lungdisease$COPD                    <- lungdisease$COPD / lungdisease$TotalPopulation
+lungdisease$AdultChronicLungDisease <- lungdisease$AdultChronicLungDisease / lungdisease$TotalPopulation
+lungdisease$LungCancer              <- lungdisease$LungCancer / lungdisease$TotalPopulation
+lungdisease <- subset(lungdisease, select = -c(`State or County`, TotalPopulation))
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+
 
 # COPD datasets
  
@@ -327,7 +339,9 @@ aggregate_pm_census_cdc_test_beds$cli  =
 
 aggregate_chr = merge(aggregate_pm_census_cdc_test_beds, chr, by.x = "fips", by.y = "FIPS", all.x = T)
 aggregate_chr_cdc = merge(aggregate_chr, cdc, by.x = "fips", by.y = "FIPS", all.x = T)
+aggregate_chr_cdc_lung = merge(aggregate_chr_cdc, lungdisease, by.x = "fips", by.y = "FIPS", all.x = T)
+
 
 #head(aggregate_chr_cdc)
 file = paste("./Fixed_Date_Time_Series/", date_of_study, "data.Rds",sep = "")
-saveRDS(aggregate_chr_cdc, file)
+saveRDS(aggregate_chr_cdc_lung, file)
