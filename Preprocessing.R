@@ -2,16 +2,56 @@ knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_knit$set(root.dir = "./")
 
 source("./Modules/Source.R")
+# Import MortalityMinder datesets
+#------------------------------------------------------------------------------------------------------------------------------------------
+
+# CDC
+
+all_cause <- read.table(file = 'MM_data/data/CDC/all_cause/Underlying Cause of Death, 2015-2017.txt', 
+                           sep = '\t', header = TRUE, stringsAsFactors = FALSE)
+all_cause <- subset(all_cause, select = c(County.Code, Population, Deaths, Crude.Rate))
+all_cause <- rename(all_cause, c(FIPS = County.Code, all_cause_deaths = Deaths, all_cause_crude_rate = Crude.Rate))
+
+assault <- read.table(file = 'MM_data/data/CDC/assault/Underlying Cause of Death, 2015-2017.txt', 
+                         sep = '\t', header = TRUE, stringsAsFactors = FALSE)
+assault <- subset(assault, select = c(County.Code, Deaths, Crude.Rate))
+assault <- rename(assault, c(FIPS = County.Code, assault_deaths = Deaths, assault_crude_rate = Crude.Rate))
+
+cancer <- read.table(file = 'MM_data/data/CDC/cancer/Underlying Cause of Death, 2015-2017.txt', 
+                      sep = '\t', header = TRUE, stringsAsFactors = FALSE)
+cancer <- subset(cancer, select = c(County.Code, Deaths, Crude.Rate))
+cancer <- rename(cancer, c(FIPS = County.Code, cancer_deaths = Deaths, cancer_crude_rate = Crude.Rate))
+
+cardiovascular <- read.table(file = 'MM_data/data/CDC/cardiovascular/Underlying Cause of Death, 2015-2017.txt', 
+                     sep = '\t', header = TRUE, stringsAsFactors = FALSE)
+cardiovascular <- subset(cardiovascular, select = c(County.Code, Deaths, Crude.Rate))
+cardiovascular <- rename(cardiovascular, c(FIPS = County.Code, cardiovascular_deaths = Deaths, cardiovascular_crude_rate = Crude.Rate))
+
+despair <- read.table(file = 'MM_data/data/CDC/despair/Underlying Cause of Death, 2015-2017.txt', 
+                     sep = '\t', header = TRUE, stringsAsFactors = FALSE)
+despair <- subset(despair, select = c(County.Code, Deaths, Crude.Rate))
+despair <- rename(despair, c(FIPS = County.Code, despair_deaths = Deaths, despair_crude_rate = Crude.Rate))
+
+cdc <- merge(all_cause, assault, by.x = "FIPS", by.y = "FIPS")
+cdc <- merge(cdc, cancer, by.x = "FIPS", by.y = "FIPS")
+cdc <- merge(cdc, cardiovascular, by.x = "FIPS", by.y = "FIPS")
+cdc <- merge(cdc, despair, by.x = "FIPS", by.y = "FIPS")
+cdc$FIPS = str_pad(cdc$FIPS, 5, pad = "0")
+
 # Import social determinants datesets
 #------------------------------------------------------------------------------------------------------------------------------------------
 
 # County Health Rankings Master dataset
+
+# Used:   `% Adults with Diabetes`, `% Adults with Obesity`, `% 65 and over`, `Age-Adjusted Death Rate`, Population, FIPS
+# Unused: 
 
 chr <- read_csv("Data/2020CHR.csv")
 chr <- subset(chr, select = c(FIPS, `% Adults with Diabetes`, `% Adults with Obesity`, `% 65 and over`, `Age-Adjusted Death Rate`, Population))
 chr <- rename(chr, c("pct_diabetes" = `% Adults with Diabetes`,"pct_obesity" = `% Adults with Obesity`, "pct_age65" = `% 65 and over`, "death_rate" = `Age-Adjusted Death Rate`))
 chr$death_rate <- chr$death_rate/chr$Population
 chr <- subset(chr, select = -c(Population))
+
 #------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -285,8 +325,9 @@ aggregate_pm_census_cdc_test_beds$cli  =
              return(mean(sapply(Epidata$covidcast('fb-survey', 'smoothed_cli', 'day', 'county', list(Epidata$range(20200401, paste0(substring(str_remove_all(date_of_study, "-"),5,8),substring(str_remove_all(date_of_study, "-"),1,4)))),fips)[[2]],function(i){i$value}),na.rm=T))
            }else {return(NA)}})
 
-aggregate_age_diabete_obesity = merge(aggregate_pm_census_cdc_test_beds, chr, by.x = "fips", by.y = "FIPS", all.x = T)
+aggregate_chr = merge(aggregate_pm_census_cdc_test_beds, chr, by.x = "fips", by.y = "FIPS", all.x = T)
+aggregate_chr_cdc = merge(aggregate_chr, cdc, by.x = "fips", by.y = "FIPS", all.x = T)
 
-#head(aggregate_age_diabete_obesity)
+#head(aggregate_chr_cdc)
 file = paste("./Fixed_Date_Time_Series/", date_of_study, "data.Rds",sep = "")
-saveRDS(aggregate_age_diabete_obesity, file)
+saveRDS(aggregate_chr_cdc, file)
