@@ -63,7 +63,6 @@ library(formattable)
 library(dplyr)
 library(tidyverse)
 
-t1
 
 cols <- (c("Intercept", "Hispanic", "Black", "Asian", "White", "Native",
            "q_2", "q_3", "q_4", "q_5",
@@ -101,9 +100,8 @@ rounder <- function(x, na.rm = TRUE) {
   round(x, digits = 3)
 }
 
-t1
 t2 <- as_tibble(t1)
-t2
+
 t2 %>%
   mutate(variable = cols) %>%
   mutate_if(is.double, rounder, na.rm = TRUE) %>%
@@ -112,7 +110,6 @@ t2 %>%
   kable_styling(full_width = T) %>%
   save_kable(file = "./Figs/combined_temporal.html", self_contained = T)
   
-t2
 
 
 
