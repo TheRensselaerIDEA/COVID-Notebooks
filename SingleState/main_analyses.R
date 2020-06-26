@@ -20,8 +20,13 @@ mode.nb.random.off.main = glmer.nb(Deaths ~ state + factor(q_popdensity)
                                    + offset(log(population)), data = aggregate_pm_census_cdc_test_beds)
 summary(mode.nb.random.off.main)
 s <- summary(mode.nb.random.off.main)
-save(s, file = "StateSummaries/California_0621.rda")
+fname = "StateSummaries/California_0621.rda"
+save(s, file = fname)
 exp(summary(mode.nb.random.off.main)[10]$coefficients[2,1])
 exp(summary(mode.nb.random.off.main)[10]$coefficients[2,1] - 1.96*summary(mode.nb.random.off.main)[10]$coefficients[2,2])
 exp(summary(mode.nb.random.off.main)[10]$coefficients[2,1] + 1.96*summary(mode.nb.random.off.main)[10]$coefficients[2,2])
 summary(mode.nb.random.off.main)[10]$coefficients[2,4]
+
+
+
+load(fname)

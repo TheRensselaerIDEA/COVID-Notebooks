@@ -15,33 +15,25 @@ for (name in names(statesplit)) {
   }
 }
 
-names(statesplit)
+states <- names(statesplit)
 
 for (name in names(statesplit)) {
+  if (name %in% c("NM", "RI"))
+    next
   state_data <- statesplit[[name]]
- # print(state_data)
-  print(name) 
-  if (name == "NM" || name == "RI" || name == "OR"){
-    print("state has bad data")
-    next
-  }
-  if (max(state_data$date_since) == min(state_data$date_since)) { 
-    print("SKIPPED") 
-    next
-  } else {
-    model <- glm.nb(Deaths ~ scale(pct_blk) + factor(q_popdensity)
-                         + scale(log(medhouseholdincome))+scale(education)
-                         + scale(beds/population)+scale(pct_obesity)
-                         + scale(pct_age65)+scale(pct_diabetes)
-                         + date_since
-                         + offset(log(population)), data=state_data)
-  }
-  result <- paste(name, "_summary_06-21", sep = "")
+
+  state_data <- subset(state_data, select = c(fips, Deaths, COPD, pct_blk, q_popdensity, medhouseholdincome, education, beds, population, pct_obesity, pct_age65, pct_diabetes))
+  model <- glm.nb(Deaths ~ scale(pct_blk) + factor(q_popdensity)
+                       + scale(log(medhouseholdincome))+scale(education)
+                       + scale(beds/population)+scale(pct_obesity)
+                       + scale(COPD)
+                       + scale(pct_age65)+scale(pct_diabetes)
+                       + offset(log(population)), data=state_data)
+  result <- paste(name, ".summary", sep = "")
   assign(result, summary(model))
   fname = paste("./StateSummaries/",result,".rda",sep="")
   do.call(save, list(result, file=fname))
-  
 }
 
-
-
+#coefficient.matrix<-exp(summary[["coefficients"]][1:13])
+>>>>>>> 7c70b60820eebf157bd41a2d08a49af67498a29d

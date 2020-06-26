@@ -7,54 +7,57 @@ knitr::opts_knit$set(root.dir = "./")
 library(ggfortify)
 library("ggplot2")
 
-# Figure 1 the US PM2.5 and COVID-19 death maps
-#us<-map_data('state')
-
 #args <- commandArgs()
 
 
-#dates <- c(args[6:length(args)])
+#states <- c(args[6:length(args)])
 
-dates <- c("03-29", "04-05", "04-12", "04-19", "04-26", "05-03", "05-05", "05-12", "05-19", "05-26", "06-02", "06-09", "06-16")
-  
-fname <- paste("./Race_Analyses/models/combined/",dates[1],".rda",sep="")
+states <- c("AL", "AR", "AZ", "CA", "CT","CO", "DE", "FL", "GA", "IA", "ID", "IL", "IN", "KS", "KY",
+            "LA", "MA", "MD", "ME", "MI", "MN", "MO", "MS", "MT", "NC", "ND", "NE", "NH", "NJ", "NV", 
+            "NY", "OH", "OK", "OR", "PA", "SC", "SD", "TN", "TX", "UT", "VA", "VT", "WA", "WI", "WV", "WY")
+fname <- paste("./StateSummaries/",states[1],".summary.rda",sep="")
 load(fname)
-model_output <- eval(as.name(dates[1]))
-number_params <- length(c(model_output[10]$coefficients[,1]))
+b <- paste(states[1], ".summary", sep="")
+model_output <- eval(as.name(b))
+number_params <- length(c(model_output$coefficients[,1]))
 
 
 
-date_RRs <- array(dim = c(length(dates),as.integer(number_params)))
-date_lowers <- array(dim = c(length(dates),as.integer(number_params)))
-date_uppers <- array(dim = c(length(dates),as.integer(number_params)))
-date_pvals <- array(dim = c(length(dates),as.integer(number_params)))
+state_RRs <- array(dim = c(length(states),as.integer(number_params)))
+state_lowers <- array(dim = c(length(states),as.integer(number_params)))
+state_uppers <- array(dim = c(length(states),as.integer(number_params)))
+state_pvals <- array(dim = c(length(states),as.integer(number_params)))
 names <- array(dim=as.integer(number_params))
 
-for ( i in 1:length(dates)) {
-  date <- dates[i]
-  fname <- paste("./Race_Analyses/models/combined/",date,".rda",sep="")
+for ( i in 1:length(states)) {
+  state <- states[i]
+  fname <- paste("./StateSummaries/",state,".summary.rda",sep="")
   load(fname)
-  model_output <- eval(as.name(date))
-  model_output[10]
-  model_output[10]$coefficients[,1]
+  b <- paste(state, ".summary", sep= "")
+  model_output <- eval(as.name(b))
+  model_output
+  model_output$coefficients[,1]
   
-
   
-  this_date_RR <- model_output[10]$coefficients[,1]
-  this_date_lowers <- model_output[10]$coefficients[,1] - 1.96*model_output[10]$coefficients[,2]
-  this_date_uppers <- model_output[10]$coefficients[,1] + 1.96*model_output[10]$coefficients[,2]
-  this_date_pvals <- model_output[10]$coefficients[,4]
   
-  names <- names(this_date_RR)
+  this_state_RR <- model_output$coefficients[,1]
+  this_state_lowers <- model_output$coefficients[,1] - 1.96*model_output$coefficients[,2]
+  this_state_uppers <- model_output$coefficients[,1] + 1.96*model_output$coefficients[,2]
+  this_state_pvals <- model_output$coefficients[,4]
   
-  date_RRs[i,]    <- unname(this_date_RR)
-  date_lowers[i,] <- unname(this_date_lowers)
-  date_uppers[i,] <- unname(this_date_uppers)
-  date_pvals[i,] <- unname(this_date_pvals) 
-
+  names <- names(this_state_RR)
+  if (length(this_state_RR) != 13) {
+    print(state) 
+    next
+  }
+  state_RRs[i,]    <- unname(this_state_RR)
+  state_lowers[i,] <- unname(this_state_lowers)
+  state_uppers[i,] <- unname(this_state_uppers)
+  state_pvals[i,] <- unname(this_state_pvals) 
+  
 }
 
-t1 <- date_pvals[,]
+t1 <- state_pvals[,]
 
 # CREATE A TABLE FOR SIGNIFICANCE VALUES (P-Vals)
 library(knitr)
@@ -65,25 +68,32 @@ library(tidyverse)
 
 t1
 
-cols <- (c("Intercept", "Hispanic", "Black", "Asian", "White", "Native",
+cols <- (c("Intercept", "Black",
            "q_2", "q_3", "q_4", "q_5",
-           "householdincome", "education", "date_since_social", "date_since", "beds"))
-rows <- (c("03-29", "04-05", "04-12", "04-19", "04-26", "05-03", "05-05", "05-12", "05-19", "05-26", "06-02", "06-09", "06-16"))
-output_name <- paste("./Figs/combined_temporal.txt")
+           "householdincome", "education", "beds", 
+           "obesity", "COPD", "age65", "diabetic"))
+
+
+rows <- states
+length(t1)
+length(t1[,1])
+length(t1[1,])
+length(rows)
+output_name <- paste("./StateFigs/state621.txt")
 write.table(t1, file = output_name, append = FALSE, quote = TRUE, sep = " ",
             eol = "\n", na = "NA", dec = ".", row.names = rows,
             col.names = cols, qmethod = c("escape", "double"),
             fileEncoding = "")
 
 
-output_name <- paste("./Figs/combined_temporal.txt")
+output_name <- paste("./StateFigs/state621.txt")
 t1 <- read.table(file = output_name, sep = "", quote = "\"'", header= T,
-           dec = ".", numerals = c("allow.loss", "warn.loss", "no.loss") ,
-           colClasses = c("character", "double","double","double","double","double",
-                          "double","double","double","double","double",
-                          "double","double","double","double","double"), row.names = 1)
+                 dec = ".", numerals = c("allow.loss", "warn.loss", "no.loss") ,
+                 colClasses = c("character", "double","double","double","double","double",
+                                "double","double","double","double","double",
+                                "double","double","double"), row.names = 1)
 
-t1 <- t(t1)
+#t1 <- t(t1)
 
 
 color_format <- function(x, na.rm = TRUE) {
@@ -93,8 +103,8 @@ color_format <- function(x, na.rm = TRUE) {
          ifelse(x>0.05,
                 cell_spec(x, "html", background ="#FF5733"),
                 ifelse(x>0.01,
-                cell_spec(x, "html", background ="#FFFF00"),
-                cell_spec(x, "html", background ="#00FFFF"))))
+                       cell_spec(x, "html", background ="#FFFF00"),
+                       cell_spec(x, "html", background ="#00FFFF"))))
   
 }
 rounder <- function(x, na.rm = TRUE) {
@@ -105,13 +115,13 @@ t1
 t2 <- as_tibble(t1)
 t2
 t2 %>%
-  mutate(variable = cols) %>%
+  mutate(state= rows) %>%
   mutate_if(is.double, rounder, na.rm = TRUE) %>%
   mutate_if(is.double, color_format, na.rm = TRUE) %>%
   kable(format = "html", escape = F, row.names = TRUE) %>%
   kable_styling(full_width = T) %>%
-  save_kable(file = "./Figs/combined_temporal.html", self_contained = T)
-  
+  save_kable(file = "./StateFigs/state621.html", self_contained = T)
+
 t2
 
 
