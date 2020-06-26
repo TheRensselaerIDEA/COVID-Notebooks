@@ -7,36 +7,22 @@ source("./Modules/Source.R")
 
 # CDC
 
-all_cause <- read.table(file = 'MM_data/data/CDC/all_cause/Underlying Cause of Death, 2015-2017.txt', 
-                           sep = '\t', header = TRUE, stringsAsFactors = FALSE)
-all_cause <- subset(all_cause, select = c(County.Code, Population, Deaths, Crude.Rate))
-all_cause <- rename(all_cause, c(FIPS = County.Code, all_cause_deaths = Deaths, all_cause_crude_rate = Crude.Rate))
+cdc <- readRDS('MM_data/data/CDC/cdc.data.imputed.Rds')
 
-assault <- read.table(file = 'MM_data/data/CDC/assault/Underlying Cause of Death, 2015-2017.txt', 
-                         sep = '\t', header = TRUE, stringsAsFactors = FALSE)
-assault <- subset(assault, select = c(County.Code, Deaths, Crude.Rate))
-assault <- rename(assault, c(FIPS = County.Code, assault_deaths = Deaths, assault_crude_rate = Crude.Rate))
+cdc <- subset(cdc, period = '2015-2017')
 
-cancer <- read.table(file = 'MM_data/data/CDC/cancer/Underlying Cause of Death, 2015-2017.txt', 
-                      sep = '\t', header = TRUE, stringsAsFactors = FALSE)
-cancer <- subset(cancer, select = c(County.Code, Deaths, Crude.Rate))
-cancer <- rename(cancer, c(FIPS = County.Code, cancer_deaths = Deaths, cancer_crude_rate = Crude.Rate))
+cdc <- data.frame(split(cdc, cdc$death_cause))
 
-cardiovascular <- read.table(file = 'MM_data/data/CDC/cardiovascular/Underlying Cause of Death, 2015-2017.txt', 
-                     sep = '\t', header = TRUE, stringsAsFactors = FALSE)
-cardiovascular <- subset(cardiovascular, select = c(County.Code, Deaths, Crude.Rate))
-cardiovascular <- rename(cardiovascular, c(FIPS = County.Code, cardiovascular_deaths = Deaths, cardiovascular_crude_rate = Crude.Rate))
+cdc <- subset(cdc, select = c(All.Cause.county_fips, All.Cause.population, 
+                               All.Cause.death_num, All.Cause.death_rate, 
+                               Assault.death_num, Assault.death_rate, 
+                               Cancer.death_num, Cancer.death_rate, 
+                               Cardiovascular.death_num, Cardiovascular.death_rate, 
+                               Despair.death_num, Despair.death_rate))
 
-despair <- read.table(file = 'MM_data/data/CDC/despair/Underlying Cause of Death, 2015-2017.txt', 
-                     sep = '\t', header = TRUE, stringsAsFactors = FALSE)
-despair <- subset(despair, select = c(County.Code, Deaths, Crude.Rate))
-despair <- rename(despair, c(FIPS = County.Code, despair_deaths = Deaths, despair_crude_rate = Crude.Rate))
+cdc <- rename(cdc, c(FIPS = All.Cause.county_fips, CDC_Population = All.Cause.population))
 
-cdc <- merge(all_cause, assault, by.x = "FIPS", by.y = "FIPS")
-cdc <- merge(cdc, cancer, by.x = "FIPS", by.y = "FIPS")
-cdc <- merge(cdc, cardiovascular, by.x = "FIPS", by.y = "FIPS")
-cdc <- merge(cdc, despair, by.x = "FIPS", by.y = "FIPS")
-cdc$FIPS = str_pad(cdc$FIPS, 5, pad = "0")
+#cdc[is.na(cdc)] <- 0
 
 # Import social determinants datesets
 #------------------------------------------------------------------------------------------------------------------------------------------
