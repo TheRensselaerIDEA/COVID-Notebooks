@@ -9,7 +9,7 @@ source("./Modules/Source.R")
 
 cdc <- readRDS('MM_data/data/CDC/cdc.data.imputed.Rds')
 
-cdc <- subset(cdc, period = '2015-2017')
+cdc <- subset(cdc, period == '2015-2017')
 
 cdc <- data.frame(split(cdc, cdc$death_cause))
 
@@ -136,7 +136,7 @@ county_temp = read.csv("./Data/temp_seasonal_county.csv")
 county_pm$fips = str_pad(county_pm$fips, 5, pad = "0")
 # Import census, brfss, testing, mortality, hosptial beds data as potential confounders
 county_census = read.csv(text=getURL("https://raw.githubusercontent.com/wxwx1993/PM_COVID/master/Data/census_county_interpolated.csv"))
-county_brfss<-read.csv(text=getURL("https://www.countyhealthrankings.org/sites/default/files/media/document/analytic_data2020.csv"),skip = 1)
+county_brfss<-read.csv("Data/analytic_data2020.csv",skip = 1)
 county_brfss<-county_brfss[,c('fipscode','v011_rawvalue','v009_rawvalue')]
 names(county_brfss)<-c('fips','obese','smoke')
 county_brfss$fips = str_pad(county_brfss$fips, 5, pad = "0")
