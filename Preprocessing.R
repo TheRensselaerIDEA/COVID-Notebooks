@@ -92,11 +92,6 @@ lungdisease <- subset(lungdisease, select = -c(`State or County`, TotalPopulatio
 
 #------------------------------------------------------------------------------------------------------------------------------------------
 
-#args <- commandArgs()
-
-#date = args[6]
-#date_of_study <- paste(date, "-2020", sep="")
-
 # Historical data
 covid_hist = read.csv(text=getURL("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/03-30-2020.csv"))
 covid_us_hist = subset(covid_hist, Country_Region == "US" & is.na(FIPS)==F)
@@ -302,11 +297,11 @@ aggregate_pm_census_cdc_test_beds$cli  =
              return(mean(sapply(Epidata$covidcast('fb-survey', 'smoothed_cli', 'day', 'county', list(Epidata$range(20200401, paste0(substring(str_remove_all(date_of_study, "-"),5,8),substring(str_remove_all(date_of_study, "-"),1,4)))),fips)[[2]],function(i){i$value}),na.rm=T))
            }else {return(NA)}})
 
-
+# Merging datasets on FIPS
 aggregate_chr = merge(aggregate_pm_census_cdc_test_beds, chr, by.x = "fips", by.y = "FIPS", all.x = T)
 aggregate_chr_cdc = merge(aggregate_chr, cdc, by.x = "fips", by.y = "FIPS", all.x = T)
 aggregate_chr_cdc_lung = merge(aggregate_chr_cdc, lungdisease, by.x = "fips", by.y = "FIPS", all.x = T)
 
-
+# Saving data frame to Rds file
 file = paste("./Fixed_Date_Time_Series/", date_of_study, "data.Rds",sep = "")
 saveRDS(aggregate_chr_cdc_lung, file)
