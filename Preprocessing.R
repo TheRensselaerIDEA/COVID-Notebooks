@@ -2,10 +2,30 @@ knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_knit$set(root.dir = "./")
 
 source("./Modules/Source.R")
-# Import MortalityMinder datesets
+
+date_of_study = "06-28-2020"
+
+# MortalityMinder datesets
 #------------------------------------------------------------------------------------------------------------------------------------------
 
 # CDC
+
+# Used columns
+#-------------------------------------------------------------------------------------------------
+#| All.Cause.county_fips         | All.Cause.death_rate          | Assault.death_rate            |
+#-------------------------------------------------------------------------------------------------
+#| Cancer.death_rate             | Cardiovascular.death_rate     | Despair.death_rate            |
+#-------------------------------------------------------------------------------------------------
+
+# Unused columns
+#-------------------------------------------------------------------------------------------------
+#| All.Cause.urban_2013          | All.Cause.population          | All.Cause.death_num           |
+#-------------------------------------------------------------------------------------------------
+#| Assault.death_num             | Cancer.death_num              | Cardiovascular.death_num      |
+#-------------------------------------------------------------------------------------------------
+#| Despair.death_num             |
+#---------------------------------
+
 
 cdc <- readRDS('MM_data/data/CDC/cdc.data.imputed.Rds')
 
@@ -13,29 +33,47 @@ cdc <- subset(cdc, period == '2015-2017')
 
 cdc <- data.frame(split(cdc, cdc$death_cause))
 
-cdc <- subset(cdc, select = c(All.Cause.county_fips, All.Cause.population, 
-                               All.Cause.death_num, All.Cause.death_rate, 
-                               Assault.death_num, Assault.death_rate, 
-                               Cancer.death_num, Cancer.death_rate, 
-                               Cardiovascular.death_num, Cardiovascular.death_rate, 
-                               Despair.death_num, Despair.death_rate))
+cdc <- subset(cdc, select = c(All.Cause.county_fips, 
+                              All.Cause.death_rate, 
+                              Assault.death_rate, 
+                              Cancer.death_rate, 
+                              Cardiovascular.death_rate, 
+                              Despair.death_rate))
 
-cdc <- rename(cdc, c(FIPS = All.Cause.county_fips, CDC_Population = All.Cause.population))
+cdc <- rename(cdc, c(FIPS = All.Cause.county_fips))
 
-#cdc[is.na(cdc)] <- 0
-
-# Import social determinants datesets
+# Social Determinants datesets
 #------------------------------------------------------------------------------------------------------------------------------------------
 
 # County Health Rankings Master dataset
 
-# Used:   `% Adults with Diabetes`, `% Adults with Obesity`, `% 65 and over`, `Age-Adjusted Death Rate`, Population, FIPS
-# Unused: 
+# Used columns
+#-------------------------------------------------------------------------------------------------
+#| FIPS                          | `% Adults with Diabetes`      | `% Adults with Obesity`       |
+#-------------------------------------------------------------------------------------------------
+#| `% 65 and over`               | `Age-Adjusted Death Rate`     |
+#-----------------------------------------------------------------
+
+# Unused columns
+#-------------------------------------------------------------------------------------------------
+#| `% Smokers`                                   | `% Excessive Drinking`                        |
+#-------------------------------------------------------------------------------------------------
+#| `Average Daily PM2.5`                         | `% Fair or Poor Health`                       |
+#-------------------------------------------------------------------------------------------------
 
 chr <- read_csv("Data/2020CHR.csv")
-chr <- subset(chr, select = c(FIPS, `% Adults with Diabetes`, `% Adults with Obesity`, `% 65 and over`, `Age-Adjusted Death Rate`, Population))
-chr <- rename(chr, c("pct_diabetes" = `% Adults with Diabetes`,"pct_obesity" = `% Adults with Obesity`, "pct_age65" = `% 65 and over`, "death_rate" = `Age-Adjusted Death Rate`))
-chr$death_rate <- chr$death_rate/chr$Population
+
+chr <- subset(chr, select = c(FIPS, 
+                              `% Adults with Diabetes`, 
+                              `% Adults with Obesity`, 
+                              `% 65 and over`, 
+                              `Age-Adjusted Death Rate`))
+
+chr <- rename(chr, c("pct_diabetes" = `% Adults with Diabetes`,
+                     "pct_obesity" = `% Adults with Obesity`, 
+                     "pct_age65" = `% 65 and over`, 
+                     "death_rate" = `Age-Adjusted Death Rate`))
+
 chr <- subset(chr, select = -c(Population))
 
 #------------------------------------------------------------------------------------------------------------------------------------------
@@ -43,73 +81,14 @@ chr <- subset(chr, select = -c(Population))
 # Lung Disease dataset
 
 lungdisease <- read_csv("Data/lungdiseaseestimates_uscounties.csv")
+
 lungdisease$PediatricAsthma         <- lungdisease$PediatricAsthma / lungdisease$TotalPopulation
 lungdisease$AdultAsthma             <- lungdisease$AdultAsthma / lungdisease$TotalPopulation
 lungdisease$COPD                    <- lungdisease$COPD / lungdisease$TotalPopulation
 lungdisease$AdultChronicLungDisease <- lungdisease$AdultChronicLungDisease / lungdisease$TotalPopulation
 lungdisease$LungCancer              <- lungdisease$LungCancer / lungdisease$TotalPopulation
+
 lungdisease <- subset(lungdisease, select = -c(`State or County`, TotalPopulation))
-
-#------------------------------------------------------------------------------------------------------------------------------------------
-
-
-# COPD datasets
- 
-#COPD_national <- read_csv("Data/COPD_data_states.csv")
-
-#COPD_nys_county <- read_csv("Data/COPD_data_nyscounty.csv")
-#COPD_nys_county <- subset(COPD_nys_county, select = -c(`DSRIP Region Sort Key`))
-
-#------------------------------------------------------------------------------------------------------------------------------------------
-# High Cholesterol (Hyperlipidemia) datasets
-
-#highcholesterol_data_states <- read_csv("Data/highcholesterol_data_states.csv")
-#highcholesterol_data_states <- subset(highcholesterol_data_states, select = -c(Rank))
-
-#highcholesterol_data_nyscounty <- read_csv("Data/highcholesterol_data_nyscounty.csv")
-#highcholesterol_data_nyscounty <- subset(highcholesterol_data_nyscounty, select = -c(`DSRIP Region Sort Key`))
-
-#------------------------------------------------------------------------------------------------------------------------------------------
-# Age 65+ datasets
-
-#age65plus_data_states <- read_csv("Data/age65plus_data_states.csv")
-#age65plus_data_states$pct_age65 <- age65plus_data_states$PopulationEstJuly2018_65plus/age65plus_data_states$PopulationEstJuly2018*100
-
-
-#age65plus_data_nyscounty <- read_csv("Data/age65plus_data_nyscounty.csv")
-#age65plus_data_nyscounty <- subset(age65plus_data_nyscounty, select = -c(State))
-#head(age65plus_data_nyscounty)
-#age65plus_data_nyscounty <- rename(age65plus_data_nyscounty, c("pct_age65" = `% 65 and over`))
-
-#------------------------------------------------------------------------------------------------------------------------------------------
-# Heart Disease / Cardiovascular Disease 
-
-#heartdisease_deaths_data_states <- read_csv("Data/HeartDisease_DeathRate_States_CDC_2015.csv")
-
-#heartdisease_deaths_data_nyscounty <- read_csv("Data/heartdiseasedeaths_data_nyscounty.csv")
-
-#heartdisease_data_nyscounty <- read_csv("Data/heartdisease_data_nyscounty.csv")
-#heartdisease_data_nyscounty <- subset(heartdisease_data_nyscounty, select = -c(`DSRIP Region Sort Key`))
-
-#------------------------------------------------------------------------------------------------------------------------------------------
-# Adult Obesity
-
-#obesity_data_states <- read_csv("Data/obesity_data_states.csv")
-#obesity_data_states <- rename(obesity_data_states, c("pct_obesity" = pct_Adults_with_Obesity))
-
-#obesity_data_nyscounty <- read_csv("Data/diabetesobesity_data_nyscounty.csv")
-#obesity_data_nyscounty <- subset(obesity_data_nyscounty, select = -c(pct_Adults_with_Diabetes, no_Food_Insecure, pct_Food_Insecure))
-#obesity_data_nyscounty <- rename(obesity_data_nyscounty, c("pct_obesity" = pct_Adults_with_Obesity))
-
-#------------------------------------------------------------------------------------------------------------------------------------------
-# Diabetes
-
-#diabetes_data_states <- read_csv("Data/diabetes_data_states.csv")
-#diabetes_data_states <- rename(diabetes_data_states, c("pct_diabetes" = pct_Adults_with_Diabetes))
-
-#diabetes_data_nyscounty <- read_csv("Data/diabetesobesity_data_nyscounty.csv")
-#diabetes_data_nyscounty <- subset(diabetes_data_nyscounty, select = -c(pct_Adults_with_Obesity, no_Food_Insecure, pct_Food_Insecure))
-#diabetes_data_nyscounty <- rename(diabetes_data_nyscounty, c("pct_diabetes" = pct_Adults_with_Diabetes))
 
 #------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -117,7 +96,7 @@ lungdisease <- subset(lungdisease, select = -c(`State or County`, TotalPopulatio
 
 #date = args[6]
 #date_of_study <- paste(date, "-2020", sep="")
-date_of_study = "06-21-2020"
+
 # Historical data
 covid_hist = read.csv(text=getURL("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/03-30-2020.csv"))
 covid_us_hist = subset(covid_hist, Country_Region == "US" & is.na(FIPS)==F)
@@ -323,11 +302,11 @@ aggregate_pm_census_cdc_test_beds$cli  =
              return(mean(sapply(Epidata$covidcast('fb-survey', 'smoothed_cli', 'day', 'county', list(Epidata$range(20200401, paste0(substring(str_remove_all(date_of_study, "-"),5,8),substring(str_remove_all(date_of_study, "-"),1,4)))),fips)[[2]],function(i){i$value}),na.rm=T))
            }else {return(NA)}})
 
+
 aggregate_chr = merge(aggregate_pm_census_cdc_test_beds, chr, by.x = "fips", by.y = "FIPS", all.x = T)
 aggregate_chr_cdc = merge(aggregate_chr, cdc, by.x = "fips", by.y = "FIPS", all.x = T)
 aggregate_chr_cdc_lung = merge(aggregate_chr_cdc, lungdisease, by.x = "fips", by.y = "FIPS", all.x = T)
 
 
-#head(aggregate_chr_cdc)
 file = paste("./Fixed_Date_Time_Series/", date_of_study, "data.Rds",sep = "")
 saveRDS(aggregate_chr_cdc_lung, file)
