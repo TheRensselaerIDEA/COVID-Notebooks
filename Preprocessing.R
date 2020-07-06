@@ -3,7 +3,7 @@ knitr::opts_knit$set(root.dir = "./")
 
 source("./Modules/Source.R")
 
-date_of_study = "06-28-2020"
+date_of_study = "07-05-2020"
 
 # MortalityMinder datesets
 #------------------------------------------------------------------------------------------------------------------------------------------

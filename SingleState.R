@@ -29,6 +29,7 @@ COEF <- c("(Intercept)", "scale(hispanic)", "scale(pct_blk)", "scale(pct_asian)"
 # master data frame of MRR and p-value
 ALL.C <- data.frame(coefficients=COEF)
 ALL.P <- data.frame(coefficients=COEF)
+ALL.merged <- data.frame(coefficients=COEF)
 
 for (name in names(statesplit)) {
   # Ignore states having issues
@@ -82,7 +83,15 @@ for (name in names(statesplit)) {
   ALL.P$state <- p[match(ALL.P$coefficients, names(p))]
   names(ALL.P)[names(ALL.P) == 'state'] <- name
   
+  ALL.merged$state_c <- c[match(ALL.merged$coefficients, names(c))]
+  ALL.merged$state_p <- p[match(ALL.merged$coefficients, names(p))]
+  name_c = paste(name, '_c', sep = '')
+  name_p = paste(name, '_p', sep = '')
+  names(ALL.merged)[names(ALL.merged) == 'state_c'] <- name_c
+  names(ALL.merged)[names(ALL.merged) == 'state_p'] <- name_p
+  
 }
 
 saveRDS(ALL.C, file = './StateSummaries/ALL_C.rds')
 saveRDS(ALL.P, file = './StateSummaries/ALL_P.rds')
+saveRDS(ALL.merged, file = './StateSummaries/ALL_merged.rds')
