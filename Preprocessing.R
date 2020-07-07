@@ -3,6 +3,7 @@ knitr::opts_knit$set(root.dir = "./")
 
 source("./Modules/Source.R")
 
+# Change the date here
 date_of_study = "07-05-2020"
 
 # MortalityMinder datesets
@@ -158,12 +159,34 @@ eval(parse(text = script))
 state_policy = read_csv("./Data/state_policy0410.csv")
 colnames(state_policy)[6] = "stay_at_home"
 
+reopen <- gsheet2tbl('https://docs.google.com/spreadsheets/d/1zu9qEWI8PsOI_i8nI_S29HDGHlIp2lfVMsGxpQ5tvAQ/edit#gid=1269444822')
+colnames(reopen)[2] = "reopen"
+
+closure <- gsheet2tbl('https://docs.google.com/spreadsheets/d/1zu9qEWI8PsOI_i8nI_S29HDGHlIp2lfVMsGxpQ5tvAQ/edit#gid=257109301')
+colnames(closure)[2] = "reclosure"
+
+mask <- gsheet2tbl('https://docs.google.com/spreadsheets/d/1zu9qEWI8PsOI_i8nI_S29HDGHlIp2lfVMsGxpQ5tvAQ/edit#gid=1489353670')
+colnames(mask)[2] = "mask"
+
 # merging data
 state_test = merge(state_test,statecode,by.x = "state" ,by.y = "Code" )
 state_test = merge(state_test,state_policy[,c(1,6)],by = "State")
+state_test = merge(state_test,reopen[,c(1,2)],by = "State")
+state_test = merge(state_test,closure[,c(1,2)],by = "State")
+state_test = merge(state_test,mask[,c(1,2)],by = "State")
+
 #state_test$date_since_social = as.numeric(as.Date(Sys.Date()) - as.Date((strptime(state_test$stay_at_home, "%m/%d/%Y"))))
 state_test$date_since_social = as.numeric(as.Date(strptime(date_of_study, "%m-%d-%Y")) - as.Date((strptime(state_test$stay_at_home, "%m/%d/%Y"))))
 state_test[is.na(state_test$date_since_social)==T,]$date_since_social = 0
+
+state_test$date_since_reopen = as.numeric(as.Date(strptime(date_of_study, "%m-%d-%Y")) - as.Date((strptime(state_test$reopen, "%m/%d/%Y"))))
+state_test[is.na(state_test$date_since_reopen)==T,]$date_since_reopen = 0
+
+state_test$date_since_reclosure = as.numeric(as.Date(strptime(date_of_study, "%m-%d-%Y")) - as.Date((strptime(state_test$reclosure, "%m/%d/%Y"))))
+state_test[is.na(state_test$date_since_reclosure)==T,]$date_since_reclosure = 0
+
+state_test$date_since_mask = as.numeric(as.Date(strptime(date_of_study, "%m-%d-%Y")) - as.Date((strptime(state_test$mask, "%m/%d/%Y"))))
+state_test[is.na(state_test$date_since_mask)==T,]$date_since_mask = 0
 
 # pm2.5 average over 17 years
 county_pm_aggregated <- county_pm %>% 
