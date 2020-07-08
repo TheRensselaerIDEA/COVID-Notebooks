@@ -24,7 +24,7 @@ COEF <- c("(Intercept)", "scale(hispanic)", "scale(pct_blk)", "scale(pct_asian)"
          "factor(q_popdensity)2", "factor(q_popdensity)3", "factor(q_popdensity)4", "factor(q_popdensity)5", 
          "scale(log(medhouseholdincome))", "scale(pct_obesity)", "scale(pct_age65)", "scale(pct_diabetes)", 
          "scale(LungCancer)", "scale(AdultChronicLungDisease)", "scale(COPD)", "scale(AdultAsthma)", "scale(PediatricAsthma)", 
-         "scale(Despair.death_rate)", "scale(All.Cause.death_rate)", "scale(Cardiovascular.death_rate)")
+         "scale(All.Cause.death_rate)")
 
 # master data frame of MRR and p-value
 ALL.C <- data.frame(coefficients=COEF)
@@ -44,22 +44,15 @@ for (name in names(statesplit)) {
   
   model <- glm.nb(Deaths ~ scale(hispanic) + scale(pct_blk) + scale(pct_asian) + scale(pct_white) + scale(pct_native)
                          + factor(q_popdensity)
-                         
                          + scale(log(medhouseholdincome))
-                         + scale(pct_obesity)
-                         + scale(pct_age65)
-                         + scale(pct_diabetes)
-                         
-                         + scale(LungCancer)
-                         + scale(AdultChronicLungDisease)
-                         + scale(COPD)
-                         + scale(AdultAsthma)
-                         + scale(PediatricAsthma)
-                  
-                         + scale(Despair.death_rate)
-                         + scale(All.Cause.death_rate)
-                         + scale(Cardiovascular.death_rate)
-                         
+                         +scale(pct_obesity)
+                         +scale(pct_age65)
+                         +scale(pct_diabetes)
+                         +scale(LungCancer)
+                         +scale(COPD)
+                         +scale(AdultAsthma)
+                         +scale(PediatricAsthma)
+                         +scale(All.Cause.death_rate)
                          + offset(log(population)), data =state_data)
   
   # save model summary of single state
