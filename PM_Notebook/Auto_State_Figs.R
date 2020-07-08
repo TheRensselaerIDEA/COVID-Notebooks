@@ -125,22 +125,6 @@ t2 %>%
 t2
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #significance = formatter("span",
 #                         style = x ~ style(color = ifelse(x > 0.05, "red", ifelse(x>0.01, "yellow","green"))))
 #t1 <- formattable(t1, formatter = significance)

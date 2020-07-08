@@ -1,3 +1,0 @@
-spatial_correlation_gamm.R    Length Class    Mode
-mer  1     glmerMod S4  
-gam 32     gam      list

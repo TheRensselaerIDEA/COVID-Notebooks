@@ -1,10 +1,10 @@
 knitr::opts_chunk$set(echo = TRUE)
-knitr::opts_knit$set(root.dir = "./")
+knitr::opts_knit$set(root.dir = "../")
 
 source("./Modules/Source.R")
 
 # Read in data
-aggregated_data <- readRDS('Fixed_Date_Time_Series/06-28-2020data.Rds')
+aggregated_data <- readRDS('Preprocessing_FTS_Outputs/06-28-2020data.Rds')
 
 # Split the data on state
 statesplit <- split(aggregated_data, aggregated_data$state)

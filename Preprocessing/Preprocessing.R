@@ -1,5 +1,5 @@
 knitr::opts_chunk$set(echo = TRUE)
-knitr::opts_knit$set(root.dir = "./")
+knitr::opts_knit$set(root.dir = "../")
 
 source("./Modules/Source.R")
 

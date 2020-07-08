@@ -41,7 +41,8 @@ Here, <span style='color:#c35442'><b>red</b></span> indicate non-significance (p
   color_format <- function(x, na.rm = TRUE) {
   
   ifelse(x >0.10,
-         cell_spec(x, "html", color = "#000000", background = "#c35442"),  # RED (over .1)
+         
+         cell_spec(x, "html", background = "#c35442", color = "#000000"),  # RED (over .1)
          ifelse(x>0.05,
                 cell_spec(x, "html", background ="#d58570", color = "#000000"),  # (over .05)
                 ifelse(x>0.01,
@@ -68,8 +69,19 @@ Here, <span style='color:#c35442'><b>red</b></span> indicate non-significance (p
 
 
 ```{r echo = F}
+  
 
+  set_na_2_1 <- function(x, na.rm = FALSE) {
+    x = 1.000
+  }  
 
+  t2 <- as.matrix(states.all_p, mode = "numeric")
+  
+  t2
+
+  
+
+  heatmap.2(t2, srtRow = 2, srtCol = 2, na.color=par("bg"), xlab = t2[1], ylab = t2$coefficients)
 
 
 ```
