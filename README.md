@@ -50,6 +50,8 @@ save(s, file = "summary.rda")
 
 # Visualization
 
+R Notebook exists in Notebooks/ProtoNotebook.Rmd . Several examples exist for types of figures that can be generated with the data. 
+
 # Import Library
 
 When importing libraries, do it in Source.R and include this line in every R file you create.
