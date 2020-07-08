@@ -28,6 +28,37 @@ Preprocessing --> Analysis --> Visualization
 saveRDS(aggregate_chr_cdc_lung, file = 'Fixed_Date_Time_Series/06-28-2020data.Rds')
 ```
 
+# Analysis
+
+1. Read in data from files saved in Preprocessing.R. 
+
+```R
+aggregated_data <- readRDS('Fixed_Date_Time_Series/06-28-2020data.Rds')
+```
+
+2. Run Analysis
+
+  - Nation Analysis
+  - State Analysis
+
+3. Save results
+
+```R
+s <- summary(model)
+save(s, file = "summary.rda")
+```
+
+# Visualization
+
+# Import Library
+
+When importing libraries, do it in Source.R and include this line in every R file you create.
+
+```R
+source("./Modules/Source.R")
+```
+# Parallelism
+
 
 <b>Data: </b><br>
 county_pm25.csv: the county-level PM2.5 exposure data averaged across the period 2000-2016 and averaged across grid cells in each county. For more source information see Additional Data Source section.
