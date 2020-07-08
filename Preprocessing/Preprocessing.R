@@ -326,5 +326,5 @@ aggregate_chr_cdc = merge(aggregate_chr, cdc, by.x = "fips", by.y = "FIPS", all.
 aggregate_chr_cdc_lung = merge(aggregate_chr_cdc, lungdisease, by.x = "fips", by.y = "FIPS", all.x = T)
 
 # Saving data frame to Rds file
-file = paste("./Fixed_Date_Time_Series/", date_of_study, "data.Rds",sep = "")
+file = paste("Preprocessing_FTS_Outputs/", date_of_study, "data.Rds",sep = "")
 saveRDS(aggregate_chr_cdc_lung, file)
