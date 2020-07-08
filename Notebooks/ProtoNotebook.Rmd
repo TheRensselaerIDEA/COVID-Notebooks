@@ -70,18 +70,63 @@ Here, <span style='color:#c35442'><b>red</b></span> indicate non-significance (p
 
 ```{r echo = F}
   
+# p_value heatmap 
+
+  t2 <- as_tibble(as.data.frame(apply(states.all_p, 2, as.numeric)))
+  t3 <- as_tibble(states.all_p)
+  
+  
+  t2 <- dplyr::select(t2, -c("coefficients"))
+  t2 <- as.matrix(t2)
+  t2[100]
+  
+  heatmap.2(t2, main = "Pvals StateSummary Heatmap", xlab = "State", ylab = "factor", trace = 'none', na.color = "black", labCol = colnames(t2), labRow = t3$coefficients)
+
+
+```
+
+```{r echo = F}
+  
 
   set_na_2_1 <- function(x, na.rm = FALSE) {
     x = 1.000
   }  
 
-  t2 <- as.matrix(states.all_p, mode = "numeric")
+  state_c <- as_tibble(as.data.frame(apply(states.all_c, 2, as.numeric)))
+  state_c <- dplyr::select(state_c, -c("coefficients"))
+  state_c <- as.matrix(state_c)
+  state_p <- as_tibble(as.data.frame(apply(states.all_p, 2, as.numeric)))
+  state_p <- dplyr::select(state_p, -c("coefficients"))
+  state_p <- as.matrix(state_p)
+  t3 <- as_tibble(states.all_p)
+  state_heat <- matrix(nrow = dim(state_p)[1] , ncol = dim(state_p)[2])
   
-  t2
 
   
-
-  heatmap.2(t2, srtRow = 2, srtCol = 2, na.color=par("bg"), xlab = t2[1], ylab = t2$coefficients)
+  for ( i in 1:dim(state_p)[1]){
+    for ( k in 1:dim(state_p)[2]) {
+      if (is.na(state_p[i,k])){
+        state_heat[i,k] = NA
+      } else if (state_p[i,k] < 0.05) {
+        if (state_c[i,k] < 1.0) {
+          state_heat[i,k] = 0.0
+        } else if (state_c[i,k] > 1.0){
+          state_heat[i,k] = 1
+        } else {
+          state_heat[i,k] = 0.5
+        }
+      } else { # grey val, heat = 0.5
+        state_heat[i,k] = 0.5
+     }
+    }
+  }
+ 
+    
+  state_heat
+  
+  color_palette <- colorRampPalette(c("blue", "grey", "red"))(n = 3)
+  
+  heatmap.2(state_heat, col = color_palette, main = "Effect on MRR per variable per state", xlab = "State", ylab = "factor", trace = 'none', na.color = "black", labCol = colnames(state_p), labRow = t3$coefficients)
 
 
 ```
