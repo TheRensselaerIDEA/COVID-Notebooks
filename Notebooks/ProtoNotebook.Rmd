@@ -78,8 +78,13 @@ Here, <span style='color:#c35442'><b>red</b></span> indicate non-significance (p
   
   t2 <- dplyr::select(t2, -c("coefficients"))
   t2 <- as.matrix(t2)
-  t2[100]
-  
+  for ( i in 1:dim(t2)[1]){
+    for ( k in 1:dim(t2)[2]) {
+      if  ( !is.na(t2[i,k]) &&  t2[i,k] < 0.05 ) {
+        t2[i,k] = 0.0
+      } 
+    }
+  }
   heatmap.2(t2, main = "Pvals StateSummary Heatmap", xlab = "State", ylab = "factor", trace = 'none', na.color = "black", labCol = colnames(t2), labRow = t3$coefficients)
 
 
@@ -121,13 +126,116 @@ Here, <span style='color:#c35442'><b>red</b></span> indicate non-significance (p
     }
   }
  
-    
-  state_heat
   
   color_palette <- colorRampPalette(c("blue", "grey", "red"))(n = 3)
   
-  heatmap.2(state_heat, col = color_palette, main = "Effect on MRR per variable per state", xlab = "State", ylab = "factor", trace = 'none', na.color = "black", labCol = colnames(state_p), labRow = t3$coefficients)
+  heatmap.2(state_heat, col = color_palette, main = "Effect on MRR per variable per state", xlab = "State", ylab = "factor", trace = 'none', na.color = "black", labCol = colnames(state_p), labRow = t3$coefficients, offsetRow = 1, margins = c(8,16))
 
 
 ```
 
+
+
+
+
+# Normalize MRRs to MR by subtracting 1 and dividing by stdev for each state... output as table
+
+
+```{r echo = F}
+  
+  state_c <- as.data.frame(states.all_c)
+  coefs <- state_c$coefficients
+  
+  coefs_clean <- c("hispanic", "pct_blk", "pct_asian", "pct_white", "pct_native", "pct_age65", "medhouseholdincome", "pct_obesity", "pct_diabetes", "LungCancer", "COPD", "AdultAsthma", "PediatricAsthma", "All.Cause.death_rate", "state")
+  states <- c("AL", "AR", "AZ", "CA", "CT","CO", "DE", "FL", "GA", "IA", "ID", "IL", "IN", "KS", "KY",
+            "LA", "MA", "MD", "ME", "MI", "MN", "MO", "MS", "MT", "NC", "ND", "NE", "NH", "NJ", "NV", 
+            "NY", "OH", "OK", "OR", "PA", "SC", "SD", "TN", "TX", "UT", "VA", "VT", "WA", "WI", "WV", "WY")
+  
+  # Split the data on state
+  statesplit <- split(model_input, model_input$state)
+
+  # Ignore states with less than 2 counties
+  for (name in names(statesplit)) {
+    if (nrow(statesplit[[name]]) < 2){
+      statesplit <- statesplit[names(statesplit) != name]
+    }
+  }
+  
+  state_MRs <- array(dim = c(length(names(statesplit)),length(coefs)))
+  
+  
+  for (i in 1:length(names(statesplit))) {
+    name = names(statesplit)[i]
+    # Ignore states having issues
+    if (name %in% c("AZ", "CT", "DE", "RI"))
+      next
+    state_data <- statesplit[[name]]
+      
+    state_data <- subset(state_data, select = c(fips, Deaths, hispanic, pct_blk, pct_asian, pct_white, pct_native, medhouseholdincome, pct_obesity, pct_age65, pct_diabetes, LungCancer, AdultChronicLungDisease, COPD, AdultAsthma, PediatricAsthma,  Despair.death_rate, All.Cause.death_rate, Cardiovascular.death_rate, population))
+    
+    b <- paste(name, ".summary", sep= "")
+    model_output <- eval(as.name(b))
+    this_state_Cs <- model_output$coefficients[,1]
+    names <- names(this_state_Cs)
+    this_state_Cs <- unname(this_state_Cs)
+    names
+    
+    this_state_MRs <- array(dim = c(length(coefs)))
+    
+    for ( j in 1:length(names)) {
+      coef = names[j] 
+      sdev <- case_when (
+        coef == "scale(hispanic)"                ~ sd(state_data$hispanic) ,
+        coef == "scale(pct_blk)"                 ~ sd(state_data$pct_blk) ,
+        coef == "scale(pct_asian)"               ~ sd(state_data$pct_asian) ,
+        coef == "scale(pct_white)"               ~ sd(state_data$pct_white) ,
+        coef == "scale(pct_native)"              ~ sd(state_data$pct_native) ,
+        coef == "scale(pct_age65)"               ~ sd(state_data$pct_age65) ,
+        coef == "scale(log(medhouseholdincome))" ~ sd(state_data$medhouseholdincome) ,
+        coef == "scale(pct_obesity)"             ~ sd(state_data$pct_obesity) ,
+        coef == "scale(pct_diabetes)"            ~ sd(state_data$pct_diabetes) ,
+        coef == "scale(LungCancer)"              ~ sd(state_data$LungCancer) ,
+        coef == "scale(COPD)"                    ~ sd(state_data$COPD) ,
+        coef == "scale(AdultAsthma)"             ~ sd(state_data$AdultAsthma) ,
+        coef == "scale(PediatricAsthma)"         ~ sd(state_data$PediatricAsthma) ,
+        coef == "scale(All.Cause.death_rate)"    ~ sd(state_data$All.Cause.death_rate),
+        TRUE                                     ~ -100
+      )
+      if (!is.na(sdev) && sdev != -100) {
+        this_state_MRs[which(coefs %in% c(coef))] = (this_state_Cs[j]-1.0)/sdev
+      }
+    }
+    if (length(state_MRs[i,]) != length(this_state_MRs)) {
+      print(length(state_MRs[i,]))
+      print(length(this_state_MRs))
+      stop()
+    } else {
+      state_MRs[i,] = this_state_MRs
+    }
+  }
+  
+  
+  stop()
+  
+  # After this point, State_MRs holds the values normalized by this:  (this_state_Cs[j]-1.0)/sdev formula.
+  
+  
+  t1 <- as.data.frame(state_MRs, row.names = c(names(statesplit)), col.names = c(as.character(coefs)))
+  
+  
+  t1
+  fil <- tempfile('./Notebooks/state_MRs', fileext = ".rds")
+  saveRDS(t1, file = fil)
+  
+  t2 <- as.matrix(state_MRs)
+  t2[is.na(t2)] <- 0
+  t2[t2 < -1000] <- -1000
+  t2[t2 > 1000] <- 1000
+  
+   
+  color_palette <- colorRampPalette(c("blue", "grey", "red"))(n = 500)
+  
+  heatmap.2(t2, col = color_palette, main = "Effect on MRR per variable per state", ylab = "State", xlab = "factor", trace = 'none', na.color = "black", labRow = names(statesplit), labCol = coefs, offsetRow = 1, margins = c(10,8))
+
+
+```

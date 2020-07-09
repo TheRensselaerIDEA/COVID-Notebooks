@@ -23,7 +23,7 @@ states
 COEF <- c("(Intercept)", "scale(hispanic)", "scale(pct_blk)", "scale(pct_asian)", "scale(pct_white)", "scale(pct_native)", 
          "factor(q_popdensity)2", "factor(q_popdensity)3", "factor(q_popdensity)4", "factor(q_popdensity)5", 
          "scale(log(medhouseholdincome))", "scale(pct_obesity)", "scale(pct_age65)", "scale(pct_diabetes)", 
-         "scale(LungCancer)", "scale(AdultChronicLungDisease)", "scale(COPD)", "scale(AdultAsthma)", "scale(PediatricAsthma)", 
+         "scale(LungCancer)", "scale(COPD)", "scale(AdultAsthma)", "scale(PediatricAsthma)", 
          "scale(All.Cause.death_rate)")
 
 # master data frame of MRR and p-value
