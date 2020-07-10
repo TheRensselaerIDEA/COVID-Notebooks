@@ -81,7 +81,7 @@ Here, <span style='color:#c35442'><b>red</b></span> indicate non-significance (p
   for ( i in 1:dim(t2)[1]){
     for ( k in 1:dim(t2)[2]) {
       if  ( !is.na(t2[i,k]) &&  t2[i,k] < 0.05 ) {
-        t2[i,k] = 0.0
+        t2[i,k] = 0.0   # if the value is significant, floor it to 0 to "highlight" it as red on the heatmap
       } 
     }
   }
@@ -148,7 +148,7 @@ Here, <span style='color:#c35442'><b>red</b></span> indicate non-significance (p
   
   coefs_clean <- c("hispanic", "pct_blk", "pct_asian", "pct_white", "pct_native", "pct_age65", "medhouseholdincome", "pct_obesity", "pct_diabetes", "LungCancer", "COPD", "AdultAsthma", "PediatricAsthma", "All.Cause.death_rate", "state")
   states <- c("AL", "AR", "AZ", "CA", "CT","CO", "DE", "FL", "GA", "IA", "ID", "IL", "IN", "KS", "KY",
-            "LA", "MA", "MD", "ME", "MI", "MN", "MO", "MS", "MT", "NC", "ND", "NE", "NH", "NJ", "NV", 
+            "LA", "MA", "MD", "ME", "MI", "MN", "MO", "MS", "MT", "NC", "ND", "NE", "NH", "NM", "NJ", "NV", 
             "NY", "OH", "OK", "OR", "PA", "SC", "SD", "TN", "TX", "UT", "VA", "VT", "WA", "WI", "WV", "WY")
   
   # Split the data on state
@@ -161,7 +161,7 @@ Here, <span style='color:#c35442'><b>red</b></span> indicate non-significance (p
     }
   }
   
-  state_MRs <- array(dim = c(length(names(statesplit)),length(coefs)))
+  state_MRs <- array(dim = c(length(states),length(coefs)))
   
   
   for (i in 1:length(names(statesplit))) {
@@ -178,7 +178,11 @@ Here, <span style='color:#c35442'><b>red</b></span> indicate non-significance (p
     this_state_Cs <- model_output$coefficients[,1]
     names <- names(this_state_Cs)
     this_state_Cs <- unname(this_state_Cs)
-    names
+    
+    if (!(name %in% states)) {
+      print(name)
+      next
+    }
     
     this_state_MRs <- array(dim = c(length(coefs)))
     
@@ -205,37 +209,75 @@ Here, <span style='color:#c35442'><b>red</b></span> indicate non-significance (p
         this_state_MRs[which(coefs %in% c(coef))] = (this_state_Cs[j]-1.0)/sdev
       }
     }
-    if (length(state_MRs[i,]) != length(this_state_MRs)) {
-      print(length(state_MRs[i,]))
-      print(length(this_state_MRs))
+    if (length(state_MRs[which(states %in% c(name)),]) != length(this_state_MRs)) {
+      #print(length(state_MRs[which(states %in% c(name)),]))
+      #print(length(this_state_MRs))
       stop()
     } else {
-      state_MRs[i,] = this_state_MRs
+      state_MRs[which(states %in% c(name)),] = this_state_MRs
     }
   }
   
   
-  stop()
-  
-  # After this point, State_MRs holds the values normalized by this:  (this_state_Cs[j]-1.0)/sdev formula.
-  
-  
-  t1 <- as.data.frame(state_MRs, row.names = c(names(statesplit)), col.names = c(as.character(coefs)))
-  
+  state_MRs
+  t0 <- as.data.frame(state_MRs)
+  t1 <- as_tibble(t0)
   
   t1
-  fil <- tempfile('./Notebooks/state_MRs', fileext = ".rds")
-  saveRDS(t1, file = fil)
   
-  t2 <- as.matrix(state_MRs)
-  t2[is.na(t2)] <- 0
-  t2[t2 < -1000] <- -1000
-  t2[t2 > 1000] <- 1000
+  stop()
   
-   
-  color_palette <- colorRampPalette(c("blue", "grey", "red"))(n = 500)
-  
-  heatmap.2(t2, col = color_palette, main = "Effect on MRR per variable per state", ylab = "State", xlab = "factor", trace = 'none', na.color = "black", labRow = names(statesplit), labCol = coefs, offsetRow = 1, margins = c(10,8))
+  colnames(t1) <- as.character(coefs)
+  colnames(t1)
+  length(states)
+  t2 <- t1 %>% 
+    mutate(state = states)
+  t2
+  saveRDS(t2, "states_normalize.rds")
 
+
+```
+
+```{r echo = F}
+  
+    nat <- national
+    coefs <- row.names(nat$coefficients)
+  
+    mo_in <-subset(model_input, select = c(fips, Deaths, hispanic, pct_blk, pct_asian, pct_white, pct_native, medhouseholdincome, pct_obesity, pct_age65, pct_diabetes, LungCancer, AdultChronicLungDisease, COPD, AdultAsthma, PediatricAsthma,  Despair.death_rate, All.Cause.death_rate, Cardiovascular.death_rate, population)) 
+  
+    nat_Cs <- nat$coefficients[,1]
+    names <- names(nat_Cs)
+    
+    nat_MRs <- array(dim = c(length(coefs)))
+    
+    for ( j in 1:length(names)) {
+      coef = names[j] 
+      sdev <- case_when (
+        coef == "scale(hispanic)"                ~ sd(mo_in$hispanic) ,
+        coef == "scale(pct_blk)"                 ~ sd(mo_in$pct_blk) ,
+        coef == "scale(pct_asian)"               ~ sd(mo_in$pct_asian) ,
+        coef == "scale(pct_white)"               ~ sd(mo_in$pct_white) ,
+        coef == "scale(pct_native)"              ~ sd(mo_in$pct_native) ,
+        coef == "scale(pct_age65)"               ~ sd(mo_in$pct_age65) ,
+        coef == "scale(log(medhouseholdincome))" ~ sd(mo_in$medhouseholdincome) ,
+        coef == "scale(pct_obesity)"             ~ sd(mo_in$pct_obesity) ,
+        coef == "scale(pct_diabetes)"            ~ sd(mo_in$pct_diabetes) ,
+        coef == "scale(LungCancer)"              ~ sd(mo_in$LungCancer) ,
+        coef == "scale(COPD)"                    ~ sd(mo_in$COPD) ,
+        coef == "scale(AdultAsthma)"             ~ sd(mo_in$AdultAsthma) ,
+        coef == "scale(PediatricAsthma)"         ~ sd(mo_in$PediatricAsthma) ,
+        coef == "scale(All.Cause.death_rate)"    ~ sd(mo_in$All.Cause.death_rate),
+        TRUE                                     ~ -100
+      )
+      if (!is.na(sdev) && sdev != -100) {
+        nat_MRs[which(coefs %in% c(coef))] = (nat_Cs[j]-1.0)/sdev
+      }
+    }
+
+    t1 <- as_tibble(nat_MRs)
+    
+    t2 <- t1 %>%
+      mutate(coefficients = names)
+    saveRDS(t2, "national_normalize.rds")
 
 ```
