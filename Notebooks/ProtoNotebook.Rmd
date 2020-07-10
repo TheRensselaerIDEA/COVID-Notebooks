@@ -189,20 +189,20 @@ Here, <span style='color:#c35442'><b>red</b></span> indicate non-significance (p
     for ( j in 1:length(names)) {
       coef = names[j] 
       sdev <- case_when (
-        coef == "scale(hispanic)"                ~ sd(state_data$hispanic) ,
-        coef == "scale(pct_blk)"                 ~ sd(state_data$pct_blk) ,
-        coef == "scale(pct_asian)"               ~ sd(state_data$pct_asian) ,
-        coef == "scale(pct_white)"               ~ sd(state_data$pct_white) ,
-        coef == "scale(pct_native)"              ~ sd(state_data$pct_native) ,
-        coef == "scale(pct_age65)"               ~ sd(state_data$pct_age65) ,
-        coef == "scale(log(medhouseholdincome))" ~ sd(state_data$medhouseholdincome) ,
-        coef == "scale(pct_obesity)"             ~ sd(state_data$pct_obesity) ,
-        coef == "scale(pct_diabetes)"            ~ sd(state_data$pct_diabetes) ,
-        coef == "scale(LungCancer)"              ~ sd(state_data$LungCancer) ,
-        coef == "scale(COPD)"                    ~ sd(state_data$COPD) ,
-        coef == "scale(AdultAsthma)"             ~ sd(state_data$AdultAsthma) ,
-        coef == "scale(PediatricAsthma)"         ~ sd(state_data$PediatricAsthma) ,
-        coef == "scale(All.Cause.death_rate)"    ~ sd(state_data$All.Cause.death_rate),
+        coef == "scale(hispanic)"                ~ sd(state_data$hispanic, na.rm = TRUE) ,
+        coef == "scale(pct_blk)"                 ~ sd(state_data$pct_blk, na.rm = TRUE) ,
+        coef == "scale(pct_asian)"               ~ sd(state_data$pct_asian, na.rm = TRUE) ,
+        coef == "scale(pct_white)"               ~ sd(state_data$pct_white, na.rm = TRUE) ,
+        coef == "scale(pct_native)"              ~ sd(state_data$pct_native, na.rm = TRUE) ,
+        coef == "scale(pct_age65)"               ~ sd(state_data$pct_age65, na.rm = TRUE) ,
+        coef == "scale(log(medhouseholdincome))" ~ sd(state_data$medhouseholdincome, na.rm = TRUE) ,
+        coef == "scale(pct_obesity)"             ~ sd(state_data$pct_obesity, na.rm = TRUE) ,
+        coef == "scale(pct_diabetes)"            ~ sd(state_data$pct_diabetes, na.rm = TRUE) ,
+        coef == "scale(LungCancer)"              ~ sd(state_data$LungCancer, na.rm = TRUE) ,
+        coef == "scale(COPD)"                    ~ sd(state_data$COPD, na.rm = TRUE) ,
+        coef == "scale(AdultAsthma)"             ~ sd(state_data$AdultAsthma, na.rm = TRUE) ,
+        coef == "scale(PediatricAsthma)"         ~ sd(state_data$PediatricAsthma, na.rm = TRUE) ,
+        coef == "scale(All.Cause.death_rate)"    ~ sd(state_data$All.Cause.death_rate, na.rm = TRUE),
         TRUE                                     ~ -100
       )
       if (!is.na(sdev) && sdev != -100) {
@@ -219,20 +219,13 @@ Here, <span style='color:#c35442'><b>red</b></span> indicate non-significance (p
   }
   
   
-  state_MRs
   t0 <- as.data.frame(state_MRs)
   t1 <- as_tibble(t0)
   
-  t1
-  
-  stop()
-  
   colnames(t1) <- as.character(coefs)
-  colnames(t1)
-  length(states)
   t2 <- t1 %>% 
     mutate(state = states)
-  t2
+  
   saveRDS(t2, "states_normalize.rds")
 
 
@@ -253,20 +246,20 @@ Here, <span style='color:#c35442'><b>red</b></span> indicate non-significance (p
     for ( j in 1:length(names)) {
       coef = names[j] 
       sdev <- case_when (
-        coef == "scale(hispanic)"                ~ sd(mo_in$hispanic) ,
-        coef == "scale(pct_blk)"                 ~ sd(mo_in$pct_blk) ,
-        coef == "scale(pct_asian)"               ~ sd(mo_in$pct_asian) ,
-        coef == "scale(pct_white)"               ~ sd(mo_in$pct_white) ,
-        coef == "scale(pct_native)"              ~ sd(mo_in$pct_native) ,
-        coef == "scale(pct_age65)"               ~ sd(mo_in$pct_age65) ,
-        coef == "scale(log(medhouseholdincome))" ~ sd(mo_in$medhouseholdincome) ,
-        coef == "scale(pct_obesity)"             ~ sd(mo_in$pct_obesity) ,
-        coef == "scale(pct_diabetes)"            ~ sd(mo_in$pct_diabetes) ,
-        coef == "scale(LungCancer)"              ~ sd(mo_in$LungCancer) ,
-        coef == "scale(COPD)"                    ~ sd(mo_in$COPD) ,
-        coef == "scale(AdultAsthma)"             ~ sd(mo_in$AdultAsthma) ,
-        coef == "scale(PediatricAsthma)"         ~ sd(mo_in$PediatricAsthma) ,
-        coef == "scale(All.Cause.death_rate)"    ~ sd(mo_in$All.Cause.death_rate),
+        coef == "scale(hispanic)"                ~ sd(mo_in$hispanic, na.rm = TRUE) ,
+        coef == "scale(pct_blk)"                 ~ sd(mo_in$pct_blk, na.rm = TRUE) ,
+        coef == "scale(pct_asian)"               ~ sd(mo_in$pct_asian, na.rm = TRUE) ,
+        coef == "scale(pct_white)"               ~ sd(mo_in$pct_white, na.rm = TRUE) ,
+        coef == "scale(pct_native)"              ~ sd(mo_in$pct_native, na.rm = TRUE) ,
+        coef == "scale(pct_age65)"               ~ sd(mo_in$pct_age65, na.rm = TRUE) ,
+        coef == "scale(log(medhouseholdincome))" ~ sd(mo_in$medhouseholdincome, na.rm = TRUE) ,
+        coef == "scale(pct_obesity)"             ~ sd(mo_in$pct_obesity, na.rm = TRUE) ,
+        coef == "scale(pct_diabetes)"            ~ sd(mo_in$pct_diabetes, na.rm = TRUE) ,
+        coef == "scale(LungCancer)"              ~ sd(mo_in$LungCancer, na.rm = TRUE) ,
+        coef == "scale(COPD)"                    ~ sd(mo_in$COPD, na.rm = TRUE) ,
+        coef == "scale(AdultAsthma)"             ~ sd(mo_in$AdultAsthma, na.rm = TRUE) ,
+        coef == "scale(PediatricAsthma)"         ~ sd(mo_in$PediatricAsthma, na.rm = TRUE) ,
+        coef == "scale(All.Cause.death_rate)"    ~ sd(mo_in$All.Cause.death_rate, na.rm = TRUE),
         TRUE                                     ~ -100
       )
       if (!is.na(sdev) && sdev != -100) {
