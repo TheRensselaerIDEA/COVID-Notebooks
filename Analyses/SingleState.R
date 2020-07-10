@@ -88,3 +88,26 @@ for (name in names(statesplit)) {
 saveRDS(ALL.C, file = './StateSummaries/ALL_C.rds')
 saveRDS(ALL.P, file = './StateSummaries/ALL_P.rds')
 saveRDS(ALL.merged, file = './StateSummaries/ALL_merged.rds')
+
+ALL.pair <- data.frame(states=names(ALL.C)[2:45])
+
+chunk <- function(x,n)
+{
+  f <- sort(rep(1:(trunc(length(x)/n)+1),n))[1:length(x)]
+  return(split(x,f))
+}
+
+for (i in 1:19){
+  column <- c()
+  for (name in ALL.pair$states){
+    c <- ALL.C[[name]]
+    p <- ALL.P[[name]]
+    pair <- c(c[i], p[i])
+    column <- append(column, pair, after = length(column))
+  }
+  column <- chunk(column, 2)
+  ALL.pair$coef <- column
+  names(ALL.pair)[names(ALL.pair) == 'coef'] <- COEF[i]
+}
+
+saveRDS(ALL.pair, file = './StateSummaries/ALL_pair.rds')
