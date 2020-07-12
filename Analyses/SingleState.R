@@ -91,23 +91,25 @@ saveRDS(ALL.merged, file = './StateSummaries/ALL_merged.rds')
 
 ALL.pair <- data.frame(states=names(ALL.C)[2:45])
 
-chunk <- function(x,n)
-{
-  f <- sort(rep(1:(trunc(length(x)/n)+1),n))[1:length(x)]
-  return(split(x,f))
-}
-
 for (i in 1:19){
   column <- c()
   for (name in ALL.pair$states){
-    c <- ALL.C[[name]]
-    p <- ALL.P[[name]]
-    pair <- c(c[i], p[i])
+    c <- ALL.C[[name]][i]
+    p <- ALL.P[[name]][i]
+    if (!is.na(p) & p <= 0.05){
+      pair <- c(c, p)
+    }else{
+      pair <- c(NA,NA)
+    }
+    #pair <- c(c, p)
     column <- append(column, pair, after = length(column))
   }
-  column <- chunk(column, 2)
+  x <- seq_along(column)
+  column <- split(column, ceiling(x/2))
   ALL.pair$coef <- column
   names(ALL.pair)[names(ALL.pair) == 'coef'] <- COEF[i]
 }
 
-saveRDS(ALL.pair, file = './StateSummaries/ALL_pair.rds')
+#replace(ALL.pair, ALL.pair==c(NA,NA), 0)
+
+saveRDS(ALL.pair, file = './StateSummaries/Significant.rds')
