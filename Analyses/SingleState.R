@@ -70,6 +70,8 @@ for (name in names(statesplit)) {
     p <- summary(model)[12]$coefficients[,4]
   }
   
+  p <- p.adjust(p, method = 'BH', n = length(p))
+  
   # merge into master data frame
   ALL.C$state <- c[match(ALL.C$coefficients, names(c))]
   names(ALL.C)[names(ALL.C) == 'state'] <- name
@@ -85,9 +87,9 @@ for (name in names(statesplit)) {
   
 }
 
-saveRDS(ALL.C, file = './StateSummaries/ALL_C.rds')
-saveRDS(ALL.P, file = './StateSummaries/ALL_P.rds')
-saveRDS(ALL.merged, file = './StateSummaries/ALL_merged.rds')
+saveRDS(ALL.C, file = './AdjustedStateSummaries/ALL_C.rds')
+saveRDS(ALL.P, file = './AdjustedStateSummaries/ALL_P.rds')
+saveRDS(ALL.merged, file = './AdjustedStateSummaries/ALL_merged.rds')
 
 ALL.pair <- data.frame(states=names(ALL.C)[2:45])
 
@@ -112,4 +114,4 @@ for (i in 1:19){
 
 #replace(ALL.pair, ALL.pair==c(NA,NA), 0)
 
-saveRDS(ALL.pair, file = './StateSummaries/Significant.rds')
+saveRDS(ALL.pair, file = './AdjustedStateSummaries/Significant.rds')
