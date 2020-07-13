@@ -8,6 +8,12 @@ output: html_document
 
 
 ```{r setup, include=FALSE}
+# Set the default CRAN repository
+local({r <- getOption("repos")
+       r["CRAN"] <- "http://cran.r-project.org" 
+       options(repos=r)
+})
+
 knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_knit$set(root.dir = "../")
 ```
@@ -60,11 +66,11 @@ The recommended procedure for cloning and using this repository is as follows:
 * Access the Linux shell on the IDEA Cluster by clicking the **Terminal** tab of RStudio Server. `cd` into your home (login) directory using: `cd ~`
     * Advanced users may use `ssh` to directly access the Linux shell
 * `git clone https://github.com/TheRensselaerIDEA/COVID-Notebooks.git` in your `home` directory, resulting in a new directory `COVID-Notebooks`
-* In the Linux shell, `cd` to `COVID-Notebooks` 
+* In the Linux shell, `cd` to `COVID-Notebooks/HACL-2020` 
 * In the Linux shell, `git checkout -b hacl-yourrcs` where `yourrcs` is your RCS id
     * For example, if your RCS is `erickj4`, your new branch should be `hacl-erickj4`
     * It is critical that you include your RCS id in your branch id
-* In the RStudio Server UI, navigate to the `COVID-Notebooks` directory via the **Files** panel
+* In the RStudio Server UI, navigate to the `COVID-Notebooks/HACL-2020` directory via the **Files** panel
     * Set this to be your R working directory (under "More" menu)
 * **REQUIRED**: 
     * Make a <b>copy</b> of this notebook (ie `covid-notebook-hacl.Rmd`) file using a *new, original, descriptive* filename that **includes your RCS ID!**
