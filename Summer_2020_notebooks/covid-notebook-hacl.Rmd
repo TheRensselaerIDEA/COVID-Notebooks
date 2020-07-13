@@ -1,6 +1,6 @@
 ---
 title: "COVIDMINDER Example Notebook"
-subtitle: "DAR/HACl Summer 2020"
+subtitle: "DAR/HACL Summer 2020"
 author: "John Erickson"
 date: "07/12/2020"
 output: html_document
@@ -28,10 +28,9 @@ source("modules/preprocessing.R")
 
 ## INTRODUCTION
 
-This R Notebook and its related R scripts provide an introduction to the **COVIDMINDER** application, which you can find at:
+This R Notebook and its related R scripts provide a very basic introduction to the **COVIDMINDER** application, which you can find at:
 
 * Public "production" version: https://covidminder.idea.rpi.edu/
-* Public "pre-release" version: https://bit.ly/COVIDMinder 
 
 The github repository for all the code required for this notebook, including a snapshot of the **COVIDMINDER** application, can be found at:
 
@@ -41,11 +40,18 @@ The **COVIDMINDER** github repository can be found at:
 
 * https://github.com/TheRensselaerIDEA/COVIDMINDER
 
+**NOTE:** To contribute or submit to these repositories you must have a github.com ID and must send it to John Erickson at `erickj4@rpi.edu`. **PLEASE DO THIS IMMEDIATELY BEFORE READING ANY FURTHER!!**
+
 ## HOW TO USE THIS NOTEBOOK AND REPOSITORY
 
-We're asking those who wish to participate in this excercise to clone the github repository, create a personal branch, and make additions to the repository by creating new, customized notebooks. 
+We're asking those who wish to participate in this exercise to...
+* clone the github repository...
+* create a personal branch, and...
+* make additions to the repository by creating new, customized notebooks. 
 
-**For DAR/HACL Summer 2020** you must be using RStudio Server on the IDEA Cluster. Instructions for accessing "The Cluster" appear at the end of this notebook. 
+The instructions which follow explain how to accomplish this. 
+
+**For DAR/HACL Summer 2020** you *must* be using RStudio Server on the IDEA Cluster. Instructions for accessing "The Cluster" appear at the end of this notebook. Don't forget to send your github ID to `erickj4@rpi.edu` 
 
 The general procedure for cloning and using this repository is as follows:
 
@@ -64,7 +70,7 @@ The general procedure for cloning and using this repository is as follows:
 * In Linux, `git add` each file you want to add to the repository (e.g. your new `Rmd` file, perhaps the `html` you create when you knit)
 * When you're ready, in Linux `git commit -a -m "some comment"` where "some comment" is a useful comment describing your changes
 * Finally, `git push origin hacl-yourrcs` (where `hacl-yourrcs` is the branch you're working on) 
-* ...and then go to github and submit a pull request.
+* ...and then go to github, select your branch from the drop-down and submit a pull request.
 
 Please also see this handy github "cheatsheet": https://education.github.com/git-cheat-sheet-education.pdf
 
@@ -88,7 +94,8 @@ Please also see this handy github "cheatsheet": https://education.github.com/git
 
 ## HOW TO SHARE YOUR WORK OR ASK QUESTIONS
 
-* Use the `idea_covidminder` stack channel under The Rensselaer IDEA
+* For class-related questions, use the `data-incite-2020` slack channel under The Rensselaer IDEA
+* For COVIDMINDER questions use the `idea_covidminder` stack channel 
     * Contact Dr. Erickson to be added (if you haven't already)
 
 ## WHAT TO INCLUDE IN YOUR NOTEBOOK
@@ -439,179 +446,6 @@ Data source: <a href='https://bit.ly/3dMWRP6'>JHU daily reports</a> (04-06-2020)
 ```
 
 
-`r NY_mortality_rates_text`
-
-```{r echo = F}
-
-# UPDATED: 28 April 2020
-    colors <- c("#253494","#4575B4", "#74ADD1","#ABD9E9","#f7f7f7","#FDAE61","#F46D43", "#D73027", "#BD0026")
-    bins <- c(5, 3, 2, 1, .2, -.2, -1, -2, -3, -5)
-    
-    pal2 <- leaflet::colorBin(colors, domain = NY.data$death_rate_ldi, bins = bins, reverse=FALSE)
-    
-    NY.shape$county_fips <- paste(as.data.frame(NY.shape)$STATEFP, as.data.frame(NY.shape)$COUNTYFP, sep = '')
-    NY.data.p <- dplyr::left_join(as.data.frame(NY.shape), as.data.frame(NY.data), by = c("county_fips" = "FIPS"))
-    
-    labels <- sprintf(
-      "<strong>%s</strong><br/>
-      COVID-19 Mortality Rate DI: %.2g<br>
-      COVID-19 Mortality Rate: %.1f /100k",
-      NY.data.p$County, NY.data.p$death_rate_ldi, (NY.data.p$deaths/NY.data.p$Population)*100000
-    ) %>% lapply(htmltools::HTML)
-    
-    leaflet(NY.shape) %>%
-      setView(-76.071782, 42.991989, 6) %>%  # Set to the geographic center of NY
-      addPolygons(
-        fillColor = ~pal2(NY.data.p$death_rate_ldi),
-        weight = 1,
-        opacity = 1,
-        color = "#330000",
-        dashArray = "1",
-        fillOpacity = 0.7,
-        highlight = highlightOptions(
-          weight = 5,
-          color = "#666",
-          dashArray = "",
-          fillOpacity = 0.7,
-          bringToFront = TRUE),
-        label = labels,
-        labelOptions = labelOptions(
-          style = list("font-weight" = "normal", padding = "3px 8px"),
-          textsize = "15px",
-          direction = "auto")) %>% 
-      addLegend(pal = pal2, 
-                values = ~NY.data.p$death_rate_ldi, 
-                opacity = 0.7, 
-                title = "Disparity Index<br/>NY COVID-19 Mortality Rates",
-                position = "bottomright",
-                labFormat = function(type, cuts, p) { n = length(cuts) 
-                cuts[n] = paste0(cuts[n]," lower") 
-                # for (i in c(1,seq(3,(n-1)))){cuts[i] = paste0(cuts[i],"—")} 
-                for (i in c(1,seq(2,(n-1)))){cuts[i] = paste0(cuts[i]," — ")} 
-                cuts[2] = paste0(cuts[2]," higher") 
-                paste0(str_remove(cuts[-n],"higher"), str_remove(cuts[-1],"—"))
-                }
-      ) %>%
-      addProviderTiles("MapBox", options = providerTileOptions(
-        id = "mapbox.light"))
-
-```
-
-`r NY_covid_cases_text`
-
-```{r echo = F}
-
-# UPDATED: 28 April 2020
-
-    colors <- c("#253494","#4575B4", "#74ADD1","#ABD9E9","#f7f7f7","#FDAE61","#F46D43", "#D73027", "#BD0026")
-    bins <- c(5, 3, 2, 1, .2, -.2, -1, -2, -3, -5)
-    pal2 <- leaflet::colorBin(colors, domain = NY.data$case_rate_ldi, bins = bins, reverse=FALSE)
-    
-    NY.shape$county_fips <- paste(as.data.frame(NY.shape)$STATEFP, as.data.frame(NY.shape)$COUNTYFP, sep = '')
-    NY.data.p <- dplyr::left_join(as.data.frame(NY.shape), as.data.frame(NY.data), by = c("county_fips" = "FIPS"))
-    
-    labels <- sprintf(
-      "<strong>%s</strong><br/>
-      COVID-19 Case Rate DI: %.2g<br>
-      COVID-19 Case Rate: %.1f /100k",
-      NY.data.p$County, NY.data.p$case_rate_ldi, (NY.data.p$cases/NY.data.p$Population)*100000
-    ) %>% lapply(htmltools::HTML)
-    
-    leaflet(NY.shape) %>%
-      setView(-76.071782, 42.991989, 6) %>%  # Set to the geographic center of NY
-      addPolygons(
-        fillColor = ~pal2(NY.data.p$case_rate_ldi),
-        weight = 1,
-        opacity = 1,
-        color = "#330000",
-        dashArray = "1",
-        fillOpacity = 0.7,
-        highlight = highlightOptions(
-          weight = 5,
-          color = "#666",
-          dashArray = "",
-          fillOpacity = 0.7,
-          bringToFront = TRUE),
-        label = labels,
-        labelOptions = labelOptions(
-          style = list("font-weight" = "normal", padding = "3px 8px"),
-          textsize = "15px",
-          direction = "auto")) %>% 
-      addLegend(pal = pal2, 
-                values = ~NY.data.p$case_rate_ldi, 
-                opacity = 0.7, 
-                title = "Disparity Index<br/>NY COVID-19 Cases",
-                position = "bottomright",
-                labFormat = function(type, cuts, p) { n = length(cuts) 
-                cuts[n] = paste0(cuts[n]," lower") 
-                # for (i in c(1,seq(3,(n-1)))){cuts[i] = paste0(cuts[i],"—")} 
-                for (i in c(1,seq(2,(n-1)))){cuts[i] = paste0(cuts[i]," — ")} 
-                cuts[2] = paste0(cuts[2]," higher") 
-                paste0(str_remove(cuts[-n],"higher"), str_remove(cuts[-1],"—"))
-                }
-      ) %>%
-      addProviderTiles("MapBox", options = providerTileOptions(
-        id = "mapbox.light"))
-
-```
-
-
-`r NY_diabetes_text` 
-
-```{r echo=FALSE}
-
-    colors <- c("#253494","#4575B4", "#74ADD1","#ABD9E9","#f7f7f7","#FDAE61","#F46D43", "#D73027", "#BD0026")
-    bins <- c(5, 3, 2, 1, .2, -.2, -1, -2, -3, -5)
-    pal2 <- leaflet::colorBin(colors, domain = NY.data$diabetes_ldi, bins = bins, reverse=FALSE)
-    
-    NY.shape$county_fips <- paste(as.data.frame(NY.shape)$STATEFP, as.data.frame(NY.shape)$COUNTYFP, sep = '')
-    NY.data.p <- dplyr::left_join(as.data.frame(NY.shape), as.data.frame(NY.data), by = c("county_fips" = "FIPS"))
-    
-    labels <- sprintf(
-      "<strong>%s</strong><br/>
-      Diabetes Rate DI: %.2g<br>
-      Diabetes Rate: %.1f per 100k",
-      NY.data.p$County, NY.data.p$diabetes_ldi, NY.data.p$pct_Adults_with_Diabetes*1000
-    ) %>% lapply(htmltools::HTML)
-    
-    leaflet(NY.shape) %>%
-      setView(-76.071782, 42.991989, 6) %>%  # Set to the geographic center of NY
-      addPolygons(
-        fillColor = ~pal2(NY.data.p$diabetes_ldi),
-        weight = 1,
-        opacity = 1,
-        color = "#330000",
-        dashArray = "1",
-        fillOpacity = 0.7,
-        highlight = highlightOptions(
-          weight = 5,
-          color = "#666",
-          dashArray = "",
-          fillOpacity = 0.7,
-          bringToFront = TRUE),
-        label = labels,
-        labelOptions = labelOptions(
-          style = list("font-weight" = "normal", padding = "3px 8px"),
-          textsize = "15px",
-          direction = "auto")) %>% 
-      addLegend(pal = pal2, 
-                values = ~NY.data.p$diabetes_ldi, 
-                opacity = 0.7, 
-                title = "Disparity Index<br/>NY Diabetes Rates",
-                position = "bottomright",
-                labFormat = function(type, cuts, p) { n = length(cuts) 
-                cuts[n] = paste0(cuts[n]," lower") 
-                # for (i in c(1,seq(3,(n-1)))){cuts[i] = paste0(cuts[i],"—")} 
-                for (i in c(1,seq(2,(n-1)))){cuts[i] = paste0(cuts[i]," — ")} 
-                cuts[2] = paste0(cuts[2]," higher") 
-                paste0(str_remove(cuts[-n],"higher"), str_remove(cuts[-1],"—"))
-                }
-      ) %>%
-      addProviderTiles("MapBox", options = providerTileOptions(
-        id = "mapbox.light"))
-
-```
-
 `r NY_covid_cases_TS_text` 
 
 ```{r echo=F}
@@ -723,3 +557,20 @@ Data source: <a href='https://bit.ly/3dMWRP6'>JHU daily reports</a> (04-06-2020)
 
 
 ```
+
+## Accessing RStudio Server on the IDEA Cluster
+
+The IDEA Cluster provides five compute nodes (4x 48 cores, 1x 80 cores, 1x storage server)
+* RCS credentials (via registration in class); email John Erickson for problems `erickj4@rpi.edu`
+* RStudio, Jupyter, MATLAB, GPUs (on two nodes); lots of storage and computes
+* Access via RPI physical network or VPN only
+
+RStudio GUI Access:
+* http://lp01.idea.rpi.edu/rstudio-ose/  or http://lp01.idea.rpi.edu/rstudio-ose-3/ (RStudio)
+* Linux terminal accessible from within RStudio "Terminal" or via ssh (below)
+
+Shared Data on Cluster:
+* All idea_users have access to shared storage via `/data` ("data" in your home directories)
+* Shell access to nodes: You must access "landing pad" first, then compute node:
+* `ssh your_rcs@lp01.idea.rpi.edu`  For example: `ssh erickj4@lp01.idea.rpi.edu`
+* Then, `ssh` to the desired compute node, e.g.: `ssh idea-node-02`
