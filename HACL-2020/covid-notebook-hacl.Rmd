@@ -1,8 +1,8 @@
 ---
 title: "COVIDMINDER Example Notebook"
 subtitle: "DAR/HACL Summer 2020"
-author: "John Erickson"
-date: "07/12/2020"
+author: "John S. Erickson"
+date: "07/13/2020"
 output: html_document
 ---
 
@@ -44,8 +44,9 @@ The **COVIDMINDER** github repository can be found at:
 
 ## HOW TO USE THIS NOTEBOOK AND REPOSITORY
 
-We're asking those who wish to participate in this exercise to...
-* clone the github repository...
+In this exercise we're asking you to...
+
+* clone the COVIDMINDER Notebook github repository...
 * create a personal branch, and...
 * make additions to the repository by creating new, customized notebooks. 
 
@@ -561,15 +562,18 @@ Data source: <a href='https://bit.ly/3dMWRP6'>JHU daily reports</a> (04-06-2020)
 ## Accessing RStudio Server on the IDEA Cluster
 
 The IDEA Cluster provides five compute nodes (4x 48 cores, 1x 80 cores, 1x storage server)
+
 * RCS credentials (via registration in class); email John Erickson for problems `erickj4@rpi.edu`
 * RStudio, Jupyter, MATLAB, GPUs (on two nodes); lots of storage and computes
 * Access via RPI physical network or VPN only
 
 RStudio GUI Access:
+
 * http://lp01.idea.rpi.edu/rstudio-ose/  or http://lp01.idea.rpi.edu/rstudio-ose-3/ (RStudio)
 * Linux terminal accessible from within RStudio "Terminal" or via ssh (below)
 
 Shared Data on Cluster:
+
 * All idea_users have access to shared storage via `/data` ("data" in your home directories)
 * Shell access to nodes: You must access "landing pad" first, then compute node:
 * `ssh your_rcs@lp01.idea.rpi.edu`  For example: `ssh erickj4@lp01.idea.rpi.edu`
