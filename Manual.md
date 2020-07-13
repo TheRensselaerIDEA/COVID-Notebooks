@@ -10,7 +10,7 @@ Preprocessing --> Analysis --> Visualization
 4. Save
 
 ```R
-saveRDS(aggregate_chr_cdc_lung, file = 'Fixed_Date_Time_Series/06-28-2020data.Rds')
+saveRDS(aggregate_chr_cdc_lung, file = 'Preprocessing_FTS_Outputs/06-28-2020data.Rds')
 ```
 
 # Analysis
@@ -18,26 +18,38 @@ saveRDS(aggregate_chr_cdc_lung, file = 'Fixed_Date_Time_Series/06-28-2020data.Rd
 1. Read in data from files saved in Preprocessing.R. 
 
 ```R
-aggregated_data <- readRDS('Fixed_Date_Time_Series/06-28-2020data.Rds')
+aggregated_data <- readRDS('Preprocessing_FTS_Outputs/06-28-2020data.Rds')
 ```
 
-2. Run Analysis
+2. Run Analysis -- "./Analyses"
 
-  - Nation Analysis
+  - National Analysis
+    - "./NationalModel.R"
+    - glmer.nb()
+    
   - State Analysis
+    - "./SingleState.R"
+    - glm.nb()
 
 3. Save results
+
+  - National Analysis
+    - Save summary for national result
 
 ```R
 s <- summary(model)
 save(s, file = "summary.rda")
 ```
 
+  - State Analysis
+    - Save summary for every single state
+    - Dataframes for comparison
+
 # Visualization
 
 # Import Library
 
-When importing libraries, do it in Source.R and include this line in every R file you create.
+When importing libraries, do it in "Modules/Source.R"" and include this line in every R file you create.
 
 ```R
 source("./Modules/Source.R")
