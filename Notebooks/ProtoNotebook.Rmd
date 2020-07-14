@@ -105,9 +105,27 @@ and <span style='color:#000000'><b>black</b></span> indicates lack of data or a 
   coefs <- str_replace(coefs, "log", '')
   
   t2 <- t(t2)
-  heatmap.2(t2, main = "Pvals StateSummary Heatmap", ylab = "State", xlab = "factor", trace = 'none', na.color = "black", labRow = colnames(t2), labCol = coefs, margins = c(10,4))
-
-
+  
+  
+  png(filename="Notebooks/pheat1.png",height=10,width=7,res=200,units="in")
+  gplots::heatmap.2(t2, 
+                    main = "Pvals StateSummary Heatmap", 
+                    ylab = "State", 
+                    xlab = "factor", 
+                    trace = 'none', 
+                    na.color = "black", 
+                    dendrogram = "row", 
+                    labRow = colnames(t2), 
+                    labCol = coefs, 
+                    margins = c(8,3), 
+                    lwid = c(0.25,0.75), 
+                    #lhei = c(0.2,0.8), 
+                    cexRow = 0.7, 
+                    cexCol = 1, 
+                    srtCol = 45, 
+                    offsetCol = 0.1, 
+                    offsetRow = 0.1)
+  
 ```
 
 
@@ -160,8 +178,21 @@ and <span style='color:#000000'><b>black</b></span> indicates lack of data or a 
   coefs <- str_replace(coefs, "log", '')
   
   state_heat <- t(state_heat)
-  
-  heatmap.2(state_heat, col = color_palette, main = "Effect on MRR per variable per state", ylab = "State", xlab = "factor", trace = 'none', na.color = "black", labRow = colnames(state_p), labCol = coefs, offsetRow = 1, margins = c(10,4), dendrogram = "row", Colv = FALSE)
+  png(filename="Notebooks/pheat2.png",height=10,width=7,res=200,units="in")
+  heatmap.2(state_heat, 
+            col = color_palette, 
+            main = "Effect on MRR per variable per state", 
+            ylab = "State", 
+            xlab = "factor", 
+            trace = 'none', 
+            na.color = "black", 
+            labRow = colnames(state_p), 
+            labCol = coefs, 
+            offsetRow = 1, 
+            margins = c(10,4), 
+            srtCol = 45, 
+            dendrogram = "row", 
+            Colv = FALSE)
 
 
 ```
