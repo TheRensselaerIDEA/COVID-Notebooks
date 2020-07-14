@@ -9,7 +9,7 @@ output: html_document
 
 ```{r setup, include=FALSE}
 # Set the default CRAN repository
-local({r <- getOption("repos")
+local({r <- getOption("repos") 
        r["CRAN"] <- "http://cran.r-project.org" 
        options(repos=r)
 })

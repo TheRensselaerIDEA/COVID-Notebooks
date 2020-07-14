@@ -1,9 +1,11 @@
 ---
 title: "COVIDMINDER Example Notebook"
-subtitle: "DAR/HACL Assignment 2 (Summer 2020)"
 author: "John S. Erickson"
 date: "07/13/2020"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
+subtitle: DAR/HACL Assignment 2 (Summer 2020)
 ---
 
 
