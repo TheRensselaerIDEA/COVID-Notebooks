@@ -4,33 +4,44 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 
-
-
-
-```{r setup, include=FALSE}
+setwd("/data/Social_Determinants")
 knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_knit$set(root.dir = "../")
+
 ```
 
 ```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
+
 #### Library and Data Imports ####
 ## Load essential R packages
 source("Modules/Source.R")
 ## Load in model outputs per state:
 source("Modules/load_model_output.R")
+
 ```
 
 ```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
 ### P_value Table explanation
 per_state_p_vals <- "<h4><b>Color-coordinate P-Value Summaries per parameter in the model per state?</b></h4>
-Here, <span style='color:#c35442'><b>red</b></span> indicate non-significance (p > 0.10)<br><br> 
-<span style='color:#d58570'><b>light red</b></span> indicate significance (0.05 < p < 0.10)<br><br> 
-<span style='color:#d4e6e8'><b>light blue</b></span> indicate significance (0.01 < p < 0.05)<br><br> 
-<span style='color:#94c0c6'><b>blue</b></span> indicate significance (p < 0.01)<br><br>"
+Here, <span style='color:#c35442'><b>red</b></span> indicates non-significance (p > 0.10)<br><br> 
+<span style='color:#d58570'><b>light red</b></span> indicates significance (0.05 < p < 0.10)<br><br> 
+<span style='color:#d4e6e8'><b>light blue</b></span> indicates significance (0.01 < p < 0.05)<br><br> 
+<span style='color:#94c0c6'><b>blue</b></span> indicates significance (p < 0.01)<br><br>"
 
+p_vals_heatmap <- "<h4><b>P-Value heat map per parameter per state, p-values adjusted via Benjamin Hochberg procedure</b></h4>
+<h4><b> to reduce likelihood of false positives in detecting significant parameters.</b></h4>
+<h3>Here, <span style='color:#c35442'><b>red</b></span> indicates significant values (p < 0.05)<br><br> 
+and <span style='color:#000000'><b>black</b></span> indicates lack of data or a data corruption<br><br>"
+
+p_vals_heatmap2 <- "<h4><b>What values are significant in increasing MR? Decreasing?</b></h4>
+<h2> The values represented here are equivalent to those in the previous heatmap. The purpose of this heatmap
+is to highlight which parameters are significant in either increasing or decreasing MR. Like the previously
+reported p-values, these were adjusted using the Benjamin Hochberg procedure.</h2>
+Here, <span style='color:#c35442'><b>red</b></span> indicates values significant (p < 0.05) at increasing MR<br><br> 
+<span style='color:#0016FF'><b>blue</b></span> indicates values significant (p < 0.05) at decreasing MR<br><br> 
+<span style='color:#CACAD3'><b>grey</b></span> indicates values that are not significant (p > 0.05) at increasing or decreasing MR<br><br> 
+and <span style='color:#000000'><b>black</b></span> indicates lack of data or a data corruption<br><br>"
 ```
 
   `r per_state_p_vals`
@@ -55,25 +66,25 @@ Here, <span style='color:#c35442'><b>red</b></span> indicate non-significance (p
   }
   
   t2 <- as_tibble(states.all_p)
+  library(kableExtra)
   
   t2 %>%
   mutate_if(is.double, rounder, na.rm = TRUE) %>%
   mutate_if(is.double, color_format, na.rm = TRUE) %>%
   kable(format = "html", escape = F, row.names = TRUE) %>%
-  kable_styling(full_width = T) 
+  kable_styling(full_width = F) 
   
-  t2
 ```
 
 
-
+`r p_vals_heatmap`
 
 ```{r echo = F}
   
 # p_value heatmap 
 
-  t2 <- as_tibble(as.data.frame(apply(states.all_p, 2, as.numeric)))
-  t3 <- as_tibble(states.all_p)
+  t2 <- as_tibble(as.data.frame(apply(states.adjusted_p, 2, as.numeric)))
+  t3 <- as_tibble(states.adjusted_p)
   
   
   t2 <- dplyr::select(t2, -c("coefficients"))
@@ -85,10 +96,22 @@ Here, <span style='color:#c35442'><b>red</b></span> indicate non-significance (p
       } 
     }
   }
-  heatmap.2(t2, main = "Pvals StateSummary Heatmap", xlab = "State", ylab = "factor", trace = 'none', na.color = "black", labCol = colnames(t2), labRow = t3$coefficients)
+  
+  coefs <- t3$coefficients
+  coefs <- str_replace_all(coefs, '\\(', '')
+  coefs <- str_replace_all(coefs, '\\)', ' ')
+  coefs <- str_replace(coefs, "scale", '')
+  coefs <- str_replace(coefs, "factor", '')
+  coefs <- str_replace(coefs, "log", '')
+  
+  t2 <- t(t2)
+  heatmap.2(t2, main = "Pvals StateSummary Heatmap", ylab = "State", xlab = "factor", trace = 'none', na.color = "black", labRow = colnames(t2), labCol = coefs, margins = c(10,4))
 
 
 ```
+
+
+`r p_vals_heatmap2`
 
 ```{r echo = F}
   
@@ -97,13 +120,13 @@ Here, <span style='color:#c35442'><b>red</b></span> indicate non-significance (p
     x = 1.000
   }  
 
-  state_c <- as_tibble(as.data.frame(apply(states.all_c, 2, as.numeric)))
+  state_c <- as_tibble(as.data.frame(apply(states.adjusted_c, 2, as.numeric)))
   state_c <- dplyr::select(state_c, -c("coefficients"))
   state_c <- as.matrix(state_c)
-  state_p <- as_tibble(as.data.frame(apply(states.all_p, 2, as.numeric)))
+  state_p <- as_tibble(as.data.frame(apply(states.adjusted_p, 2, as.numeric)))
   state_p <- dplyr::select(state_p, -c("coefficients"))
   state_p <- as.matrix(state_p)
-  t3 <- as_tibble(states.all_p)
+  t3 <- as_tibble(states.adjusted_p)
   state_heat <- matrix(nrow = dim(state_p)[1] , ncol = dim(state_p)[2])
   
 
@@ -129,20 +152,25 @@ Here, <span style='color:#c35442'><b>red</b></span> indicate non-significance (p
   
   color_palette <- colorRampPalette(c("blue", "grey", "red"))(n = 3)
   
-  heatmap.2(state_heat, col = color_palette, main = "Effect on MRR per variable per state", xlab = "State", ylab = "factor", trace = 'none', na.color = "black", labCol = colnames(state_p), labRow = t3$coefficients, offsetRow = 1, margins = c(8,16))
+  coefs <- t3$coefficients
+  coefs <- str_replace_all(coefs, '\\(', '')
+  coefs <- str_replace_all(coefs, '\\)', ' ')
+  coefs <- str_replace(coefs, "scale", '')
+  coefs <- str_replace(coefs, "factor", '')
+  coefs <- str_replace(coefs, "log", '')
+  
+  state_heat <- t(state_heat)
+  
+  heatmap.2(state_heat, col = color_palette, main = "Effect on MRR per variable per state", ylab = "State", xlab = "factor", trace = 'none', na.color = "black", labRow = colnames(state_p), labCol = coefs, offsetRow = 1, margins = c(10,4), dendrogram = "row", Colv = FALSE)
 
 
 ```
 
 
-
-
-
-# Normalize MRRs to MR by subtracting 1 and dividing by stdev for each state... output as table
-
-
 ```{r echo = F}
   
+# Normalize MRRs to MR by subtracting 1 and dividing by stdev for each state... output as table
+
   state_c <- as.data.frame(states.all_c)
   coefs <- state_c$coefficients
   

@@ -25,3 +25,10 @@ for (state in statenames) {
  # model_output <- eval(as.name(b))
 #  model_output
 }
+
+# adjusted p vals
+states.adjusted_p <- readRDS("AdjustedStateSummaries/ALL_P.rds")
+
+
+states.adjusted_c <- readRDS("AdjustedStateSummaries/ALL_C.rds")
+
