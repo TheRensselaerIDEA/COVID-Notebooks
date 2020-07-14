@@ -62,7 +62,10 @@ The instructions which follow explain how to accomplish this.
 
 The recommended procedure for cloning and using this repository is as follows:
 
+* Access the RPI network via VPN
+    * See https://itssc.rpi.edu/hc/en-us/articles/360008783172-VPN-Connection-and-Installation for information
 * Access RStudio Server on the IDEA Cluster at http://lp01.idea.rpi.edu/rstudio-ose/
+    * You must be on the RPI VPN!!
 * Access the Linux shell on the IDEA Cluster by clicking the **Terminal** tab of RStudio Server. `cd` into your home (login) directory using: `cd ~`
     * Advanced users may use `ssh` to directly access the Linux shell
 * `git clone https://github.com/TheRensselaerIDEA/COVID-Notebooks.git` in your `home` directory, resulting in a new directory `COVID-Notebooks`
