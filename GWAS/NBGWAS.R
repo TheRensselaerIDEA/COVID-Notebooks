@@ -19,15 +19,12 @@ args <- commandArgs()
 
 interested_var <- c(args[6:length(args)])
 
-interested_var = "COPD"
 interested_var  <- as.name(interested_var)
 
-print(interested_var)
-print(`interested_var`)
   ###Data
   
 sampledata<-readRDS('Preprocessing_FTS_Outputs/05-03-2020data.Rds')
-print((sampledata$state))
+
 
 
 if (strcmp(sapply(sampledata[[interested_var]], typeof)[1], "character")) {
