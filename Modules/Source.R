@@ -47,8 +47,13 @@
 # robust
 # AER
 # usmap
+# simEd
+# stats
+# cluster
+# dendextend
 
-dependencies <- c("gplots", "usmap", "AER" ,"robust", "pscl",  "emmeans", "multcompView", "car", "DescTools", "boot", "lattice", "hermite", "heplots", "klaR", "ROCR", "ResourceSelection", "foreign", "ggfortify", "PerformanceAnalytics", "VineCopula", "blmeco", "devtools", "lubridate", "data.table", "httr", "RCurl", "tidyverse", "sp", "raster", "dplyr", "sf", "stringr" , "ggplot2", "grid", "pBrackets", "gridExtra", "lme4", "maps", "MASS", "gamm4", "glmmTMB", "gsheet")
+
+dependencies <- c("plyr", "simEd", "stats", "cluster", "dendextend", "gplots", "usmap", "AER" ,"robust", "pscl",  "emmeans", "multcompView", "car", "DescTools", "boot", "lattice", "hermite", "heplots", "klaR", "ROCR", "ResourceSelection", "foreign", "ggfortify", "PerformanceAnalytics", "VineCopula", "blmeco", "devtools", "lubridate", "data.table", "httr", "RCurl", "tidyverse", "sp", "raster", "dplyr", "sf", "stringr" , "ggplot2", "grid", "pBrackets", "gridExtra", "lme4", "maps", "MASS", "gamm4", "glmmTMB", "gsheet")
 
 # Check and install packages not yet available
 install.dependencies <- dependencies[!(dependencies %in% installed.packages()[, "Package"])]
@@ -60,6 +65,7 @@ library("tidyverse")
 library("sp")
 library("raster")
 library("ggplot2")
+library("plyr")
 library("dplyr")
 library("sf")
 library("stringr")
@@ -111,5 +117,8 @@ library(robust)
 library(AER)
 library(usmap)
 library(gsheet)
-
 library(gplots)
+library("simEd")
+library("stats")
+library("cluster")
+library("dendextend")
