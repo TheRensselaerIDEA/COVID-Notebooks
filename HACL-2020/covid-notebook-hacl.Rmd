@@ -1,7 +1,7 @@
 ---
 title: "COVIDMINDER Example Notebook: BOOTCAMP DEMO EDITS"
 subtitle: "DAR/HACL Assignment 2 (Summer 2020)"
-author: "Varun Nair"
+author: "John"
 date: "07/13/2020"
 output: html_document
 ---
