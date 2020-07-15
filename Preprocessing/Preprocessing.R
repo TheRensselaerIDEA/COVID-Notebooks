@@ -4,7 +4,9 @@ knitr::opts_knit$set(root.dir = "../")
 source("./Modules/Source.R")
 
 # Change the date here
-date_of_study = "07-05-2020"
+date_of_study = "06-28-2020"
+
+column_names <- data.frame()
 
 # MortalityMinder datesets
 #------------------------------------------------------------------------------------------------------------------------------------------
@@ -41,7 +43,9 @@ cdc <- subset(cdc, select = c(All.Cause.county_fips,
                               Cardiovascular.death_rate, 
                               Despair.death_rate))
 
-cdc <- rename(cdc, c(FIPS = All.Cause.county_fips))
+cdc <- rename(cdc, select = c(FIPS = All.Cause.county_fips))
+
+cdc_names <- names(cdc)
 
 # Social Determinants datesets
 #------------------------------------------------------------------------------------------------------------------------------------------
@@ -63,19 +67,17 @@ cdc <- rename(cdc, c(FIPS = All.Cause.county_fips))
 #-------------------------------------------------------------------------------------------------
 
 chr <- read_csv("Data/2020CHR.csv")
+chr <- chr[, -grep("Quartile", colnames(chr))]
+chr <- chr[, -grep("95", colnames(chr))]
 
-chr <- subset(chr, select = c(FIPS, 
-                              `% Adults with Diabetes`, 
-                              `% Adults with Obesity`, 
-                              `% 65 and over`, 
-                              `Age-Adjusted Death Rate`))
+chr_names <- data.frame(columns = names(chr))
+
+saveRDS(chr_names, "./Preprocessing_FTS_Outputs/chr_names.Rds")
 
 chr <- rename(chr, c("pct_diabetes" = `% Adults with Diabetes`,
                      "pct_obesity" = `% Adults with Obesity`, 
                      "pct_age65" = `% 65 and over`, 
-                     "death_rate" = `Age-Adjusted Death Rate`))
-
-chr <- subset(chr, select = -c(Population))
+                     "pre_covid_death_rate" = `Age-Adjusted Death Rate`))
 
 #------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -83,34 +85,39 @@ chr <- subset(chr, select = -c(Population))
 
 lungdisease <- read_csv("Data/lungdiseaseestimates_uscounties.csv")
 
-lungdisease$PediatricAsthma         <- lungdisease$PediatricAsthma / lungdisease$TotalPopulation
-lungdisease$AdultAsthma             <- lungdisease$AdultAsthma / lungdisease$TotalPopulation
-lungdisease$COPD                    <- lungdisease$COPD / lungdisease$TotalPopulation
-lungdisease$AdultChronicLungDisease <- lungdisease$AdultChronicLungDisease / lungdisease$TotalPopulation
-lungdisease$LungCancer              <- lungdisease$LungCancer / lungdisease$TotalPopulation
+lungdisease$PediatricAsthma         <- lungdisease$PediatricAsthma / lungdisease$TotalPopulation  * 10^5
+lungdisease$AdultAsthma             <- lungdisease$AdultAsthma / lungdisease$TotalPopulation  * 10^5
+lungdisease$COPD                    <- lungdisease$COPD / lungdisease$TotalPopulation  * 10^5
+lungdisease$AdultChronicLungDisease <- lungdisease$AdultChronicLungDisease / lungdisease$TotalPopulation  * 10^5
+lungdisease$LungCancer              <- lungdisease$LungCancer / lungdisease$TotalPopulation  * 10^5
 
 lungdisease <- subset(lungdisease, select = -c(`State or County`, TotalPopulation))
 
 #------------------------------------------------------------------------------------------------------------------------------------------
 
 # Historical data
-covid_hist = read.csv(text=getURL("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/03-30-2020.csv"))
+covid_hist = read.csv(text=getURL(paste0("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/03-30-2020.csv")))
 covid_us_hist = subset(covid_hist, Country_Region == "US" & is.na(FIPS)==F)
+#covid_us_hist = subset(covid_us_hist, select = -c(Country_Region, Last_Update, Combined_Key))
 
 # Import outcome data from JHU CSSE
 covid = read.csv(text=getURL(paste0("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/",date_of_study,".csv")))
 covid_us = subset(covid,Country_Region == "US")
-covid_us = rbind(covid_us,subset(covid_us_hist, (!(FIPS %in% covid_us$FIPS))  & Confirmed == 0 & Deaths == 0 & is.na(FIPS)==F))
+covid_us <- rbind.fill(covid_us,subset(covid_us_hist, (!(FIPS %in% covid_us$FIPS))  & Confirmed == 0 & Deaths == 0 & is.na(FIPS)==F))
 covid_us$FIPS = str_pad(covid_us$FIPS, 5, pad = "0")
+covid_us = subset(covid_us, select = -c(Admin2, Province_State, Country_Region, Last_Update, Combined_Key))
 
 # Import exposure PM2.5 data
 county_pm <- read.csv("./Data/county_pm25.csv")
 county_pm$fips = str_pad(county_pm$fips, 5, pad = "0")
 
 county_temp = read.csv("./Data/temp_seasonal_county.csv")
-county_pm$fips = str_pad(county_pm$fips, 5, pad = "0")
+county_temp$fips = str_pad(county_temp$fips, 5, pad = "0")
+
 # Import census, brfss, testing, mortality, hosptial beds data as potential confounders
-county_census = read.csv(text=getURL("https://raw.githubusercontent.com/wxwx1993/PM_COVID/master/Data/census_county_interpolated.csv"))
+county_census <- read.csv(text=getURL("https://raw.githubusercontent.com/wxwx1993/PM_COVID/master/Data/census_county_interpolated.csv"))
+county_census <- subset(county_census, select = -c(X))
+
 county_brfss<-read.csv("Data/analytic_data2020.csv",skip = 1)
 county_brfss<-county_brfss[,c('fipscode','v011_rawvalue','v009_rawvalue')]
 names(county_brfss)<-c('fips','obese','smoke')
