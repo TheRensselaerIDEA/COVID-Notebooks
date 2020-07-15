@@ -13,7 +13,7 @@ to_cluster <- drop_na(to_cluster)
 mort.cluster.raw <- cluster.counties(to_cluster, cluster.method="kmeans", cluster.num=4)
 
 mort.avg.cluster.raw <- data %>%
-                          dplyr::right_join(clustered, by = "fips") %>%
+                          dplyr::right_join(mort.cluster.raw, by = "fips") %>%
                           dplyr::group_by(cluster) %>%
                           dplyr::summarise(
                             death_rate = sum(Deaths) / sum(population) * 10^5,
@@ -35,9 +35,13 @@ mort.avg.cluster.ord <- dplyr::mutate(mort.avg.cluster.raw, cluster = mort.clust
 mort.rate <- data %>% 
                dplyr::select(fips, death_rate)
 
+nums <- unlist(lapply(data, is.numeric))
+numeric_data <- data[ , nums]
+numeric_data$fips <- data$fips
+
 kendall.cor <- mort.rate %>% 
                  dplyr::mutate(VAR = death_rate) %>%
-                 kendall.func(chr.data.2019) %>%
+                 kendall.func(numeric_data) %>%
                  dplyr::mutate(
                    DIR = dplyr::if_else(
                      kendall_cor <= 0,
@@ -47,16 +51,16 @@ kendall.cor <- mort.rate %>%
                    #chr_code = chr.namemap.2019[chr_code, 1]
                  ) %>% na.omit() %>% 
                  dplyr::arrange(desc(kendall_cor)) %>% 
-                 dplyr::mutate(chr_code = reorder(chr_code, kendall_cor))
-
-selected_SDs <- cbind(kendall.cor, state = state)
+                 dplyr::mutate(code = reorder(code, kendall_cor))
 
 #using Benjamin Hochberg's p.adjust() method to adjust P-values for multiple hypothesis testing to filter out factors that are less relevant.
-corrected_pvalues <- p.adjust(selected_SDs$kendall_p)
-selected_SDs <- cbind(selected_SDs, Corrected_P_Vals = corrected_pvalues)
+corrected_pvalues <- p.adjust(kendall.cor$kendall_p)
+selected_SDs <- cbind(kendall.cor, Corrected_P_Vals = corrected_pvalues)
 selected_SDs <- selected_SDs %>%
   dplyr::filter(Corrected_P_Vals < 0.05) %>% 
   dplyr::arrange(desc(kendall_cor))
+
+saveRDS(selected_SDs, "./GWAS/selected_SDs.Rds")
 
 #Printing out the few selected factors for deaths of despair.
 print(selected_SDs)
