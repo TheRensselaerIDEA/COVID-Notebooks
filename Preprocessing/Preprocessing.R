@@ -13,7 +13,7 @@ column_names <- data.frame()
 
 # CDC
 
-# Used columns
+# Used column
 #-------------------------------------------------------------------------------------------------
 #| All.Cause.county_fips         | All.Cause.death_rate          | Assault.death_rate            |
 #-------------------------------------------------------------------------------------------------
@@ -43,9 +43,12 @@ cdc <- subset(cdc, select = c(All.Cause.county_fips,
                               Cardiovascular.death_rate, 
                               Despair.death_rate))
 
-cdc <- rename(cdc, select = c(FIPS = All.Cause.county_fips))
+cdc <- rename(cdc, c(FIPS = All.Cause.county_fips))
 
-cdc_names <- names(cdc)
+cdc_names <- data.frame(column = names(cdc)[2:6])
+cdc_names$source <- "cdc"
+
+column_names <- rbind(column_names, cdc_names)
 
 # Social Determinants datesets
 #------------------------------------------------------------------------------------------------------------------------------------------
@@ -69,15 +72,21 @@ cdc_names <- names(cdc)
 chr <- read_csv("Data/2020CHR.csv")
 chr <- chr[, -grep("Quartile", colnames(chr))]
 chr <- chr[, -grep("95", colnames(chr))]
-
-chr_names <- data.frame(columns = names(chr))
-
-saveRDS(chr_names, "./Preprocessing_FTS_Outputs/chr_names.Rds")
-
+chr <- subset(chr, select = -c(Deaths, Unreliable, ``))
 chr <- rename(chr, c("pct_diabetes" = `% Adults with Diabetes`,
                      "pct_obesity" = `% Adults with Obesity`, 
                      "pct_age65" = `% 65 and over`, 
-                     "pre_covid_death_rate" = `Age-Adjusted Death Rate`))
+                     "pre_covid_deaths" = `# Deaths`, 
+                     "pre_covid_death_rate" = `Age-Adjusted Death Rate`, 
+                     "child_deaths" = `# Deaths_1`, 
+                     "infant_deaths" = `# Deaths_2`,
+                     "# less than 18 years of age" = `Population_1`, 
+                     "suicide_deaths"= `# Deaths_3`))
+
+chr_names <- data.frame(column = names(chr)[2:238])
+chr_names$source <- "chr"
+
+column_names <- rbind(column_names, chr_names)
 
 #------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -92,6 +101,11 @@ lungdisease$AdultChronicLungDisease <- lungdisease$AdultChronicLungDisease / lun
 lungdisease$LungCancer              <- lungdisease$LungCancer / lungdisease$TotalPopulation  * 10^5
 
 lungdisease <- subset(lungdisease, select = -c(`State or County`, TotalPopulation))
+
+lungdisease_names <- data.frame(column = names(lungdisease)[2:6])
+lungdisease_names$source <- "lungdisease"
+
+column_names <- rbind(column_names, lungdisease_names)
 
 #------------------------------------------------------------------------------------------------------------------------------------------
 
