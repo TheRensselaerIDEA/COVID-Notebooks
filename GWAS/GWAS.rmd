@@ -8,20 +8,6 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
-## Library
-
-```{r}
-# set.seed
-library("simEd")
-# kmeans
-library("stats")
-# diana
-library("cluster") 
-# cutree
-library("dendextend")
-```
-
 ## Principal Component Analysis
 
 ```{r}
