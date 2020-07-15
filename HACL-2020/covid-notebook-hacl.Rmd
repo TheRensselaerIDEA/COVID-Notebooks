@@ -1,7 +1,7 @@
 ---
-title: "COVIDMINDER Example Notebook: BOOTCAMP DEMO EDITS"
+title: "COVIDMINDER Example Notebook:"
 subtitle: "DAR/HACL Assignment 2 (Summer 2020)"
-author: "John"
+author: "John S. Erickson"
 date: "07/13/2020"
 output: html_document
 ---
@@ -62,7 +62,11 @@ The instructions which follow explain how to accomplish this.
 
 The recommended procedure for cloning and using this repository is as follows:
 
+* Access the RPI network via VPN	
+    * See https://itssc.rpi.edu/hc/en-us/articles/360008783172-VPN-Connection-and-Installation for information
+
 * Access RStudio Server on the IDEA Cluster at http://lp01.idea.rpi.edu/rstudio-ose/
+    * You must be on the RPI VPN!!
 * Access the Linux shell on the IDEA Cluster by clicking the **Terminal** tab of RStudio Server. `cd` into your home (login) directory using: `cd ~`
     * Advanced users may use `ssh` to directly access the Linux shell
 * `git clone https://github.com/TheRensselaerIDEA/COVID-Notebooks.git` in your `home` directory, resulting in a new directory `COVID-Notebooks`
@@ -83,10 +87,10 @@ The recommended procedure for cloning and using this repository is as follows:
 
 **REQUIRED:** For this assignment you will be asked to confirm the following in LMS:
 
-    * The location of the github: https://github.com/TheRensselaerIDEA/COVID-Notebooks.git
-    * Your github ID: VarunNair22
-    * The name of your new branch: nairv2
-    * The location where you committed your new (copied) notebook: https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/master/HACL-2020
+    * The location of the github:
+    * Your github ID:
+    * The name of your new branch:
+    * The location where you committed your new (copied) notebook:
 
 Please also see this handy github "cheatsheet": https://education.github.com/git-cheat-sheet-education.pdf
 

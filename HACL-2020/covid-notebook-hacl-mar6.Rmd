@@ -70,8 +70,8 @@ The recommended procedure for cloning and using this repository is as follows:
 **REQUIRED:** For this assignment you will be asked to confirm the following in LMS:
 
     * The location of the github: https://github.com/TheRensselaerIDEA/COVID-Notebooks.git
-    * Your github ID: VarunNair22
-    * The name of your new branch: nairv2
+    * Your github ID: rufengma
+    * The name of your new branch: hacl-mar6
     * The location where you committed your new (copied) notebook: https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/master/HACL-2020
 
 Please also see this handy github "cheatsheet": https://education.github.com/git-cheat-sheet-education.pdf
