@@ -19,6 +19,9 @@ library(sgof)
 library(tidyverse)
 library(kableExtra)
 
+source("./Modules/Source.R")
+source("./GWAS/helper.R")
+
 ###Data
 sampledata<-readRDS('07-05-2020data-2.Rds')
 
