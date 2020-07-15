@@ -45,7 +45,7 @@ if (strcmp(sapply(sampledata[[interested_var]], typeof)[1], "character")) {
                          + scale(log(medhouseholdincome))+scale(education) + scale(beds/population)
                          + scale(date_since) 
                          + scale(date_since_mask)
-                         + scale(interested_var)
+                         + scale([[interested_var]])
                          + (1|state)
                          + offset(log(population)), data = sampledata)
 }
