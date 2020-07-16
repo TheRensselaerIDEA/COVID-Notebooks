@@ -4,7 +4,21 @@
 setwd("/data/Social_Determinants")
 
 ###dependencies
-
+library("MASS")
+library("lme4")
+library("glmmTMB")
+library("gamm4")
+library('caret')
+library('blmeco')
+library(pROC)
+library(VineCopula)
+library("PerformanceAnalytics")
+library(glmmTMB)
+library(ggplot2)
+library(cvms)
+library(sgof)
+library(tidyverse)
+library(kableExtra)
 library(cvms)
 library(pracma)
 
