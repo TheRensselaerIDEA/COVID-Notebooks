@@ -3,9 +3,10 @@ knitr::opts_knit$set(root.dir = "../")
 
 source("./Modules/Source.R")
 
-# Change the date here
+# Change the date by hand
 # date_of_study = "06-28-2020"
 
+# Parallel
 args <- commandArgs()
 date = args[6]
 date_of_study = paste(date,"-2020",sep="")
@@ -204,11 +205,12 @@ state_test$date_since_reclosure[state_test$date_since_reclosure < 0] = 0
 state_test$date_since_mask = as.numeric(as.Date(strptime(date_of_study, "%m-%d-%Y")) - as.Date((strptime(state_test$mask, "%m/%d/%Y"))))
 state_test$date_since_mask[is.na(state_test$date_since_mask)==T] = 0
 state_test$date_since_mask[state_test$date_since_mask < 0] = 0
-state_test <- subset(state_test, select = -c(state, dataQualityGrade, fips, score))
+state_test <- subset(state_test, select = -c(dataQualityGrade, fips, score))
 state_test <- dplyr::rename(state_test, c(state_deaths = death))
 
-state_test_names <- data.frame(column = names(state_test)[2:34])
+state_test_names <- data.frame(column = names(state_test)[1:35])
 state_test_names$source <- "state_test"
+state_test_names <- state_test_names[-c(27), ]
 column_names <- rbind(column_names, state_test_names)
 
 aggregate_chr_policy = merge(chr,state_test,by="State")
