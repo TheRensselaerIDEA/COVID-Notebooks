@@ -9,7 +9,7 @@ library(cvms)
 library(pracma)
 
 
-source("Modules/Source.R")
+#source("Modules/Source.R")
 source("GWAS/helper.R")
 
  ## Get variable in the loop
@@ -23,7 +23,15 @@ interested_var  <- as.name(interested_var)
 
   ###Data
   
-sampledata<-readRDS('Preprocessing_FTS_Outputs/05-03-2020data.Rds')
+sampledata<-readRDS('Preprocessing_FTS_Outputs/07-12-2020data.Rds')
+
+#for (name in colnames(sampledata)) {
+#  s <- paste("\"",name, "\" ", sep = "")
+#  cat(s)
+#}
+
+print (interested_var)
+
 
 
 # `% Hispanic` `% Black` `% Asian` `% Non-Hispanic White` `% Native Hawaiian/Other Pacific Islander` `Median Household Income` 
