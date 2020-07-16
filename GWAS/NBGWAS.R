@@ -40,13 +40,13 @@ interested_var  <- as.name(interested_var)
 sampledata<-readRDS('Preprocessing_FTS_Outputs/07-12-2020data.Rds')
 
 #for (name in colnames(sampledata)) {
-x <- c(34,35,43,47,52,53,61,62,68,69,70,76,82,94,95,106,119,120, 131,132,153,160,163,165,167,169,176,182,183, 184, 185, 186, 187, 188,200,208,216,236,238,240,256,288, 289, 
-       290, 291, 292, 293, 294, 295, 296, 297, 298, 299, 300, 301, 302, 303, 304)
-for ( i in x) {
-  name = colnames(sampledata)[i]
-  s <- paste("\"",name, "\" ", sep = "")
-  cat(s)
-}
+#x <- c(34,35,43,47,52,53,61,62,68,69,70,76,82,94,95,106,119,120, 131,132,153,160,163,165,167,169,176,182,183, 184, 185, 186, 187, 188,200,208,216,236,238,240,256,288, 289, 
+#       290, 291, 292, 293, 294, 295, 296, 297, 298, 299, 300, 301, 302, 303, 304)
+#for ( i in x) {
+#  name = colnames(sampledata)[i]
+#  s <- paste("\"",name, "\" ", sep = "")
+#  cat(s)
+#}
 
 #print (interested_var)
 # For now: hand select the interested_var before runnign parallelization script
