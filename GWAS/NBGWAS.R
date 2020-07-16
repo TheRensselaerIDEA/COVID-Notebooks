@@ -63,10 +63,10 @@ sub_sampledata <- subset(sampledata, select = c ("Deaths","% Hispanic", "% Black
 colnames(sub_sampledata)[ncol(sub_sampledata)] = "i_var"
 
 # Debugging printouts:
-#head(sub_sampledata)
-#sapply(sub_sampledata, typeof)
-#unname(sapply(sub_sampledata, typeof)[ncol(sub_sampledata)])
-#strcmp(unname(sapply(sub_sampledata, typeof)[ncol(sub_sampledata)]), "character")
+# head(sub_sampledata)
+# sapply(sub_sampledata, typeof)
+# unname(sapply(sub_sampledata, typeof)[ncol(sub_sampledata)])
+# strcmp(unname(sapply(sub_sampledata, typeof)[ncol(sub_sampledata)]), "character")
 
 if (strcmp(unname(sapply(sub_sampledata, typeof)[ncol(sub_sampledata)]), "character")) {
     s = paste("staring model with : ", interested_var, "\n", sep="")
@@ -98,8 +98,8 @@ GWAS_P <- readRDS("GWAS/GWAS_P.rds")
 GWAS_ADJ_P <- readRDS("GWAS/GWAS_ADJ_P.rds")
 
 # Interleaving here between threads could leave some columns out... make sure to check after para. done
-#summary(In.loop.model)[10]$coefficients[2:16,1]
-#summary(In.loop.model)
+# summary(In.loop.model)[10]$coefficients[2:16,1]
+# summary(In.loop.model)
 
 GWAS_MRR[[interested_var]]   <- summary(In.loop.model)[10]$coefficients[2:16,1]
 GWAS_P[[interested_var]]     <- summary(In.loop.model)[10]$coefficients[2:16,4]
@@ -107,11 +107,6 @@ GWAS_P[[interested_var]]     <- summary(In.loop.model)[10]$coefficients[2:16,4]
 GWAS_ADJ_P[[interested_var]] <- p.adjust(summary(In.loop.model)[10]$coefficients[2:16,4], 
                                      method = 'BH', 
                                      n = length(summary(In.loop.model)[10]$coefficients[2:16,4]))
-
-# Intialize RDS files:
-#GWAS_P = data.frame(matrix(ncol = 1, nrow = 15))
-#row.names(GWAS_P) <- c("% Hispanic", "% Black", "% Asian", "% White", "% Native", "q_pop_dens 2", "q_pop_dens 3", "q_pop_dens 4", "q_pop_dens 5",
-#                       ### "Median Household Income", "Education", "Beds/Population", "Date_Since", "Date_Since_Mask", "Interested_Variable")
 
 s <- paste("SAVED: ", intersted_var, sep = "")
 print(s)
