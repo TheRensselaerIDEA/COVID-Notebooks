@@ -3,9 +3,10 @@ knitr::opts_knit$set(root.dir = "../")
 
 source("./Modules/Source.R")
 
-# Change the date here
+# Change the date by hand
 # date_of_study = "06-28-2020"
 
+# Parallel
 args <- commandArgs()
 date = args[6]
 date_of_study = paste(date,"-2020",sep="")
@@ -209,9 +210,11 @@ state_test <- dplyr::rename(state_test, c(state_deaths = death))
 
 state_test_names <- data.frame(column = names(state_test)[2:34])
 state_test_names$source <- "state_test"
+state_test_names <- state_test_names[-c(25), ]
 column_names <- rbind(column_names, state_test_names)
 
 aggregate_chr_policy = merge(chr,state_test,by="State")
+aggregate_chr_policy = subset(aggregate_chr_policy, select = -c(State))
 
 aggregate_pm_temp_covid_census_mortality_chr_policy = merge(aggregate_pm_temp_covid_census_mortality, aggregate_chr_policy, by.x = "fips", by.y = "FIPS")
 
