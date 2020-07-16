@@ -4,11 +4,11 @@ knitr::opts_knit$set(root.dir = "../")
 source("./Modules/Source.R")
 
 # Change the date here
-date_of_study = "06-28-2020"
+# date_of_study = "06-28-2020"
 
-# args <- commandArgs()
-# date = args[6]
-# date_of_study = paste(date,"-2020",sep="")
+args <- commandArgs()
+date = args[6]
+date_of_study = paste(date,"-2020",sep="")
 
 column_names <- data.frame()
 
@@ -74,7 +74,7 @@ county_census <- read.csv(text=getURL("https://raw.githubusercontent.com/wxwx199
 county_census <- subset(county_census, select = -c(X))
 
 county_census_aggregated = subset(county_census, year==2016)
-county_census_aggregated <- county_census_aggregated[,c(1,3,4,5,8,10)]
+county_census_aggregated <- county_census_aggregated[,c(1,3,4,5,8,10,11)]
 
 county_census_aggregated$q_popdensity = 1
 quantile_popdensity = quantile(county_census_aggregated$popdensity,c(0.2,0.4,0.6,0.8))
@@ -89,7 +89,7 @@ county_census_aggregated$q_popdensity[county_census_aggregated$popdensity>quanti
 
 county_census_aggregated$fips = str_pad(county_census_aggregated$fips, 5, pad = "0")
 
-county_census_aggregated_names <- data.frame(column = names(county_census_aggregated)[2:7])
+county_census_aggregated_names <- data.frame(column = names(county_census_aggregated)[2:8])
 county_census_aggregated_names$source <- "county_census_aggregated"
 column_names <- rbind(column_names, county_census_aggregated_names)
 
@@ -139,7 +139,7 @@ aggregate_pm_temp_covid_census_mortality = merge(aggregate_pm_temp_covid_census,
 chr <- read_csv("Data/2020CHR.csv")
 chr <- chr[, -grep("Quartile", colnames(chr))]
 chr <- chr[, -grep("95", colnames(chr))]
-chr <- subset(chr, select = -c(Deaths, Unreliable))
+chr <- subset(chr, select = -c(Deaths, Unreliable, Population))
 chr <- dplyr::rename(chr, c("pct_diabetes" = `% Adults with Diabetes`,
                             "pct_obesity" = `% Adults with Obesity`, 
                             "pct_age65" = `% 65 and over`, 
@@ -150,7 +150,7 @@ chr <- dplyr::rename(chr, c("pct_diabetes" = `% Adults with Diabetes`,
                             "# less than 18 years of age" = `Population_1`, 
                             "suicide_deaths"= `# Deaths_3`))
 
-chr_names <- data.frame(column = names(chr)[2:236])
+chr_names <- data.frame(column = names(chr)[2:235])
 chr_names$source <- "chr"
 column_names <- rbind(column_names, chr_names)
 
