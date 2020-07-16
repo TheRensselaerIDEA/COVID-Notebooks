@@ -4,7 +4,11 @@ knitr::opts_knit$set(root.dir = "../")
 source("./Modules/Source.R")
 
 # Change the date here
-date_of_study = "06-21-2020"
+date_of_study = "06-28-2020"
+
+# args <- commandArgs()
+# date = args[6]
+# date_of_study = paste(date,"-2020",sep="")
 
 column_names <- data.frame()
 
