@@ -97,20 +97,30 @@ geo.plot("US", "Testing", reverse = T)
 Here is a small application with a singular tabpanel in a navbar setup. To add to covidminder, simply add a tab panel where it is desired. 
 
 ```{r}
-ui <- navbarPage(
-  title = "COVIDMINDER",
-  theme = "www/style.css", #Usually the www is not needed...
-  id = "tab",
-  tabPanel(
-    title = "Example Panel",
-    value = "example", # Should be unique and appended to tabs list in the server code
-    fluidRow(tags$h1("Daily New York Cases/100k")),
-    fluidRow(plotOutput("ny_output"))
+ui <- tagList(
+    tags$head(includeCSS("www/style.css")),
+    navbarPage(
+    title = tags$div(class = "title-text", "COVIDMINDER"),
+    id = "tab",
+    tabPanel( # Separate Tab Panel
+      title = "Example Panel 1",
+      value = "example", # Should be unique and appended to tabs list in the server code
+      fluidRow(tags$h1("Daily New York Cases/100k")),
+      fluidRow(plotOutput("ny_output"))
+    ),
+    navbarMenu( # List of Tab Panels in drop down menu
+      title = "Example Menu 1",
+               tabPanel(
+                 title = "Example Panel 2",
+                 value = "example2",
+                 fluidRow(tags$h1("Nationwide Testing")),
+                 fluidRow(leafletOutput("US_output"))
+               ))
+    #,
+    #tabPanel(...),
+    #navbarMenu(tabPanel(...), tabPanel(...)),
+    #tabPanel(...)
   )
-  #,
-  #tabPanel(...),
-  #navbarMenu(tabPanel(...), tabPanel(...)),
-  #tabPanel(...)
 )
 ```
 
@@ -122,6 +132,12 @@ server <- function(input, output) {
                  moving.avg.window = 14, 
                  counties = c("Rensselaer", "New York City", "Albany", "Nassau", "Erie"),
                  remove.title = T)
+  })
+  
+  output$US_output <- renderLeaflet({
+    geo.plot(state.choice = "US", 
+             feature = "Testing",
+             reverse = T)
   })
 }
 ```
