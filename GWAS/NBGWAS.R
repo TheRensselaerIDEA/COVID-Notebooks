@@ -25,10 +25,16 @@ args <- commandArgs()
 
 interested_var_s <- c(args[6:length(args)])
 interested_var = ""
+start = 1
 for (i in interested_var_s) {
-  interested_var <- paste(interested_var, i, sep = " ")
+  if (start == 1) {
+    interested_var <- paste(interested_var, i, sep = "")
+    start = 0
+  } else {
+    interested_var <- paste(interested_var, i, sep = " ")
+  }
 }
-cat(interested_var)
+#cat(interested_var)
 
 #interested_var  <- as.name(interested_var)
 
@@ -49,6 +55,8 @@ sampledata<-readRDS('Preprocessing_FTS_Outputs/07-12-2020data.Rds')
 # For now: hand select the interested_var before runnign parallelization script
 #interested_var = "young_pecent"
 
+cat(interested_var)
+#interested_var = "% Fair or Poor Health"
 sub_sampledata <- subset(sampledata, select = c ("Deaths","% Hispanic", "% Black", "% Asian", "% Non-Hispanic White", "% American Indian & Alaska Native", "q_popdensity", "Median Household Income", 
                                                  "education", "beds", "population", "date_since", "date_since_mask", "State", interested_var))
 
@@ -103,9 +111,10 @@ GWAS_ADJ_P[[interested_var]] <- p.adjust(summary(In.loop.model)[10]$coefficients
 # Intialize RDS files:
 #GWAS_P = data.frame(matrix(ncol = 1, nrow = 15))
 #row.names(GWAS_P) <- c("% Hispanic", "% Black", "% Asian", "% White", "% Native", "q_pop_dens 2", "q_pop_dens 3", "q_pop_dens 4", "q_pop_dens 5",
-#                        "Median Household Income", "Education", "Beds/Population", "Date_Since", "Date_Since_Mask", "Interested_Variable")
+#                       ### "Median Household Income", "Education", "Beds/Population", "Date_Since", "Date_Since_Mask", "Interested_Variable")
 
-print("SAVED")
+s <- paste("SAVED: ", intersted_var, sep = "")
+print(s)
 saveRDS(GWAS_ADJ_P, "GWAS/GWAS_ADJ_P.rds")
 saveRDS(GWAS_P, "GWAS/GWAS_P.rds")
 saveRDS(GWAS_MRR, "GWAS/GWAS_MRR.rds")
