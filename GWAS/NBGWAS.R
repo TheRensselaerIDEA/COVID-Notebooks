@@ -23,8 +23,13 @@ library(pracma)
 args <- commandArgs()
 
 
-interested_var <- c(args[6:length(args)])
+interested_var_s <- c(args[6:length(args)])
+interested_var = ""
+for (i in interested_var_s) {
+  interested_var <- paste(interested_var, i, sep = " ")
+}
 cat(interested_var)
+
 #interested_var  <- as.name(interested_var)
 
   ###Data
@@ -45,7 +50,7 @@ sampledata<-readRDS('Preprocessing_FTS_Outputs/07-12-2020data.Rds')
 #interested_var = "young_pecent"
 
 sub_sampledata <- subset(sampledata, select = c ("Deaths","% Hispanic", "% Black", "% Asian", "% Non-Hispanic White", "% American Indian & Alaska Native", "q_popdensity", "Median Household Income", 
-                                                 "education", "beds", "population", "date_since", "date_since_mask", "State", `interested_var`))
+                                                 "education", "beds", "population", "date_since", "date_since_mask", "State", interested_var))
 
 colnames(sub_sampledata)[ncol(sub_sampledata)] = "i_var"
 
@@ -56,6 +61,8 @@ colnames(sub_sampledata)[ncol(sub_sampledata)] = "i_var"
 #strcmp(unname(sapply(sub_sampledata, typeof)[ncol(sub_sampledata)]), "character")
 
 if (strcmp(unname(sapply(sub_sampledata, typeof)[ncol(sub_sampledata)]), "character")) {
+    s = paste("staring model with : ", interested_var, "\n", sep="")
+    cat(s)
     In.loop.model=glmer.nb(Deaths ~ scale(`% Hispanic`) + scale(`% Black`) + scale(`% Asian`) + scale(`% Non-Hispanic White`) + scale(`% American Indian & Alaska Native`)
                        + factor(q_popdensity)
                        + scale(log(`Median Household Income`))+scale(education) + scale(beds/population)
@@ -65,6 +72,8 @@ if (strcmp(unname(sapply(sub_sampledata, typeof)[ncol(sub_sampledata)]), "charac
                        + (1|State)
                        + offset(log(population)), data = sub_sampledata)
 } else {
+  s = paste("staring model with : ", interested_var, "\n", sep="")
+  cat(s)
     In.loop.model=glmer.nb(Deaths ~ scale(`% Hispanic`) + scale(`% Black`) + scale(`% Asian`) + scale(`% Non-Hispanic White`) + scale(`% American Indian & Alaska Native`)
                        + factor(q_popdensity)
                        + scale(log(`Median Household Income`))+scale(education) + scale(beds/population)
@@ -96,7 +105,7 @@ GWAS_ADJ_P[[interested_var]] <- p.adjust(summary(In.loop.model)[10]$coefficients
 #row.names(GWAS_P) <- c("% Hispanic", "% Black", "% Asian", "% White", "% Native", "q_pop_dens 2", "q_pop_dens 3", "q_pop_dens 4", "q_pop_dens 5",
 #                        "Median Household Income", "Education", "Beds/Population", "Date_Since", "Date_Since_Mask", "Interested_Variable")
 
-
+print("SAVED")
 saveRDS(GWAS_ADJ_P, "GWAS/GWAS_ADJ_P.rds")
 saveRDS(GWAS_P, "GWAS/GWAS_P.rds")
 saveRDS(GWAS_MRR, "GWAS/GWAS_MRR.rds")
