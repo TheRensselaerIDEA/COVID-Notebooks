@@ -20,1047 +20,114 @@ source("modules/preprocessing.R")
 source("modules/ggplot_gen.R")
 source("modules/leaflet_gen.R")
 source("modules/gt_gen.R")
-sourceDir("modules/shiny/R")
-```
-
-```{r map colors}
-colors <- c("#253494","#4575B4", "#74ADD1","#ABD9E9","#f7f7f7","#FDAE61","#F46D43", "#D73027", "#BD0026")
-bins <- c(5, 3, 2, 1, .2, -.2, -1, -2, -3, -5)
-```
-
-Functions to be generalized
-```{r get_ldi}
-get_ldi <- function(feature) {
-  rate <- paste0(feature,"_rate")
-  ldi <- paste0(rate, "_ldi")
-  return(c(ldi, rate))
-}
 ```
 
 
+# Data Exploration
 
-```{r geo.plot}
-geo.plot <- function(state.choice, feature, reverse=F) {
-  # Feature: Case, Mortality...
-  ldi_feature <- get_ldi(feature)
-  
-  dataset <- todays.case.data %>%
-    filter(State == state.choice)
-  shapes <- readRDS(paste("data/shape_files/", state.choice, ".Rds", sep = ""))
-  shapes$countyFIPS <- as.numeric(paste(as.data.frame(shapes)$STATEFP, as.data.frame(shapes)$COUNTYFP, sep = ''))
-  
-  dataset <- dplyr::left_join(as.data.frame(shapes), as.data.frame(dataset), by = c("countyFIPS" = "countyFIPS"))
-  
-  pal2 <- leaflet::colorBin(colors, domain = dataset[,ldi_feature[1]], bins = bins, reverse=reverse)
-    
-  labels <- sprintf(
-    paste0("<strong>%s</strong><br/>
-    COVID-19 ",feature," Rate DI: %.2g<br>
-    COVID-19 ",feature," Rate: %.1f /100k"),
-    dataset$County, dataset[,ldi_feature[1]], (dataset[,ldi_feature[2]])*100000
-  ) %>% lapply(htmltools::HTML)
-  
+There are two main types of data we work with on COVID**MINDER**. GGplots work with time series data, and Leaflet Plots work with static data points for each state. 
 
-  return (leaflet(shapes) %>%
-  addPolygons(
-    fillColor = ~pal2(dataset[,ldi_feature[1]]),
-    weight = 1,
-    opacity = 1,
-    color = "#330000",
-    dashArray = "1",
-    fillOpacity = 0.7,
-    highlight = highlightOptions(
-      weight = 5,
-      color = "#666",
-      dashArray = "",
-      fillOpacity = 0.7,
-      bringToFront = TRUE),
-    label = labels,
-    labelOptions = labelOptions(
-      style = list("font-weight" = "normal", padding = "3px 8px"),
-      textsize = "15px",
-      direction = "auto")) %>% 
-  addLegend(pal = pal2, 
-            values = ~dataset[ldi_feature[1]], 
-            opacity = 0.7, 
-            title = paste0("Disparity Index<br/>",state.choice," COVID-19 ",feature," Rates"),
-            position = "bottomright",
-            labFormat = function(type, cuts, p) { n = length(cuts) 
-            cuts[n] = paste0(cuts[n]," lower") 
-            # for (i in c(1,seq(3,(n-1)))){cuts[i] = paste0(cuts[i],"—")} 
-            for (i in c(1,seq(2,(n-1)))){cuts[i] = paste0(cuts[i]," — ")} 
-            cuts[2] = paste0(cuts[2]," higher") 
-            paste0(str_remove(cuts[-n],"higher"), str_remove(cuts[-1],"—"))
-            }
-  ) %>%
-  addProviderTiles("MapBox", options = providerTileOptions(
-    id = "mapbox.light"))
-    )
-}
+## ggplot datasets
 
+```{r}
+covid_TS_counties_long.cases %>% str() %>% print() # County Level data
+covid_TS_state_long.cases %>% str() %>% print() # State Level data
+covid_TS_US_long.cases %>% str() %>% print() # National Data
 ```
 
-covid_confirmed_usafacts metadata:
-+ countyFIPS: 0 for statewide unallocated, 1 for NYC unallocated, otherwise>1000
-+ County Name: Format is "x County", i.e. "Albany County"
-+ State: 2 letter initial
-+ stateFIPS: 1-56
-+ 1/22/20..MostRecentDate: Time series case data (aggregate)
-
-NY.data (to replicate):
-+ 10 NY.shape columns (inner join on county fips?)
-+ County: County Name without 'County' in strings
-+ Population
-+ Date
-+ Cases/Case Rate/LDI (Basically any data I want to show)
-
-Population
-+ countyFIPS: 0 for statewide unallocated, 1 for NYC unallocated, otherwise>1000
-+ County Name: Format is "x County", i.e. "Albany County"
-+ State: 2 letter initial
-+ Population: of county
-
-covid_deaths_usafacts metadata:
-+ countyFIPS: 0 for statewide unallocated, 1 for NYC unallocated, otherwise>1000
-+ County Name: Format is "x County", i.e. "Albany County"
-+ State: 2 letter initial
-+ stateFIPS: 1-56
-+ 1/22/20..MostRecentDate: Time series case data (aggregate)
-
-
-```{r data processing}
-# Read in data
-todays.raw.case.data <- read_csv("data/csv/time_series/covid_confirmed_usafacts.csv") 
-todays.raw.death.data <- read_csv("data/csv/time_series/covid_deaths_usafacts.csv")
-population <- read_csv("data/csv/time_series/covid_county_population_usafacts.csv") %>%
-  filter(countyFIPS > 1000)
-diabetes_data_counties <- read_csv("Summer_2020_notebooks/DiabetesAtlasCountyData.csv")
-US.diabetes.pt <- 8.5
-
-obesity_data_counties <- read_csv("Summer_2020_notebooks/adultobesity_uscounties.csv")
-US.obesity.pt <- pUS.8.obesity #31.3
-
-
-todays.case.data <- todays.raw.case.data %>%
-  filter(countyFIPS > 1000) %>%
-  select(countyFIPS, `County Name`, State, ncol(todays.raw.case.data)) %>%
-  rename(c("County" = "County Name"))
-colnames(todays.case.data)[4] <- "Cases"
-
-
-todays.case.data <- inner_join(todays.case.data, population[c(1,4)], by=c("countyFIPS" = "countyFIPS")) %>%
-  filter(population > 0)
-
-todays.death.data <- todays.raw.death.data %>%
-  filter(countyFIPS > 1000) %>%
-  select(1, ncol(todays.raw.death.data))
-colnames(todays.death.data)[2] <- "Mortality"
-
-todays.case.data <- inner_join(todays.case.data, todays.death.data, by=c("countyFIPS" = "countyFIPS"))
-
-todays.case.data$Case_rate <- todays.case.data$Cases/todays.case.data$population
-todays.case.data$Case_rate_ldi <- unlist(lapply(todays.case.data$Case_rate, FUN=function(x){-log(pUS.6.cases/x)})) 
-todays.case.data <- todays.case.data %>%
- mutate(Case_rate_ldi = replace(Case_rate_ldi, Case_rate_ldi < -5, -5))
-
-todays.case.data$Mortality_rate <- todays.case.data$Mortality/todays.case.data$population
-todays.case.data$Mortality_rate_ldi <- unlist(lapply(todays.case.data$Mortality_rate, FUN=function(x){-log(pUS.6.deaths/x)}))
-todays.case.data <- todays.case.data %>%
- mutate(Mortality_rate_ldi = replace(Mortality_rate_ldi, Mortality_rate_ldi < -5, -5))
-
-todays.case.data <- inner_join(todays.case.data, 
-                              diabetes_data_counties[c("CountyFIPS","Percentage")], 
-                              by=c("countyFIPS" = "CountyFIPS")) %>%
-  rename(Diabetes_rate = Percentage)
-todays.case.data$Diabetes_rate <- as.numeric(todays.case.data$Diabetes_rate)/100 # Percentage
-todays.case.data$Diabetes_rate_ldi <- unlist(lapply(todays.case.data$Diabetes_rate, FUN=function(x){-log(US.diabetes.pt/(x*100))}))
-todays.case.data <- todays.case.data %>%
- mutate(Diabetes_rate_ldi = replace(Diabetes_rate_ldi, Diabetes_rate_ldi < -5, -5))
-
-obesity_data_counties$FIPS <- as.numeric(obesity_data_counties$FIPS)
-todays.case.data <- inner_join(todays.case.data,
-                               obesity_data_counties[c("FIPS", "% Adults with Obesity")] ,
-                               by=c("countyFIPS" = "FIPS")) %>%
-  rename(Obesity_rate = `% Adults with Obesity`)
-todays.case.data$Obesity_rate <- as.numeric(todays.case.data$Obesity_rate)/100 # Percentage
-todays.case.data$Obesity_rate_ldi <- unlist(lapply(todays.case.data$Obesity_rate, FUN=function(x){-log(US.obesity.pt/(x*100))}))
-todays.case.data <- todays.case.data %>%
- mutate(Obesity_rate_ldi = replace(Obesity_rate_ldi, Obesity_rate_ldi < -5, -5))
-
-
-todays.case.data <- todays.case.data %>%
-  mutate(County = str_remove_all(County, regex(" County", ignore_case = T)))
-
-```
-
-```{r Cases}
-selected_state <- "NY"
-selected_feature <- "Obesity"
-geo.plot(selected_state, selected_feature)
-```
-
-```{r Mortality}
-#selected_state <- "AL"
-selected_feature <- "Mortality"
-geo.plot(selected_state, selected_feature)
-```
-
-```{r State policy processing}
-state_policy <- read_csv("Summer_2020_notebooks/state_policy.csv")
-state_policy.df <- state_policy[5:55,]
-state_policy.md <- state_policy[1:4,]
-state_policy.df
-#as.Date(state_policy.df$STAYHOME, format = "%m/%d/%y")
-state_policy.df[as.vector(state_policy.md[4,] == "date")] <- lapply(state_policy.df[as.vector(state_policy.md[4,] == "date")], function(x){parse_date_time(x, c("%m/%d/%y"))})
-```
-
-```{r plot processing}
-### County Level ###
-covid_TS_counties_long.cases <- todays.raw.case.data %>%
-  tidyr::gather(date,cases,5:ncol(todays.raw.case.data))
-covid_TS_counties_long.death <- todays.raw.death.data %>%
-  tidyr::gather(date,deaths,5:ncol(todays.raw.death.data))
-
-# Make date column an actual R date_time
-covid_TS_counties_long.cases$date <- parse_date_time(covid_TS_counties_long.cases$date, c("%m/%d/%y"))
-covid_TS_counties_long.death$date <- parse_date_time(covid_TS_counties_long.death$date, c("%m/%d/%y"))
-
-# Factor does not make sense here as there may be distint, same named counties
-covid_TS_counties_long.cases <- covid_TS_counties_long.cases %>%
-  rename(County = `County Name`) %>%
-  mutate(County = str_remove_all(County, regex(" County", ignore_case = T)))
-
-# Join death data
-covid_TS_counties_long.cases <- inner_join(covid_TS_counties_long.cases, covid_TS_counties_long.death[c(1,5,6)], by=c("countyFIPS" = "countyFIPS", "date" = "date"))
-
-# Filter small data
-covid_TS_counties_long.cases <- covid_TS_counties_long.cases %>%
-  filter(countyFIPS > 1000) %>%
-  filter(cases > 5)
-
-# Join population data
-covid_TS_counties_long.cases <- left_join(covid_TS_counties_long.cases, population[c(1,4)], by=c("countyFIPS" = "countyFIPS"))
-
-# Per100k columns
-covid_TS_counties_long.cases$p_cases <- covid_TS_counties_long.cases$cases/covid_TS_counties_long.cases$population*100000
-
-covid_TS_counties_long.cases$p_deaths <- covid_TS_counties_long.cases$deaths/covid_TS_counties_long.cases$population*100000
-
-# Changes in cases
-covid_TS_counties_long.cases %>% group_by(County, State) %>% 
-  mutate(diff = ifelse(as.Date(date - 1) == lag(date), cases - lag(cases), cases)) -> 
-  covid_TS_counties_long.cases
-
-covid_TS_counties_long.cases %>% 
-  mutate(p_diff = ifelse(as.Date(date - 1) == lag(date), p_cases - lag(p_cases), p_cases)) %>%
-  ungroup() -> covid_TS_counties_long.cases
-
-covid_TS_counties_long.cases$diff <- ifelse(is.na(covid_TS_counties_long.cases$diff), covid_TS_counties_long.cases$cases, covid_TS_counties_long.cases$diff)
-covid_TS_counties_long.cases$p_diff <- ifelse(is.na(covid_TS_counties_long.cases$p_diff), covid_TS_counties_long.cases$p_cases, covid_TS_counties_long.cases$p_diff)
-
-# Changes in deaths
-covid_TS_counties_long.cases %>% group_by(County, State) %>% 
-  mutate(d_diff = ifelse(as.Date(date - 1) == lag(date), deaths - lag(deaths), deaths)) -> 
-  covid_TS_counties_long.cases
-
-covid_TS_counties_long.cases %>% 
-  mutate(p.d_diff = ifelse(as.Date(date - 1) == lag(date), p_deaths - lag(p_deaths), p_deaths)) %>%
-  ungroup() -> covid_TS_counties_long.cases
-
-covid_TS_counties_long.cases$d_diff <- ifelse(is.na(covid_TS_counties_long.cases$d_diff), covid_TS_counties_long.cases$deaths, covid_TS_counties_long.cases$d_diff)
-covid_TS_counties_long.cases$p.d_diff <- ifelse(is.na(covid_TS_counties_long.cases$p.d_diff), covid_TS_counties_long.cases$p_deaths, covid_TS_counties_long.cases$p.d_diff)
-
-### State Level ###
-
-covid_TS_state_long.cases <- todays.raw.case.data %>%
-  tidyr::gather(date,cases,5:ncol(todays.raw.case.data))
-covid_TS_state_long.death <- todays.raw.death.data %>%
-  tidyr::gather(date,deaths,5:ncol(todays.raw.death.data))
-
-# Make date column an actual R date_time
-covid_TS_state_long.cases$date <- parse_date_time(covid_TS_state_long.cases$date, c("%m/%d/%y"))
-covid_TS_state_long.death$date <- parse_date_time(covid_TS_state_long.death$date, c("%m/%d/%y"))
-
-# Factor does not make sense here as there may be distint, same named counties
-covid_TS_state_long.cases <- covid_TS_state_long.cases %>%
-  group_by(State, date) %>%
-  summarise(cases = sum(cases))
-
-covid_TS_state_long.death <- covid_TS_state_long.death %>%
-  group_by(State, date) %>%
-  summarise(deaths = sum(deaths))
-
-# Join death data
-covid_TS_state_long.cases <- inner_join(
-  covid_TS_state_long.cases, covid_TS_state_long.death, by=c("State" = "State", "date" = "date"))
-
-# Filter small data
-covid_TS_state_long.cases <- covid_TS_state_long.cases %>%
-  filter(cases > 5)
-
-# Join population data
-covid_TS_state_long.cases <- left_join(
-  covid_TS_state_long.cases, 
-  population %>% group_by(State) %>% summarise(population = sum(population)), 
-  by=c("State" = "State"))
-
-# Per100k columns
-covid_TS_state_long.cases$p_cases <- covid_TS_state_long.cases$cases/covid_TS_state_long.cases$population*100000
-
-covid_TS_state_long.cases$p_deaths <- covid_TS_state_long.cases$deaths/covid_TS_state_long.cases$population*100000
-
-# Changes in cases
-covid_TS_state_long.cases %>% group_by(State) %>% 
-  mutate(diff = ifelse(as.Date(date - 1) == lag(date), cases - lag(cases), cases)) -> 
-  covid_TS_state_long.cases
-
-covid_TS_state_long.cases %>% 
-  mutate(p_diff = ifelse(as.Date(date - 1) == lag(date), p_cases - lag(p_cases), p_cases)) %>%
-  ungroup() -> covid_TS_state_long.cases
-
-covid_TS_state_long.cases$diff <- ifelse(is.na(covid_TS_state_long.cases$diff), covid_TS_state_long.cases$cases, covid_TS_state_long.cases$diff)
-covid_TS_state_long.cases$p_diff <- ifelse(is.na(covid_TS_state_long.cases$p_diff), covid_TS_state_long.cases$p_cases, covid_TS_state_long.cases$p_diff)
-
-# Changes in deaths
-covid_TS_state_long.cases %>% group_by(State) %>% 
-  mutate(d_diff = ifelse(as.Date(date - 1) == lag(date), deaths - lag(deaths), deaths)) -> 
-  covid_TS_state_long.cases
-
-covid_TS_state_long.cases %>% 
-  mutate(p.d_diff = ifelse(as.Date(date - 1) == lag(date), p_deaths - lag(p_deaths), p_deaths)) %>%
-  ungroup() -> covid_TS_state_long.cases
-
-covid_TS_state_long.cases$d_diff <- ifelse(is.na(covid_TS_state_long.cases$d_diff), covid_TS_state_long.cases$deaths, covid_TS_state_long.cases$d_diff)
-covid_TS_state_long.cases$p.d_diff <- ifelse(is.na(covid_TS_state_long.cases$p.d_diff), covid_TS_state_long.cases$p_deaths, covid_TS_state_long.cases$p.d_diff)
-
-
-# State ranking
-time.period <- 14
-ranking <- covid_TS_state_long.cases %>%
-  group_by(State) %>%
-  filter(State != "DC") %>%
-  top_n(time.period, wt=date) %>%
-  summarise(
-    population = max(population),
-    cases.delta = (max(p_cases) - min(p_cases))/max(p_cases),
-    deaths.delta =  (max(p_deaths) - min(p_deaths))/max(p_deaths)
-    ) %>%
-  #mutate(points = 0.5*(cases.delta + deaths.delta)) %>%
-  mutate(points = cases.delta) %>%
-  arrange(points) %>%
-  mutate(rank = row_number()) %>%
-  left_join(state.abr[c("abr", "name")],
-            by = c("State" = "abr"))
-
-### US Level ###
-
-covid_TS_US_long.cases <- todays.raw.case.data %>%
-  tidyr::gather(date,cases,5:ncol(todays.raw.case.data))
-covid_TS_US_long.death <- todays.raw.death.data %>%
-  tidyr::gather(date,deaths,5:ncol(todays.raw.death.data))
-
-# Make date column an actual R date_time
-covid_TS_US_long.cases$date <- parse_date_time(covid_TS_US_long.cases$date, c("%m/%d/%y"))
-covid_TS_US_long.death$date <- parse_date_time(covid_TS_US_long.death$date, c("%m/%d/%y"))
-
-# Factor does not make sense here as there may be distint, same named counties
-covid_TS_US_long.cases <- covid_TS_US_long.cases %>%
-  group_by(date) %>%
-  summarise(cases = sum(cases))
-
-covid_TS_US_long.death <- covid_TS_US_long.death %>%
-  group_by(date) %>%
-  summarise(deaths = sum(deaths))
-
-# Join death data
-covid_TS_US_long.cases <- inner_join(
-  covid_TS_US_long.cases, covid_TS_US_long.death, by=c("date" = "date"))
-
-# Filter small data
-covid_TS_US_long.cases <- covid_TS_US_long.cases %>%
-  filter(cases > 5)
-
-# Join population data
-US.pop <- sum(population$population)
-
-# Per100k columns
-covid_TS_US_long.cases$p_cases <- covid_TS_US_long.cases$cases/US.pop*100000
-
-covid_TS_US_long.cases$p_deaths <- covid_TS_US_long.cases$deaths/US.pop*100000
-
-# Changes in cases
-covid_TS_US_long.cases %>%
-  mutate(diff = ifelse(as.Date(date - 1) == lag(date), cases - lag(cases), cases)) -> 
-  covid_TS_US_long.cases
-
-covid_TS_US_long.cases %>% 
-  mutate(p_diff = ifelse(as.Date(date - 1) == lag(date), p_cases - lag(p_cases), p_cases)) -> 
-  covid_TS_US_long.cases
-
-covid_TS_US_long.cases$diff <- ifelse(is.na(covid_TS_US_long.cases$diff), covid_TS_US_long.cases$cases, covid_TS_US_long.cases$diff)
-covid_TS_US_long.cases$p_diff <- ifelse(is.na(covid_TS_US_long.cases$p_diff), covid_TS_US_long.cases$p_cases, covid_TS_US_long.cases$p_diff)
-
-# Changes in deaths
-covid_TS_US_long.cases %>% 
-  mutate(d_diff = ifelse(as.Date(date - 1) == lag(date), deaths - lag(deaths), deaths)) -> 
-  covid_TS_US_long.cases
-
-covid_TS_US_long.cases %>% 
-  mutate(p.d_diff = ifelse(as.Date(date - 1) == lag(date), p_deaths - lag(p_deaths), p_deaths)) -> 
-  covid_TS_US_long.cases
-
-covid_TS_US_long.cases$d_diff <- ifelse(is.na(covid_TS_US_long.cases$d_diff), covid_TS_US_long.cases$deaths, covid_TS_US_long.cases$d_diff)
-covid_TS_US_long.cases$p.d_diff <- ifelse(is.na(covid_TS_US_long.cases$p.d_diff), covid_TS_US_long.cases$p_deaths, covid_TS_US_long.cases$p.d_diff)
-```
-
-
-```{r get_y_label}
-get_y_label <- function(y.value) {
-  if (y.value == "cases") {
-    return("COVID-19 Cases")
-  }
-  if (y.value == "p_cases") {
-    return("COVID-19 Cases per 100k")
-  }
-  if (y.value == "diff") {
-    return("New COVID-19 Cases")
-  }
-  if (y.value == "p_diff") {
-    return("New COVID-19 Cases per 100k")
-  }
-  if (y.value == "deaths") {
-    return("COVID-19 Deaths")
-  }
-  if (y.value == "p_deaths") {
-    return("COVID-19 Deaths per 100k")
-  }
-  else {
-    return("")
-  }
-}
-```
-
-```{r ggplot.state}
-ggplot.state <- function(selected.state="NY", y.value="cases", moving.avg.window=7, case.cut=200, max.labels=10, remove.title = F) {
-  
-  y_label <- get_y_label(y.value)
-  state.name <- state.abr[state.abr$abr==selected.state,"name"]
-  m.a.w <- ""
-  if (y.value == "diff" | y.value == "p_diff") {
-    m.a.w <- paste0(" (",moving.avg.window," day Average)")
-  }
-  
-  if (remove.title) {
-    gg_title <- NULL
-  }
-  else {
-    gg_title <- ggtitle(paste0(state.name, " ", y_label, " over time",m.a.w))
-  }
-  
-  
-  covid_TS_counties.cases.plot <- covid_TS_counties_long.cases %>%
-    select(-c(countyFIPS, stateFIPS)) %>%
-    filter(State == selected.state) %>%
-    group_by(County) %>% 
-    filter(n() >= moving.avg.window) %>%
-    mutate(diff = c(numeric(moving.avg.window-1), zoo::rollmean(diff, moving.avg.window, align = "right"))) %>%
-    mutate(p_diff = c(numeric(moving.avg.window-1), zoo::rollmean(p_diff, moving.avg.window, align = "right"))) %>%
-    ungroup()
-  
-  if (selected.state == "NY") {
-    nyc.population <- covid_TS_counties.cases.plot %>%
-      filter(County %in% c("New York", "Kings", "Queens", "Bronx", "Richmond")) %>%
-      group_by(County) %>%
-      top_n(n=1, wt=date) %>%
-      select(population)
-    nyc.population <- sum(nyc.population$population)
-      
-    NYC <- covid_TS_counties.cases.plot %>%
-      filter(County %in% c("New York", "Kings", "Queens", "Bronx", "Richmond")) %>%
-      group_by(State, date) %>%
-      summarise(
-        County = "New York City",
-        cases = sum(cases),
-        deaths = sum(deaths),
-        population = nyc.population,
-        p_cases = sum(cases)*100000/nyc.population,
-        p_deaths = sum(deaths)*100000/nyc.population,
-        diff = sum(diff),
-        p_diff = sum(diff)*100000/nyc.population,
-        d_diff = sum(d_diff),
-        p.d_diff = sum(p.d_diff)*100000/nyc.population
-      ) 
-    covid_TS_counties.cases.plot <- covid_TS_counties.cases.plot %>%
-      filter(!County %in% c("New York", "Kings", "Queens", "Bronx", "Richmond")) %>%
-      rbind.data.frame(NYC)
-      
-  }
-
-  state <- covid_TS_state_long.cases %>%
-    filter(State == selected.state) %>%
-    filter(n() >= moving.avg.window) %>%
-    mutate(diff = c(numeric(moving.avg.window-1), zoo::rollmean(diff, moving.avg.window, align = "right"))) %>%
-    mutate(p_diff = c(numeric(moving.avg.window-1), zoo::rollmean(p_diff, moving.avg.window, align = "right")))
-  
-  state$County = selected.state
-  
-  covid_TS_counties.cases.plot <-  covid_TS_counties.cases.plot %>%
-    group_by(County) %>%
-    filter(max(cases) > case.cut) %>%
-    ungroup() %>%
-    rbind.data.frame(state) %>%
-    filter(get(y.value) > 0)
-    
-  
-  county.num <- covid_TS_counties.cases.plot %>% 
-        select(County) %>%
-        unique()
-  
-  colnames(county.num) <- c("County")
-  county.num <- county.num %>%
-    mutate(num = row_number()) %>%
-    mutate(County = as.character(County))
-  
-  n_county <- nrow(county.num)
-  highlight_points <- covid_TS_counties.cases.plot  %>%
-    left_join(county.num, by=c("County" = "County")) %>%
-    group_by(County) %>%
-    mutate(range = as.numeric(as.Date(max(date))) - as.numeric(as.Date(min(date)))) %>%
-    mutate(max_date = as.Date(max(date))) %>%
-    mutate(max_date = max_date - ((num*((range%/%n_county) + 1))%%range))  %>%
-    filter(date == max_date) %>%
-    top_n(1, wt=max_date) 
-  
-  library(RColorBrewer)
-  qual_col_pals = brewer.pal.info[brewer.pal.info$category == 'qual',]
-  col_vector = unlist(mapply(brewer.pal, qual_col_pals$maxcolors, rownames(qual_col_pals)))
-  county.num$Color <- col_vector[1:n_county]
-  
-  region_palette <- setNames(as.character(county.num$Color), as.character(county.num$County))
-  region_palette[selected.state] <- "#A8A8A8"
-
-  g <- covid_TS_counties.cases.plot %>%
-          ggplot(aes_string(
-                   x="date",
-                   y=y.value,
-                   color="County",
-                   group="County")) +
-                scale_color_manual(values=region_palette, guide=guide_legend(title.position = "top",title.hjust = 0.5)) +
-                geom_line(size=1) +
-                scale_y_continuous(
-                  trans = "log10",
-                  breaks = c(10,100,500,1000,5000,10000, 50000)
-                ) +
-                scale_x_datetime(date_breaks = "1 week", date_minor_breaks = "1 day", date_labels = "%b %d") +
-                ylab(y_label) + 
-                xlab("Date") +
-                #theme(legend.position = "none") +
-                geom_label_repel(
-                  data=highlight_points,  
-                  aes(label=County, fill=County), 
-                  box.padding = unit(1.75, 'lines'),
-                  color = "black",
-                  size = 5,
-                  show.legend = FALSE
-                ) +
-                scale_color_manual(values=region_palette, aesthetics = c("fill")) +
-                geom_vline(aes(xintercept=state_policy.df[state_policy.df$POSTCODE == selected.state,]$END_STHM, linetype=paste0(selected.state," ends stay at home order")), color = "red") + 
-                geom_vline(aes(xintercept=state_policy.df[state_policy.df$POSTCODE == selected.state,]$STAYHOME, linetype=paste0(selected.state," begins stay at home order")), color = "blue") + 
-                scale_linetype_manual(name = "Events", 
-                                      values = c(2,2), 
-                                      guide = guide_legend(title.position = "top",title.hjust = 0.5,override.aes = list(color = c("blue", "red")), direction = "vertical")) +
-                theme(legend.position = "bottom") +
-                gg_title +
-                NULL
-    return(g)
-}
+Metadata:
+* countyFIPS - Unique integer ID identifying a United States County. The first 2 numbers can be processed into StateFips
+* County - Name of the county. Not Unique.
+* State - Two letter state initial. Uniquely Identifies state. 
+* stateFIPS -  Unique integer ID identifying a United States state.
+* date - Date in which row data was reported. Please note unix date_time format.
+* cases - Overall COVID-19 cases as of reported date.
+* deaths - Overall COVID-19 deaths as of reported date.
+* p_cases - Overall COVID-19 cases per 100k as of reported date.
+* p_deaths - Overall COVID-19 deaths per 100k as of reported date.
+* diff - Change in COVID-19 cases from previous day. Generally >= 0, though some data report discrepancies may generate negatives.
+* p_diff - Change in COVID-19 cases per 100k from previous day. Generally >= 0, though some data report discrepancies may generate negatives.
+* d_diff - Change in COVID-19 deaths from previous day. Generally >= 0, though some data report discrepancies may generate negatives.
+* p.d_diff - Change in COVID-19 deaths per 100k from previous day. Generally >= 0, though some data report discrepancies may generate negatives.
+
+In `covid_TS_counties_long.cases`, a row is uniquely identified by its `countyFIPS` and `date` columns.
+In `covid_TS_state_long.cases`, a row is uniquely identified by its `State` and `date` columns.
+In `covid_TS_US_long.cases`, a row is uniquely identified by its `date` column.
+
+Our GGplot functions access these dataframes directly, to report data at the state or national level. They can be used to plot any non-identifying column. Command+Click on the functions to view the code.
+
+```{r}
+ggplot.state("NY","p_diff", counties = c("Rensselaer"))
 ```
 
 ```{r}
-selected_state <- "WV"
-moving.avg.window <- 7
-n_case_cut <- 100
-y.value <- "diff"
-ggplot.state(selected_state, y.value=y.value, case.cut=n_case_cut, moving.avg.window=moving.avg.window)
+ggbar.overall("NJ", "p_cases")
 ```
 
-```{r get_dif (label)}
-get_dif <- function(y.value) {
-  if (y.value == "cases") {
-    return("diff")
-  }
-  if (y.value == "deaths") {
-    return("d_diff")
-  }
-  if (y.value == "p_cases") {
-    return("p_diff")
-  }
-  if (y.value == "p_deaths") {
-    return("p.d_diff")
-  }
-}
+```{r}
+ggplot.US("p_diff", selected.states = c("NY", "CA", "NJ", "GA"), moving.avg.window = 14)
 ```
 
-```{r Case bar chart}
-ggbar.overall <- function(selected.state = "VT", y.value="p_deaths", moving.avg.window=14, remove.title = F) {
-  state <- covid_TS_state_long.cases %>%
-    filter(State == selected.state)
-  
-  my_diff <- get_dif(y.value)
-  category <- get_y_label(y.value)
-  
-  #y.max <- max(covid_TS_state_long.cases[y.value])
-  
-  if (remove.title) {
-    gg_title <- NULL
-  }
-  else {
-    gg_title <- ggtitle(paste0(selected.state, " ", category, " over time"))
-  }
-  
-  
-  state_cases <- state[c("date", y.value, my_diff)]
-  state_cases <- state_cases %>%
-    rename(Values = all_of(y.value)) %>%
-    rename(diff = all_of(my_diff)) %>%
-    mutate(diff.ma =  c(diff[1:7-1], zoo::rollmean(diff, 7, align="right"))) %>%
-    mutate(pct_increase =diff.ma/Values*100) %>%
-    mutate(ma = c(numeric(moving.avg.window-1), zoo::rollmean(Values, moving.avg.window, align = "right")))
-  state_cases[state_cases$diff.ma > 0 & state_cases$pct_increase > 10, "pct_increase"] <- 10
-  state_cases[is.na(state_cases$pct_increase) | state_cases$pct_increase <= 0, "pct_increase"] <- NA
-  state_cases$Type <- "State MA"
-  
-  US.ma <- covid_TS_US_long.cases[c("date", y.value, my_diff)] %>%
-    rename(Values = all_of(y.value)) %>%
-    rename(diff = all_of(my_diff)) %>%
-    mutate(diff.ma =  c(diff[1:7-1], zoo::rollmean(diff, 7, align="right"))) %>%
-    mutate(pct_increase =diff.ma/Values*100) %>%
-    mutate(ma = c(numeric(moving.avg.window-1), zoo::rollmean(Values, moving.avg.window, align = "right"))) %>%
-    filter(ma > 0) %>%
-    filter(date > min(state_cases$date))
-  US.ma$Type <- "US MA"
-  state.us.ma <- rbind.data.frame(state_cases, US.ma)
-  
-  END_STHM <- paste0(selected.state," ends stay at home order")
-  STHM <- paste0(selected.state," begins stay at home order")
-  
-  return(state_cases %>%
-    ggplot() +
-    geom_col(aes(x=date, y=Values, fill = pct_increase)) +
-    scale_fill_gradient(high = "#ff0000", 
-                        low = "#ffffff",
-                        limit = c(0,10),
-                        breaks = c(5,10),
-                        labels = c("5%","10%+"),
-                        na.value = "skyblue",
-                        guide = guide_colorbar(title = paste0("Percentage change in ", category),
-                                               title.hjust = 0.5,
-                                               title.position = "top", 
-                                               label.hjust = 0.5, 
-                                               barwidth = 15,
-                                               frame.colour = "black")) +
-    geom_point(data = state_cases, aes(x=date, y=Values, size = ""), shape = NA, colour = "skyblue") +
-    guides(size=guide_legend(title = "No Change", 
-                             override.aes=list(shape=15, size = 8), 
-                             title.position = "top",
-                             title.hjust = 0.5)) +
-    geom_line(data = state.us.ma,aes( x=date, y=ma, color=Type, group=Type), arrow=arrow(ends="last"), show.legend = F)  + 
-    geom_line(data = state.us.ma,aes( x=date, y=ma, color=Type, group=Type)) +
-    geom_vline(aes(xintercept=state_policy.df[state_policy.df$POSTCODE == selected.state,]$END_STHM, color = END_STHM), linetype="longdash", size = 1, show.legend = F) +
-    geom_vline(aes(xintercept=state_policy.df[state_policy.df$POSTCODE == selected.state,]$STAYHOME, color= STHM), linetype="longdash", size = 1, show.legend = F) +
-    scale_color_manual(name = "Line Types", 
-                        values = c("blue", "red", "black", "steelblue"),
-                        guide = guide_legend(title.position = "top",
-                                             title.hjust = 0.5,
-                                             direction = "vertical")) +
-    scale_x_datetime(date_breaks = "1 week", date_minor_breaks = "1 day", date_labels = "%b %d") +
-    ylab(get_y_label(y.value)) + 
-    xlab("Date") +
-    theme(legend.position = "bottom",legend.direction = "horizontal") +
-    gg_title + 
-    NULL
+```{r}
+ggbar.US("p_deaths")
+```
+
+## leaflet datasets
+
+```{r}
+todays.case.data %>% str() %>% print()
+states %>% str() %>% print()
+```
+
+Any datapoint with a log disparity index (LDI) can be generated into a leaflet plot. `geo.plot` is currently built to visualize variables that have the following columns:
+* `feature name`_rate
+* `feature name`_rate_ldi
+
+
+***Note: Legend depends on CSS stylings to have flat visualization.***
+```{r}
+geo.plot("NY", "Mortality")
+```
+
+```{r}
+geo.plot("US", "Testing", reverse = T)
+```
+
+# Tab panel example
+Here is a small application with a singular tabpanel in a navbar setup. To add to covidminder, simply add a tab panel where it is desired. 
+
+```{r}
+ui <- navbarPage(
+  title = "COVIDMINDER",
+  theme = "www/style.css", #Usually the www is not needed...
+  id = "tab",
+  tabPanel(
+    title = "Example Panel",
+    value = "example", # Should be unique and appended to tabs list in the server code
+    fluidRow(tags$h1("Daily New York Cases/100k")),
+    fluidRow(plotOutput("ny_output"))
   )
-}
-                
-```
-
-
-```{r}
-ggbar.overall("HI", "p_deaths")
-```
-
-```{r}
-ma.plot <- function(selected.state = "AZ", y.value="p_deaths", moving.avg.window=14, remove.title = F) {
-  state <- covid_TS_state_long.cases %>%
-    filter(State == selected.state)
-  
-  category <- get_y_label(y.value)
-  
-  #y.max <- max(covid_TS_state_long.cases[y.value])
-  
-  if (remove.title) {
-    gg_title <- NULL
-  }
-  else {
-    gg_title <- ggtitle(paste0(selected.state, 
-                               " ", 
-                               category, 
-                               " compared to US over time (",
-                               moving.avg.window,
-                               " day average)"))
-  }
-  
-  state_cases <- state[c("date", y.value)]
-  state_cases <- state_cases %>%
-    mutate(ma = c(numeric(moving.avg.window-1), zoo::rollmean(eval(parse(text=y.value)), moving.avg.window, align = "right"))) %>%
-    filter(ma > 0) %>%
-    select(date, ma)
-  state_cases$Type = "State MA"
-  
-  US.ma <- covid_TS_US_long.cases[c("date", y.value)] %>%
-    mutate(ma = c(numeric(moving.avg.window-1), zoo::rollmean(eval(parse(text=y.value)), moving.avg.window, align = "right"))) %>%
-    filter(ma > 0) %>%
-    select(date, ma)
-  US.ma$Type <- "US MA"
-  state_cases <- rbind.data.frame(state_cases, US.ma)
-  END_STHM <- paste0(selected.state," ends stay at home order")
-  STHM <- paste0(selected.state," begins stay at home order")
-  return(
-    state_cases %>%
-           ggplot(aes(x = date, 
-                      y = ma, 
-                      color = Type,
-                      group = Type)) +
-    geom_line(arrow = arrow(ends = "last"), show.legend = F) +
-    geom_line() +
-    geom_vline(aes(xintercept=state_policy.df[state_policy.df$POSTCODE == selected.state,]$END_STHM, color = END_STHM), linetype="dashed", size=1, show.legend = F) +
-    geom_vline(aes(xintercept=state_policy.df[state_policy.df$POSTCODE == selected.state,]$STAYHOME, color= STHM), linetype="dashed", size = 1, show.legend = F) +
-    scale_color_manual(name = "Events", 
-                        values = c("black", "red", "green", "steelblue"),
-                        guide = guide_legend(title.position = "top",
-                                             title.hjust = 0.5,
-                                             direction = "vertical")) +
-      NULL
-  )
-}
-```
-
-
-```{r gt.ranking}
-gt.ranking <- function(entries = 50, order=function(x){x}) {
-  ranking %>%
-    arrange(order(rank)) %>%
-    filter(row_number() <= entries) %>%
-    select(name, cases.delta, deaths.delta, rank) %>%
-    gt() %>%
-    tab_header(
-      title = paste0("State Rankings"),
-      subtitle = "Based on 14 day change in COVID-19 Cases"
-    ) %>%
-    tab_source_note(
-      source_note = md("Data Source: [USA Facts](https://usafacts.org/visualizations/coronavirus-covid-19-spread-map/)")
-    ) %>%
-    fmt_percent(c("cases.delta", "deaths.delta"), decimals = 1) %>%
-    cols_label(
-      name = "State",
-      cases.delta = "Change in Cases",
-      deaths.delta = "Change in Deaths",
-      rank = "Rank"
-    ) %>%
-    cols_move_to_start(columns = vars(rank)) %>%
-    tab_options(container.width = "100%",
-                table.width = "100%")
-}
-gt.ranking(10,dplyr::desc)
-```
-
-```{r State stats chart}
-#New York Stats
-# tags$b("Overall Cases: "),format(stats$cases, big.mark = ","), tags$br(),
-#        tags$b("Cases per 100k: "),format(round(stats$p_cases), big.mark = ","), tags$br(),
-#        tags$b("Overall Deaths: "),format(stats$deaths, big.mark = ","), tags$br(),
-#        tags$b("Deaths per 100k: "),format(round(stats$p_deaths), big.mark = ","), tags$br(),
-#        tags$b("Stay At Home Order Start Date: "), format(policy$STAYHOME, "%m-%d-%Y"), tags$br(),
-#        tags$b("Stay At Home Order End Date: "), format(policy$END_STHM, "%m-%d-%Y")
-
-selected_state <- "NY"
-numeric_fmt <- function(.x) {
-  num.x <- as.numeric(.x)
-  str.x <- format(round(num.x), big.mark = ",")
-  str.x
-}
-
-date_fmt <- function(.x) {
-  date.x <- as.Date(.x)
-  str.x <- format(date.x, "%m-%d-%Y")
-  str.x
-}
-
-sup_fmt <- function(.x, sup=1) {
-  md(glue::glue("{.x}<sup>{sup}</sup>"))
-}
-
-sup2_fmt <- function(.x) {
-  sup_fmt(.x, sup=2)
-}
-
-sup3_fmt <- function(.x) {
-  sup_fmt(.x, sup=3)
-}
-
-stats.table <- function(selected_state) {
-  # TODO: Instead of row numbers, add aditional column specifying data type
-  state_name <- paste0(state.abr[state.abr$abr == selected_state, "name"])
-  
-  stats <- covid_TS_state_long.cases %>%
-    filter(State == selected_state) %>%
-    top_n(n=1, wt=date) %>%
-    select(cases, p_cases, deaths, p_deaths) %>%
-    t()
-  
-  tests <- state_covid_testing %>%
-    filter(NAME == state_name) %>%
-    select(total_num_tests, tests_per_1000) %>%
-    mutate(tests_per_1000 = tests_per_1000 * 100) %>%
-    t()
-  
-  policy <- state_policy.df %>%
-    filter(POSTCODE == selected_state) %>% 
-    select(STAYHOME, END_STHM) %>%
-    t()
-  
-  stats <- stats %>%
-    rbind.data.frame(tests, policy)
-
-  state.title <- paste0(state_name, " Stats")
-  stats$features <- c("Overall Cases",  "Overall Cases per 100k", "Overall Deaths", "Overall Deaths per 100k", "Overall Tests", "Overall Tests per 100k", "Stay At Home Order Start Date", "Stay At Home Order End Date")
-  
-  stats %>%
-    mutate(row_num = row_number()) %>%
-    gt() %>%
-    fmt(c("features"), row = row_num < 5, fns = sup_fmt) %>%
-    fmt(c("features"), row = row_num >= 5 & row_num < 7, fns = sup2_fmt) %>%
-    fmt(c("features"), row = row_num >= 7, fns = sup3_fmt) %>%
-    cols_move_to_start(c("features")) %>%
-    tab_header(
-      title = md(paste0("**", state.title, "**"))
-    ) %>%
-    tab_source_note(
-        source_note = md("Data Source: [USA Facts<sup>1</sup>](https://usafacts.org/visualizations/coronavirus-covid-19-spread-map/), [OWID<sup>2</sup>](https://covid.ourworldindata.org/data/owid-covid-data.csv)")
-      ) %>%
-    tab_source_note(
-        source_note = md("Data Source: Raifman J, Nocka K, Jones D, Bor J, Lipson S, Jay J, and Chan P. (2020). 'COVID-19 US state policy database.' Available at: [www.tinyurl.com/statepolicies<sup>3</sup>](www.tinyurl.com/statepolicies)")
-      ) %>%
-    fmt(c("V1"), row = row_num < 7, fns = numeric_fmt) %>%
-    fmt(c("V1"), row = row_num >= 7, fns = date_fmt) %>%
-    cols_hide(c("row_num")) %>%
-    tab_options(column_labels.hidden = T,
-                container.width = "100%",
-                table.width = "100%")
-}
-stats.table("HI")
-```
-
-
-```{r shinyApp}
-shinyApp(
-  ui = fluidPage(
-    includeCSS("www/style.css"),
-    tags$style(HTML(".selectize-control.single .selectize-input {
-    width: 100%;
-    max-height: 50px;
-}")),
-    fluidPage(
-      fluidRow(column(12, style="text-align:center;",
-                      selectInput(inputId = "state_name",
-                                  label = "State Selector",
-                                  choices = state.abr$name,
-                                  selected = as.character(unlist(ranking[ranking$rank==50, "name"]))))),
-      fluidRow(column(12, style="text-align:center;",uiOutput("main_title"))),
-      tags$br(),
-      fluidRow(column(8, style="text-align:center;",
-                      tags$b(tags$sup("*"),"States are ranked best to worst by their percentage change in COVID-19 cases over the past 14 days."),
-                      offset=2)),
-      fluidRow(column(6, style="text-align:center;",uiOutput("state.CoT.title"),
-                      plotOutput(outputId = "state.CoT", height = "600px")),
-               column(6, style="text-align:center;",uiOutput("state.DoT.title"),
-                      plotOutput(outputId = "state.DoT", height = "600px"))),
-      fluidRow(column(8, style="text-align:center;",
-                      tags$h2("Flattening the Curve"),
-                      tags$p("Nationwide, states have taken various approaches to mitigate the spread of coronavirus, such as social distancing interventions and encouraging mask use where social distancing is not possible. Studies by the CDC have shown these methods reduce new COVID-19 cases, hospitalizations, and deaths."),
-                      tags$b("Data Source: "), tags$a("CDC", href="https://wwwnc.cdc.gov/eid/article/26/8/20-1093_article"), offset=2)),
-                      tags$br(),
-                      tags$br(),
-      fluidRow(column(8,gt_output("state.report"),
-                      offset = 2)),
-      fluidRow(column(12, style="text-align:center;",
-                      tags$h1("County Level Breakdown"))),
-      fluidRow(column(10, style="text-align:center;",uiOutput("state.trends.title"),
-                      plotOutput(outputId = "state.trends", height="600px"), offset = 1)),
-      fluidRow(column(6,
-                      uiOutput("state.county.cases"),
-                      leafletOutput("map.cases")),
-               column(6,
-                      uiOutput("state.county.deaths"),
-                      leafletOutput("map.deaths"))),
-      tags$br(),
-      fluidRow(column(12, style="text-align:center;",
-                      tags$h1("Comorbidities"))),
-      fluidRow(column(12, style="text-align:center;",
-                      uiOutput("determinant.title")),
-               column(6,
-                      selectInput(inputId = "determinant",
-                                  label = NULL,
-                                  choices = c("Diabetes", "Obesity"),
-                                  selected = "Obesity"),
-                      leafletOutput("maps.determinant"), offset = 3),
-               column(8, style="text-align:center;",
-                      tags$p(textOutput("determinant.text"),
-                             tags$br(),
-                             tags$b("Data Source: "), tags$a("CDC", href="www.cdc.gov/diabetes/data"), ", ",
-                             tags$a("CHR", href = 
-                                      "https://www.countyhealthrankings.org/explore-health-rankings/measures-data-sources/county-health-rankings-model/health-factors/health-behaviors/diet-exercise/adult-obesity")), 
-                      offset = 2
-                      )),
-      fluidRow(column(8, style="text-align:center;",
-                       HTML("Respective rates per 100k people on maps are: 
-                        <div>
-                       <div>&nbsp;&nbsp;&nbsp;<span style='background: #BD0026; border-radius: 50%; font-size: 11px; opacity: 0.7;'>&nbsp&nbsp&nbsp&nbsp</span><strong> Higher</strong> than US avg. rate for disparity index &gt; 0.2</div>
-                       <div>&nbsp;&nbsp;&nbsp;<span style='background: #f7f7f7; border-radius: 50%; font-size: 11px; opacity: 0.7;'>&nbsp&nbsp&nbsp&nbsp</span><strong> About equal</strong> to US avg. rate for -0.2 &lt; disparity index &lt; 0.2</div>
-                       <div>&nbsp;&nbsp;&nbsp;<span style='background: #253494; border-radius: 50%; font-size: 11px; opacity: 0.7;'>&nbsp&nbsp&nbsp&nbsp</span><strong> Lower</strong> than US avg. rate for disparity index &lt; -0.2</div>
-                       <i>Darker shades indicate greater disparity.</i><br><br>
-                       </div>"), offset=2)),
-      tags$br(),
-      tags$br()
-      ,fluidRow(column(12, style="text-align:center;",
-                       tags$h1("Rankings")),
-                tags$a(name = "ranking"),
-                column(8,
-                       fluidRow(style="float:right;width:250px;",
-                                selectInput(inputId = "entries",
-                                  label = "Entries",
-                                  choices = c(`Show 10` = 10, 
-                                              `Show 25` = 25,
-                                              `Show 50` = 50),
-                                  selected = 10,
-                                  width = "50%"),
-                                radioButtons(inputId = "rank.order",
-                                             label = "Order",
-                                             choices = c("Ascending", "Descending"),
-                                             selected = "Ascending",
-                                             width="50%")),
-                       gt_output("ranking.table"), offset = 2))
-    )
-  ),
-  
-  
-  server = function(input, output) {
-    output$main_title <- renderUI({
-      state_name <- input$state_name
-      state_initial <- state.abr[state.abr$name == state_name, "abr"]
-      tagList(
-        tags$h1(paste0(state_name, " Overview")),
-        tags$h2(tags$a(paste0("State rank: ", ranking[ranking$State == state_initial, "rank"]), tags$sup("*"), href = "#ranking", style="color:black;"))
-      )
-    })
-    
-    output$state.CoT.title <- renderUI({
-      state_name <- input$state_name
-      tags$h3(paste0(state_name, " COVID-19 Cases Over Time per 100k"))
-    })
-    
-    output$state.DoT.title <- renderUI({
-      state_name <- input$state_name
-      tags$h3(paste0(state_name, " COVID-19 Deaths Over Time per 100k"))
-    })
-    
-    output$state.trends.title <- renderUI({
-      state_name <- input$state_name
-      tags$h3(paste0(state_name, " ", get_y_label("diff"), " over time (7 day average)"))
-    })
-    
-    output$state.county.cases <- renderUI({
-      state_name <- input$state_name
-      tags$h3(paste0(state_name, " COVID-19 Case disparities compared to US Average"))
-    })
-    
-    output$state.county.deaths <- renderUI({
-      state_name <- input$state_name
-      tags$h3(paste0(state_name, " COVID-19 Mortality disparities compared to US Average"))
-    })
-    
-    output$determinant.title <- renderUI({
-      state_name <- input$state_name
-      det <- input$determinant
-      tags$h3(paste0(state_name, " ", det, " Rate Disparities Compared to the national average"))
-    })
-    
-    output$determinant.text <- renderText({
-      det <- input$determinant
-      paste0("Nationwide, ",det," has been observed as a leading comorbidity of COVID-19.")
-    })
-    
-    output$state.report <- render_gt({
-      state_name <- input$state_name
-      state_initial <- state.abr[state.abr$name == state_name, "abr"]
-      stats.table(state_initial)
-      })
-    
-    output$map.cases <- renderLeaflet({
-      state_name <- input$state_name
-      state_initial <- state.abr[state.abr$name == state_name, "abr"]
-      geo.plot(state_initial, "Case")
-      })
-    
-    output$map.deaths <- renderLeaflet({
-      state_name <- input$state_name
-      state_initial <- state.abr[state.abr$name == state_name, "abr"]
-      geo.plot(state_initial, "Mortality")
-      })
-    
-    output$maps.determinant <- renderLeaflet({
-      state_name <- input$state_name
-      det <- input$determinant
-      state_initial <- state.abr[state.abr$name == state_name, "abr"]
-      geo.plot(state_initial, det)
-    })
-    
-    output$state.CoT <- renderPlot({
-      state_name <- input$state_name
-      state_initial <- state.abr[state.abr$name == state_name, "abr"]
-      ggbar.overall(state_initial, y.value = "p_cases", remove.title = T)
-    })
-    
-    output$state.DoT <- renderPlot({
-      state_name <- input$state_name
-      state_initial <- state.abr[state.abr$name == state_name, "abr"]
-      ggbar.overall(state_initial, y.value = "p_deaths", remove.title = T)
-    })
-    
-    output$state.trends <- renderPlot({
-      state_name <- input$state_name
-      state_initial <- state.abr[state.abr$name == state_name, "abr"]
-      n_case_cut <- 500
-      if (state_initial %in% c("MT", "WV", "AK", "HI", "SD", "WY")) {
-        n_case_cut <- 100
-      }
-      ggplot.state(state_initial, y.value = "diff", case.cut = n_case_cut,remove.title = T)
-    })
-    
-    output$ranking.table <- render_gt({
-    entries <- input$entries
-    if ("Ascending" %in% input$rank.order) {
-      order <- function(x){x}
-    }
-    if ("Descending" %in% input$rank.order) {
-      order <- dplyr::desc
-    }
-    gt.ranking(as.numeric(entries), order)
-  })
-  }
+  #,
+  #tabPanel(...),
+  #navbarMenu(tabPanel(...), tabPanel(...)),
+  #tabPanel(...)
 )
 ```
 
+```{r}
+server <- function(input, output) {
+  output$ny_output <- renderPlot({
+    ggplot.state(selected.state = "NY", 
+                 y.value = "p_diff", 
+                 moving.avg.window = 14, 
+                 counties = c("Rensselaer", "New York City", "Albany", "Nassau", "Erie"),
+                 remove.title = T)
+  })
+}
+```
 
+```{r}
+shinyApp(ui = ui, server = server)
+```
 
 
