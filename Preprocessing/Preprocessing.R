@@ -205,16 +205,15 @@ state_test$date_since_reclosure[state_test$date_since_reclosure < 0] = 0
 state_test$date_since_mask = as.numeric(as.Date(strptime(date_of_study, "%m-%d-%Y")) - as.Date((strptime(state_test$mask, "%m/%d/%Y"))))
 state_test$date_since_mask[is.na(state_test$date_since_mask)==T] = 0
 state_test$date_since_mask[state_test$date_since_mask < 0] = 0
-state_test <- subset(state_test, select = -c(state, dataQualityGrade, fips, score))
+state_test <- subset(state_test, select = -c(dataQualityGrade, fips, score))
 state_test <- dplyr::rename(state_test, c(state_deaths = death))
 
-state_test_names <- data.frame(column = names(state_test)[2:34])
+state_test_names <- data.frame(column = names(state_test)[1:35])
 state_test_names$source <- "state_test"
-state_test_names <- state_test_names[-c(25), ]
+state_test_names <- state_test_names[-c(27), ]
 column_names <- rbind(column_names, state_test_names)
 
 aggregate_chr_policy = merge(chr,state_test,by="State")
-aggregate_chr_policy = subset(aggregate_chr_policy, select = -c(State))
 
 aggregate_pm_temp_covid_census_mortality_chr_policy = merge(aggregate_pm_temp_covid_census_mortality, aggregate_chr_policy, by.x = "fips", by.y = "FIPS")
 
