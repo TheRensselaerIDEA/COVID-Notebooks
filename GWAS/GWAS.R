@@ -16,11 +16,10 @@ mort.avg.cluster.raw <- data %>%
                           dplyr::right_join(mort.cluster.raw, by = "fips") %>%
                           dplyr::group_by(cluster) %>%
                           dplyr::summarise(
-                            death_rate = sum(Deaths) / sum(population) * 10^5,
+                            death_rate = sum(Deaths) / sum(Population) * 10^5,
                             count = n()
                           ) %>% 
                           dplyr::ungroup()
-
 
 mort.cluster.map <- mort.avg.cluster.raw %>% 
                       dplyr::arrange(death_rate) %>% 
@@ -60,7 +59,7 @@ selected_SDs <- selected_SDs %>%
   dplyr::filter(Corrected_P_Vals < 0.05) %>% 
   dplyr::arrange(desc(kendall_cor))
 
-saveRDS(selected_SDs, "./GWAS/selected_SDs.Rds")
+saveRDS(selected_SDs, "./GWAS/selected_SDs_1.Rds")
 
 #Printing out the few selected factors for deaths of despair.
 print(selected_SDs)

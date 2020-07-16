@@ -26,6 +26,7 @@ interested_var  <- as.name(interested_var)
 sampledata<-readRDS('Preprocessing_FTS_Outputs/05-03-2020data.Rds')
 
 
+# `% Hispanic` `% Black` `% Asian` `% Non-Hispanic White` `% Native Hawaiian/Other Pacific Islander` `Median Household Income` 
 
 if (strcmp(sapply(sampledata[[interested_var]], typeof)[1], "character")) {
     In.loop.model=glmer.nb(Deaths ~ scale(hispanic) + scale(pct_blk) + scale(pct_asian) + scale(pct_white) + scale(pct_native)
