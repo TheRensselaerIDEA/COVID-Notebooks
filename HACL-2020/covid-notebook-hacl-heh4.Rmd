@@ -1,11 +1,9 @@
 ---
-title: "COVIDMINDER Example Notebook hacl-heh4-2 assignment 2 demo notebook"
+title: "COVIDMINDER Example Notebook"
+subtitle: "DAR/HACL Assignment 2 (Summer 2020)"
 author: "Haowen He"
-date: "07/15/2020"
-output:
-  html_document: default
-  pdf_document: default
-subtitle: DAR/HACL Assignment 2 (Summer 2020)
+date: "07/13/2020"
+output: html_document
 ---
 
 
@@ -15,23 +13,18 @@ local({r <- getOption("repos")
        r["CRAN"] <- "http://cran.r-project.org" 
        options(repos=r)
 })
-
 knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_knit$set(root.dir = "../")
 ```
 
 ```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
 #### Library and Data Imports ####
-
 ## Load essential R packages
 source("modules/Source.R")
-
 ## Load stored data (see `data` subdirectory)
 source("modules/data_load.R")
-
 ## Create dataframes; perform desparity index calcuations; prep for plotting
 source("modules/preprocessing.R")
-
 ```
 
 ## INTRODUCTION
@@ -128,7 +121,6 @@ Please also see this handy github "cheatsheet": https://education.github.com/git
 
 ```{r echo = F, results = 'hide',  warning=FALSE, message=FALSE}
 ### Text used for captions and explanations
-
 ldi_explanation_text <- "<h4><b>EXPLANATION OF VISUALIZATIONS:</b></h4> The goal of these visualizations is to examine 
 nationwide disparities in COVID-19 factors having to do with risks, mediations (e.g. testing, hospital beds), 
 and outcomes (e.g. deaths, cases). A common measure, the <i>disparity index</i> is used to represent the 
@@ -144,9 +136,7 @@ we're comparing against (e.g. South Korea's testing or Italy's hospital beds).</
 </ul>
 </p>
 <p>&nbsp;</p>"
-
 rpi_accessibility_link <- "<div class='center'><p><a href='https://info.rpi.edu/statement-of-accessibility'>Rensselaer Statement of Accessibility</a></p></div>"
-
 ### OUTCOMES: COVID-19 Mortality Rates (USA)
 us_mortality_rates_text <- "<h4><b>How do COVID-19 mortality rates compare across the United States?</b></h4>
 <i>This map compares the COVID-19 mortality rates of individual states with the US rate.
@@ -154,18 +144,14 @@ This map is updated daily.</i><br><br>
 Here, <span style='color:#b2182b'><b>shades of red</b></span> indicate that a 
 state's COVID-19 mortality rate is higher than the US rate<br><br> 
 Data source: <a href='https://bit.ly/3dMWRP6'>JHU daily reports</a> (04-07-2020)"
-
 ### MEDIATION: COVID-19 Testing (USA)
-
 us_testing_rates_text <- "<h4><b>How do COVID-19 testing rates across the US compare with South Korea?</b></h4>
 <i>This map compares rates of COVID-19 tssting in US states vs South Korea's testing rate. 
 This map is updated daily.</i><br><br>
 Here, <span style='color:#b2182b'><b>shades of red</b></span> indicate that a 
 state's testing rate is lower than the South Korean rate<br><br>
 Data source: <a href='https://covidtracking.com/api'>The COVID Tracking Project daily reports</a> (04-07-2020)"
-
 ### MEDIATION: Hospital Beds (USA)
-
 us_hospital_beds_text <- "<h4><b>How does the availability of hospital beds across the United States compare with Italy?</b></h4>
 <i>This map compares the availability of hospital beds in US states vs the rate in Italy (3.2 beds/1000). 
 This map uses recent historical figures and does not reflect 'surge' capacity.</i><br><br>
@@ -173,9 +159,7 @@ Here, <span style='color:#b2182b'><b>shades of red</b></span> indicate that a
 state's hospital bed availablity is lower than the rate in <b>Italy</b><br/><br>
 Data sources: <br/><a href='https://data.oecd.org/healtheqt/hospital-beds.htm'> Organisation for Economic Co-operation and Development</a>
 and <a href='https://bit.ly/2V0CYLU'>Kaiser Family Foundation</a>"
-
 ### DETERMINANT: Cardiovascular Diseases (USA)
-
 us_cardio_deaths_rates_text <- "<h4><b>How do cardiovascular mortality rates across the US compare with the national average?</b></h4>
 <i>The map compares individual state mortality rates related to cardiovascular diseases (per 100k)
 with the US rate. In recent literature, COVID-19 risk has been
@@ -185,7 +169,6 @@ Here, <span style='color:#b2182b'><b>shades of red</b></span> indicate that a
 state's mortality rate from total cardiovascular diseases is 
 <b>higher</b> than the US rate<br/><br>
 Data source: <br/><a href='https://bit.ly/2V1Zl3I'>CDC (2017)</a>"
-
 us_diabetes_text <- "<div style='font-weight:bold;line-height:1.3;'>
 Determinant: What are the disparities between states in rate of diabetes patients 
 per 100k population per state when compared to the average United States rate? </div><br>
@@ -222,33 +205,26 @@ The  rate of diabetes patients per 100k in a county  is<br>
 <b>DATA SOURCE:</b> <a href='https://bit.ly/34mYLBP'>County Health Rankings</a> and 
 <a href='https://bit.ly/2V1Zl3I'>CDC</a><br>
 </div>"
-
 ### OUTCOME: COVID-19 mortality rates (NY)
-
 NY_mortality_rates_text <- "<h4><b>How do COVID-19 mortality rates compare across New York State?</b></h4>
 <i>This map compares the COVID-19 mortality rates of NY counties with the NY average. 
 This map is updated daily. </i><br><br>
 Here, <span style='color:#b2182b'><b>shades of red</b></span> indicate that a 
 county's COVID-19 mortality rate is higher than the NY rate.<br>
 Data source: <a href='https://bit.ly/3dMWRP6'>JHU daily reports</a> (04-06-2020)"
-
 ### OUTCOME: COVID-19 Cases (NY)
-
 NY_covid_cases_text <- "<h4><b>How do COVID-19 cases compare across New York State?</b></h4>
 <i>This map compares the COVID-19 cases for NY counties with the NY average. 
 This map is updated daily. </i><br><br>
 Here, <span style='color:#b2182b'><b>shades of red</b></span> indicate that a 
 county's COVID-19 case count is higher than the NY rate.<br>
 Data source: <a href='https://bit.ly/3dMWRP6'>JHU daily reports</a> (04-06-2020)"
-
 ### OUTCOME: COVID-19 Cases Time Series (NY)
-
 NY_covid_cases_TS_text <- "<h4><b>How have COVID-19 cases increased across New York State?</b></h4>
 <i>This plot shows the growth of COVID-19 cases across NY counties since early 2020. 
 This data is updated daily. </i><br><br>
 Mouse over the plot to identify individual counties.<br>
 Data source: <a href='https://bit.ly/3dMWRP6'>JHU daily reports</a> (04-06-2020)"
-
 ```
 
 `r ldi_explanation_text`
@@ -361,7 +337,6 @@ Data source: <a href='https://bit.ly/3dMWRP6'>JHU daily reports</a> (04-06-2020)
   `r us_cardio_deaths_rates_text` 
 
 ```{r echo = F}
-
 # UPDATED: 28 April 2020
     colors <- c("#253494","#4575B4", "#74ADD1","#ABD9E9","#f7f7f7","#FDAE61","#F46D43", "#D73027", "#BD0026")
     bins <- c(5, 3, 2, 1, .2, -.2, -1, -2, -3, -5)
@@ -407,13 +382,11 @@ Data source: <a href='https://bit.ly/3dMWRP6'>JHU daily reports</a> (04-06-2020)
       addProviderTiles("MapBox", options = providerTileOptions(
         id = "mapbox.light"))
     #Remove personal API key
-
 ```
 
   `r us_hospital_beds_text` 
 
 ```{r echo = F}
-
 # UPDATED: 28 Apr 2020
     colors <- c("#253494","#4575B4", "#74ADD1","#ABD9E9","#f7f7f7","#FDAE61","#F46D43", "#D73027", "#BD0026")
     bins <- c(5, 3, 2, 1, .2, -.2, -1, -2, -3, -5)
@@ -459,7 +432,6 @@ Data source: <a href='https://bit.ly/3dMWRP6'>JHU daily reports</a> (04-06-2020)
                 ) %>%
       addProviderTiles("MapBox", options = providerTileOptions(
         id = "mapbox.light"))
-
     
 ```
 
@@ -467,7 +439,6 @@ Data source: <a href='https://bit.ly/3dMWRP6'>JHU daily reports</a> (04-06-2020)
 `r NY_covid_cases_TS_text` 
 
 ```{r echo=F}
-
     # selected.region <- input$NYRegion
     selected.region <- "All Regions"
     # select.size <- 2
@@ -572,8 +543,6 @@ Data source: <a href='https://bit.ly/3dMWRP6'>JHU daily reports</a> (04-06-2020)
                             values = c(2), 
                             guide = guide_legend(override.aes = list(color = c("black")))) +
       NULL
-
-
 ```
 
 ## Accessing RStudio Server on the IDEA Cluster
