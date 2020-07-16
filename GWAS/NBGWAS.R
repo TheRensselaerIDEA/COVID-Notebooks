@@ -4,12 +4,26 @@
 setwd("/data/Social_Determinants")
 
 ###dependencies
-
+library("MASS")
+library("lme4")
+library("glmmTMB")
+library("gamm4")
+library('caret')
+library('blmeco')
+library(pROC)
+library(VineCopula)
+library("PerformanceAnalytics")
+library(glmmTMB)
+library(ggplot2)
+library(cvms)
+library(sgof)
+library(tidyverse)
+library(kableExtra)
 library(cvms)
 library(pracma)
 
 
-source("Modules/Source.R")
+#source("Modules/Source.R")
 source("GWAS/helper.R")
 
  ## Get variable in the loop
@@ -23,7 +37,15 @@ interested_var  <- as.name(interested_var)
 
   ###Data
   
-sampledata<-readRDS('Preprocessing_FTS_Outputs/05-03-2020data.Rds')
+sampledata<-readRDS('Preprocessing_FTS_Outputs/07-12-2020data.Rds')
+
+#for (name in colnames(sampledata)) {
+#  s <- paste("\"",name, "\" ", sep = "")
+#  cat(s)
+#}
+
+print (interested_var)
+
 
 
 # `% Hispanic` `% Black` `% Asian` `% Non-Hispanic White` `% Native Hawaiian/Other Pacific Islander` `Median Household Income` 
@@ -53,9 +75,9 @@ GWAS_P <- readRDS("GWAS/GWAS_P.rds")
 GWAS_ADJ_P <- readRDS("GWAS/GWAS_ADJ_P.rds")
 
 
-GWAS_MRR.interested_var   <-summary(In.loop.model)[10]$coefficients[2:13,1]
-GWAS_P.interested_var     <-summary(In.loop.model)[10]$coefficients[2:13,4]
-GWAS_ADJ_P.interested_var <-p.adjust(summary(In.loop.model)[10]$coefficients[2:13,4], 
+GWAS_MRR[[interested_var]]   <-summary(In.loop.model)[10]$coefficients[2:13,1]
+GWAS_P[[interested_var]]     <-summary(In.loop.model)[10]$coefficients[2:13,4]
+GWAS_ADJ_P[[interested_var]] <-p.adjust(summary(In.loop.model)[10]$coefficients[2:13,4], 
                                      method = 'BH', 
                                      n = length(summary(In.loop.model)[10]$coefficients[2:13,4]))
 
