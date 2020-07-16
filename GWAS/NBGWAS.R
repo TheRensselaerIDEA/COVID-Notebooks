@@ -52,9 +52,9 @@ GWAS_P <- readRDS("GWAS/GWAS_P.rds")
 GWAS_ADJ_P <- readRDS("GWAS/GWAS_ADJ_P.rds")
 
 
-GWAS_MRR.interested_var   <-summary(In.loop.model)[10]$coefficients[2:13,1]
-GWAS_P.interested_var     <-summary(In.loop.model)[10]$coefficients[2:13,4]
-GWAS_ADJ_P.interested_var <-p.adjust(summary(In.loop.model)[10]$coefficients[2:13,4], 
+GWAS_MRR[[interested_var]]   <-summary(In.loop.model)[10]$coefficients[2:13,1]
+GWAS_P[[interested_var]]     <-summary(In.loop.model)[10]$coefficients[2:13,4]
+GWAS_ADJ_P[[interested_var]] <-p.adjust(summary(In.loop.model)[10]$coefficients[2:13,4], 
                                      method = 'BH', 
                                      n = length(summary(In.loop.model)[10]$coefficients[2:13,4]))
 
