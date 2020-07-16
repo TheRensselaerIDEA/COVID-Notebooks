@@ -1,4 +1,5 @@
-#' Leaflet output for COVIDMINDER
+#'  @title Leaflet output for COVIDMINDER
+#'  @author Jose Figueroa
 #' 
 #'  This script assumes todats.case.data has already been imported by parent script.
 #'  @usage get_ldi
@@ -33,32 +34,52 @@ get_zoom <- function(state.choice) {
   }
 }
 
-geo.plot <- function(state.choice, feature, reverse=F) {
+get_colorbar <- function(reverse) {
+  if (reverse) {
+    .colors <- rev(colors)
+  }
+  else {
+    .colors <- colors
+  }
+  
+  .colors <- lapply(.colors, function(x){paste0("<li class = 'legend-colorsquares' style='background-color: ",x,";'></li>")})
+  return(paste0(.colors, collapse = ''))
+}
+
+geo.plot <- function(state.choice, 
+                     feature, 
+                     reverse=F,
+                     title = "") {
   # Feature: Case, Mortality...
+  # US Data: ....
   ldi_feature <- get_ldi(feature)
-  
-  dataset <- todays.case.data %>%
-    filter(State == state.choice)
-  shapes <- readRDS(paste("data/shape_files/", state.choice, ".Rds", sep = ""))
-  shapes$countyFIPS <- as.numeric(paste(as.data.frame(shapes)$STATEFP, as.data.frame(shapes)$COUNTYFP, sep = ''))
-  
-  dataset <- dplyr::left_join(as.data.frame(shapes), as.data.frame(dataset), by = c("countyFIPS" = "countyFIPS"))
+  if (state.choice == "US") {
+    shapes <- states.shapes 
+    dataset <- states
+    dataset$Name <- dataset$NAME
+    state.choice <- "State"
+  }
+  else {
+    dataset <- todays.case.data %>%
+      filter(State == state.choice)
+    shapes <- readRDS(paste("data/shape_files/", state.choice, ".Rds", sep = ""))
+    shapes$countyFIPS <- as.numeric(paste(as.data.frame(shapes)$STATEFP, as.data.frame(shapes)$COUNTYFP, sep = ''))
+    dataset <- dplyr::left_join(as.data.frame(shapes), as.data.frame(dataset), by = c("countyFIPS" = "countyFIPS")) 
+    dataset$Name <- dataset$County
+    m.a.w <- ""
+  }
   
   pal2 <- leaflet::colorBin(colors, domain = dataset[,ldi_feature[1]], bins = bins, reverse=reverse)
   
   labels <- sprintf(
-    paste0("<strong>%s</strong><br/>
-    COVID-19 ",feature," Rate DI: %.2g<br>
-    COVID-19 ",feature," Rate: %.1f /100k"),
-    dataset$County, dataset[,ldi_feature[1]], (dataset[,ldi_feature[2]])*100000
+    paste0("<strong>%s</strong><br/>",
+    feature," Rate DI: %.2g<br>",
+    feature," Rate: %.1f /100k"),
+    dataset$Name, dataset[,ldi_feature[1]], (dataset[,ldi_feature[2]])*100000
   ) %>% lapply(htmltools::HTML)
-  lat <- state.abr[state.abr$abr == state.choice, "lat"]
-  lon <- state.abr[state.abr$abr == state.choice, "lon"]
   
-  zoom <- get_zoom(state.choice)
   
-  return (leaflet(shapes) %>%
-            setView(lon, lat, zoom) %>%
+  l <- leaflet(shapes) %>%
             addPolygons(
               fillColor = ~pal2(dataset[,ldi_feature[1]]),
               weight = 1,
@@ -77,20 +98,41 @@ geo.plot <- function(state.choice, feature, reverse=F) {
                 style = list("font-weight" = "normal", padding = "3px 8px"),
                 textsize = "15px",
                 direction = "auto")) %>% 
-            addLegend(pal = pal2, 
-                      values = ~dataset[ldi_feature[1]], 
-                      opacity = 0.7, 
-                      title = paste0("Disparity Index<br/>",state.choice," COVID-19 ",feature," Rates"),
-                      position = "bottomright",
-                      labFormat = function(type, cuts, p) { n = length(cuts) 
-                      cuts[n] = paste0(cuts[n]," lower") 
-                      # for (i in c(1,seq(3,(n-1)))){cuts[i] = paste0(cuts[i],"—")} 
-                      for (i in c(1,seq(2,(n-1)))){cuts[i] = paste0(cuts[i]," — ")} 
-                      cuts[2] = paste0(cuts[2]," higher") 
-                      paste0(str_remove(cuts[-n],"higher"), str_remove(cuts[-1],"—"))
-                      }
+            addControl(
+              HTML(paste0(
+                "<div style='max-width:280px;'>
+                  <b>",state.choice," ", feature, " Rates vs. US Average</b>
+                  <sup title='A log disparity index is used to compare respective values to average US rate. A disparity index < -0.2 indicates values below the US average. A disparity index > 0.2 indicates above the US average.' class='fa fa-info-circle'></sup>
+                </div></br>",
+                "<div class='labels'>
+                  <div style='float:left;'>Lower</div>
+                  <div style='float:right;'>Higher</div>
+                </div>
+                <ul class='legend-colorbar'>",
+                  get_colorbar(reverse),
+                "</ul>"
+              )),
+              position = "bottomright",
+              className = "info legend"
             ) %>%
+            # addLegend(pal = pal2,
+            #           values = ~dataset[ldi_feature[1]],
+            #           opacity = 0.7,
+            #           title = paste0("Disparity Index<br/>",state.choice," ",feature," Rates"),
+            #           position = "bottomright",
+            #           labFormat = function(type, cuts, p) { n = length(cuts)
+            #           cuts[n] = "Lower"
+            #           # for (i in c(1,seq(3,(n-1)))){cuts[i] = paste0(cuts[i],"—")}
+            #           for (i in c(1,seq(2,(n-1)))){cuts[i] = ""}
+            #           cuts[2] = "Higher"
+            #           paste0(str_remove(cuts[-n],"Higher"), str_remove(cuts[-1],"—"))
+            #           }
+            # ) %>%
             addProviderTiles("MapBox", options = providerTileOptions(
               id = "mapbox.light"))
-  )
+  if (title != "") {
+    l <- l %>%
+      addControl(title, position = "topleft", className = "leaflet-map-title")
+  }
+  return(l)
 }

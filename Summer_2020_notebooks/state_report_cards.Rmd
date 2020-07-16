@@ -15,15 +15,12 @@ knitr::opts_knit$set(root.dir = "../")
 ```{r imports, echo = F, results = 'hide',  warning=FALSE, message=FALSE}
 ## Load essential R packages
 source("modules/Source.R")
-
-## Load stored data (see `data` subdirectory)
 source("modules/data_load.R")
-
-## Create dataframes; perform desparity index calcuations; prep for plotting
 source("modules/preprocessing.R")
-
-library(gt)
-
+source("modules/ggplot_gen.R")
+source("modules/leaflet_gen.R")
+source("modules/gt_gen.R")
+sourceDir("modules/shiny/R")
 ```
 
 ```{r map colors}

@@ -43,23 +43,28 @@ p {
   padding-bottom: 6.9px;
 }
 
+
 .navbar-default .navbar-nav .active a {
   font-weight: 400;
-  background-color: #fff;
   color: #222;
   padding: 13px 10px;
 }
 
 .navbar-default .navbar-nav li a {
   font-weight: 400;
-  background-color: #fff;
+  /*background-color: #fff;*/
   color: #222;
   padding: 13px 10px;
 }
 
-.navbar-default .navbar-nav li a:hover {
-  background-color: #e7e7e7;
+
+.navbar-nav > .active > a,
+.navbar-nav > .active > a:hover,
+.navbar-nav > .active > a:focus {
+  color: black;
+  background-color: #ff8888;
 }
+
 
 /* Page styles */
 
@@ -109,9 +114,6 @@ p {
   padding:-5px;
 }
 
-.leaflet-container {
-  height:100%;
-}
 
 .gg_tooltip {
     background-color: #f7f7f7;
@@ -119,6 +121,7 @@ p {
     padding: 0 10px;
     margin: 10px 0;
     line-height: 1.5em;
+    min-width: 15vw;
 }
 
 .footer {
@@ -148,6 +151,16 @@ p {
     transform: translateX(-50%);
 }
 
+.leaflet-control.leaflet-map-title { 
+    transform: translate(-50%,20%);
+    position: fixed !important;
+    left: 50%;
+    text-align: center;
+    padding-left: 10px; 
+    padding-right: 10px; 
+    background: rgba(255,255,255,0.75);
+  }
+
 .NY_case_plots {
   height: Calc(90% - 65px);
 }
@@ -167,6 +180,19 @@ p {
 
 .leaflet-container {
   background:none;
+  height:100%;
+}
+
+.legend-colorbar {
+  list-style-type:none;
+  display:flex;
+  clear:both;
+  padding:0;
+}
+
+.legend-colorsquares {
+  height:20px;
+  width:31px;
 }
 
 .dropdown-toggle > div:first-child {
@@ -182,13 +208,13 @@ p {
 }
 
 .selectize-control.single .selectize-input {
-    width: 250px;
+    width: 100%;
     max-height: 50px;
 }
+
 .shiny-input-container:not(.shiny-input-container-inline) {
     width: 250px;
 }
-
 
 .tab-content {
     min-height:75vh;
