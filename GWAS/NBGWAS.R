@@ -44,30 +44,39 @@ sampledata<-readRDS('Preprocessing_FTS_Outputs/07-12-2020data.Rds')
 #  cat(s)
 #}
 
-print (interested_var)
+#print (interested_var)
+# For now: hand select the interested_var before runnign parallelization script
+interested_var = "young_pecent"
 
+sub_sampledata <- subset(sampledata, select = c ("Deaths","% Hispanic", "% Black", "% Asian", "% Non-Hispanic White", "% American Indian & Alaska Native", "q_popdensity", "Median Household Income", 
+                                                 "education", "beds", "population", "date_since", "date_since_mask", "State", `interested_var`))
 
+colnames(sub_sampledata)[ncol(sub_sampledata)] = "iterested_var"
 
-# `% Hispanic` `% Black` `% Asian` `% Non-Hispanic White` `% Native Hawaiian/Other Pacific Islander` `Median Household Income` 
+# Debugging printouts:
+#head(sub_sampledata)
+#sapply(sub_sampledata, typeof)
+#unname(sapply(sub_sampledata, typeof)[ncol(sub_sampledata)])
+#strcmp(unname(sapply(sub_sampledata, typeof)[ncol(sub_sampledata)]), "character")
 
-if (strcmp(sapply(sampledata[[interested_var]], typeof)[1], "character")) {
-    In.loop.model=glmer.nb(Deaths ~ scale(hispanic) + scale(pct_blk) + scale(pct_asian) + scale(pct_white) + scale(pct_native)
+if (strcmp(unname(sapply(sub_sampledata, typeof)[ncol(sub_sampledata)]), "character")) {
+    In.loop.model=glmer.nb(Deaths ~ scale(`% Hispanic`) + scale(`% Black`) + scale(`% Asian`) + scale(`% Non-Hispanic White`) + scale(`% American Indian & Alaska Native`)
                        + factor(q_popdensity)
-                       + scale(log(medhouseholdincome))+scale(education) + scale(beds/population)
+                       + scale(log(`Median Household Income`))+scale(education) + scale(beds/population)
                        + scale(date_since) 
                        + scale(date_since_mask)
-                       + factor([[interested_var]])
-                       + (1|state)
-                       + offset(log(population)), data = sampledata)
+                       + factor(interested_var)
+                       + (1|State)
+                       + offset(log(population)), data = sub_sampledata)
 } else {
-  In.loop.model=glmer.nb(Deaths ~ scale(hispanic) + scale(pct_blk) + scale(pct_asian) + scale(pct_white) + scale(pct_native)
-                         + factor(q_popdensity)
-                         + scale(log(medhouseholdincome))+scale(education) + scale(beds/population)
-                         + scale(date_since) 
-                         + scale(date_since_mask)
-                         + scale([[interested_var]])
-                         + (1|state)
-                         + offset(log(population)), data = sampledata)
+    In.loop.model=glmer.nb(Deaths ~ scale(`% Hispanic`) + scale(`% Black`) + scale(`% Asian`) + scale(`% Non-Hispanic White`) + scale(`% American Indian & Alaska Native`)
+                       + factor(q_popdensity)
+                       + scale(log(`Median Household Income`))+scale(education) + scale(beds/population)
+                       + scale(date_since) 
+                       + scale(date_since_mask)
+                       + scale(interested_var)
+                       + (1|State)
+                       + offset(log(population)), data = sub_sampledata)
 }
 
 GWAS_MRR <- readRDS("GWAS/GWAS_MRR.rds")
