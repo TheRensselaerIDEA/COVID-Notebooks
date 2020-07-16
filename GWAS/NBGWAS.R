@@ -50,7 +50,7 @@ for ( i in x) {
 
 #print (interested_var)
 # For now: hand select the interested_var before runnign parallelization script
-interested_var = "young_pecent"
+#interested_var = "young_pecent"
 
 sub_sampledata <- subset(sampledata, select = c ("Deaths","% Hispanic", "% Black", "% Asian", "% Non-Hispanic White", "% American Indian & Alaska Native", "q_popdensity", "Median Household Income", 
                                                  "education", "beds", "population", "date_since", "date_since_mask", "State", `interested_var`))
