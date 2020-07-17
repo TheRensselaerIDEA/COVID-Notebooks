@@ -75,7 +75,7 @@ county_census <- read.csv(text=getURL("https://raw.githubusercontent.com/wxwx199
 county_census <- subset(county_census, select = -c(X))
 
 county_census_aggregated = subset(county_census, year==2016)
-county_census_aggregated <- county_census_aggregated[,c(1,3,4,5,8,10,11)]
+county_census_aggregated <- county_census_aggregated[,c(1,3,4,5,8,10,11,6,9,12,13,14)]
 
 county_census_aggregated$q_popdensity = 1
 quantile_popdensity = quantile(county_census_aggregated$popdensity,c(0.2,0.4,0.6,0.8))
@@ -90,7 +90,7 @@ county_census_aggregated$q_popdensity[county_census_aggregated$popdensity>quanti
 
 county_census_aggregated$fips = str_pad(county_census_aggregated$fips, 5, pad = "0")
 
-county_census_aggregated_names <- data.frame(column = names(county_census_aggregated)[2:8])
+county_census_aggregated_names <- data.frame(column = names(county_census_aggregated)[2:13])
 county_census_aggregated_names$source <- "county_census_aggregated"
 column_names <- rbind(column_names, county_census_aggregated_names)
 

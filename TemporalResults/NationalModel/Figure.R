@@ -1,0 +1,48 @@
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = "./")
+
+source("./Modules/Source.R")
+
+## Unfiltered MRR
+
+data <- readRDS("./TemporalResults/NationalModel/ALL_C.rds")
+
+data <- melt(data)
+data <- dplyr::rename(data, c(date = variable))
+
+ggplot(data, aes(x=date, y=value, group=coefficients, color=coefficients)) +
+  geom_line() +
+  geom_point()
+
+## Filtered MRR
+
+data <- readRDS("./TemporalResults/NationalModel/ALL_C_sig.rds")
+
+data <- melt(data)
+data <- dplyr::rename(data, c(date = variable))
+
+ggplot(data, aes(x=date, y=value, group=coefficients, color=coefficients)) +
+  geom_line() +
+  geom_point()
+
+## Unfiltered p-value
+
+data <- readRDS("./TemporalResults/NationalModel/ALL_P.rds")
+
+data <- melt(data)
+data <- dplyr::rename(data, c(date = variable))
+
+ggplot(data, aes(x=date, y=value, group=coefficients, color=coefficients)) +
+  geom_line() +
+  geom_point()
+
+## Filtered p-value
+
+data <- readRDS("./TemporalResults/NationalModel/ALL_P_sig.rds")
+
+data <- melt(data)
+data <- dplyr::rename(data, c(date = variable))
+
+ggplot(data, aes(x=date, y=value, group=coefficients, color=coefficients)) +
+  geom_line() +
+  geom_point()
