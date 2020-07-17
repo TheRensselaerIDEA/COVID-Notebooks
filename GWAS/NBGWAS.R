@@ -34,11 +34,9 @@ for (i in interested_var_s) {
     interested_var <- paste(interested_var, i, sep = " ")
   }
 }
-#cat(interested_var)
+interested_var <- str_remove_all(interested_var, "[\\\\]")
+cat(interested_var)
 
-#interested_var  <- as.name(interested_var)
-
-  ###Data
   
 sampledata<-readRDS('Preprocessing_FTS_Outputs/07-12-2020data.Rds')
 
@@ -51,25 +49,19 @@ sampledata<-readRDS('Preprocessing_FTS_Outputs/07-12-2020data.Rds')
 #  cat(s)
 #}
 
-#print (interested_var)
-# For now: hand select the interested_var before runnign parallelization script
-#interested_var = "young_pecent"
 
-cat(interested_var)
-#interested_var = "% Fair or Poor Health"
+
+s = paste("INTERESTED VAR = " , interested_var, "\n", sep = "")
+cat(s)
+
 sub_sampledata <- subset(sampledata, select = c ("Deaths","% Hispanic", "% Black", "% Asian", "% Non-Hispanic White", "% American Indian & Alaska Native", "q_popdensity", "Median Household Income", 
                                                  "education", "beds", "population", "date_since", "date_since_mask", "State", interested_var))
 
 colnames(sub_sampledata)[ncol(sub_sampledata)] = "i_var"
 
-# Debugging printouts:
-# head(sub_sampledata)
-# sapply(sub_sampledata, typeof)
-# unname(sapply(sub_sampledata, typeof)[ncol(sub_sampledata)])
-# strcmp(unname(sapply(sub_sampledata, typeof)[ncol(sub_sampledata)]), "character")
 
 if (strcmp(unname(sapply(sub_sampledata, typeof)[ncol(sub_sampledata)]), "character")) {
-    s = paste("staring model with : ", interested_var, "\n", sep="")
+    s = paste("starting model with : ", interested_var, "\n", sep="")
     cat(s)
     In.loop.model=glmer.nb(Deaths ~ scale(`% Hispanic`) + scale(`% Black`) + scale(`% Asian`) + scale(`% Non-Hispanic White`) + scale(`% American Indian & Alaska Native`)
                        + factor(q_popdensity)
@@ -80,7 +72,7 @@ if (strcmp(unname(sapply(sub_sampledata, typeof)[ncol(sub_sampledata)]), "charac
                        + (1|State)
                        + offset(log(population)), data = sub_sampledata)
 } else {
-  s = paste("staring model with : ", interested_var, "\n", sep="")
+  s = paste("starting model with : ", interested_var, "\n", sep="")
   cat(s)
     In.loop.model=glmer.nb(Deaths ~ scale(`% Hispanic`) + scale(`% Black`) + scale(`% Asian`) + scale(`% Non-Hispanic White`) + scale(`% American Indian & Alaska Native`)
                        + factor(q_popdensity)
@@ -98,8 +90,6 @@ GWAS_P <- readRDS("GWAS/GWAS_P.rds")
 GWAS_ADJ_P <- readRDS("GWAS/GWAS_ADJ_P.rds")
 
 # Interleaving here between threads could leave some columns out... make sure to check after para. done
-# summary(In.loop.model)[10]$coefficients[2:16,1]
-# summary(In.loop.model)
 
 GWAS_MRR[[interested_var]]   <- summary(In.loop.model)[10]$coefficients[2:16,1]
 GWAS_P[[interested_var]]     <- summary(In.loop.model)[10]$coefficients[2:16,4]
@@ -108,8 +98,8 @@ GWAS_ADJ_P[[interested_var]] <- p.adjust(summary(In.loop.model)[10]$coefficients
                                      method = 'BH', 
                                      n = length(summary(In.loop.model)[10]$coefficients[2:16,4]))
 
-s <- paste("SAVED: ", intersted_var, sep = "")
-print(s)
+
+print("SAVED")
 saveRDS(GWAS_ADJ_P, "GWAS/GWAS_ADJ_P.rds")
 saveRDS(GWAS_P, "GWAS/GWAS_P.rds")
 saveRDS(GWAS_MRR, "GWAS/GWAS_MRR.rds")
