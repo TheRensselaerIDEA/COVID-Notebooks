@@ -43,6 +43,7 @@ sampledata<-readRDS('Preprocessing_FTS_Outputs/07-12-2020data.Rds')
 #for (name in colnames(sampledata)) {
 #x <- c(34,35,43,47,52,53,61,62,68,69,70,76,82,94,95,106,119,120, 131,132,153,160,163,165,167,169,176,182,183, 184, 185, 186, 187, 188,200,208,216,236,238,240,256,288, 289, 
 #       290, 291, 292, 293, 294, 295, 296, 297, 298, 299, 300, 301, 302, 303, 304)
+#print(length(x))
 #for ( i in x) {
 #  name = colnames(sampledata)[i]
 #  s <- paste("\"",name, "\" ", sep = "")
@@ -54,7 +55,7 @@ sampledata<-readRDS('Preprocessing_FTS_Outputs/07-12-2020data.Rds')
 s = paste("INTERESTED VAR = " , interested_var, "\n", sep = "")
 cat(s)
 
-sub_sampledata <- subset(sampledata, select = c ("Deaths","% Hispanic", "% Black", "% Asian", "% Non-Hispanic White", "% American Indian & Alaska Native", "q_popdensity", "Median Household Income", 
+sub_sampledata <- subset(sampledata, select = c ("Deaths","hispanic", "pct_blk", "pct_asian", "pct_white", "pct_native", "q_popdensity", "Median Household Income", 
                                                  "education", "beds", "population", "date_since", "date_since_mask", "State", interested_var))
 
 colnames(sub_sampledata)[ncol(sub_sampledata)] = "i_var"
@@ -63,7 +64,7 @@ colnames(sub_sampledata)[ncol(sub_sampledata)] = "i_var"
 if (strcmp(unname(sapply(sub_sampledata, typeof)[ncol(sub_sampledata)]), "character")) {
     s = paste("starting model with : ", interested_var, "\n", sep="")
     cat(s)
-    In.loop.model=glmer.nb(Deaths ~ scale(`% Hispanic`) + scale(`% Black`) + scale(`% Asian`) + scale(`% Non-Hispanic White`) + scale(`% American Indian & Alaska Native`)
+    In.loop.model=glmer.nb(Deaths ~ scale(hispanic) + scale(pct_blk) + scale(pct_asian) + scale(pct_white) + scale(pct_native)
                        + factor(q_popdensity)
                        + scale(log(`Median Household Income`))+scale(education) + scale(beds/population)
                        + scale(date_since) 
@@ -74,7 +75,7 @@ if (strcmp(unname(sapply(sub_sampledata, typeof)[ncol(sub_sampledata)]), "charac
 } else {
   s = paste("starting model with : ", interested_var, "\n", sep="")
   cat(s)
-    In.loop.model=glmer.nb(Deaths ~ scale(`% Hispanic`) + scale(`% Black`) + scale(`% Asian`) + scale(`% Non-Hispanic White`) + scale(`% American Indian & Alaska Native`)
+    In.loop.model=glmer.nb(Deaths ~ scale(hispanic) + scale(pct_blk) + scale(pct_asian) + scale(pct_white) + scale(pct_native)
                        + factor(q_popdensity)
                        + scale(log(`Median Household Income`))+scale(education) + scale(beds/population)
                        + scale(date_since) 
