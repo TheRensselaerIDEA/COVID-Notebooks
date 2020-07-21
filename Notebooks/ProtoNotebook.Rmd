@@ -176,8 +176,15 @@ and <span style='color:#000000'><b>black</b></span> indicates lack of data or a 
   coefs <- str_replace(coefs, "scale", '')
   coefs <- str_replace(coefs, "factor", '')
   coefs <- str_replace(coefs, "log", '')
+
   
   state_heat <- t(state_heat)
+  length(coefs)
+  state$state_heat <- as.data.frame(state_heat, row.names = colnames(state_p) )
+  colnames(state$state_heat) <- coefs
+  #view(state$state_heat)
+  
+  
   png(filename="Notebooks/pheat2.png",height=10,width=7,res=200,units="in")
   heatmap.2(state_heat, 
             col = color_palette, 
@@ -331,5 +338,117 @@ and <span style='color:#000000'><b>black</b></span> indicates lack of data or a 
     t2 <- t1 %>%
       mutate(coefficients = names)
     saveRDS(t2, "national_normalize.rds")
+
+```
+
+
+```{r echo = F}
+
+
+  # make GWAS per state per 305 vars
+  # rerun state models with new variables
+
+    library("leaflet")
+    # vars to pick from 
+ #   var_i = "Intercept"  "hispanic"  "pct_blk"  "pct_asian"  "pct_white"  "pct_native"  "q_popdensity 2" "q_popdensity 3" "q_popdensity 4" "q_popdensity 5" "medhouseholdincome"   "pct_obesity"  "pct_age65"  "pct_diabetes"  "LungCancer"  "COPD"  "AdultAsthma"  "PediatricAsthma"  "All.Cause.death_rate" 
+    var_i = as.name("pct_blk") 
+    #state$state_heat$pct_blk
+    #colors <- c("grey","#426C85","#67a9cf","#d1e5f0","#f7f7f7","#fddbc7","#ef8a62","#b2182b")
+    colors <- c("blue", "grey", "red")
+    #bins <- c(5, 2, 1, .2, -.2, -1, -2, -5,-Inf)
+    bins <- c(-0.25, 0.25, 0.75, 1.25)
+    pal2 <- leaflet::colorBin(colors, domain = state$state_heat$pct_blk, bins = bins, reverse=FALSE)
+    labels2 <- sprintf(
+      "<strong>%s</strong><br/>
+      Mortality Rate P-val: %.2g",
+      colnames(state_p), state$state_heat$pct_blk
+    ) %>% lapply(htmltools::HTML)
+    
+    leaflet(states.shapes) %>%
+      setView(-96, 37.8, 4) %>% 
+      addPolygons(
+        fillColor = ~pal2(state$state_heat$pct_blk),
+        weight = 2,
+        opacity = 1,
+        color = "white",
+        dashArray = "3",
+        fillOpacity = 0.7,
+        highlight = highlightOptions(
+          weight = 5,
+          color = "#666",
+          dashArray = "",
+          fillOpacity = 0.7,
+          bringToFront = TRUE),
+        label = labels2,
+        labelOptions = labelOptions(
+          style = list("font-weight" = "normal", padding = "3px 8px"),
+          textsize = "15px",
+          direction = "auto")) %>% 
+      addLegend(pal = pal2, 
+                values = ~state$state_heat$pct_blk, 
+                opacity = 0.7, 
+                title = paste("Mortality Rate  Ratio per " , var_i, sep = ""),
+                position = "bottomright"
+                ) %>%
+      addProviderTiles("MapBox", options = providerTileOptions(
+        id = "mapbox.light",
+        accessToken = Sys.getenv('MAPBOX_ACCESS_TOKEN')))
+```
+
+
+```{r echo = F}
+
+
+  # use GWAS_ADJ_P and GWAS_MRR to say for which states there are significant protective and destructive variables
+
+  s = ""
+  for (state in colnames(GWAS_MRR)) {
+    s <- paste(s, state, ": ", sep = "")
+    
+    prt <- c(NA)
+    des <- c(NA)
+    for (itr in 1:length(GWAS_ADJ_P[[state]])) {
+      if (is.na(GWAS_ADJ_P[[state]][itr]) == FALSE  && GWAS_ADJ_P[[state]][itr] < 0.05 ) {
+        if (is.na(GWAS_MRR[[state]][itr]) == FALSE  &&  GWAS_MRR[[state]][itr]  >= 1.0 ) {
+          #des <- c(des, GWAS_MRR[[state]][itr])
+          des <- c(des, itr)
+        } else {
+          #prt <- c(prt, GWAS_MRR[[state]][itr])
+          prt <- c(prt, itr)
+        }
+      }
+    }
+  
+    if (length(prt) > 1) {
+      s <- paste(s, "protective variables include: ", sep = "")
+      for ( i  in 2:length(prt) ) {
+        if (i != length(prt)) {
+          s <- paste(s, colnames(model_input)[prt[i]], ", ", sep = "")
+        } else {
+          s <- paste(s, colnames(model_input)[prt[i]], " ", sep = "")
+        }
+      }
+    } else {
+      s <- paste(s, "no protective variables; ", sep = "")
+    }
+    
+    if (length(des) > 1) {
+      s <- paste(s, "destructive variables include: ", sep = "")
+      for ( i  in 2:length(prt) ) {
+        if (i != length(prt)) {
+          s <- paste(s, colnames(model_input)[des[i]], ", ", sep = "")
+        } else {
+          s <- paste(s, colnames(model_input)[des[i]], "", sep = "")
+        }
+      }
+    } else {
+      s <- paste(s, "no destructive variables;", sep = "")
+    }
+    
+    s <- paste(s, "\n", sep ="")
+  }
+
+  cat(s)
+
 
 ```
