@@ -16,5 +16,5 @@ fname="NBGWAS.R"
 
 
 for var in "${var_names[@]}"; do {
-  echo `Rscript $fname $var`&
+  echo `Rscript ./GWAS/$fname $var`&
 } done

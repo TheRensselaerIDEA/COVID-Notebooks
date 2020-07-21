@@ -51,10 +51,12 @@ combined.mode.nb.random.off.main = glmer.nb(Deaths
                                             + scale(PediatricAsthma)
                                             + scale(All.Cause.death_rate)
                                             + (1|state)
-                                            + offset(log(population)), data = aggregate_pm_census_cdc_test_beds_age_diabete_obesity_heart)
+                                            + offset(log(population)), data = aggregate_pm_census_cdc_test_beds_age_diabete_obesity_heart, 
+                                            control=glmerControl(optimizer="bobyqa",
+                                                                 optCtrl=list(maxfun=100000)))
 # save results in parallelism
 date = substr(datafile, 29,33)
 assign(date, summary(combined.mode.nb.random.off.main))
-fname = paste("./TemporalResults/NationalModel/",date,".rda",sep="")
+fname = paste("./TemporalResults/NationalModel/",date,"_control.rda",sep="")
 do.call(save, list(date, file=fname))
 s<-summary(combined.mode.nb.random.off.main)

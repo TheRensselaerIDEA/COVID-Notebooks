@@ -1,7 +1,10 @@
 #############
 
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = "./")
+
 #Nationwide GWAS with Negative Binomial Mixed Model
-setwd("/data/Social_Determinants")
+#setwd("/data/Social_Determinants")
 
 ###dependencies
 library("MASS")
