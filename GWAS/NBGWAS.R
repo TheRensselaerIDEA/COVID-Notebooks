@@ -107,5 +107,3 @@ print("SAVED")
 saveRDS(GWAS_ADJ_P, "GWAS/GWAS_ADJ_P.rds")
 saveRDS(GWAS_P, "GWAS/GWAS_P.rds")
 saveRDS(GWAS_MRR, "GWAS/GWAS_MRR.rds")
-
-
