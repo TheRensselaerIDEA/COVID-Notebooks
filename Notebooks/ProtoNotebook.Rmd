@@ -344,7 +344,6 @@ and <span style='color:#000000'><b>black</b></span> indicates lack of data or a 
 
 ```{r echo = F}
 
-
   # make GWAS per state per 305 vars
   # rerun state models with new variables
 
@@ -398,7 +397,6 @@ and <span style='color:#000000'><b>black</b></span> indicates lack of data or a 
 
 ```{r echo = F}
 
-
   # use GWAS_ADJ_P and GWAS_MRR to say for which states there are significant protective and destructive variables
 
   s = ""
@@ -434,8 +432,8 @@ and <span style='color:#000000'><b>black</b></span> indicates lack of data or a 
     
     if (length(des) > 1) {
       s <- paste(s, "destructive variables include: ", sep = "")
-      for ( i  in 2:length(prt) ) {
-        if (i != length(prt)) {
+      for ( i  in 2:length(des) ) {
+        if (i != length(des)) {
           s <- paste(s, colnames(model_input)[des[i]], ", ", sep = "")
         } else {
           s <- paste(s, colnames(model_input)[des[i]], "", sep = "")
