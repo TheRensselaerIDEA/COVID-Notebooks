@@ -450,3 +450,69 @@ and <span style='color:#000000'><b>black</b></span> indicates lack of data or a 
 
 
 ```
+  
+  
+```{r echo = F}
+  # Libraries
+  library(ggplot2)
+# Create data
+
+for (state in colnames(GWAS_MRR)) {
+  
+   state = "NC"
+   s <- paste("GENERATING FIGURE FOR ", state, sep = "")
+   print(s)
+  
+   prt <- c(NA)
+    des <- c(NA)
+    for (itr in 1:length(GWAS_ADJ_P[[state]])) {
+      if (is.na(GWAS_ADJ_P[[state]][itr]) == FALSE  && GWAS_ADJ_P[[state]][itr] < 0.05 ) {
+        if (is.na(GWAS_MRR[[state]][itr]) == FALSE  &&  GWAS_MRR[[state]][itr]  >= 1.0 ) {
+          des <- c(des, itr)
+        } else {
+          prt <- c(prt, itr)
+        }
+      }
+    }
+    #prt[2:length(prt)]
+    vals  <- c(NA)
+    names <- c(NA)
+    if (length(prt) > 1){
+      names <- colnames(model_input)[prt[2:length(prt)]]
+      vals <- GWAS_MRR[[state]][prt[2:length(prt)]]
+    }
+    if (length(des) > 1){
+      names <- c(names, colnames(model_input)[des[2:length(des)]])
+      vals <- c(vals, GWAS_MRR[[state]][des[2:length(des)]])
+    }
+    
+    if (length(names) == 1) {
+      next
+    }
+
+    
+    data <- data.frame(
+      y=names[2:length(names)], 
+      x=vals[2:length(names)]
+    )
+    
+    #view(data)
+    title <- paste(state, " Significant variables.", sep = "")
+    data <- data %>% 
+      mutate(mycolor = ifelse(x>1, "#94c0c6","#c35442"))
+    
+    # Plot
+    h = (length(vals)-1) * 0.8
+    f = paste("Notebooks/state_GWAS_results/", state, "SDWAS.png", sep = "")
+    png(filename=f,height=h,width=7,res=200,units="in")
+    ggplot(data, aes(x=x, y=y)) +
+      geom_point() + 
+      geom_segment( aes(x=x, xend=1, y=y, yend=y, color = mycolor), size=1.3, alpha=0.9 ) +
+      ylab("Interested Variable") +
+      xlab("MRR of interested Variable") +
+      ggtitle(title) +
+      geom_segment( aes(x=1, xend=1, y=0, yend = length(vals)-1), size = 1.0)
+
+    dev.off()
+}
+```
