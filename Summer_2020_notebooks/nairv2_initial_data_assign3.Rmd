@@ -1,0 +1,12 @@
+---
+title: "Assigment 3: Playing Around with COVIDMINDER"
+subtitle: "DAR/HACL Summer 2020"
+author: "Varun Nair"
+date: "07/12/2020"
+output: html_document
+---
+
+
+For this assignment, I am looking at the COVID-Minder app, and more specifically, I am looking at the trends for county cases per 100k people. I wanted to look at what the trends of covid were like in major college towns in the US. Despite the fact that school is closed, there are likely many students moving to these areas over the summer just to be on campus during the summer. So, I looked at the data for the counties of Boulder CO, Ann Arbour MI, and State College, PA to see if there were any spikes. Here are screenshots: https://imgur.com/a/eVAwpmK
+
+Looking at this data, it is clear that there is a spike ~the middle of June in all three of these counties. This would coincide with students moving into their apartments around the area for their summer academics. This could be flawed, however, because it is a relatively small sample size and I am just going off of assumptions. In order to really analyze if this is true, we would need to find data on how many people moved to the area. This spike could also be due to more lax restrictions throughout the country. Therefore, in order to further this analysis, i would gather the necessary data to perform a more holistic view on how these, and other big college towns, were affected. I think this would be super useful information to show that strict regulations are required for people moving back to college, otherwise a second wave would be inevitable.
