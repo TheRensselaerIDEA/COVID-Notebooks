@@ -16,6 +16,7 @@ library(sgof)
 library(tidyverse)
 library(cvms)
 library(pracma)
+library(dplyr)
 
 
 #source("Modules/Source.R")
@@ -108,4 +109,6 @@ saveRDS(GWAS_ADJ_P, "GWAS/GWAS_ADJ_P.rds")
 saveRDS(GWAS_P, "GWAS/GWAS_P.rds")
 saveRDS(GWAS_MRR, "GWAS/GWAS_MRR.rds")
 
-
+GWAS_ADJ_P[GWAS_ADJ_P > 0.05] <- NA
+df <- GWAS_ADJ_P[15, ] < 0.05
+df <- df[df == TRUE]

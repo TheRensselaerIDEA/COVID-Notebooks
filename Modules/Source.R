@@ -52,7 +52,7 @@
 
 
 
-dependencies <- c("plyr", "stats", "cluster", "gplots", "usmap", "AER" ,"robust", "pscl",  "emmeans", "multcompView", "car", "DescTools", "boot", "lattice", "hermite", "heplots", "klaR", "ROCR", "ResourceSelection", "foreign", "ggfortify", "PerformanceAnalytics", "VineCopula", "blmeco", "devtools", "lubridate", "data.table", "httr", "RCurl", "tidyverse", "sp", "raster", "dplyr", "sf", "stringr" , "ggplot2", "grid", "pBrackets", "gridExtra", "lme4", "maps", "MASS", "gamm4", "glmmTMB", "gsheet")
+dependencies <- c("ggpubr", "plyr", "stats", "cluster", "gplots", "usmap", "AER" ,"robust", "pscl",  "emmeans", "multcompView", "car", "DescTools", "boot", "lattice", "hermite", "heplots", "klaR", "ROCR", "ResourceSelection", "foreign", "ggfortify", "PerformanceAnalytics", "VineCopula", "blmeco", "devtools", "lubridate", "data.table", "httr", "RCurl", "tidyverse", "sp", "raster", "dplyr", "sf", "stringr" , "ggplot2", "grid", "pBrackets", "gridExtra", "lme4", "maps", "MASS", "gamm4", "glmmTMB", "gsheet")
 
 # Check and install packages not yet available
 install.dependencies <- dependencies[!(dependencies %in% installed.packages()[, "Package"])]
@@ -119,3 +119,4 @@ library(gsheet)
 library(gplots)
 library("stats")
 library("cluster")
+library("ggpubr")
