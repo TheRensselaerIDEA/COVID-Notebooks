@@ -16,13 +16,12 @@ library(sgof)
 library(tidyverse)
 library(cvms)
 library(pracma)
-library(dplyr)
 
 
 #source("Modules/Source.R")
 #source("GWAS/helper.R")
 
- ## Get variable in the loop
+## Get variable in the loop
 
 args <- commandArgs()
 
@@ -41,7 +40,7 @@ for (i in interested_var_s) {
 interested_var <- str_remove_all(interested_var, "[\\\\]")
 cat(interested_var)
 
-  
+
 sampledata<-readRDS('Preprocessing_FTS_Outputs/07-12-2020data.Rds')
 
 #for (name in colnames(sampledata)) {
@@ -66,27 +65,27 @@ colnames(sub_sampledata)[ncol(sub_sampledata)] = "i_var"
 
 
 if (strcmp(unname(sapply(sub_sampledata, typeof)[ncol(sub_sampledata)]), "character")) {
-    s = paste("starting model with : ", interested_var, "\n", sep="")
-    cat(s)
-    In.loop.model=glmer.nb(Deaths ~ scale(hispanic) + scale(pct_blk) + scale(pct_asian) + scale(pct_white) + scale(pct_native)
-                       + factor(q_popdensity)
-                       + scale(log(`Median Household Income`))+scale(education) + scale(beds/population)
-                       + scale(date_since) 
-                       + scale(date_since_mask)
-                       + factor(i_var)
-                       + (1|State)
-                       + offset(log(population)), data = sub_sampledata)
+  s = paste("starting model with : ", interested_var, "\n", sep="")
+  cat(s)
+  In.loop.model=glmer.nb(Deaths ~ scale(hispanic) + scale(pct_blk) + scale(pct_asian) + scale(pct_white) + scale(pct_native)
+                         + factor(q_popdensity)
+                         + scale(log(`Median Household Income`))+scale(education) + scale(beds/population)
+                         + scale(date_since) 
+                         + scale(date_since_mask)
+                         + factor(i_var)
+                         + (1|State)
+                         + offset(log(population)), data = sub_sampledata)
 } else {
   s = paste("starting model with : ", interested_var, "\n", sep="")
   cat(s)
-    In.loop.model=glmer.nb(Deaths ~ scale(hispanic) + scale(pct_blk) + scale(pct_asian) + scale(pct_white) + scale(pct_native)
-                       + factor(q_popdensity)
-                       + scale(log(`Median Household Income`))+scale(education) + scale(beds/population)
-                       + scale(date_since) 
-                       + scale(date_since_mask)
-                       + scale(i_var)
-                       + (1|State)
-                       + offset(log(population)), data = sub_sampledata)
+  In.loop.model=glmer.nb(Deaths ~ scale(hispanic) + scale(pct_blk) + scale(pct_asian) + scale(pct_white) + scale(pct_native)
+                         + factor(q_popdensity)
+                         + scale(log(`Median Household Income`))+scale(education) + scale(beds/population)
+                         + scale(date_since) 
+                         + scale(date_since_mask)
+                         + scale(i_var)
+                         + (1|State)
+                         + offset(log(population)), data = sub_sampledata)
 }
 
 GWAS_MRR <- readRDS("GWAS/GWAS_MRR.rds")
@@ -100,15 +99,11 @@ GWAS_MRR[[interested_var]]   <- summary(In.loop.model)[10]$coefficients[2:16,1]
 GWAS_P[[interested_var]]     <- summary(In.loop.model)[10]$coefficients[2:16,4]
 
 GWAS_ADJ_P[[interested_var]] <- p.adjust(summary(In.loop.model)[10]$coefficients[2:16,4], 
-                                     method = 'BH', 
-                                     n = length(summary(In.loop.model)[10]$coefficients[2:16,4]))
+                                         method = 'BH', 
+                                         n = length(summary(In.loop.model)[10]$coefficients[2:16,4]))
 
 
 print("SAVED")
 saveRDS(GWAS_ADJ_P, "GWAS/GWAS_ADJ_P.rds")
 saveRDS(GWAS_P, "GWAS/GWAS_P.rds")
 saveRDS(GWAS_MRR, "GWAS/GWAS_MRR.rds")
-
-GWAS_ADJ_P[GWAS_ADJ_P > 0.05] <- NA
-df <- GWAS_ADJ_P[15, ] < 0.05
-df <- df[df == TRUE]
