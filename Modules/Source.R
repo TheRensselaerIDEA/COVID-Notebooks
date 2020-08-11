@@ -51,13 +51,19 @@
 # cluster
 
 
+libs <- c("tidyverse", "sp", "raster", "ggplot2", "plyr", "dplyr", "sf", "stringr", "grid", "pBrackets", "gridExtra", "lme4", "maps", 
+          "glmmTMB", "gamm4", "MASS", "RCurl", "httr", "data.table", "devtools", "lubridate", "blmeco", "VineCopula", "PerformanceAnalytics", 
+          "ggfortify", "foreign", "ResourceSelection", "ROCR", "klaR", "heplots", "hermite", "lattice", "boot", "DescTools", "car",
+          "multcompView", "emmeans", "pscl", "robust", "AER", "usmap", "gsheet", "gplots", "stats", "cluster", "ggpubr")
 
-dependencies <- c("ggpubr", "plyr", "stats", "cluster", "gplots", "usmap", "AER" ,"robust", "pscl",  "emmeans", "multcompView", "car", "DescTools", "boot", "lattice", "hermite", "heplots", "klaR", "ROCR", "ResourceSelection", "foreign", "ggfortify", "PerformanceAnalytics", "VineCopula", "blmeco", "devtools", "lubridate", "data.table", "httr", "RCurl", "tidyverse", "sp", "raster", "dplyr", "sf", "stringr" , "ggplot2", "grid", "pBrackets", "gridExtra", "lme4", "maps", "MASS", "gamm4", "glmmTMB", "gsheet")
+for (lib in libs){
+  if (!require(lib, character.only = T)) {
+    install.packages(lib)
+  }
+}
 
-# Check and install packages not yet available
-install.dependencies <- dependencies[!(dependencies %in% installed.packages()[, "Package"])]
-if (length(install.dependencies) > 0) {
-  install.packages(install.dependencies)
+if (!require("NSAPHutils")){
+  devtools::install_github("NSAPH/NSAPHutils") # need to be accessed via devtools
 }
 
 library("tidyverse")
@@ -73,50 +79,36 @@ library("pBrackets")
 library("gridExtra")
 library("lme4")
 library("maps")
-# in analyses...
 library("glmmTMB")
 library("gamm4")
 library("MASS")
-# in preprocess...
 library("RCurl")
 library("httr")
-# in additional preprocessing... 
 library("data.table")
 library("devtools")
-if (!require("NSAPHutils")){
-  devtools::install_github("NSAPH/NSAPHutils") # need to be accessed via devtools
-  library("NSAPHutils")
-}
-#set_threads()
-#devtools::install_github("NSAPH/NSAPHplatform")
-#library("NSAPHplatform")
 library("lubridate")
-
-
-library('blmeco')
-library(VineCopula)
+library("blmeco")
+library("VineCopula")
 library("PerformanceAnalytics")
-
-library(ggfortify)
-library(foreign)
-library(ResourceSelection)
-library(ROCR)
-
-library(klaR)
-library(heplots)
-library(hermite)
-library(lattice)
-library(boot)
-library(DescTools)
-library(car)
-library(multcompView)
-library(emmeans)
-library(pscl)
-library(robust)
-library(AER)
-library(usmap)
-library(gsheet)
-library(gplots)
+library("ggfortify")
+library("foreign")
+library("ResourceSelection")
+library("ROCR")
+library("klaR")
+library("heplots")
+library("hermite")
+library("lattice")
+library("boot")
+library("DescTools")
+library("car")
+library("multcompView")
+library("emmeans")
+library("pscl")
+library("robust")
+library("AER")
+library("usmap")
+library("gsheet")
+library("gplots")
 library("stats")
 library("cluster")
-library("ggpubr")
+library("NSAPHutils")
