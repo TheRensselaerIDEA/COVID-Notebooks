@@ -1,65 +1,48 @@
 # Social Determinants of COVID-19 mortality in the United States
 This is the data repository for publicly available code and data to reproduce analyses created by IDEA HEALTH INCITE @ RPI during the summer of 2020.
 
-<b>Code: </b><br>
-[`Prepossing.R`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/PM_COVID/Preprocessing.R) includes the code to extract all necessary data and prepocess data for statistical analyses.
+# Librarian
 
-[`Analyses.R`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/PM_COVID/Analyses.R) includes the code to implement negative binomial mixed models in primary, secondary and sensitivity analyses.
+[`Modules`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/Social_Determinants/Modules) includes the source file for libraries installation and loading.
 
-[`Figure.R`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/PM_COVID/PM_Notebook/*.Rmd) 
-includes all relavent R Notebooks to be used for figure generation.
+# Raw Data
+
+1. [`data`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/Social_Determinants/data)
+
+2. [`Data`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/Social_Determinants/Data) includes all neccessary raw data to pass in preprocessing.
+
+3. [`MM_data`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/Social_Determinants/MM_data) includes mortality data of several causes obtained from MortalityMinder.
 
 
-[`additional_preprocessing_code`](https://github.com/wxwx1993/PM_COVID/tree/master/additional_preprocessing_code) contains markdown files with code demonstrating the methodology we used to aggregate our zip code level data to the county level.
+# Preprocessing
 
+1. [`Preprocessing`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/Social_Determinants/Preprocessing) includes the code to extract all necessary data and prepocess data for statistical analyses.
 
-# Overview
-
-Preprocessing --> Analysis --> Visualization
-
-# Preprocessing.R
-
-1. Read
-2. Format (subset, rename, calculation)
-3. Merge datasets on FIPS code
-4. Save
-
-```R
-saveRDS(aggregate_chr_cdc_lung, file = 'Fixed_Date_Time_Series/06-28-2020data.Rds')
-```
+2. [`Preprocessing_FTS_Outputs`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/Social_Determinants/Preprocessing_FTS_Outputs) includes the aggregated dataframes from preprocessing.
 
 # Analysis
 
-1. Read in data from files saved in Preprocessing.R. 
+1. [`Analyses`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/Social_Determinants/Analyses) contains scripts for national and state analysis model.
 
-```R
-aggregated_data <- readRDS('Fixed_Date_Time_Series/06-28-2020data.Rds')
-```
+2. [`GWAS`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/Social_Determinants/GWAS) contains files to perform correlation study on COVID mortality.
 
-2. Run Analysis
+# Analyses Results
 
-  - Nation Analysis
-  - State Analysis
+1. [`TemporalResults`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/Social_Determinants/TemporalResults) contains results from temporal analysis with national model and R scripts for visualization.
 
-3. Save results
+2. [`StateSummaries`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/Social_Determinants/StateSummaries) contains analysis results from state model and aggregated data file.
 
-```R
-s <- summary(model)
-save(s, file = "summary.rda")
-```
+3. [`AdjustedStateSummaries`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/Social_Determinants/AdjustedStateSummaries) contains aggregated data file after adjusting p-values from state analysis results.
 
 # Visualization
 
-R Notebook exists in Notebooks/ProtoNotebook.Rmd . Several examples exist for types of figures that can be generated with the data. 
+[`Notebooks`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/Social_Determinants/Notebooks) contains several examples for types of figures that can be generated with the data.
 
-# Import Library
+R Notebook exists in [`ProtoNotebook.Rmd`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/Social_Determinants/Notebooks/ProtoNotebook.Rmd).  
 
-When importing libraries, do it in Source.R and include this line in every R file you create.
-
-```R
-source("./Modules/Source.R")
-```
 # Parallelism
+
+[`parana_fts.sh`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/Social_Determinants/parana_fts.sh) is used to run R scripts on different dates in parrallel.
 
 
 <b>Data: </b><br>

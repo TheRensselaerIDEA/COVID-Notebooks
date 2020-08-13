@@ -7,7 +7,7 @@ dates_names = c("03-29", "04-05", "04-12", "04-19", "04-26", "05-03", "05-17", "
 # dates_names = c("03-30", "04-06", "04-13", "04-20", "04-27", "05-04", "05-11", "05-18", "05-25", "06-01", "06-08", "06-15", "06-22", "06-29", "07-06", "07-13")
 
 COEF = c("(Intercept)",
-         "scale(`hispanic`)","scale(`pct_blk`)","scale(`pct_asian`)","scale(`pct_white`)","scale(`pct_native`)",
+         "scale(hispanic)","scale(pct_blk)","scale(pct_asian)","scale(pct_white)","scale(pct_native)",
          "factor(q_popdensity)2","factor(q_popdensity)3","factor(q_popdensity)4","factor(q_popdensity)5",
          "scale(log(`Median Household Income`))",
          "scale(date_since_social)","scale(date_since)","scale(date_since_reopen)","scale(date_since_reclosure)","scale(date_since_mask)",
