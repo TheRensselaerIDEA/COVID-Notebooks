@@ -4,7 +4,7 @@ knitr::opts_knit$set(root.dir = "../")
 source("./Modules/Source.R")
 
 # Change the date by hand
-date_of_study = "07-12-2020"
+date_of_study = "07-05-2020"
 
 # Parallel
 # args <- commandArgs()
@@ -269,7 +269,7 @@ aggregate_pm_temp_covid_census_mortality_chr_policy_beds_first$date_since[is.na(
 
 # CDC
 
-cdc <- readRDS('MM_data/data/CDC/cdc.data.imputed.Rds')
+cdc <- readRDS('MM_data/CDC/cdc.data.imputed.Rds')
 cdc <- subset(cdc, period == '2015-2017')
 cdc <- data.frame(split(cdc, cdc$death_cause))
 cdc <- subset(cdc, select = c(All.Cause.county_fips, 
@@ -325,6 +325,19 @@ aggregate_data$cli  =
 FB_names <- data.frame(column = c("cli"))
 FB_names$source <- "FB"
 column_names <- rbind(column_names, FB_names)
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+
+# Rural/Urban code
+
+NCHSURCodes2013 <- read_csv("Data/NCHSURCodes2013.csv")
+NCHSURCodes2013 <- subset(NCHSURCodes2013, select = c(FIPS, `2013 code`))
+
+NCHSURCodes2013_names <- data.frame(column = names(NCHSURCodes2013)[2:2])
+NCHSURCodes2013_names$source <- "NCHSURCodes2013"
+column_names <- rbind(column_names, NCHSURCodes2013_names)
+
+aggregate_data = merge(aggregate_data, NCHSURCodes2013, by.x = "fips",by.y = "FIPS", all.x = T)
 
 #------------------------------------------------------------------------------------------------------------------------------------------
 
