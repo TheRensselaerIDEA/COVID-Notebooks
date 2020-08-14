@@ -38,11 +38,11 @@ statesCOVID$logmortality[is.na(statesCOVID$logmortality)] = -1
 g1<-ggplot(statesCOVID)+
   xlim(-125,-65)+ylim(25,50)+
   #  geom_sf(aes(fill = PD_p),color=NA,size=0.025)+
-  geom_sf(aes(fill = logmortality),color='grey',size=0.005)+
+  geom_sf(aes(fill = poverty),color='grey',size=0.005)+
   #  scale_fill_viridis_c(option="magma",begin=0.4)+
-  scale_fill_gradient2(expression(paste("# COVID-19 deaths per 1 million")),low  = "#1e90ff", mid="#ffffba", high = "#8b0000",midpoint = 1,
-                       breaks = c(-1,0,1,2,3),
-                       labels = c("0","1","10","100","1000+"),limits = c(-1,3.4) , na.value = "white") +
+  scale_fill_gradient2(expression(paste("Poverty Rate")),low  = "#1e90ff", mid="#ffffba", high = "#8b0000",midpoint = .11,
+                       breaks = c(0,.03,.06,.11,.25),
+                       labels = c("0",".03",".06",".11",".25+"),limits = c(0,.4) , na.value = "white") +
   # labs(title = expression(paste("Cumulative Deaths Related to COVID-19 until March 30, 2020"))) +
   theme_minimal() +
   theme(plot.title = element_text(size = 24*2,hjust = 0.5),
