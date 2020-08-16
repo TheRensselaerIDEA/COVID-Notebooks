@@ -50,6 +50,6 @@ p
 
 figure <- ggarrange(mrr, p,
                     legend = "right", 
-                    common.legend = TRUE, 
+                    common.legend = TRUE, p
                     ncol = 1, nrow = 2)
 figure
