@@ -6,7 +6,7 @@ output:
   html_document: default
 ---
 
-# Setup
+# Setup Environment
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -23,7 +23,15 @@ library(cvms)
 library(pracma)
 ```
 
-# List of all Interested variables; Complete sample dataframe
+# Set date of analysis
+
+```{r}
+
+sampledata <- readRDS('./Preprocessing_FTS_Outputs/07-06-2020data.Rds')
+
+```
+
+# List of all Interested variables
 
 ```{r}
 
@@ -38,92 +46,24 @@ args <- c("% Fair or Poor Health", "Average Number of Physically Unhealthy Days"
           "% Not Proficient in English", "All.Cause.death_rate", "infant_deaths", "suicide_deaths", "reclosure", "mask", "date_since_social", 
           "date_since_reopen", "date_since_reclosure", "beds", "date_since_mask", "date_since", "Assault.death_rate", "Cancer.death_rate", 
           "Cardiovascular.death_rate", "Despair.death_rate", "PediatricAsthma", "AdultAsthma", "COPD", "AdultChronicLungDisease")
-
-sampledata <- readRDS('./Preprocessing_FTS_Outputs/07-12-2020data.Rds')
-
-```
-
-# Single interested variable iteration 
-# (For explanation only, a complete NBGWAS analysis needs to iterate through all interested variables)
-
-Set interested variable
-
-```{r}
-
-interested_var <- "% Fair or Poor Health"
-
-```
-
-Filter sampledata to fixed variables and interested variable ready for analysis
-
-```{r}
-
-sub_sampledata <- subset(sampledata, select = c ("Deaths","hispanic", "pct_blk", "pct_asian", "pct_white", "pct_native", "q_popdensity", 
-                                                 "Median Household Income", "education", "beds", "population", "date_since", 
-                                                 "date_since_mask", "State", interested_var))
-
-colnames(sub_sampledata)[ncol(sub_sampledata)] = "i_var"
-```
-
-If interested variable is not numerical, factorize it when put into model and scale it otherwise.
-
-```{r}
-if (strcmp(unname(sapply(sub_sampledata, typeof)[ncol(sub_sampledata)]), "character")) {
-  In.loop.model=glmer.nb(Deaths ~ scale(hispanic) + scale(pct_blk) + scale(pct_asian) + scale(pct_white) + scale(pct_native)
-                         + factor(q_popdensity)
-                         + scale(log(`Median Household Income`))+scale(education) + scale(beds/population)
-                         + scale(date_since) 
-                         + scale(date_since_mask)
-                         + factor(i_var)
-                         + (1|State)
-                         + offset(log(population)), data = sub_sampledata)
-} else {
-  In.loop.model=glmer.nb(Deaths ~ scale(hispanic) + scale(pct_blk) + scale(pct_asian) + scale(pct_white) + scale(pct_native)
-                         + factor(q_popdensity)
-                         + scale(log(`Median Household Income`))+scale(education) + scale(beds/population)
-                         + scale(date_since) 
-                         + scale(date_since_mask)
-                         + scale(i_var)
-                         + (1|State)
-                         + offset(log(population)), data = sub_sampledata)
-}
-```
-
-1. Read in rds saved from last iteration
-2. Append/Modify values obtained from current iteration to dataframe
-3. Override rds file with updated dataframe
-
-```{r}
-GWAS_MRR <- readRDS("GWAS/test_GWAS_MRR.rds")
-GWAS_P <- readRDS("GWAS/test_GWAS_P.rds")
-GWAS_ADJ_P <- readRDS("GWAS/test_GWAS_ADJ_P.rds")
-
-GWAS_MRR[[interested_var]]   <- summary(In.loop.model)[10]$coefficients[2:16,1]
-GWAS_P[[interested_var]]     <- summary(In.loop.model)[10]$coefficients[2:16,4]
-
-GWAS_ADJ_P[[interested_var]] <- p.adjust(summary(In.loop.model)[10]$coefficients[2:16,4], 
-                                         method = 'BH', 
-                                         n = length(summary(In.loop.model)[10]$coefficients[2:16,4]))
-
-saveRDS(GWAS_ADJ_P, "GWAS/test_GWAS_ADJ_P.rds")
-saveRDS(GWAS_P, "GWAS/test_GWAS_P.rds")
-saveRDS(GWAS_MRR, "GWAS/test_GWAS_MRR.rds")
 ```
 
 # Loop through all interested variables to perform a complete NBGWAS analysis
 
 ```{r}
 for (interested_var in args){
+  # Filter sampledata to fixed variables and interested variable ready for analysis
   sub_sampledata <- subset(sampledata, select = c ("Deaths","hispanic", "pct_blk", "pct_asian", "pct_white", "pct_native", "q_popdensity",
-                                                   "Median Household Income", "education", "beds", "population", "date_since", 
+                                                   "medhouseholdincome", "education", "beds", "population", "date_since", 
                                                    "date_since_mask", "State", interested_var))
 
   colnames(sub_sampledata)[ncol(sub_sampledata)] = "i_var"
   
+  # If interested variable is not numerical, factorize it when put into model or scale it otherwise.
   if (strcmp(unname(sapply(sub_sampledata, typeof)[ncol(sub_sampledata)]), "character")) {
     In.loop.model=glmer.nb(Deaths ~ scale(hispanic) + scale(pct_blk) + scale(pct_asian) + scale(pct_white) + scale(pct_native)
                            + factor(q_popdensity)
-                           + scale(log(`Median Household Income`))+scale(education) + scale(beds/population)
+                           + scale(log(medhouseholdincome))+scale(education) + scale(beds/population)
                            + scale(date_since) 
                            + scale(date_since_mask)
                            + factor(i_var)
@@ -132,7 +72,7 @@ for (interested_var in args){
   } else {
     In.loop.model=glmer.nb(Deaths ~ scale(hispanic) + scale(pct_blk) + scale(pct_asian) + scale(pct_white) + scale(pct_native)
                            + factor(q_popdensity)
-                           + scale(log(`Median Household Income`))+scale(education) + scale(beds/population)
+                           + scale(log(medhouseholdincome))+scale(education) + scale(beds/population)
                            + scale(date_since) 
                            + scale(date_since_mask)
                            + scale(i_var)
@@ -140,19 +80,24 @@ for (interested_var in args){
                            + offset(log(population)), data = sub_sampledata)
   }
   
-  GWAS_MRR <- readRDS("GWAS/rmd_GWAS_MRR.rds")
-  GWAS_P <- readRDS("GWAS/rmd_GWAS_P.rds")
-  GWAS_ADJ_P <- readRDS("GWAS/rmd_GWAS_ADJ_P.rds")
-
+  # 3 Steps of saving results: 
+  
+  # 1. Read in rds saved from last iteration
+  GWAS_MRR <- readRDS("GWAS/GWAS_MRR.rds")
+  GWAS_P <- readRDS("GWAS/GWAS_P.rds")
+  GWAS_ADJ_P <- readRDS("GWAS/GWAS_ADJ_P.rds")
+  
+  # 2. Append/Modify values obtained from current iteration to dataframe
   GWAS_MRR[[interested_var]]   <- summary(In.loop.model)[10]$coefficients[2:16,1]
   GWAS_P[[interested_var]]     <- summary(In.loop.model)[10]$coefficients[2:16,4]
   GWAS_ADJ_P[[interested_var]] <- p.adjust(summary(In.loop.model)[10]$coefficients[2:16,4], 
                                            method = 'BH', 
                                            n = length(summary(In.loop.model)[10]$coefficients[2:16,4]))
   
-  saveRDS(GWAS_ADJ_P, "GWAS/rmd_GWAS_ADJ_P.rds")
-  saveRDS(GWAS_P, "GWAS/rmd_GWAS_P.rds")
-  saveRDS(GWAS_MRR, "GWAS/rmd_GWAS_MRR.rds")  
+  # 3. Override rds file with updated dataframe
+  saveRDS(GWAS_ADJ_P, "GWAS/GWAS_ADJ_P.rds")
+  saveRDS(GWAS_P, "GWAS/GWAS_P.rds")
+  saveRDS(GWAS_MRR, "GWAS/GWAS_MRR.rds")  
 }
 
 ```

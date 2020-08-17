@@ -18,12 +18,12 @@ library(tidyverse)
 library(kableExtra)
 
 # set datafile from parallelism
-args <- commandArgs()
-datafile = args[6]
+# args <- commandArgs()
+# datafile = args[6]
 
 # set datefile by hand
-# datafile = '07-05-2020data-2.Rds'
-# datafile = './Preprocessing_FTS_Outputs/07-12-2020data.Rds'
+# datafile = '07-06-2020data-2.Rds'
+datafile = './Preprocessing_FTS_Outputs/07-12-2020data.Rds'
 
 aggregate_pm_census_cdc_test_beds_age_diabete_obesity_heart<-readRDS(datafile)
 
@@ -39,6 +39,7 @@ combined.mode.nb.random.off.main = glmer.nb(Deaths
                                             + scale(`pct_white`) + scale(`pct_native`)
                                             + factor(q_popdensity)
                                             + scale(log(`Median Household Income`))
+                                            + scale(log(medhouseholdincome))
                                             + scale(date_since_social) 
                                             + scale(date_since) 
                                             + scale(date_since_reopen)

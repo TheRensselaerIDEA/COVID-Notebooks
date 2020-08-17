@@ -41,7 +41,7 @@ interested_var <- str_remove_all(interested_var, "[\\\\]")
 cat(interested_var)
 
 
-sampledata<-readRDS('Preprocessing_FTS_Outputs/07-12-2020data.Rds')
+sampledata<-readRDS('Preprocessing_FTS_Outputs/07-06-2020data.Rds')
 
 #for (name in colnames(sampledata)) {
 #x <- c(34,35,43,47,52,53,61,62,68,69,70,76,82,94,95,106,119,120, 131,132,153,160,163,165,167,169,176,182,183, 184, 185, 186, 187, 188,200,208,216,236,238,240,256,288, 289, 
@@ -88,10 +88,10 @@ if (strcmp(unname(sapply(sub_sampledata, typeof)[ncol(sub_sampledata)]), "charac
                          + offset(log(population)), data = sub_sampledata)
 }
 
-GWAS_MRR <- readRDS("GWAS/GWAS_MRR.rds")
+GWAS_MRR <- readRDS("GWAS/_GWAS_MRR.rds")
 
-GWAS_P <- readRDS("GWAS/GWAS_P.rds")
-GWAS_ADJ_P <- readRDS("GWAS/GWAS_ADJ_P.rds")
+GWAS_P <- readRDS("GWAS/_GWAS_P.rds")
+GWAS_ADJ_P <- readRDS("GWAS/_GWAS_ADJ_P.rds")
 
 # Interleaving here between threads could leave some columns out... make sure to check after para. done
 
@@ -104,6 +104,6 @@ GWAS_ADJ_P[[interested_var]] <- p.adjust(summary(In.loop.model)[10]$coefficients
 
 
 print("SAVED")
-saveRDS(GWAS_ADJ_P, "GWAS/GWAS_ADJ_P.rds")
-saveRDS(GWAS_P, "GWAS/GWAS_P.rds")
-saveRDS(GWAS_MRR, "GWAS/GWAS_MRR.rds")
+saveRDS(GWAS_ADJ_P, "GWAS/_GWAS_ADJ_P.rds")
+saveRDS(GWAS_P, "GWAS/_GWAS_P.rds")
+saveRDS(GWAS_MRR, "GWAS/_GWAS_MRR.rds")
