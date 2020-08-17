@@ -26,7 +26,7 @@ county_pm_aggregated <- county_pm %>%
   group_by(fips) %>% 
   dplyr::summarise(mean_pm25 = mean(pm25))
 
-county_pm_aggregated_names <- data.frame(column = names(county_pm_aggregated)[2:2])
+county_pm_aggregated_names <- data.frame(column = names(county_pm_aggregated)[2:ncol(county_pm_aggregated)])
 county_pm_aggregated_names$source <- "county_pm_aggregated"
 column_names <- rbind(column_names, county_pm_aggregated_names)
 
@@ -41,7 +41,7 @@ county_temp_aggregated = county_temp %>%
                    mean_winter_rm= mean(winter_rmax, na.rm=TRUE),
                    mean_summer_rm= mean(summer_rmax, na.rm=TRUE))
 
-county_temp_aggregated_names <- data.frame(column = names(county_temp_aggregated)[2:5])
+county_temp_aggregated_names <- data.frame(column = names(county_temp_aggregated)[2:ncol(county_temp_aggregated)])
 county_temp_aggregated_names$source <- "county_temp_aggregated"
 column_names <- rbind(column_names, county_temp_aggregated_names)
 
@@ -61,7 +61,7 @@ covid_us <- rbind.fill(covid_us,subset(covid_us_hist, (!(FIPS %in% covid_us$FIPS
 covid_us$FIPS = str_pad(covid_us$FIPS, 5, pad = "0")
 covid_us = subset(covid_us, select = -c(Admin2, Province_State, Country_Region, Last_Update, Combined_Key))
 
-covid_us_names <- data.frame(column = names(covid_us)[2:9])
+covid_us_names <- data.frame(column = names(covid_us)[2:ncol(covid_us)])
 covid_us_names$source <- "covid_us"
 column_names <- rbind(column_names, covid_us_names)
 
@@ -90,7 +90,7 @@ county_census_aggregated$q_popdensity[county_census_aggregated$popdensity>quanti
 
 county_census_aggregated$fips = str_pad(county_census_aggregated$fips, 5, pad = "0")
 
-county_census_aggregated_names <- data.frame(column = names(county_census_aggregated)[2:14])
+county_census_aggregated_names <- data.frame(column = names(county_census_aggregated)[2:ncol(county_census_aggregated)])
 county_census_aggregated_names$source <- "county_census_aggregated"
 column_names <- rbind(column_names, county_census_aggregated_names)
 
@@ -127,7 +127,7 @@ county_base_mortality$"young_pecent"[is.na(county_base_mortality$"young_pecent")
 county_base_mortality$County.Code = str_pad(county_base_mortality$County.Code, 5, pad = "0")
 county_base_mortality <- county_base_mortality[,c(1,12:15)]
 
-county_base_mortality_names <- data.frame(column = names(county_base_mortality)[2:5])
+county_base_mortality_names <- data.frame(column = names(county_base_mortality)[2:ncol(county_base_mortality)])
 county_base_mortality_names$source <- "county_base_mortality"
 column_names <- rbind(column_names, county_base_mortality_names)
 
@@ -140,6 +140,11 @@ aggregate_pm_temp_covid_census_mortality = merge(aggregate_pm_temp_covid_census,
 chr <- read_csv("Data/2020CHR.csv")
 chr <- chr[, -grep("Quartile", colnames(chr))]
 chr <- chr[, -grep("95", colnames(chr))]
+chr <- chr[, -grep("\\(AIAN\\)", colnames(chr))]
+chr <- chr[, -grep("\\(Asian\\)", colnames(chr))]
+chr <- chr[, -grep("\\(Black\\)", colnames(chr))]
+chr <- chr[, -grep("\\(Hispanic\\)", colnames(chr))]
+chr <- chr[, -grep("\\(White\\)", colnames(chr))]
 chr <- subset(chr, select = -c(Deaths, Unreliable, Population))
 chr <- dplyr::rename(chr, c("pct_diabetes" = `% Adults with Diabetes`,
                             "pct_obesity" = `% Adults with Obesity`, 
@@ -151,7 +156,7 @@ chr <- dplyr::rename(chr, c("pct_diabetes" = `% Adults with Diabetes`,
                             "# less than 18 years of age" = `Population_1`, 
                             "suicide_deaths"= `# Deaths_3`))
 
-chr_names <- data.frame(column = names(chr)[2:235])
+chr_names <- data.frame(column = names(chr)[2:ncol(chr)])
 chr_names$source <- "chr"
 column_names <- rbind(column_names, chr_names)
 
@@ -208,9 +213,9 @@ state_test$date_since_mask[state_test$date_since_mask < 0] = 0
 state_test <- subset(state_test, select = -c(dataQualityGrade, fips, score))
 state_test <- dplyr::rename(state_test, c(state_deaths = death))
 
-state_test_names <- data.frame(column = names(state_test)[1:35])
+state_test_names <- data.frame(column = names(state_test)[1:ncol(state_test)])
 state_test_names$source <- "state_test"
-state_test_names <- state_test_names[-c(27), ]
+state_test_names <- state_test_names[-c(39), ]
 column_names <- rbind(column_names, state_test_names)
 
 aggregate_chr_policy = merge(chr,state_test,by="State")
@@ -228,7 +233,7 @@ county_hospitals_aggregated = hospitals %>%
   dplyr::summarise(beds = sum(BEDS, na.rm=TRUE))
 county_hospitals_aggregated$COUNTYFIPS = str_pad(county_hospitals_aggregated$COUNTYFIPS, 5, pad = "0")
 
-county_hospitals_aggregated_names <- data.frame(column = names(county_hospitals_aggregated)[2:2])
+county_hospitals_aggregated_names <- data.frame(column = names(county_hospitals_aggregated)[2:ncol(county_hospitals_aggregated)])
 county_hospitals_aggregated_names$source <- "county_hospitals_aggregated"
 column_names <- rbind(column_names, county_hospitals_aggregated_names)
 
@@ -257,7 +262,7 @@ for (i in 1:length(date_of_all)){
 
 covid_county_confirmed$FIPS <- str_pad(covid_county_confirmed$FIPS, 5, pad = "0")
 
-covid_county_confirmed_names <- data.frame(column = names(covid_county_confirmed)[2:2])
+covid_county_confirmed_names <- data.frame(column = names(covid_county_confirmed)[2:ncol(covid_county_confirmed)])
 covid_county_confirmed_names$source <- "covid_county_confirmed"
 column_names <- rbind(column_names, covid_county_confirmed_names)
 
@@ -280,7 +285,7 @@ cdc <- subset(cdc, select = c(All.Cause.county_fips,
                               Despair.death_rate))
 cdc <- dplyr::rename(cdc, c(FIPS = All.Cause.county_fips))
 
-cdc_names <- data.frame(column = names(cdc)[2:6])
+cdc_names <- data.frame(column = names(cdc)[2:ncol(cdc)])
 cdc_names$source <- "cdc"
 column_names <- rbind(column_names, cdc_names)
 
@@ -301,7 +306,7 @@ lungdisease$LungCancer              <- lungdisease$LungCancer / lungdisease$Tota
 
 lungdisease <- subset(lungdisease, select = -c(`State or County`, TotalPopulation))
 
-lungdisease_names <- data.frame(column = names(lungdisease)[2:6])
+lungdisease_names <- data.frame(column = names(lungdisease)[2:ncol(lungdisease)])
 lungdisease_names$source <- "lungdisease"
 column_names <- rbind(column_names, lungdisease_names)
 
