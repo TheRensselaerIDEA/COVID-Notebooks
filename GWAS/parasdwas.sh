@@ -8,9 +8,11 @@
 #                           "Overcrowding" "% less than 18 years of age" "% Homeowners" "% Severe Housing Cost Burden"
 #                           "Average Number of Physically Unhealthy Days" "Social Association Rate" "Segregation index" "Average Daily PM2.5"
 #                           "Presence of Water Violation" "Average Grade Performance" "High School Graduation Rate"
-#                       "Preventable Hospitalization Rate" "Primary Care Physicians Rate" "Other Primary Care Provider Rate" "% With Annual Mammogram" 
+#                       "Preventable Hospitalization Rate" "Primary Care Physicians Rate" "Other Primary Care Provider Rate" "% With Annual Mammogram"
 #                           "% Uninsured" "% Fair or Poor Health" "% Vaccinated" "Chlamydia Rate" "Mental Health Provider Rate" "HIV Prevalence Rate")
-declare -a var_names=("Average Grade Performance")
+
+declare -a var_names=("Assault.death_rate")
+
 fname="NBGWAS.R"
 
 
