@@ -35,7 +35,7 @@ GWAS_MRR <- subset(GWAS_MRR, select = c())
 GWAS_P <- subset(GWAS_P, select = c())
 GWAS_ADJ_P <- subset(GWAS_ADJ_P, select = c())
 
-names = c("Infant Mortality Rate", "Cancer.death_rate", "Suicide Rate (Age-Adjusted)", "Assault.death_rate", "Motor Vehicle Mortality Rate",
+names = c("Infant Mortality Rate", "Cancer.death_rate", "Suicide Rate (Age-Adjusted)", "Assault.death_rate", "Despair.death_rate", "Motor Vehicle Mortality Rate",
           "Drug Overdose Mortality Rate", "All.Cause.death_rate", "PediatricAsthma", "AdultChronicLungDisease", "% Not Proficient in English",
           "% Insufficient Sleep", "% Unemployed", "% Drive Alone to Work", "% Long Commute - Drives Alone", "% Food Insecure",
           "% With Access to Exercise Opportunities", "% Frequent Mental Distress", "% Smokers", "% Excessive Drinking", "Overcrowding",

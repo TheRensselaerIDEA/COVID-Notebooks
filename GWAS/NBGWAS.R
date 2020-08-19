@@ -91,28 +91,28 @@ GWAS_MRR <- readRDS("GWAS/GWAS_MRR.rds")
 GWAS_P <- readRDS("GWAS/GWAS_P.rds")
 GWAS_ADJ_P <- readRDS("GWAS/GWAS_ADJ_P.rds")
 
-GWAS_MRR <- subset(GWAS_MRR, select = c())
-GWAS_P <- subset(GWAS_P, select = c())
-GWAS_ADJ_P <- subset(GWAS_ADJ_P, select = c())
-
-names = c("Infant Mortality Rate", "Cancer.death_rate", "Suicide Rate (Age-Adjusted)", "Assault.death_rate", "Motor Vehicle Mortality Rate",
-          "Drug Overdose Mortality Rate", "All.Cause.death_rate", "PediatricAsthma", "AdultChronicLungDisease", "% Not Proficient in English",
-          "% Insufficient Sleep", "% Unemployed", "% Drive Alone to Work", "% Long Commute - Drives Alone", "% Food Insecure",
-          "% With Access to Exercise Opportunities", "% Frequent Mental Distress", "% Smokers", "% Excessive Drinking", "Overcrowding",
-          "% less than 18 years of age", "% Homeowners", "% Severe Housing Cost Burden", "Average Number of Physically Unhealthy Days",
-          "Social Association Rate", "Segregation index", "Average Daily PM2.5", "Presence of Water Violation", "Average Grade Performance",
-          "High School Graduation Rate", "Preventable Hospitalization Rate", "Primary Care Physicians Rate", "Other Primary Care Provider Rate",
-          "% With Annual Mammogram", "% Uninsured", "% Fair or Poor Health", "% Vaccinated", "Chlamydia Rate", "Mental Health Provider Rate",
-          "HIV Prevalence Rate")
-
-for (name in names) {
-  GWAS_P$placeholder_name <- NA
-  GWAS_ADJ_P$placeholder_name <- NA
-  GWAS_MRR$placeholder_name <- NA
-  names(GWAS_P)[names(GWAS_P) == "placeholder_name"] <- name
-  names(GWAS_ADJ_P)[names(GWAS_ADJ_P) == "placeholder_name"] <- name
-  names(GWAS_MRR)[names(GWAS_MRR) == "placeholder_name"] <- name
-}
+# GWAS_MRR <- subset(GWAS_MRR, select = c())
+# GWAS_P <- subset(GWAS_P, select = c())
+# GWAS_ADJ_P <- subset(GWAS_ADJ_P, select = c())
+# 
+# names = c("Infant Mortality Rate", "Cancer.death_rate", "Suicide Rate (Age-Adjusted)", "Assault.death_rate", "Despair.death_rate", "Motor Vehicle Mortality Rate",
+#           "Drug Overdose Mortality Rate", "All.Cause.death_rate", "PediatricAsthma", "AdultChronicLungDisease", "% Not Proficient in English",
+#           "% Insufficient Sleep", "% Unemployed", "% Drive Alone to Work", "% Long Commute - Drives Alone", "% Food Insecure",
+#           "% With Access to Exercise Opportunities", "% Frequent Mental Distress", "% Smokers", "% Excessive Drinking", "Overcrowding",
+#           "% less than 18 years of age", "% Homeowners", "% Severe Housing Cost Burden", "Average Number of Physically Unhealthy Days",
+#           "Social Association Rate", "Segregation index", "Average Daily PM2.5", "Presence of Water Violation", "Average Grade Performance",
+#           "High School Graduation Rate", "Preventable Hospitalization Rate", "Primary Care Physicians Rate", "Other Primary Care Provider Rate",
+#           "% With Annual Mammogram", "% Uninsured", "% Fair or Poor Health", "% Vaccinated", "Chlamydia Rate", "Mental Health Provider Rate",
+#           "HIV Prevalence Rate")
+# 
+# for (name in names) {
+#   GWAS_P$placeholder_name <- NA
+#   GWAS_ADJ_P$placeholder_name <- NA
+#   GWAS_MRR$placeholder_name <- NA
+#   names(GWAS_P)[names(GWAS_P) == "placeholder_name"] <- name
+#   names(GWAS_ADJ_P)[names(GWAS_ADJ_P) == "placeholder_name"] <- name
+#   names(GWAS_MRR)[names(GWAS_MRR) == "placeholder_name"] <- name
+# }
 
 # Interleaving here between threads could leave some columns out... make sure to check after para. done
 
