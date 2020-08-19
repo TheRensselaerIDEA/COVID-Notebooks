@@ -17,7 +17,6 @@ library(tidyverse)
 library(cvms)
 library(pracma)
 
-
 #source("Modules/Source.R")
 #source("GWAS/helper.R")
 
@@ -41,7 +40,7 @@ interested_var <- str_remove_all(interested_var, "[\\\\]")
 cat(interested_var)
 
 
-sampledata<-readRDS('Preprocessing_FTS_Outputs/07-06-2020data.Rds')
+sampledata <- readRDS('Preprocessing_FTS_Outputs/07-05-2020data.Rds')
 
 #for (name in colnames(sampledata)) {
 #x <- c(34,35,43,47,52,53,61,62,68,69,70,76,82,94,95,106,119,120, 131,132,153,160,163,165,167,169,176,182,183, 184, 185, 186, 187, 188,200,208,216,236,238,240,256,288, 289, 
@@ -58,7 +57,7 @@ sampledata<-readRDS('Preprocessing_FTS_Outputs/07-06-2020data.Rds')
 s = paste("INTERESTED VAR = " , interested_var, "\n", sep = "")
 cat(s)
 
-sub_sampledata <- subset(sampledata, select = c ("Deaths","hispanic", "pct_blk", "pct_asian", "pct_white", "pct_native", "q_popdensity", "Median Household Income", 
+sub_sampledata <- subset(sampledata, select = c ("Deaths","hispanic", "pct_blk", "pct_asian", "pct_white", "pct_native", "q_popdensity", "medhouseholdincome", 
                                                  "education", "beds", "population", "date_since", "date_since_mask", "State", interested_var))
 
 colnames(sub_sampledata)[ncol(sub_sampledata)] = "i_var"
@@ -69,7 +68,7 @@ if (strcmp(unname(sapply(sub_sampledata, typeof)[ncol(sub_sampledata)]), "charac
   cat(s)
   In.loop.model=glmer.nb(Deaths ~ scale(hispanic) + scale(pct_blk) + scale(pct_asian) + scale(pct_white) + scale(pct_native)
                          + factor(q_popdensity)
-                         + scale(log(`Median Household Income`))+scale(education) + scale(beds/population)
+                         + scale(log(medhouseholdincome))+scale(education) + scale(beds/population)
                          + scale(date_since) 
                          + scale(date_since_mask)
                          + factor(i_var)
@@ -80,7 +79,7 @@ if (strcmp(unname(sapply(sub_sampledata, typeof)[ncol(sub_sampledata)]), "charac
   cat(s)
   In.loop.model=glmer.nb(Deaths ~ scale(hispanic) + scale(pct_blk) + scale(pct_asian) + scale(pct_white) + scale(pct_native)
                          + factor(q_popdensity)
-                         + scale(log(`Median Household Income`))+scale(education) + scale(beds/population)
+                         + scale(log(medhouseholdincome))+scale(education) + scale(beds/population)
                          + scale(date_since) 
                          + scale(date_since_mask)
                          + scale(i_var)
@@ -88,10 +87,32 @@ if (strcmp(unname(sapply(sub_sampledata, typeof)[ncol(sub_sampledata)]), "charac
                          + offset(log(population)), data = sub_sampledata)
 }
 
-GWAS_MRR <- readRDS("GWAS/_GWAS_MRR.rds")
+GWAS_MRR <- readRDS("GWAS/GWAS_MRR.rds")
+GWAS_P <- readRDS("GWAS/GWAS_P.rds")
+GWAS_ADJ_P <- readRDS("GWAS/GWAS_ADJ_P.rds")
 
-GWAS_P <- readRDS("GWAS/_GWAS_P.rds")
-GWAS_ADJ_P <- readRDS("GWAS/_GWAS_ADJ_P.rds")
+# GWAS_MRR <- subset(GWAS_MRR, select = c())
+# GWAS_P <- subset(GWAS_P, select = c())
+# GWAS_ADJ_P <- subset(GWAS_ADJ_P, select = c())
+# 
+# names = c("Infant Mortality Rate", "Cancer.death_rate", "Suicide Rate (Age-Adjusted)", "Assault.death_rate", "Cardiovascular.death_rate",
+#           "Motor Vehicle Mortality Rate", "Drug Overdose Mortality Rate", "All.Cause.death_rate", "PediatricAsthma",
+#           "AdultChronicLungDisease", "% Not Proficient in English", "% Insufficient Sleep", "% Unemployed", "% Drive Alone to Work",
+#           "% Long Commute - Drives Alone", "% Food Insecure", "% With Access to Exercise Opportunities", "% Frequent Mental Distress",
+#           "% Smokers", "% Excessive Drinking", "Overcrowding", "% less than 18 years of age", "% Homeowners", "% Severe Housing Cost Burden",
+#           "Average Number of Physically Unhealthy Days", "Social Association Rate", "Segregation index", "Average Daily PM2.5",
+#           "Presence of Water Violation", "Average Grade Performance", "High School Graduation Rate", "Preventable Hospitalization Rate",
+#           "Primary Care Physicians Rate", "Other Primary Care Provider Rate", "% With Annual Mammogram", "% Uninsured",
+#           "% Fair or Poor Health", "% Vaccinated", "Chlamydia Rate", "Mental Health Provider Rate", "HIV Prevalence Rate")
+# 
+# for (name in names) {
+#   GWAS_P$placeholder_name <- NA
+#   GWAS_ADJ_P$placeholder_name <- NA
+#   GWAS_MRR$placeholder_name <- NA
+#   names(GWAS_P)[names(GWAS_P) == "placeholder_name"] <- name
+#   names(GWAS_ADJ_P)[names(GWAS_ADJ_P) == "placeholder_name"] <- name
+#   names(GWAS_MRR)[names(GWAS_MRR) == "placeholder_name"] <- name
+# }
 
 # Interleaving here between threads could leave some columns out... make sure to check after para. done
 
@@ -104,6 +125,6 @@ GWAS_ADJ_P[[interested_var]] <- p.adjust(summary(In.loop.model)[10]$coefficients
 
 
 print("SAVED")
-saveRDS(GWAS_ADJ_P, "GWAS/_GWAS_ADJ_P.rds")
-saveRDS(GWAS_P, "GWAS/_GWAS_P.rds")
-saveRDS(GWAS_MRR, "GWAS/_GWAS_MRR.rds")
+saveRDS(GWAS_ADJ_P, "GWAS/GWAS_ADJ_P.rds")
+saveRDS(GWAS_P, "GWAS/GWAS_P.rds")
+saveRDS(GWAS_MRR, "GWAS/GWAS_MRR.rds")
