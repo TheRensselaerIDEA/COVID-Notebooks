@@ -3,11 +3,11 @@ This is the data repository for publicly available code and data to reproduce an
 
 # Librarian
 
-[`Modules`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/Social_Determinants/Modules) includes the source file for libraries installation and loading.
+[`Modules`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/Modules) includes the source file for libraries installation and loading.
 
 # Raw Data
 
-1. [`data`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/Social_Determinants/data)
+1. [`data`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/data)
 
 2. [`Data`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/Social_Determinants/Data) includes all neccessary raw data to pass in preprocessing.
 
