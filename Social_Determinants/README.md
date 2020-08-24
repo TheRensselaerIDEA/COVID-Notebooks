@@ -7,42 +7,42 @@ This is the data repository for publicly available code and data to reproduce an
 
 # Raw Data
 
-1. [`data`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/data)
+1. [`data`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/data) includes rudimentary text printout for state GWAS results.
 
-2. [`Data`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/Social_Determinants/Data) includes all neccessary raw data to pass in preprocessing.
+2. [`Data`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/Data) includes all neccessary raw data to pass in preprocessing.
 
-3. [`MM_data`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/Social_Determinants/MM_data) includes mortality data of several causes obtained from MortalityMinder.
+3. [`MM_data`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/MM_data) includes mortality data of several causes obtained from MortalityMinder.
 
 
 # Preprocessing
 
-1. [`Preprocessing`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/Social_Determinants/Preprocessing) includes the code to extract all necessary data and prepocess data for statistical analyses.
+1. [`Preprocessing`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/Preprocessing) includes the code to extract all necessary data and prepocess data for statistical analyses.
 
-2. [`Preprocessing_FTS_Outputs`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/Social_Determinants/Preprocessing_FTS_Outputs) includes the aggregated dataframes from preprocessing.
+2. [`Preprocessing_FTS_Outputs`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/Preprocessing_FTS_Outputs) includes the aggregated dataframes from preprocessing.
 
 # Analysis
 
-1. [`Analyses`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/Social_Determinants/Analyses) contains scripts for national and state analysis model.
+1. [`Analyses`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/Analyses) contains scripts for national and state analysis model.
 
-2. [`GWAS`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/Social_Determinants/GWAS) contains files to perform correlation study on COVID mortality.
+2. [`GWAS`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/GWAS) contains files to perform correlation study on COVID mortality.
 
 # Analyses Results
 
-1. [`TemporalResults`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/Social_Determinants/TemporalResults) contains results from temporal analysis with national model and R scripts for visualization.
+1. [`TemporalResults`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/TemporalResults) contains results from temporal analysis with national model and R scripts for visualization.
 
-2. [`StateSummaries`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/Social_Determinants/StateSummaries) contains analysis results from state model and aggregated data file.
+2. [`StateSummaries`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/StateSummaries) contains analysis results from state model and aggregated data file.
 
-3. [`AdjustedStateSummaries`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/Social_Determinants/AdjustedStateSummaries) contains aggregated data file after adjusting p-values from state analysis results.
+3. [`AdjustedStateSummaries`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/AdjustedStateSummaries) contains aggregated data file after adjusting p-values from state analysis results.
 
 # Visualization
 
-[`Notebooks`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/Social_Determinants/Notebooks) contains several examples for types of figures that can be generated with the data.
+[`Notebooks`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/Notebooks) contains several examples for types of figures that can be generated with the data.
 
-R Notebook exists in [`ProtoNotebook.Rmd`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/Social_Determinants/Notebooks/ProtoNotebook.Rmd).  
+R Notebook exists in [`ProtoNotebook.Rmd`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/Notebooks/ProtoNotebook.Rmd).  
 
 # Parallelism
 
-[`parana_fts.sh`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/Social_Determinants/parana_fts.sh) is used to run R scripts on different dates in parrallel.
+[`parana_fts.sh`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/parana_fts.sh) is used to run R scripts on different dates in parallel.
 
 
 <b>Data: </b><br>

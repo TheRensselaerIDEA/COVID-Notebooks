@@ -18,16 +18,16 @@ fname="Preprocessing.R"
 
 # Preprocessing
 for date in "${dates_names[@]}"; do {
-  echo `Rscript ./Preprocessing/$fname  $date`&
+  echo `Rscript ./Social_Determinants/Preprocessing/$fname  $date`&
 } done
 
 # Analyses
 # for date in "${dates_names[@]}"; do {
-#   echo `Rscript ./Analyses/$fname  ./Preprocessing_FTS_Outputs/$date\-2020data.Rds`&
+#   echo `Rscript ./Social_Determinants/Analyses/$fname  ./Preprocessing_FTS_Outputs/$date\-2020data.Rds`&
 # } done
 
 
 # Visualization
-# echo `Rscript ./Auto_Figures.R ${dates_names[@]}`
+# echo `Rscript ./Social_Determinants/Auto_Figures.R ${dates_names[@]}`
 
 # echo `Rscript Figure.R`

@@ -1,22 +1,22 @@
 knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_knit$set(root.dir = "../")
 
-source("./Modules/Source.R")
+source("./Social_Determinants/Modules/Source.R")
 
 # Change the date by hand
-# date_of_study = "07-06-2020"
+date_of_study = "07-06-2020"
 
 # Parallel
-args <- commandArgs()
-date = args[6]
-date_of_study = paste(date,"-2020",sep="")
+# args <- commandArgs()
+# date = args[6]
+# date_of_study = paste(date,"-2020",sep="")
 
 column_names <- data.frame()
 
 #------------------------------------------------------------------------------------------------------------------------------------------
 
 # Import exposure PM2.5 data
-county_pm <- read.csv("./Data/county_pm25.csv")
+county_pm <- read.csv("./Social_Determinants/Data/county_pm25.csv")
 county_pm$fips = str_pad(county_pm$fips, 5, pad = "0")
 
 # pm2.5 average over 17 years
@@ -31,7 +31,7 @@ county_pm_aggregated_names$source <- "county_pm_aggregated"
 column_names <- rbind(column_names, county_pm_aggregated_names)
 
 # temperature and relative humidity average over 17 years
-county_temp = read.csv("./Data/temp_seasonal_county.csv")
+county_temp = read.csv("./Social_Determinants/Data/temp_seasonal_county.csv")
 county_temp$fips = str_pad(county_temp$fips, 5, pad = "0")
 
 county_temp_aggregated = county_temp %>% 
@@ -98,11 +98,11 @@ aggregate_pm_temp_covid_census = merge(aggregate_pm_temp_covid,county_census_agg
 
 #------------------------------------------------------------------------------------------------------------------------------------------
 
-county_base_mortality = read.table("./Data/county_base_mortality.txt", header = TRUE)
-county_old_mortality = read.table("./Data/county_old_mortality.txt", header = TRUE)
-county_014_mortality = read.table("./Data/county_014_mortality.txt", header = TRUE)
-county_1544_mortality = read.table("./Data/county_1544_mortality.txt", header = TRUE)
-county_4564_mortality = read.table("./Data/county_4564_mortality.txt", header = TRUE)
+county_base_mortality = read.table("./Social_Determinants/Data/county_base_mortality.txt", header = TRUE)
+county_old_mortality = read.table("./Social_Determinants/Data/county_old_mortality.txt", header = TRUE)
+county_014_mortality = read.table("./Social_Determinants/Data/county_014_mortality.txt", header = TRUE)
+county_1544_mortality = read.table("./Social_Determinants/Data/county_1544_mortality.txt", header = TRUE)
+county_4564_mortality = read.table("./Social_Determinants/Data/county_4564_mortality.txt", header = TRUE)
 
 # county base mortality (covid mortality?)
 colnames(county_old_mortality)[4] = c("older_Population")
@@ -137,7 +137,7 @@ aggregate_pm_temp_covid_census_mortality = merge(aggregate_pm_temp_covid_census,
 
 # County Health Rankings Master dataset
 
-chr <- read_csv("Data/2020CHR.csv")
+chr <- read_csv("./Social_Determinants/Data/2020CHR.csv")
 chr <- chr[, -grep("Quartile", colnames(chr))]
 chr <- chr[, -grep("95", colnames(chr))]
 chr <- chr[, -grep("\\(AIAN\\)", colnames(chr))]
@@ -163,12 +163,12 @@ column_names <- rbind(column_names, chr_names)
 #------------------------------------------------------------------------------------------------------------------------------------------
 
 # State test and policy
-state_test = read.csv(text=getURL("https://covidtracking.com/api/v1/states/daily.csv"))
+state_test = read.csv(url("https://covidtracking.com/api/v1/states/daily.csv"))
 state_test = subset(state_test, date ==paste0(substring(str_remove_all(date_of_study, "-"),5,8),substring(str_remove_all(date_of_study, "-"),1,4)))[,-20]
 state_test <- subset(state_test, select = -c(date, lastUpdateEt, dateModified, checkTimeEt, dateChecked, hash, grade))
 state_test <- state_test[, -grep("Score", colnames(state_test))]
 
-statecode = read_csv("./Data/statecode.csv")
+statecode = read_csv("./Social_Determinants/Data/statecode.csv")
 
 # Import social distancing measure data
 distancing <- gsheet2tbl("https://docs.google.com/spreadsheets/d/1zu9qEWI8PsOI_i8nI_S29HDGHlIp2lfVMsGxpQ5tvAQ/edit#gid=1894978869")
@@ -274,7 +274,7 @@ aggregate_pm_temp_covid_census_mortality_chr_policy_beds_first$date_since[is.na(
 
 # CDC
 
-cdc <- readRDS('MM_data/CDC/cdc.data.imputed.Rds')
+cdc <- readRDS('./Social_Determinants/MM_data/CDC/cdc.data.imputed.Rds')
 cdc <- subset(cdc, period == '2015-2017')
 cdc <- data.frame(split(cdc, cdc$death_cause))
 cdc <- subset(cdc, select = c(All.Cause.county_fips, 
@@ -296,7 +296,7 @@ aggregate_pm_temp_covid_census_mortality_chr_policy_beds_first_cdc = merge(aggre
 
 # Lung Disease dataset
 
-lungdisease <- read_csv("Data/lungdiseaseestimates_uscounties.csv")
+lungdisease <- read_csv("./Social_Determinants/Data/lungdiseaseestimates_uscounties.csv")
 
 lungdisease$PediatricAsthma         <- lungdisease$PediatricAsthma / lungdisease$TotalPopulation  * 10^5
 lungdisease$AdultAsthma             <- lungdisease$AdultAsthma / lungdisease$TotalPopulation  * 10^5
@@ -335,7 +335,7 @@ column_names <- rbind(column_names, FB_names)
 
 # Rural/Urban code
 
-NCHSURCodes2013 <- read_csv("Data/NCHSURCodes2013.csv")
+NCHSURCodes2013 <- read_csv("./Social_Determinants/Data/NCHSURCodes2013.csv")
 NCHSURCodes2013 <- subset(NCHSURCodes2013, select = c(FIPS, `2013 code`))
 
 NCHSURCodes2013_names <- data.frame(column = names(NCHSURCodes2013)[2:2])
@@ -347,10 +347,10 @@ aggregate_data = merge(aggregate_data, NCHSURCodes2013, by.x = "fips",by.y = "FI
 #------------------------------------------------------------------------------------------------------------------------------------------
 
 # Saving data frame to Rds file
-file = paste("Preprocessing_FTS_Outputs/", date_of_study, "data.Rds",sep = "")
+file = paste("./Social_Determinants/Preprocessing_FTS_Outputs/", date_of_study, "data.Rds",sep = "")
 saveRDS(aggregate_data, file)
 
-saveRDS(column_names, "Preprocessing/column_names.Rds")
+saveRDS(column_names, "./Social_Determinants/Preprocessing/column_names.Rds")
 
 #------------------------------------------------------------------------------------------------------------------------------------------
 # Combine five boroughs of NYC
@@ -389,14 +389,14 @@ saveRDS(column_names, "Preprocessing/column_names.Rds")
 #------------------------------------------------------------------------------------------------------------------------------------------
 
 # Import NCHS Urban-Rural Classification Scheme for Counties
-# NCHSURCodes2013 = read_csv("./Data/NCHSURCodes2013.csv")
+# NCHSURCodes2013 = read_csv("./Social_Determinants/Data/NCHSURCodes2013.csv")
 # NCHSURCodes2013$FIPS = str_pad(NCHSURCodes2013$FIPS, 5, pad = "0")
 
 # aggregate_pm_census_cdc_test_beds = merge(aggregate_pm_census_cdc_test_beds,NCHSURCodes2013[,c(1,7)],
 #                                           by.x = "fips",by.y="FIPS", all.x = T)
 
 # BRFSS
-# county_brfss<-read.csv("Data/analytic_data2020.csv")
+# county_brfss<-read.csv("./Social_Determinants/Data/analytic_data2020.csv")
 # county_brfss <- county_brfss[-c(1), ]
 # county_brfss <- subset(county_brfss, select = -c(State.FIPS.Code, County.FIPS.Code, State.Abbreviation, Name, Release.Year, County.Ranked..Yes.1.No.0.))
 # county_brfss <- dplyr::rename(county_brfss, c(fips = X5.digit.FIPS.Code))
