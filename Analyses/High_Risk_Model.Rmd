@@ -44,11 +44,13 @@ summary(high.risk.model)
 
 #Output MRR
 exp(summary(high.risk.model)[10]$coefficients[2:25,1])
-saveRDS(high.risk.model, file = "high.risk.model_MRR.Rds")
+high_risk_MRR <- as.data.frame(exp(summary(high.risk.model)[10]$coefficients[2:25,1]))
+saveRDS(high_risk_MRR, file = "high.risk.model_MRR.Rds")
 
 #Output Wald-test p-values
 summary(high.risk.model)[10]$coefficients[2:25,4]
-saveRDS(high.risk.model, file = "high.risk.model_P.Rds")
+high_risk_p <- as.data.frame(summary(high.risk.model)[10]$coefficients[2:25,4])
+saveRDS(high_risk_p, file = "high.risk.model_P.Rds")
 ```
 
 Ensure statistical assumptions.
