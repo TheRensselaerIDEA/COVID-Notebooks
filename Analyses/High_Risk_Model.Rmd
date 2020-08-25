@@ -44,9 +44,11 @@ summary(high.risk.model)
 
 #Output MRR
 exp(summary(high.risk.model)[10]$coefficients[2:25,1])
+saveRDS(high.risk.model, file = "high.risk.model_MRR.Rds")
 
 #Output Wald-test p-values
 summary(high.risk.model)[10]$coefficients[2:25,4]
+saveRDS(high.risk.model, file = "high.risk.model_P.Rds")
 ```
 
 Ensure statistical assumptions.
