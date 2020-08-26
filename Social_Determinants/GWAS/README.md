@@ -19,3 +19,14 @@ This folder contains codes and results of Social Determinants Analysis.
 2. [`states_NBGWAS.R`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/GWAS/states_NBGWAS.R) contains only the code and is designed to run with [`sparanbsdwas.sh`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/GWAS/sparanbsdwas.sh) to shorten running time.
 
 3. [`state_results`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/GWAS/state_results) contains results of all states social determinants analysis. 
+
+# Usage of parallelism
+
+When using bash scripts, type in commands below in terminal.
+
+```shell
+bash ./Social_Determinants/GWAS/parasdwas.sh
+```
+```shell
+bash ./Social_Determinants/GWAS/sparanbsdwas.sh
+```

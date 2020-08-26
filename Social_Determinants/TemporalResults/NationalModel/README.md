@@ -19,6 +19,6 @@ Files in this form are national model results using data at that date.
 
 [`Loader.R`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/TemporalResults/NationalModel/Loader.R): file that read in MM-DD.rda files to create ALL_*.rds files.
 
-# Figure
+# Visualization
 
-[`Figure.R`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/TemporalResults/NationalModel/Figure.R): file that read ALL_*.rds files to create plots.
+[`figure.rmd`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/TemporalResults/NationalModel/figure.rmd): file that read ALL_*.rds files to create plots.

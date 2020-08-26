@@ -23,5 +23,5 @@ fname="states_NBGWAS.R"
 
 
 for var in "${var_names[@]}"; do {
-  echo `Rscript $fname $var`&
+  echo `Rscript ./Social_Determinants/GWAS/$fname $var`&
 } done

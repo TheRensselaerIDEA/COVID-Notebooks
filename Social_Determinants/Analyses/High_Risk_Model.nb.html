@@ -1755,434 +1755,16 @@ summary {
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc291cmNlKFwiLi9Nb2R1bGVzL1NvdXJjZS5SXCIpXG5gYGAifQ== -->
-<pre class="r"><code>source(&quot;./Modules/Source.R&quot;)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiTG9hZGluZyByZXF1aXJlZCBwYWNrYWdlOiB0aWR5dmVyc2VcblJlZ2lzdGVyZWQgUzMgbWV0aG9kcyBvdmVyd3JpdHRlbiBieSAnZGJwbHlyJzpcbiAgbWV0aG9kICAgICAgICAgZnJvbVxuICBwcmludC50YmxfbGF6eSAgICAgXG4gIHByaW50LnRibF9zcWwgICAgICBcblx1MDAxYlszMG3ilIDilIAgXHUwMDFiWzFtQXR0YWNoaW5nIHBhY2thZ2VzXHUwMDFiWzIybSDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgdGlkeXZlcnNlIDEuMy4wIOKUgOKUgFx1MDAxYlszOW1cblx1MDAxYlszMG1cdTAwMWJbMzJt4pyTXHUwMDFiWzMwbSBcdTAwMWJbMzRtZ2dwbG90Mlx1MDAxYlszMG0gMy4zLjEgICAgIFx1MDAxYlszMm3inJNcdTAwMWJbMzBtIFx1MDAxYlszNG1wdXJyciAgXHUwMDFiWzMwbSAwLjMuNFxuXHUwMDFiWzMybeKck1x1MDAxYlszMG0gXHUwMDFiWzM0bXRpYmJsZSBcdTAwMWJbMzBtIDMuMC4xICAgICBcdTAwMWJbMzJt4pyTXHUwMDFiWzMwbSBcdTAwMWJbMzRtZHBseXIgIFx1MDAxYlszMG0gMS4wLjBcblx1MDAxYlszMm3inJNcdTAwMWJbMzBtIFx1MDAxYlszNG10aWR5ciAgXHUwMDFiWzMwbSAxLjEuMCAgICAgXHUwMDFiWzMybeKck1x1MDAxYlszMG0gXHUwMDFiWzM0bXN0cmluZ3JcdTAwMWJbMzBtIDEuNC4wXG5cdTAwMWJbMzJt4pyTXHUwMDFiWzMwbSBcdTAwMWJbMzRtcmVhZHIgIFx1MDAxYlszMG0gMS4zLjEgICAgIFx1MDAxYlszMm3inJNcdTAwMWJbMzBtIFx1MDAxYlszNG1mb3JjYXRzXHUwMDFiWzMwbSAwLjUuMFx1MDAxYlszOW1cblx1MDAxYlszMG3ilIDilIAgXHUwMDFiWzFtQ29uZmxpY3RzXHUwMDFiWzIybSDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgdGlkeXZlcnNlX2NvbmZsaWN0cygpIOKUgOKUgFxuXHUwMDFiWzMxbXhcdTAwMWJbMzBtIFx1MDAxYlszNG1kcGx5clx1MDAxYlszMG06Olx1MDAxYlszMm1maWx0ZXIoKVx1MDAxYlszMG0gbWFza3MgXHUwMDFiWzM0bXN0YXRzXHUwMDFiWzMwbTo6ZmlsdGVyKClcblx1MDAxYlszMW14XHUwMDFiWzMwbSBcdTAwMWJbMzRtZHBseXJcdTAwMWJbMzBtOjpcdTAwMWJbMzJtbGFnKClcdTAwMWJbMzBtICAgIG1hc2tzIFx1MDAxYlszNG1zdGF0c1x1MDAxYlszMG06OmxhZygpXHUwMDFiWzM5bVxuTG9hZGluZyByZXF1aXJlZCBwYWNrYWdlOiBzcFxuTG9hZGluZyByZXF1aXJlZCBwYWNrYWdlOiByYXN0ZXJcblxuQXR0YWNoaW5nIHBhY2thZ2U6IOKAmHJhc3RlcuKAmVxuXG5UaGUgZm9sbG93aW5nIG9iamVjdCBpcyBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOmRwbHly4oCZOlxuXG4gICAgc2VsZWN0XG5cblRoZSBmb2xsb3dpbmcgb2JqZWN0IGlzIG1hc2tlZCBmcm9tIOKAmHBhY2thZ2U6dGlkeXLigJk6XG5cbiAgICBleHRyYWN0XG5cbkxvYWRpbmcgcmVxdWlyZWQgcGFja2FnZTogcGx5clxuLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS1cbllvdSBoYXZlIGxvYWRlZCBwbHlyIGFmdGVyIGRwbHlyIC0gdGhpcyBpcyBsaWtlbHkgdG8gY2F1c2UgcHJvYmxlbXMuXG5JZiB5b3UgbmVlZCBmdW5jdGlvbnMgZnJvbSBib3RoIHBseXIgYW5kIGRwbHlyLCBwbGVhc2UgbG9hZCBwbHlyIGZpcnN0LCB0aGVuIGRwbHlyOlxubGlicmFyeShwbHlyKTsgbGlicmFyeShkcGx5cilcbi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tXG5cbkF0dGFjaGluZyBwYWNrYWdlOiDigJhwbHly4oCZXG5cblRoZSBmb2xsb3dpbmcgb2JqZWN0cyBhcmUgbWFza2VkIGZyb20g4oCYcGFja2FnZTpkcGx5cuKAmTpcblxuICAgIGFycmFuZ2UsIGNvdW50LCBkZXNjLCBmYWlsd2l0aCwgaWQsIG11dGF0ZSwgcmVuYW1lLCBzdW1tYXJpc2UsIHN1bW1hcml6ZVxuXG5UaGUgZm9sbG93aW5nIG9iamVjdCBpcyBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOnB1cnJy4oCZOlxuXG4gICAgY29tcGFjdFxuXG5Mb2FkaW5nIHJlcXVpcmVkIHBhY2thZ2U6IHNmXG5MaW5raW5nIHRvIEdFT1MgMy40LjIsIEdEQUwgMi4zLjAsIFBST0ogNC44LjBcbkxvYWRpbmcgcmVxdWlyZWQgcGFja2FnZTogZ3JpZFxuTG9hZGluZyByZXF1aXJlZCBwYWNrYWdlOiBwQnJhY2tldHNcbkxvYWRpbmcgcmVxdWlyZWQgcGFja2FnZTogZ3JpZEV4dHJhXG5cbkF0dGFjaGluZyBwYWNrYWdlOiDigJhncmlkRXh0cmHigJlcblxuVGhlIGZvbGxvd2luZyBvYmplY3QgaXMgbWFza2VkIGZyb20g4oCYcGFja2FnZTpkcGx5cuKAmTpcblxuICAgIGNvbWJpbmVcblxuTG9hZGluZyByZXF1aXJlZCBwYWNrYWdlOiBsbWU0XG5Mb2FkaW5nIHJlcXVpcmVkIHBhY2thZ2U6IE1hdHJpeFxuXG5BdHRhY2hpbmcgcGFja2FnZTog4oCYTWF0cml44oCZXG5cblRoZSBmb2xsb3dpbmcgb2JqZWN0cyBhcmUgbWFza2VkIGZyb20g4oCYcGFja2FnZTp0aWR5cuKAmTpcblxuICAgIGV4cGFuZCwgcGFjaywgdW5wYWNrXG5cblxuQXR0YWNoaW5nIHBhY2thZ2U6IOKAmGxtZTTigJlcblxuVGhlIGZvbGxvd2luZyBvYmplY3QgaXMgbWFza2VkIGZyb20g4oCYcGFja2FnZTpyYXN0ZXLigJk6XG5cbiAgICBnZXREYXRhXG5cbkxvYWRpbmcgcmVxdWlyZWQgcGFja2FnZTogbWFwc1xuXG5BdHRhY2hpbmcgcGFja2FnZTog4oCYbWFwc+KAmVxuXG5UaGUgZm9sbG93aW5nIG9iamVjdCBpcyBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOnBseXLigJk6XG5cbiAgICBvem9uZVxuXG5UaGUgZm9sbG93aW5nIG9iamVjdCBpcyBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOnB1cnJy4oCZOlxuXG4gICAgbWFwXG5cbkxvYWRpbmcgcmVxdWlyZWQgcGFja2FnZTogZ2xtbVRNQlxuTG9hZGluZyByZXF1aXJlZCBwYWNrYWdlOiBnYW1tNFxuTG9hZGluZyByZXF1aXJlZCBwYWNrYWdlOiBtZ2N2XG5Mb2FkaW5nIHJlcXVpcmVkIHBhY2thZ2U6IG5sbWVcblxuQXR0YWNoaW5nIHBhY2thZ2U6IOKAmG5sbWXigJlcblxuVGhlIGZvbGxvd2luZyBvYmplY3QgaXMgbWFza2VkIGZyb20g4oCYcGFja2FnZTpsbWU04oCZOlxuXG4gICAgbG1MaXN0XG5cblRoZSBmb2xsb3dpbmcgb2JqZWN0IGlzIG1hc2tlZCBmcm9tIOKAmHBhY2thZ2U6cmFzdGVy4oCZOlxuXG4gICAgZ2V0RGF0YVxuXG5UaGUgZm9sbG93aW5nIG9iamVjdCBpcyBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOmRwbHly4oCZOlxuXG4gICAgY29sbGFwc2VcblxuVGhpcyBpcyBtZ2N2IDEuOC0yOC4gRm9yIG92ZXJ2aWV3IHR5cGUgJ2hlbHAoXCJtZ2N2LXBhY2thZ2VcIiknLlxuVGhpcyBpcyBnYW1tNCAwLjItNlxuXG5Mb2FkaW5nIHJlcXVpcmVkIHBhY2thZ2U6IE1BU1NcblxuQXR0YWNoaW5nIHBhY2thZ2U6IOKAmE1BU1PigJlcblxuVGhlIGZvbGxvd2luZyBvYmplY3RzIGFyZSBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOnJhc3RlcuKAmTpcblxuICAgIGFyZWEsIHNlbGVjdFxuXG5UaGUgZm9sbG93aW5nIG9iamVjdCBpcyBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOmRwbHly4oCZOlxuXG4gICAgc2VsZWN0XG5cbkxvYWRpbmcgcmVxdWlyZWQgcGFja2FnZTogUkN1cmxcblxuQXR0YWNoaW5nIHBhY2thZ2U6IOKAmFJDdXJs4oCZXG5cblRoZSBmb2xsb3dpbmcgb2JqZWN0IGlzIG1hc2tlZCBmcm9tIOKAmHBhY2thZ2U6dGlkeXLigJk6XG5cbiAgICBjb21wbGV0ZVxuXG5Mb2FkaW5nIHJlcXVpcmVkIHBhY2thZ2U6IGh0dHJcbkxvYWRpbmcgcmVxdWlyZWQgcGFja2FnZTogZGF0YS50YWJsZVxuUmVnaXN0ZXJlZCBTMyBtZXRob2Qgb3ZlcndyaXR0ZW4gYnkgJ2RhdGEudGFibGUnOlxuICBtZXRob2QgICAgICAgICAgIGZyb21cbiAgcHJpbnQuZGF0YS50YWJsZSAgICAgXG5kYXRhLnRhYmxlIDEuMTIuOCB1c2luZyAyNCB0aHJlYWRzIChzZWUgP2dldERUdGhyZWFkcykuICBMYXRlc3QgbmV3czogci1kYXRhdGFibGUuY29tXG5cbkF0dGFjaGluZyBwYWNrYWdlOiDigJhkYXRhLnRhYmxl4oCZXG5cblRoZSBmb2xsb3dpbmcgb2JqZWN0IGlzIG1hc2tlZCBmcm9tIOKAmHBhY2thZ2U6cmFzdGVy4oCZOlxuXG4gICAgc2hpZnRcblxuVGhlIGZvbGxvd2luZyBvYmplY3RzIGFyZSBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOmRwbHly4oCZOlxuXG4gICAgYmV0d2VlbiwgZmlyc3QsIGxhc3RcblxuVGhlIGZvbGxvd2luZyBvYmplY3QgaXMgbWFza2VkIGZyb20g4oCYcGFja2FnZTpwdXJycuKAmTpcblxuICAgIHRyYW5zcG9zZVxuXG5Mb2FkaW5nIHJlcXVpcmVkIHBhY2thZ2U6IGRldnRvb2xzXG5Mb2FkaW5nIHJlcXVpcmVkIHBhY2thZ2U6IHVzZXRoaXNcbkxvYWRpbmcgcmVxdWlyZWQgcGFja2FnZTogbHVicmlkYXRlXG5cbkF0dGFjaGluZyBwYWNrYWdlOiDigJhsdWJyaWRhdGXigJlcblxuVGhlIGZvbGxvd2luZyBvYmplY3RzIGFyZSBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOmRhdGEudGFibGXigJk6XG5cbiAgICBob3VyLCBpc293ZWVrLCBtZGF5LCBtaW51dGUsIG1vbnRoLCBxdWFydGVyLCBzZWNvbmQsIHdkYXksIHdlZWssIHlkYXksIHllYXJcblxuVGhlIGZvbGxvd2luZyBvYmplY3RzIGFyZSBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOnJhc3RlcuKAmTpcblxuICAgIGludGVyc2VjdCwgdW5pb25cblxuVGhlIGZvbGxvd2luZyBvYmplY3RzIGFyZSBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOmJhc2XigJk6XG5cbiAgICBkYXRlLCBpbnRlcnNlY3QsIHNldGRpZmYsIHVuaW9uXG5cbkxvYWRpbmcgcmVxdWlyZWQgcGFja2FnZTogYmxtZWNvXG5Mb2FkaW5nIHJlcXVpcmVkIHBhY2thZ2U6IFZpbmVDb3B1bGFcbkxvYWRpbmcgcmVxdWlyZWQgcGFja2FnZTogUGVyZm9ybWFuY2VBbmFseXRpY3NcbkxvYWRpbmcgcmVxdWlyZWQgcGFja2FnZTogeHRzXG5Mb2FkaW5nIHJlcXVpcmVkIHBhY2thZ2U6IHpvb1xuXG5BdHRhY2hpbmcgcGFja2FnZTog4oCYem9v4oCZXG5cblRoZSBmb2xsb3dpbmcgb2JqZWN0cyBhcmUgbWFza2VkIGZyb20g4oCYcGFja2FnZTpiYXNl4oCZOlxuXG4gICAgYXMuRGF0ZSwgYXMuRGF0ZS5udW1lcmljXG5cblxuQXR0YWNoaW5nIHBhY2thZ2U6IOKAmHh0c+KAmVxuXG5UaGUgZm9sbG93aW5nIG9iamVjdHMgYXJlIG1hc2tlZCBmcm9tIOKAmHBhY2thZ2U6ZGF0YS50YWJsZeKAmTpcblxuICAgIGZpcnN0LCBsYXN0XG5cblRoZSBmb2xsb3dpbmcgb2JqZWN0cyBhcmUgbWFza2VkIGZyb20g4oCYcGFja2FnZTpkcGx5cuKAmTpcblxuICAgIGZpcnN0LCBsYXN0XG5cblxuQXR0YWNoaW5nIHBhY2thZ2U6IOKAmFBlcmZvcm1hbmNlQW5hbHl0aWNz4oCZXG5cblRoZSBmb2xsb3dpbmcgb2JqZWN0IGlzIG1hc2tlZCBmcm9tIOKAmHBhY2thZ2U6Z3JhcGhpY3PigJk6XG5cbiAgICBsZWdlbmRcblxuTG9hZGluZyByZXF1aXJlZCBwYWNrYWdlOiBnZ2ZvcnRpZnlcbkxvYWRpbmcgcmVxdWlyZWQgcGFja2FnZTogZm9yZWlnblxuTG9hZGluZyByZXF1aXJlZCBwYWNrYWdlOiBSZXNvdXJjZVNlbGVjdGlvblxuUmVzb3VyY2VTZWxlY3Rpb24gMC4zLTUgXHQgMjAxOS0wNy0yMlxuTG9hZGluZyByZXF1aXJlZCBwYWNrYWdlOiBST0NSXG5Mb2FkaW5nIHJlcXVpcmVkIHBhY2thZ2U6IGtsYVJcbkxvYWRpbmcgcmVxdWlyZWQgcGFja2FnZTogaGVwbG90c1xuTG9hZGluZyByZXF1aXJlZCBwYWNrYWdlOiBjYXJcbkxvYWRpbmcgcmVxdWlyZWQgcGFja2FnZTogY2FyRGF0YVxuUmVnaXN0ZXJlZCBTMyBtZXRob2RzIG92ZXJ3cml0dGVuIGJ5ICdjYXInOlxuICBtZXRob2QgICAgICAgICAgICAgICAgICAgICAgICAgIGZyb21cbiAgaW5mbHVlbmNlLm1lck1vZCAgICAgICAgICAgICAgICBsbWU0XG4gIGNvb2tzLmRpc3RhbmNlLmluZmx1ZW5jZS5tZXJNb2QgbG1lNFxuICBkZmJldGEuaW5mbHVlbmNlLm1lck1vZCAgICAgICAgIGxtZTRcbiAgZGZiZXRhcy5pbmZsdWVuY2UubWVyTW9kICAgICAgICBsbWU0XG5cbkF0dGFjaGluZyBwYWNrYWdlOiDigJhjYXLigJlcblxuVGhlIGZvbGxvd2luZyBvYmplY3QgaXMgbWFza2VkIGZyb20g4oCYcGFja2FnZTpkcGx5cuKAmTpcblxuICAgIHJlY29kZVxuXG5UaGUgZm9sbG93aW5nIG9iamVjdCBpcyBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOnB1cnJy4oCZOlxuXG4gICAgc29tZVxuXG5Mb2FkaW5nIHJlcXVpcmVkIHBhY2thZ2U6IGhlcm1pdGVcbkxvYWRpbmcgcmVxdWlyZWQgcGFja2FnZTogbWF4TGlrXG5Mb2FkaW5nIHJlcXVpcmVkIHBhY2thZ2U6IG1pc2NUb29sc1xuXG5QbGVhc2UgY2l0ZSB0aGUgJ21heExpaycgcGFja2FnZSBhczpcbkhlbm5pbmdzZW4sIEFybmUgYW5kIFRvb21ldCwgT3R0ICgyMDExKS4gbWF4TGlrOiBBIHBhY2thZ2UgZm9yIG1heGltdW0gbGlrZWxpaG9vZCBlc3RpbWF0aW9uIGluIFIuIENvbXB1dGF0aW9uYWwgU3RhdGlzdGljcyAyNigzKSwgNDQzLTQ1OC4gRE9JIDEwLjEwMDcvczAwMTgwLTAxMC0wMjE3LTEuXG5cbklmIHlvdSBoYXZlIHF1ZXN0aW9ucywgc3VnZ2VzdGlvbnMsIG9yIGNvbW1lbnRzIHJlZ2FyZGluZyB0aGUgJ21heExpaycgcGFja2FnZSwgcGxlYXNlIHVzZSBhIGZvcnVtIG9yICd0cmFja2VyJyBhdCBtYXhMaWsncyBSLUZvcmdlIHNpdGU6XG5odHRwczovL3ItZm9yZ2Uuci1wcm9qZWN0Lm9yZy9wcm9qZWN0cy9tYXhsaWsvXG5cbkF0dGFjaGluZyBwYWNrYWdlOiDigJhtYXhMaWvigJlcblxuVGhlIGZvbGxvd2luZyBvYmplY3QgaXMgbWFza2VkIGZyb20g4oCYcGFja2FnZTpyYXN0ZXLigJk6XG5cbiAgICBtYXhWYWx1ZVxuXG5Mb2FkaW5nIHJlcXVpcmVkIHBhY2thZ2U6IGxhdHRpY2VcbkxvYWRpbmcgcmVxdWlyZWQgcGFja2FnZTogYm9vdFxuXG5BdHRhY2hpbmcgcGFja2FnZTog4oCYYm9vdOKAmVxuXG5UaGUgZm9sbG93aW5nIG9iamVjdCBpcyBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOmxhdHRpY2XigJk6XG5cbiAgICBtZWxhbm9tYVxuXG5UaGUgZm9sbG93aW5nIG9iamVjdCBpcyBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOmNhcuKAmTpcblxuICAgIGxvZ2l0XG5cbkxvYWRpbmcgcmVxdWlyZWQgcGFja2FnZTogRGVzY1Rvb2xzXG5cbkF0dGFjaGluZyBwYWNrYWdlOiDigJhEZXNjVG9vbHPigJlcblxuVGhlIGZvbGxvd2luZyBvYmplY3QgaXMgbWFza2VkIGZyb20g4oCYcGFja2FnZTpjYXLigJk6XG5cbiAgICBSZWNvZGVcblxuVGhlIGZvbGxvd2luZyBvYmplY3QgaXMgbWFza2VkIGZyb20g4oCYcGFja2FnZTpkYXRhLnRhYmxl4oCZOlxuXG4gICAgJWxpa2UlXG5cbkxvYWRpbmcgcmVxdWlyZWQgcGFja2FnZTogbXVsdGNvbXBWaWV3XG5Mb2FkaW5nIHJlcXVpcmVkIHBhY2thZ2U6IGVtbWVhbnNcblxuQXR0YWNoaW5nIHBhY2thZ2U6IOKAmGVtbWVhbnPigJlcblxuVGhlIGZvbGxvd2luZyBvYmplY3QgaXMgbWFza2VkIGZyb20g4oCYcGFja2FnZTpkZXZ0b29sc+KAmTpcblxuICAgIHRlc3RcblxuTG9hZGluZyByZXF1aXJlZCBwYWNrYWdlOiBwc2NsXG5DbGFzc2VzIGFuZCBNZXRob2RzIGZvciBSIGRldmVsb3BlZCBpbiB0aGVcblBvbGl0aWNhbCBTY2llbmNlIENvbXB1dGF0aW9uYWwgTGFib3JhdG9yeVxuRGVwYXJ0bWVudCBvZiBQb2xpdGljYWwgU2NpZW5jZVxuU3RhbmZvcmQgVW5pdmVyc2l0eVxuU2ltb24gSmFja21hblxuaHVyZGxlIGFuZCB6ZXJvaW5mbCBmdW5jdGlvbnMgYnkgQWNoaW0gWmVpbGVpc1xuTG9hZGluZyByZXF1aXJlZCBwYWNrYWdlOiByb2J1c3RcbkxvYWRpbmcgcmVxdWlyZWQgcGFja2FnZTogZml0Lm1vZGVsc1xuTG9hZGluZyByZXF1aXJlZCBwYWNrYWdlOiBBRVJcbkxvYWRpbmcgcmVxdWlyZWQgcGFja2FnZTogbG10ZXN0XG5cbkF0dGFjaGluZyBwYWNrYWdlOiDigJhsbXRlc3TigJlcblxuVGhlIGZvbGxvd2luZyBvYmplY3QgaXMgbWFza2VkIGZyb20g4oCYcGFja2FnZTpSQ3VybOKAmTpcblxuICAgIHJlc2V0XG5cbkxvYWRpbmcgcmVxdWlyZWQgcGFja2FnZTogc2FuZHdpY2hcbkxvYWRpbmcgcmVxdWlyZWQgcGFja2FnZTogc3Vydml2YWxcblxuQXR0YWNoaW5nIHBhY2thZ2U6IOKAmHN1cnZpdmFs4oCZXG5cblRoZSBmb2xsb3dpbmcgb2JqZWN0IGlzIG1hc2tlZCBmcm9tIOKAmHBhY2thZ2U6Ym9vdOKAmTpcblxuICAgIGFtbFxuXG5Mb2FkaW5nIHJlcXVpcmVkIHBhY2thZ2U6IHVzbWFwXG5Mb2FkaW5nIHJlcXVpcmVkIHBhY2thZ2U6IGdzaGVldFxuTG9hZGluZyByZXF1aXJlZCBwYWNrYWdlOiBncGxvdHNcblJlZ2lzdGVyZWQgUzMgbWV0aG9kIG92ZXJ3cml0dGVuIGJ5ICdnZGF0YSc6XG4gIG1ldGhvZCAgICAgICAgIGZyb20gICAgIFxuICByZW9yZGVyLmZhY3RvciBEZXNjVG9vbHNcblxuQXR0YWNoaW5nIHBhY2thZ2U6IOKAmGdwbG90c+KAmVxuXG5UaGUgZm9sbG93aW5nIG9iamVjdCBpcyBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOlBlcmZvcm1hbmNlQW5hbHl0aWNz4oCZOlxuXG4gICAgdGV4dHBsb3RcblxuVGhlIGZvbGxvd2luZyBvYmplY3QgaXMgbWFza2VkIGZyb20g4oCYcGFja2FnZTpzdGF0c+KAmTpcblxuICAgIGxvd2Vzc1xuXG5Mb2FkaW5nIHJlcXVpcmVkIHBhY2thZ2U6IGNsdXN0ZXJcblxuQXR0YWNoaW5nIHBhY2thZ2U6IOKAmGNsdXN0ZXLigJlcblxuVGhlIGZvbGxvd2luZyBvYmplY3QgaXMgbWFza2VkIGZyb20g4oCYcGFja2FnZTptYXBz4oCZOlxuXG4gICAgdm90ZXMucmVwdWJcblxuTG9hZGluZyByZXF1aXJlZCBwYWNrYWdlOiBnZ3B1YnJcblxuQXR0YWNoaW5nIHBhY2thZ2U6IOKAmGdncHVicuKAmVxuXG5UaGUgZm9sbG93aW5nIG9iamVjdCBpcyBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOnBseXLigJk6XG5cbiAgICBtdXRhdGVcblxuVGhlIGZvbGxvd2luZyBvYmplY3QgaXMgbWFza2VkIGZyb20g4oCYcGFja2FnZTpyYXN0ZXLigJk6XG5cbiAgICByb3RhdGVcblxuTG9hZGluZyByZXF1aXJlZCBwYWNrYWdlOiBjYXJldFxuXG5BdHRhY2hpbmcgcGFja2FnZTog4oCYY2FyZXTigJlcblxuVGhlIGZvbGxvd2luZyBvYmplY3QgaXMgbWFza2VkIGZyb20g4oCYcGFja2FnZTpzdXJ2aXZhbOKAmTpcblxuICAgIGNsdXN0ZXJcblxuVGhlIGZvbGxvd2luZyBvYmplY3RzIGFyZSBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOkRlc2NUb29sc+KAmTpcblxuICAgIE1BRSwgUk1TRVxuXG5UaGUgZm9sbG93aW5nIG9iamVjdCBpcyBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOmh0dHLigJk6XG5cbiAgICBwcm9ncmVzc1xuXG5UaGUgZm9sbG93aW5nIG9iamVjdCBpcyBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOnB1cnJy4oCZOlxuXG4gICAgbGlmdFxuXG5Mb2FkaW5nIHJlcXVpcmVkIHBhY2thZ2U6IHBST0NcblR5cGUgJ2NpdGF0aW9uKFwicFJPQ1wiKScgZm9yIGEgY2l0YXRpb24uXG5cbkF0dGFjaGluZyBwYWNrYWdlOiDigJhwUk9D4oCZXG5cblRoZSBmb2xsb3dpbmcgb2JqZWN0cyBhcmUgbWFza2VkIGZyb20g4oCYcGFja2FnZTpzdGF0c+KAmTpcblxuICAgIGNvdiwgc21vb3RoLCB2YXJcblxuTG9hZGluZyByZXF1aXJlZCBwYWNrYWdlOiBjdm1zXG5cbkF0dGFjaGluZyBwYWNrYWdlOiDigJhjdm1z4oCZXG5cblRoZSBmb2xsb3dpbmcgb2JqZWN0IGlzIG1hc2tlZCBmcm9tIOKAmHBhY2thZ2U6Z2dwdWJy4oCZOlxuXG4gICAgZm9udFxuXG5Mb2FkaW5nIHJlcXVpcmVkIHBhY2thZ2U6IHNnb2ZcbkxvYWRpbmcgcmVxdWlyZWQgcGFja2FnZTogcG9pYmluXG5Mb2FkaW5nIHJlcXVpcmVkIHBhY2thZ2U6IGthYmxlRXh0cmFcblxuQXR0YWNoaW5nIHBhY2thZ2U6IOKAmGthYmxlRXh0cmHigJlcblxuVGhlIGZvbGxvd2luZyBvYmplY3QgaXMgbWFza2VkIGZyb20g4oCYcGFja2FnZTpkcGx5cuKAmTpcblxuICAgIGdyb3VwX3Jvd3NcblxuTG9hZGluZyByZXF1aXJlZCBwYWNrYWdlOiBwcmFjbWFcblxuQXR0YWNoaW5nIHBhY2thZ2U6IOKAmHByYWNtYeKAmVxuXG5UaGUgZm9sbG93aW5nIG9iamVjdCBpcyBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOkRlc2NUb29sc+KAmTpcblxuICAgIE1vZGVcblxuVGhlIGZvbGxvd2luZyBvYmplY3QgaXMgbWFza2VkIGZyb20g4oCYcGFja2FnZTpib2904oCZOlxuXG4gICAgbG9naXRcblxuVGhlIGZvbGxvd2luZyBvYmplY3RzIGFyZSBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOm1heExpa+KAmTpcblxuICAgIGdyYWRpZW50LCBoZXNzaWFuXG5cblRoZSBmb2xsb3dpbmcgb2JqZWN0IGlzIG1hc2tlZCBmcm9tIOKAmHBhY2thZ2U6Y2Fy4oCZOlxuXG4gICAgbG9naXRcblxuVGhlIGZvbGxvd2luZyBvYmplY3QgaXMgbWFza2VkIGZyb20g4oCYcGFja2FnZTptZ2N24oCZOlxuXG4gICAgbWFnaWNcblxuVGhlIGZvbGxvd2luZyBvYmplY3RzIGFyZSBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOk1hdHJpeOKAmTpcblxuICAgIGV4cG0sIGx1LCB0cmlsLCB0cml1XG5cblRoZSBmb2xsb3dpbmcgb2JqZWN0IGlzIG1hc2tlZCBmcm9tIOKAmHBhY2thZ2U6cHVycnLigJk6XG5cbiAgICBjcm9zc1xuXG5Mb2FkaW5nIHJlcXVpcmVkIHBhY2thZ2U6IE5TQVBIdXRpbHNcbiJ9 -->
-<pre><code>Loading required package: tidyverse
-Registered S3 methods overwritten by 'dbplyr':
-  method         from
-  print.tbl_lazy     
-  print.tbl_sql      
-[30m── [1mAttaching packages[22m ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──[39m
-[30m[32m✓[30m [34mggplot2[30m 3.3.1     [32m✓[30m [34mpurrr  [30m 0.3.4
-[32m✓[30m [34mtibble [30m 3.0.1     [32m✓[30m [34mdplyr  [30m 1.0.0
-[32m✓[30m [34mtidyr  [30m 1.1.0     [32m✓[30m [34mstringr[30m 1.4.0
-[32m✓[30m [34mreadr  [30m 1.3.1     [32m✓[30m [34mforcats[30m 0.5.0[39m
-[30m── [1mConflicts[22m ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
-[31mx[30m [34mdplyr[30m::[32mfilter()[30m masks [34mstats[30m::filter()
-[31mx[30m [34mdplyr[30m::[32mlag()[30m    masks [34mstats[30m::lag()[39m
-Loading required package: sp
-Loading required package: raster
-
-Attaching package: ‘raster’
-
-The following object is masked from ‘package:dplyr’:
-
-    select
-
-The following object is masked from ‘package:tidyr’:
-
-    extract
-
-Loading required package: plyr
------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-You have loaded plyr after dplyr - this is likely to cause problems.
-If you need functions from both plyr and dplyr, please load plyr first, then dplyr:
-library(plyr); library(dplyr)
------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-Attaching package: ‘plyr’
-
-The following objects are masked from ‘package:dplyr’:
-
-    arrange, count, desc, failwith, id, mutate, rename, summarise, summarize
-
-The following object is masked from ‘package:purrr’:
-
-    compact
-
-Loading required package: sf
-Linking to GEOS 3.4.2, GDAL 2.3.0, PROJ 4.8.0
-Loading required package: grid
-Loading required package: pBrackets
-Loading required package: gridExtra
-
-Attaching package: ‘gridExtra’
-
-The following object is masked from ‘package:dplyr’:
-
-    combine
-
-Loading required package: lme4
-Loading required package: Matrix
-
-Attaching package: ‘Matrix’
-
-The following objects are masked from ‘package:tidyr’:
-
-    expand, pack, unpack
-
-
-Attaching package: ‘lme4’
-
-The following object is masked from ‘package:raster’:
-
-    getData
-
-Loading required package: maps
-
-Attaching package: ‘maps’
-
-The following object is masked from ‘package:plyr’:
-
-    ozone
-
-The following object is masked from ‘package:purrr’:
-
-    map
-
-Loading required package: glmmTMB
-Loading required package: gamm4
-Loading required package: mgcv
-Loading required package: nlme
-
-Attaching package: ‘nlme’
-
-The following object is masked from ‘package:lme4’:
-
-    lmList
-
-The following object is masked from ‘package:raster’:
-
-    getData
-
-The following object is masked from ‘package:dplyr’:
-
-    collapse
-
-This is mgcv 1.8-28. For overview type 'help(&quot;mgcv-package&quot;)'.
-This is gamm4 0.2-6
-
-Loading required package: MASS
-
-Attaching package: ‘MASS’
-
-The following objects are masked from ‘package:raster’:
-
-    area, select
-
-The following object is masked from ‘package:dplyr’:
-
-    select
-
-Loading required package: RCurl
-
-Attaching package: ‘RCurl’
-
-The following object is masked from ‘package:tidyr’:
-
-    complete
-
-Loading required package: httr
-Loading required package: data.table
-Registered S3 method overwritten by 'data.table':
-  method           from
-  print.data.table     
-data.table 1.12.8 using 24 threads (see ?getDTthreads).  Latest news: r-datatable.com
-
-Attaching package: ‘data.table’
-
-The following object is masked from ‘package:raster’:
-
-    shift
-
-The following objects are masked from ‘package:dplyr’:
-
-    between, first, last
-
-The following object is masked from ‘package:purrr’:
-
-    transpose
-
-Loading required package: devtools
-Loading required package: usethis
-Loading required package: lubridate
-
-Attaching package: ‘lubridate’
-
-The following objects are masked from ‘package:data.table’:
-
-    hour, isoweek, mday, minute, month, quarter, second, wday, week, yday, year
-
-The following objects are masked from ‘package:raster’:
-
-    intersect, union
-
-The following objects are masked from ‘package:base’:
-
-    date, intersect, setdiff, union
-
-Loading required package: blmeco
-Loading required package: VineCopula
-Loading required package: PerformanceAnalytics
-Loading required package: xts
-Loading required package: zoo
-
-Attaching package: ‘zoo’
-
-The following objects are masked from ‘package:base’:
-
-    as.Date, as.Date.numeric
-
-
-Attaching package: ‘xts’
-
-The following objects are masked from ‘package:data.table’:
-
-    first, last
-
-The following objects are masked from ‘package:dplyr’:
-
-    first, last
-
-
-Attaching package: ‘PerformanceAnalytics’
-
-The following object is masked from ‘package:graphics’:
-
-    legend
-
-Loading required package: ggfortify
-Loading required package: foreign
-Loading required package: ResourceSelection
-ResourceSelection 0.3-5      2019-07-22
-Loading required package: ROCR
-Loading required package: klaR
-Loading required package: heplots
-Loading required package: car
-Loading required package: carData
-Registered S3 methods overwritten by 'car':
-  method                          from
-  influence.merMod                lme4
-  cooks.distance.influence.merMod lme4
-  dfbeta.influence.merMod         lme4
-  dfbetas.influence.merMod        lme4
-
-Attaching package: ‘car’
-
-The following object is masked from ‘package:dplyr’:
-
-    recode
-
-The following object is masked from ‘package:purrr’:
-
-    some
-
-Loading required package: hermite
-Loading required package: maxLik
-Loading required package: miscTools
-
-Please cite the 'maxLik' package as:
-Henningsen, Arne and Toomet, Ott (2011). maxLik: A package for maximum likelihood estimation in R. Computational Statistics 26(3), 443-458. DOI 10.1007/s00180-010-0217-1.
-
-If you have questions, suggestions, or comments regarding the 'maxLik' package, please use a forum or 'tracker' at maxLik's R-Forge site:
-https://r-forge.r-project.org/projects/maxlik/
-
-Attaching package: ‘maxLik’
-
-The following object is masked from ‘package:raster’:
-
-    maxValue
-
-Loading required package: lattice
-Loading required package: boot
-
-Attaching package: ‘boot’
-
-The following object is masked from ‘package:lattice’:
-
-    melanoma
-
-The following object is masked from ‘package:car’:
-
-    logit
-
-Loading required package: DescTools
-
-Attaching package: ‘DescTools’
-
-The following object is masked from ‘package:car’:
-
-    Recode
-
-The following object is masked from ‘package:data.table’:
-
-    %like%
-
-Loading required package: multcompView
-Loading required package: emmeans
-
-Attaching package: ‘emmeans’
-
-The following object is masked from ‘package:devtools’:
-
-    test
-
-Loading required package: pscl
-Classes and Methods for R developed in the
-Political Science Computational Laboratory
-Department of Political Science
-Stanford University
-Simon Jackman
-hurdle and zeroinfl functions by Achim Zeileis
-Loading required package: robust
-Loading required package: fit.models
-Loading required package: AER
-Loading required package: lmtest
-
-Attaching package: ‘lmtest’
-
-The following object is masked from ‘package:RCurl’:
-
-    reset
-
-Loading required package: sandwich
-Loading required package: survival
-
-Attaching package: ‘survival’
-
-The following object is masked from ‘package:boot’:
-
-    aml
-
-Loading required package: usmap
-Loading required package: gsheet
-Loading required package: gplots
-Registered S3 method overwritten by 'gdata':
-  method         from     
-  reorder.factor DescTools
-
-Attaching package: ‘gplots’
-
-The following object is masked from ‘package:PerformanceAnalytics’:
-
-    textplot
-
-The following object is masked from ‘package:stats’:
-
-    lowess
-
-Loading required package: cluster
-
-Attaching package: ‘cluster’
-
-The following object is masked from ‘package:maps’:
-
-    votes.repub
-
-Loading required package: ggpubr
-
-Attaching package: ‘ggpubr’
-
-The following object is masked from ‘package:plyr’:
-
-    mutate
-
-The following object is masked from ‘package:raster’:
-
-    rotate
-
-Loading required package: caret
-
-Attaching package: ‘caret’
-
-The following object is masked from ‘package:survival’:
-
-    cluster
-
-The following objects are masked from ‘package:DescTools’:
-
-    MAE, RMSE
-
-The following object is masked from ‘package:httr’:
-
-    progress
-
-The following object is masked from ‘package:purrr’:
-
-    lift
-
-Loading required package: pROC
-Type 'citation(&quot;pROC&quot;)' for a citation.
-
-Attaching package: ‘pROC’
-
-The following objects are masked from ‘package:stats’:
-
-    cov, smooth, var
-
-Loading required package: cvms
-
-Attaching package: ‘cvms’
-
-The following object is masked from ‘package:ggpubr’:
-
-    font
-
-Loading required package: sgof
-Loading required package: poibin
-Loading required package: kableExtra
-
-Attaching package: ‘kableExtra’
-
-The following object is masked from ‘package:dplyr’:
-
-    group_rows
-
-Loading required package: pracma
-
-Attaching package: ‘pracma’
-
-The following object is masked from ‘package:DescTools’:
-
-    Mode
-
-The following object is masked from ‘package:boot’:
-
-    logit
-
-The following objects are masked from ‘package:maxLik’:
-
-    gradient, hessian
-
-The following object is masked from ‘package:car’:
-
-    logit
-
-The following object is masked from ‘package:mgcv’:
-
-    magic
-
-The following objects are masked from ‘package:Matrix’:
-
-    expm, lu, tril, triu
-
-The following object is masked from ‘package:purrr’:
-
-    cross
-
-Loading required package: NSAPHutils</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYWdncmVnYXRlLmRhdGE8LXJlYWRSRFMoJy4vUHJlcHJvY2Vzc2luZ19GVFNfT3V0cHV0cy8wNy0wNS0yMDIwZGF0YS5SZHMnKVxuYGBgIn0= -->
-<pre class="r"><code>aggregate.data&lt;-readRDS('./Preprocessing_FTS_Outputs/07-05-2020data.Rds')</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc291cmNlKFwiLi9Nb2R1bGVzL1NvdXJjZS5SXCIpXG5hZ2dyZWdhdGUuZGF0YTwtcmVhZFJEUygnLi9QcmVwcm9jZXNzaW5nX0ZUU19PdXRwdXRzLzA3LTA1LTIwMjBkYXRhLlJkcycpXG5gYGAifQ== -->
+<pre class="r"><code>source(&quot;./Modules/Source.R&quot;)
+aggregate.data&lt;-readRDS('./Preprocessing_FTS_Outputs/07-05-2020data.Rds')</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Execute the main analysis.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGlnaC5yaXNrLm1vZGVsID0gZ2xtZXIubmIoRGVhdGhzIH4gc2NhbGUoaGlzcGFuaWMpICsgc2NhbGUocGN0X2JsaykgKyBzY2FsZShwY3RfYXNpYW4pICsgc2NhbGUocGN0X3doaXRlKSsgICBzY2FsZShwY3RfbmF0aXZlKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArIGZhY3RvcihxX3BvcGRlbnNpdHkpXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICsgc2NhbGUobG9nKG1lZGhvdXNlaG9sZGluY29tZSkpICsgc2NhbGUoZWR1Y2F0aW9uKSArIHNjYWxlKGJlZHMvcG9wdWxhdGlvbilcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKyBzY2FsZShkYXRlX3NpbmNlX3NvY2lhbCkgKyBzY2FsZShkYXRlX3NpbmNlKSArIHNjYWxlKGRhdGVfc2luY2VfcmVvcGVuKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUoZGF0ZV9zaW5jZV9yZWNsb3N1cmUpK3NjYWxlKGRhdGVfc2luY2VfbWFzaylcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKHBjdF9vYmVzaXR5KVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUocGN0X2FnZTY1KStzY2FsZShwY3RfZGlhYmV0ZXMpXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShMdW5nQ2FuY2VyKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUoQ09QRClcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKEFkdWx0QXN0aG1hKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUoQ2FyZGlvdmFzY3VsYXIuZGVhdGhfcmF0ZSlcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKyAoMXxzdGF0ZSlcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKyBvZmZzZXQobG9nKHBvcHVsYXRpb24pKSwgZGF0YT0gYWdncmVnYXRlLmRhdGEpXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGlnaC5yaXNrLm1vZGVsID0gZ2xtZXIubmIoRGVhdGhzIH4gc2NhbGUoaGlzcGFuaWMpICsgc2NhbGUocGN0X2JsaykgKyBzY2FsZShwY3RfYXNpYW4pICsgc2NhbGUocGN0X3doaXRlKSsgICBzY2FsZShwY3RfbmF0aXZlKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArIGZhY3RvcihxX3BvcGRlbnNpdHkpXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICsgc2NhbGUobG9nKG1lZGhvdXNlaG9sZGluY29tZSkpICsgc2NhbGUoZWR1Y2F0aW9uKSArIHNjYWxlKGJlZHMvcG9wdWxhdGlvbilcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKyBzY2FsZShkYXRlX3NpbmNlX3NvY2lhbCkgKyBzY2FsZShkYXRlX3NpbmNlKSArIHNjYWxlKGRhdGVfc2luY2VfcmVvcGVuKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUoZGF0ZV9zaW5jZV9yZWNsb3N1cmUpK3NjYWxlKGRhdGVfc2luY2VfbWFzaylcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKHBjdF9vYmVzaXR5KVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUocGN0X2FnZTY1KStzY2FsZShwY3RfZGlhYmV0ZXMpXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShMdW5nQ2FuY2VyKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUoQ09QRClcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKEFkdWx0QXN0aG1hKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUoQ2FyZGlvdmFzY3VsYXIuZGVhdGhfcmF0ZSlcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKyAoMXxzdGF0ZSlcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKyBvZmZzZXQobG9nKHBvcHVsYXRpb24pKSwgZGF0YT0gYWdncmVnYXRlLmRhdGEpXG5gYGAifQ== -->
 <pre class="r"><code>high.risk.model = glmer.nb(Deaths ~ scale(hispanic) + scale(pct_blk) + scale(pct_asian) + scale(pct_white)+   scale(pct_native)
                                             + factor(q_popdensity)
                                             + scale(log(medhouseholdincome)) + scale(education) + scale(beds/population)
@@ -2195,25 +1777,114 @@ Loading required package: NSAPHutils</code></pre>
                                             +scale(AdultAsthma)
                                             +scale(Cardiovascular.death_rate)
                                             + (1|state)
-                                            + offset(log(population)), data= aggregate.data)
-                                            </code></pre>
+                                            + offset(log(population)), data= aggregate.data)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiTW9kZWwgaXMgbmVhcmx5IHVuaWRlbnRpZmlhYmxlOiB2ZXJ5IGxhcmdlIGVpZ2VudmFsdWVcbiAtIFJlc2NhbGUgdmFyaWFibGVzP01vZGVsIGZhaWxlZCB0byBjb252ZXJnZSB3aXRoIG1heHxncmFkfCA9IDAuMDAzNTAyMzggKHRvbCA9IDAuMDAyLCBjb21wb25lbnQgMSlcbiJ9 -->
+<pre><code>Model is nearly unidentifiable: very large eigenvalue
+ - Rescale variables?Model failed to converge with max|grad| = 0.00350238 (tol = 0.002, component 1)</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcbmBgYCJ9 -->
+<pre class="r"><code>                                            </code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Print the output of main analysis.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI0dlbmVyYWwgU3VtbWFyeVxuc3VtbWFyeShoaWdoLnJpc2subW9kZWwpXG4jT3V0cHV0IE1SUlxuZXhwKHN1bW1hcnkoaGlnaC5yaXNrLm1vZGVsKVsxMF0kY29lZmZpY2llbnRzWzI6MjUsMV0pXG5oaWdoX3Jpc2tfTVJSIDwtIGFzLmRhdGEuZnJhbWUoZXhwKHN1bW1hcnkoaGlnaC5yaXNrLm1vZGVsKVsxMF0kY29lZmZpY2llbnRzWzI6MjUsMV0pKVxuc2F2ZVJEUyhoaWdoX3Jpc2tfTVJSLCBmaWxlID0gXCIuL1NvY2lhbF9EZXRlcm1pbmFudHMvSGlnaFJpc2tSZXN1bHRzL2hpZ2gucmlzay5tb2RlbF9NUlIuUmRzXCIpXG4jT3V0cHV0IFdhbGQtdGVzdCBwLXZhbHVlc1xuc3VtbWFyeShoaWdoLnJpc2subW9kZWwpWzEwXSRjb2VmZmljaWVudHNbMjoyNSw0XVxuaGlnaF9yaXNrX3AgPC0gYXMuZGF0YS5mcmFtZShzdW1tYXJ5KGhpZ2gucmlzay5tb2RlbClbMTBdJGNvZWZmaWNpZW50c1syOjI1LDRdKVxuc2F2ZVJEUyhoaWdoX3Jpc2tfcCwgZmlsZSA9IFwiLi9Tb2NpYWxfRGV0ZXJtaW5hbnRzL0hpZ2hSaXNrUmVzdWx0cy9oaWdoLnJpc2subW9kZWxfUC5SZHNcIilcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI0dlbmVyYWwgU3VtbWFyeVxuc3VtbWFyeShoaWdoLnJpc2subW9kZWwpXG5gYGAifQ== -->
 <pre class="r"><code>#General Summary
-summary(high.risk.model)
-#Output MRR
-exp(summary(high.risk.model)[10]$coefficients[2:25,1])
-high_risk_MRR &lt;- as.data.frame(exp(summary(high.risk.model)[10]$coefficients[2:25,1]))
-saveRDS(high_risk_MRR, file = &quot;./Social_Determinants/HighRiskResults/high.risk.model_MRR.Rds&quot;)
+summary(high.risk.model)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiR2VuZXJhbGl6ZWQgbGluZWFyIG1peGVkIG1vZGVsIGZpdCBieSBtYXhpbXVtIGxpa2VsaWhvb2QgKExhcGxhY2UgQXBwcm94aW1hdGlvbikgWydnbG1lck1vZCddXG4gRmFtaWx5OiBOZWdhdGl2ZSBCaW5vbWlhbCgwLjg4NTkpICAoIGxvZyApXG5Gb3JtdWxhOiBEZWF0aHMgfiBzY2FsZShoaXNwYW5pYykgKyBzY2FsZShwY3RfYmxrKSArIHNjYWxlKHBjdF9hc2lhbikgKyAgICAgIHNjYWxlKHBjdF93aGl0ZSkgKyBzY2FsZShwY3RfbmF0aXZlKSArIGZhY3RvcihxX3BvcGRlbnNpdHkpICsgIFxuICAgIHNjYWxlKGxvZyhtZWRob3VzZWhvbGRpbmNvbWUpKSArIHNjYWxlKGVkdWNhdGlvbikgKyBzY2FsZShiZWRzL3BvcHVsYXRpb24pICsgICAgICBzY2FsZShkYXRlX3NpbmNlX3NvY2lhbCkgKyBzY2FsZShkYXRlX3NpbmNlKSArIHNjYWxlKGRhdGVfc2luY2VfcmVvcGVuKSArICBcbiAgICBzY2FsZShkYXRlX3NpbmNlX3JlY2xvc3VyZSkgKyBzY2FsZShkYXRlX3NpbmNlX21hc2spICsgc2NhbGUocGN0X29iZXNpdHkpICsgICAgICBzY2FsZShwY3RfYWdlNjUpICsgc2NhbGUocGN0X2RpYWJldGVzKSArIHNjYWxlKEx1bmdDYW5jZXIpICsgIFxuICAgIHNjYWxlKENPUEQpICsgc2NhbGUoQWR1bHRBc3RobWEpICsgc2NhbGUoQ2FyZGlvdmFzY3VsYXIuZGVhdGhfcmF0ZSkgKyAgICAgICgxIHwgc3RhdGUpICsgb2Zmc2V0KGxvZyhwb3B1bGF0aW9uKSlcbiAgIERhdGE6IGFnZ3JlZ2F0ZS5kYXRhXG5cbiAgICAgQUlDICAgICAgQklDICAgbG9nTGlrIGRldmlhbmNlIGRmLnJlc2lkIFxuIDE1ODA2LjQgIDE1OTY5LjQgIC03ODc2LjIgIDE1NzUyLjQgICAgIDMwNjYgXG5cblNjYWxlZCByZXNpZHVhbHM6IFxuICAgIE1pbiAgICAgIDFRICBNZWRpYW4gICAgICAzUSAgICAgTWF4IFxuLTAuOTM4NCAtMC42NDk0IC0wLjM0MDIgIDAuMTE1NiAxMi4xNTA4IFxuXG5SYW5kb20gZWZmZWN0czpcbiBHcm91cHMgTmFtZSAgICAgICAgVmFyaWFuY2UgU3RkLkRldi5cbiBzdGF0ZSAgKEludGVyY2VwdCkgMC41MzQ5ICAgMC43MzE0ICBcbk51bWJlciBvZiBvYnM6IDMwOTMsIGdyb3VwczogIHN0YXRlLCA0OVxuXG5GaXhlZCBlZmZlY3RzOlxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIEVzdGltYXRlIFN0ZC4gRXJyb3IgeiB2YWx1ZSBQcig+fHp8KSAgICBcbihJbnRlcmNlcHQpICAgICAgICAgICAgICAgICAgICAgIC05LjIxNTY1NiAgIDAuMTQ5MDk1IC02MS44MTEgIDwgMmUtMTYgKioqXG5zY2FsZShoaXNwYW5pYykgICAgICAgICAgICAgICAgICAgMC4xOTQ5NzAgICAwLjA1MDk1NiAgIDMuODI2ICAwLjAwMDEzICoqKlxuc2NhbGUocGN0X2JsaykgICAgICAgICAgICAgICAgICAgIDAuMzA4MjQ4ICAgMC4xMzk1NzIgICAyLjIwOSAgMC4wMjcyMSAqICBcbnNjYWxlKHBjdF9hc2lhbikgICAgICAgICAgICAgICAgICAwLjA3OTg1NyAgIDAuMDM3OTM2ICAgMi4xMDUgIDAuMDM1MjkgKiAgXG5zY2FsZShwY3Rfd2hpdGUpICAgICAgICAgICAgICAgICAtMC4xMDc5NjYgICAwLjE0OTMwNSAgLTAuNzIzICAwLjQ2OTYwICAgIFxuc2NhbGUocGN0X25hdGl2ZSkgICAgICAgICAgICAgICAgIDAuMTUxMzY1ICAgMC4wNjU2NzkgICAyLjMwNSAgMC4wMjExOSAqICBcbmZhY3RvcihxX3BvcGRlbnNpdHkpMiAgICAgICAgICAgIC0wLjA2NzQ0MiAgIDAuMTEzMjM5ICAtMC41OTYgIDAuNTUxNDYgICAgXG5mYWN0b3IocV9wb3BkZW5zaXR5KTMgICAgICAgICAgICAtMC4wMzkwODIgICAwLjExNDYzOCAgLTAuMzQxICAwLjczMzE3ICAgIFxuZmFjdG9yKHFfcG9wZGVuc2l0eSk0ICAgICAgICAgICAgLTAuMTkyNTU1ICAgMC4xMTc2MDUgIC0xLjYzNyAgMC4xMDE1NyAgICBcbmZhY3RvcihxX3BvcGRlbnNpdHkpNSAgICAgICAgICAgICAwLjAwMTE1NSAgIDAuMTI5MTQwICAgMC4wMDkgIDAuOTkyODYgICAgXG5zY2FsZShsb2cobWVkaG91c2Vob2xkaW5jb21lKSkgICAgMC4xOTg4NzIgICAwLjA0NDYyNCAgIDQuNDU3IDguMzNlLTA2ICoqKlxuc2NhbGUoZWR1Y2F0aW9uKSAgICAgICAgICAgICAgICAgIDAuMTMyMTk2ICAgMC4wNDE1NDggICAzLjE4MiAgMC4wMDE0NiAqKiBcbnNjYWxlKGJlZHMvcG9wdWxhdGlvbikgICAgICAgICAgICAwLjAwNzI5MiAgIDAuMDMzODg1ICAgMC4yMTUgIDAuODI5NjEgICAgXG5zY2FsZShkYXRlX3NpbmNlX3NvY2lhbCkgICAgICAgICAgMC4wOTg3NDQgICAwLjE3Mjc1NCAgIDAuNTcyICAwLjU2NzYwICAgIFxuc2NhbGUoZGF0ZV9zaW5jZSkgICAgICAgICAgICAgICAgIDAuODEwNjUwICAgMC4wNzUzMjkgIDEwLjc2MiAgPCAyZS0xNiAqKipcbnNjYWxlKGRhdGVfc2luY2VfcmVvcGVuKSAgICAgICAgICAwLjEwODI0NCAgIDAuMTc2MTUxICAgMC42MTQgIDAuNTM4ODkgICAgXG5zY2FsZShkYXRlX3NpbmNlX3JlY2xvc3VyZSkgICAgICAgMC4wNzM4MDIgICAwLjE0NzkwMCAgIDAuNDk5ICAwLjYxNzc4ICAgIFxuc2NhbGUoZGF0ZV9zaW5jZV9tYXNrKSAgICAgICAgICAgIDAuMjY1NTQ2ICAgMC4xMDA2OTQgICAyLjYzNyAgMC4wMDgzNiAqKiBcbnNjYWxlKHBjdF9vYmVzaXR5KSAgICAgICAgICAgICAgIC0wLjAxNDg1MCAgIDAuMDM1MDIwICAtMC40MjQgIDAuNjcxNTMgICAgXG5zY2FsZShwY3RfYWdlNjUpICAgICAgICAgICAgICAgICAgMC4wNDYyMDMgICAwLjA1OTkwNCAgIDAuNzcxICAwLjQ0MDUzICAgIFxuc2NhbGUocGN0X2RpYWJldGVzKSAgICAgICAgICAgICAgIDAuMDQzMDgxICAgMC4wMzUxNjcgICAxLjIyNSAgMC4yMjA1NSAgICBcbnNjYWxlKEx1bmdDYW5jZXIpICAgICAgICAgICAgICAgICAwLjM0MjY3NCAgIDAuMTIyMzkyICAgMi44MDAgIDAuMDA1MTEgKiogXG5zY2FsZShDT1BEKSAgICAgICAgICAgICAgICAgICAgICAgMC4wNDE1MzMgICAwLjE1MzMxNCAgIDAuMjcxICAwLjc4NjQ3ICAgIFxuc2NhbGUoQWR1bHRBc3RobWEpICAgICAgICAgICAgICAgLTAuMjIzODkxICAgMC4wOTYzMTIgIC0yLjMyNSAgMC4wMjAwOSAqICBcbnNjYWxlKENhcmRpb3Zhc2N1bGFyLmRlYXRoX3JhdGUpICAwLjA4MTQwOCAgIDAuMDQyNjU5ICAgMS45MDggIDAuMDU2MzUgLiAgXG4tLS1cblNpZ25pZi4gY29kZXM6ICAwIOKAmCoqKuKAmSAwLjAwMSDigJgqKuKAmSAwLjAxIOKAmCrigJkgMC4wNSDigJgu4oCZIDAuMSDigJgg4oCZIDFcbiJ9 -->
+<pre><code>Generalized linear mixed model fit by maximum likelihood (Laplace Approximation) ['glmerMod']
+ Family: Negative Binomial(0.8859)  ( log )
+Formula: Deaths ~ scale(hispanic) + scale(pct_blk) + scale(pct_asian) +      scale(pct_white) + scale(pct_native) + factor(q_popdensity) +  
+    scale(log(medhouseholdincome)) + scale(education) + scale(beds/population) +      scale(date_since_social) + scale(date_since) + scale(date_since_reopen) +  
+    scale(date_since_reclosure) + scale(date_since_mask) + scale(pct_obesity) +      scale(pct_age65) + scale(pct_diabetes) + scale(LungCancer) +  
+    scale(COPD) + scale(AdultAsthma) + scale(Cardiovascular.death_rate) +      (1 | state) + offset(log(population))
+   Data: aggregate.data
+
+     AIC      BIC   logLik deviance df.resid 
+ 15806.4  15969.4  -7876.2  15752.4     3066 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-0.9384 -0.6494 -0.3402  0.1156 12.1508 
+
+Random effects:
+ Groups Name        Variance Std.Dev.
+ state  (Intercept) 0.5349   0.7314  
+Number of obs: 3093, groups:  state, 49
+
+Fixed effects:
+                                  Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)                      -9.215656   0.149095 -61.811  &lt; 2e-16 ***
+scale(hispanic)                   0.194970   0.050956   3.826  0.00013 ***
+scale(pct_blk)                    0.308248   0.139572   2.209  0.02721 *  
+scale(pct_asian)                  0.079857   0.037936   2.105  0.03529 *  
+scale(pct_white)                 -0.107966   0.149305  -0.723  0.46960    
+scale(pct_native)                 0.151365   0.065679   2.305  0.02119 *  
+factor(q_popdensity)2            -0.067442   0.113239  -0.596  0.55146    
+factor(q_popdensity)3            -0.039082   0.114638  -0.341  0.73317    
+factor(q_popdensity)4            -0.192555   0.117605  -1.637  0.10157    
+factor(q_popdensity)5             0.001155   0.129140   0.009  0.99286    
+scale(log(medhouseholdincome))    0.198872   0.044624   4.457 8.33e-06 ***
+scale(education)                  0.132196   0.041548   3.182  0.00146 ** 
+scale(beds/population)            0.007292   0.033885   0.215  0.82961    
+scale(date_since_social)          0.098744   0.172754   0.572  0.56760    
+scale(date_since)                 0.810650   0.075329  10.762  &lt; 2e-16 ***
+scale(date_since_reopen)          0.108244   0.176151   0.614  0.53889    
+scale(date_since_reclosure)       0.073802   0.147900   0.499  0.61778    
+scale(date_since_mask)            0.265546   0.100694   2.637  0.00836 ** 
+scale(pct_obesity)               -0.014850   0.035020  -0.424  0.67153    
+scale(pct_age65)                  0.046203   0.059904   0.771  0.44053    
+scale(pct_diabetes)               0.043081   0.035167   1.225  0.22055    
+scale(LungCancer)                 0.342674   0.122392   2.800  0.00511 ** 
+scale(COPD)                       0.041533   0.153314   0.271  0.78647    
+scale(AdultAsthma)               -0.223891   0.096312  -2.325  0.02009 *  
+scale(Cardiovascular.death_rate)  0.081408   0.042659   1.908  0.05635 .  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG5Db3JyZWxhdGlvbiBtYXRyaXggbm90IHNob3duIGJ5IGRlZmF1bHQsIGFzIHAgPSAyNSA+IDEyLlxuVXNlIHByaW50KHgsIGNvcnJlbGF0aW9uPVRSVUUpICBvclxuICAgIHZjb3YoeCkgICAgICAgIGlmIHlvdSBuZWVkIGl0XG4ifQ== -->
+<pre><code>
+Correlation matrix not shown by default, as p = 25 &gt; 12.
+Use print(x, correlation=TRUE)  or
+    vcov(x)        if you need it</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI091dHB1dCBNUlJcbmV4cChzdW1tYXJ5KGhpZ2gucmlzay5tb2RlbClbMTBdJGNvZWZmaWNpZW50c1syOjI1LDFdKVxuYGBgIn0= -->
+<pre class="r"><code>#Output MRR
+exp(summary(high.risk.model)[10]$coefficients[2:25,1])</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiICAgICAgICAgICAgICAgICBzY2FsZShoaXNwYW5pYykgICAgICAgICAgICAgICAgICAgc2NhbGUocGN0X2JsaykgICAgICAgICAgICAgICAgIHNjYWxlKHBjdF9hc2lhbikgICAgICAgICAgICAgICAgIHNjYWxlKHBjdF93aGl0ZSkgICAgICAgICAgICAgICAgc2NhbGUocGN0X25hdGl2ZSkgICAgICAgICAgICBmYWN0b3IocV9wb3BkZW5zaXR5KTIgXG4gICAgICAgICAgICAgICAgICAgICAgIDEuMjE1Mjc0OCAgICAgICAgICAgICAgICAgICAgICAgIDEuMzYxMDM4NiAgICAgICAgICAgICAgICAgICAgICAgIDEuMDgzMTMyNiAgICAgICAgICAgICAgICAgICAgICAgIDAuODk3NjU4MiAgICAgICAgICAgICAgICAgICAgICAgIDEuMTYzNDIxMCAgICAgICAgICAgICAgICAgICAgICAgIDAuOTM0NzgxNiBcbiAgICAgICAgICAgZmFjdG9yKHFfcG9wZGVuc2l0eSkzICAgICAgICAgICAgZmFjdG9yKHFfcG9wZGVuc2l0eSk0ICAgICAgICAgICAgZmFjdG9yKHFfcG9wZGVuc2l0eSk1ICAgc2NhbGUobG9nKG1lZGhvdXNlaG9sZGluY29tZSkpICAgICAgICAgICAgICAgICBzY2FsZShlZHVjYXRpb24pICAgICAgICAgICBzY2FsZShiZWRzL3BvcHVsYXRpb24pIFxuICAgICAgICAgICAgICAgICAgICAgICAwLjk2MTY3MTkgICAgICAgICAgICAgICAgICAgICAgICAwLjgyNDg0OTIgICAgICAgICAgICAgICAgICAgICAgICAxLjAwMTE1NjAgICAgICAgICAgICAgICAgICAgICAgICAxLjIyMDAyNjMgICAgICAgICAgICAgICAgICAgICAgICAxLjE0MTMzMTYgICAgICAgICAgICAgICAgICAgICAgICAxLjAwNzMxODcgXG4gICAgICAgIHNjYWxlKGRhdGVfc2luY2Vfc29jaWFsKSAgICAgICAgICAgICAgICBzY2FsZShkYXRlX3NpbmNlKSAgICAgICAgIHNjYWxlKGRhdGVfc2luY2VfcmVvcGVuKSAgICAgIHNjYWxlKGRhdGVfc2luY2VfcmVjbG9zdXJlKSAgICAgICAgICAgc2NhbGUoZGF0ZV9zaW5jZV9tYXNrKSAgICAgICAgICAgICAgIHNjYWxlKHBjdF9vYmVzaXR5KSBcbiAgICAgICAgICAgICAgICAgICAgICAgMS4xMDM3ODM5ICAgICAgICAgICAgICAgICAgICAgICAgMi4yNDkzNzAzICAgICAgICAgICAgICAgICAgICAgICAgMS4xMTQzMTk4ICAgICAgICAgICAgICAgICAgICAgICAgMS4wNzY1OTM5ICAgICAgICAgICAgICAgICAgICAgICAgMS4zMDQxNDI3ICAgICAgICAgICAgICAgICAgICAgICAgMC45ODUyNTk4IFxuICAgICAgICAgICAgICAgIHNjYWxlKHBjdF9hZ2U2NSkgICAgICAgICAgICAgIHNjYWxlKHBjdF9kaWFiZXRlcykgICAgICAgICAgICAgICAgc2NhbGUoTHVuZ0NhbmNlcikgICAgICAgICAgICAgICAgICAgICAgc2NhbGUoQ09QRCkgICAgICAgICAgICAgICBzY2FsZShBZHVsdEFzdGhtYSkgc2NhbGUoQ2FyZGlvdmFzY3VsYXIuZGVhdGhfcmF0ZSkgXG4gICAgICAgICAgICAgICAgICAgICAgIDEuMDQ3Mjg3NCAgICAgICAgICAgICAgICAgICAgICAgIDEuMDQ0MDIzMCAgICAgICAgICAgICAgICAgICAgICAgIDEuNDA4NzA4OSAgICAgICAgICAgICAgICAgICAgICAgIDEuMDQyNDA3OCAgICAgICAgICAgICAgICAgICAgICAgIDAuNzk5NDAyMCAgICAgICAgICAgICAgICAgICAgICAgIDEuMDg0ODEyOSBcbiJ9 -->
+<pre><code>                 scale(hispanic)                   scale(pct_blk)                 scale(pct_asian)                 scale(pct_white)                scale(pct_native)            factor(q_popdensity)2 
+                       1.2152748                        1.3610386                        1.0831326                        0.8976582                        1.1634210                        0.9347816 
+           factor(q_popdensity)3            factor(q_popdensity)4            factor(q_popdensity)5   scale(log(medhouseholdincome))                 scale(education)           scale(beds/population) 
+                       0.9616719                        0.8248492                        1.0011560                        1.2200263                        1.1413316                        1.0073187 
+        scale(date_since_social)                scale(date_since)         scale(date_since_reopen)      scale(date_since_reclosure)           scale(date_since_mask)               scale(pct_obesity) 
+                       1.1037839                        2.2493703                        1.1143198                        1.0765939                        1.3041427                        0.9852598 
+                scale(pct_age65)              scale(pct_diabetes)                scale(LungCancer)                      scale(COPD)               scale(AdultAsthma) scale(Cardiovascular.death_rate) 
+                       1.0472874                        1.0440230                        1.4087089                        1.0424078                        0.7994020                        1.0848129 </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGlnaF9yaXNrX01SUiA8LSBhcy5kYXRhLmZyYW1lKGV4cChzdW1tYXJ5KGhpZ2gucmlzay5tb2RlbClbMTBdJGNvZWZmaWNpZW50c1syOjI1LDFdKSlcbnNhdmVSRFMoaGlnaF9yaXNrX01SUiwgZmlsZSA9IFwiLi9IaWdoUmlza1Jlc3VsdHMvaGlnaC5yaXNrLm1vZGVsX01SUi5SZHNcIilcbiNPdXRwdXQgV2FsZC10ZXN0IHAtdmFsdWVzXG5zdW1tYXJ5KGhpZ2gucmlzay5tb2RlbClbMTBdJGNvZWZmaWNpZW50c1syOjI1LDRdXG5gYGAifQ== -->
+<pre class="r"><code>high_risk_MRR &lt;- as.data.frame(exp(summary(high.risk.model)[10]$coefficients[2:25,1]))
+saveRDS(high_risk_MRR, file = &quot;./HighRiskResults/high.risk.model_MRR.Rds&quot;)
 #Output Wald-test p-values
-summary(high.risk.model)[10]$coefficients[2:25,4]
-high_risk_p &lt;- as.data.frame(summary(high.risk.model)[10]$coefficients[2:25,4])
-saveRDS(high_risk_p, file = &quot;./Social_Determinants/HighRiskResults/high.risk.model_P.Rds&quot;)</code></pre>
+summary(high.risk.model)[10]$coefficients[2:25,4]</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiICAgICAgICAgICAgICAgICBzY2FsZShoaXNwYW5pYykgICAgICAgICAgICAgICAgICAgc2NhbGUocGN0X2JsaykgICAgICAgICAgICAgICAgIHNjYWxlKHBjdF9hc2lhbikgICAgICAgICAgICAgICAgIHNjYWxlKHBjdF93aGl0ZSkgICAgICAgICAgICAgICAgc2NhbGUocGN0X25hdGl2ZSkgICAgICAgICAgICBmYWN0b3IocV9wb3BkZW5zaXR5KTIgXG4gICAgICAgICAgICAgICAgICAgIDEuMzAxMTk5ZS0wNCAgICAgICAgICAgICAgICAgICAgIDIuNzIwNzYxZS0wMiAgICAgICAgICAgICAgICAgICAgIDMuNTI4NzI4ZS0wMiAgICAgICAgICAgICAgICAgICAgIDQuNjk2MDM2ZS0wMSAgICAgICAgICAgICAgICAgICAgIDIuMTE4OTAxZS0wMiAgICAgICAgICAgICAgICAgICAgIDUuNTE0NTk5ZS0wMSBcbiAgICAgICAgICAgZmFjdG9yKHFfcG9wZGVuc2l0eSkzICAgICAgICAgICAgZmFjdG9yKHFfcG9wZGVuc2l0eSk0ICAgICAgICAgICAgZmFjdG9yKHFfcG9wZGVuc2l0eSk1ICAgc2NhbGUobG9nKG1lZGhvdXNlaG9sZGluY29tZSkpICAgICAgICAgICAgICAgICBzY2FsZShlZHVjYXRpb24pICAgICAgICAgICBzY2FsZShiZWRzL3BvcHVsYXRpb24pIFxuICAgICAgICAgICAgICAgICAgICA3LjMzMTY1NmUtMDEgICAgICAgICAgICAgICAgICAgICAxLjAxNTY3MWUtMDEgICAgICAgICAgICAgICAgICAgICA5LjkyODYyMGUtMDEgICAgICAgICAgICAgICAgICAgICA4LjMyNjA3M2UtMDYgICAgICAgICAgICAgICAgICAgICAxLjQ2MzgzM2UtMDMgICAgICAgICAgICAgICAgICAgICA4LjI5NjEzMGUtMDEgXG4gICAgICAgIHNjYWxlKGRhdGVfc2luY2Vfc29jaWFsKSAgICAgICAgICAgICAgICBzY2FsZShkYXRlX3NpbmNlKSAgICAgICAgIHNjYWxlKGRhdGVfc2luY2VfcmVvcGVuKSAgICAgIHNjYWxlKGRhdGVfc2luY2VfcmVjbG9zdXJlKSAgICAgICAgICAgc2NhbGUoZGF0ZV9zaW5jZV9tYXNrKSAgICAgICAgICAgICAgIHNjYWxlKHBjdF9vYmVzaXR5KSBcbiAgICAgICAgICAgICAgICAgICAgNS42NzYwMDNlLTAxICAgICAgICAgICAgICAgICAgICAgNS4yMzAyMTZlLTI3ICAgICAgICAgICAgICAgICAgICAgNS4zODg4NzhlLTAxICAgICAgICAgICAgICAgICAgICAgNi4xNzc3OTJlLTAxICAgICAgICAgICAgICAgICAgICAgOC4zNjAyODBlLTAzICAgICAgICAgICAgICAgICAgICAgNi43MTUzMzRlLTAxIFxuICAgICAgICAgICAgICAgIHNjYWxlKHBjdF9hZ2U2NSkgICAgICAgICAgICAgIHNjYWxlKHBjdF9kaWFiZXRlcykgICAgICAgICAgICAgICAgc2NhbGUoTHVuZ0NhbmNlcikgICAgICAgICAgICAgICAgICAgICAgc2NhbGUoQ09QRCkgICAgICAgICAgICAgICBzY2FsZShBZHVsdEFzdGhtYSkgc2NhbGUoQ2FyZGlvdmFzY3VsYXIuZGVhdGhfcmF0ZSkgXG4gICAgICAgICAgICAgICAgICAgIDQuNDA1MzQ0ZS0wMSAgICAgICAgICAgICAgICAgICAgIDIuMjA1NTEwZS0wMSAgICAgICAgICAgICAgICAgICAgIDUuMTEzMjIxZS0wMyAgICAgICAgICAgICAgICAgICAgIDcuODY0NjU4ZS0wMSAgICAgICAgICAgICAgICAgICAgIDIuMDA5MDQ0ZS0wMiAgICAgICAgICAgICAgICAgICAgIDUuNjM0ODY0ZS0wMiBcbiJ9 -->
+<pre><code>                 scale(hispanic)                   scale(pct_blk)                 scale(pct_asian)                 scale(pct_white)                scale(pct_native)            factor(q_popdensity)2 
+                    1.301199e-04                     2.720761e-02                     3.528728e-02                     4.696036e-01                     2.118901e-02                     5.514599e-01 
+           factor(q_popdensity)3            factor(q_popdensity)4            factor(q_popdensity)5   scale(log(medhouseholdincome))                 scale(education)           scale(beds/population) 
+                    7.331656e-01                     1.015671e-01                     9.928620e-01                     8.326073e-06                     1.463833e-03                     8.296130e-01 
+        scale(date_since_social)                scale(date_since)         scale(date_since_reopen)      scale(date_since_reclosure)           scale(date_since_mask)               scale(pct_obesity) 
+                    5.676003e-01                     5.230216e-27                     5.388878e-01                     6.177792e-01                     8.360280e-03                     6.715334e-01 
+                scale(pct_age65)              scale(pct_diabetes)                scale(LungCancer)                      scale(COPD)               scale(AdultAsthma) scale(Cardiovascular.death_rate) 
+                    4.405344e-01                     2.205510e-01                     5.113221e-03                     7.864658e-01                     2.009044e-02                     5.634864e-02 </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGlnaF9yaXNrX3AgPC0gYXMuZGF0YS5mcmFtZShzdW1tYXJ5KGhpZ2gucmlzay5tb2RlbClbMTBdJGNvZWZmaWNpZW50c1syOjI1LDRdKVxuc2F2ZVJEUyhoaWdoX3Jpc2tfcCwgZmlsZSA9IFwiLi9IaWdoUmlza1Jlc3VsdHMvaGlnaC5yaXNrLm1vZGVsX1AuUmRzXCIpXG5gYGAifQ== -->
+<pre class="r"><code>high_risk_p &lt;- as.data.frame(summary(high.risk.model)[10]$coefficients[2:25,4])
+saveRDS(high_risk_p, file = &quot;./HighRiskResults/high.risk.model_P.Rds&quot;)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -2230,12 +1901,15 @@ Variance&lt;-var(aggregate.data$Deaths)
 Ratio&lt;-(Variance/Mean)
 Ratio</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDQ5NzMuMDIzXG4ifQ== -->
+<pre><code>[1] 4973.023</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Test alternative models to ensure robustness of results. These are discussed in the Supplementary Materials.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMjWmVybyBJbmZsYXRlZFxuaGlnaC5yaXNrLnplcm89IGdsbW1UTUIoRGVhdGhzIH4gc2NhbGUoaGlzcGFuaWMpICsgc2NhbGUocGN0X2JsaykgKyBzY2FsZShwY3RfYXNpYW4pICsgc2NhbGUocGN0X3doaXRlKSsgICBzY2FsZShwY3RfbmF0aXZlKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArIGZhY3RvcihxX3BvcGRlbnNpdHkpXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICsgc2NhbGUobG9nKG1lZGhvdXNlaG9sZGluY29tZSkpKyBzY2FsZShlZHVjYXRpb24pICsgc2NhbGUoYmVkcy9wb3B1bGF0aW9uKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArIHNjYWxlKGRhdGVfc2luY2Vfc29jaWFsKSArIHNjYWxlKGRhdGVfc2luY2UpICsgc2NhbGUoZGF0ZV9zaW5jZV9yZW9wZW4pXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShkYXRlX3NpbmNlX3JlY2xvc3VyZSkrc2NhbGUoZGF0ZV9zaW5jZV9tYXNrKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUocGN0X29iZXNpdHkpXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShwY3RfYWdlNjUpK3NjYWxlKHBjdF9kaWFiZXRlcylcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKEx1bmdDYW5jZXIpXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShDT1BEKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUoQWR1bHRBc3RobWEpXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShDYXJkaW92YXNjdWxhci5kZWF0aF9yYXRlKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgKyAoMXxzdGF0ZSlcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICsgb2Zmc2V0KGxvZyhwb3B1bGF0aW9uKSksIGRhdGEgPSBhZ2dyZWdhdGUuZGF0YSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgIGZhbWlseSA9IG5iaW5vbTIsIHppZm9ybXVsYSAgPSB+IDEpXG5zdW1tYXJ5KGhpZ2gucmlzay56ZXJvKVxuIyMjRml4ZWQgTmVnYXRpdmUgQmlub21pYWwgXG5oaWdoLnJpc2suZml4ZWQgPSBnbG0ubmIoRGVhdGhzIH4gc2NhbGUoaGlzcGFuaWMpICsgc2NhbGUocGN0X2JsaykgKyBzY2FsZShwY3RfYXNpYW4pICsgc2NhbGUocGN0X3doaXRlKSsgICBzY2FsZShwY3RfbmF0aXZlKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArIGZhY3RvcihxX3BvcGRlbnNpdHkpXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICsgc2NhbGUobG9nKG1lZGhvdXNlaG9sZGluY29tZSkpKyBzY2FsZShlZHVjYXRpb24pICsgc2NhbGUoYmVkcy9wb3B1bGF0aW9uKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArIHNjYWxlKGRhdGVfc2luY2Vfc29jaWFsKSArIHNjYWxlKGRhdGVfc2luY2UpICsgc2NhbGUoZGF0ZV9zaW5jZV9yZW9wZW4pXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShkYXRlX3NpbmNlX3JlY2xvc3VyZSkrc2NhbGUoZGF0ZV9zaW5jZV9tYXNrKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUocGN0X29iZXNpdHkpXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShwY3RfYWdlNjUpK3NjYWxlKHBjdF9kaWFiZXRlcylcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKEx1bmdDYW5jZXIpXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShDT1BEKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUoQWR1bHRBc3RobWEpXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShDYXJkaW92YXNjdWxhci5kZWF0aF9yYXRlKVxuICAgICAgICAgICAgICAgICAgICArIG9mZnNldChsb2cocG9wdWxhdGlvbikpLCBkYXRhID0gYWdncmVnYXRlLmRhdGEpXG5zdW1tYXJ5KGhpZ2gucmlzay5maXhlZClcbiMjI1NwYXRpYWwtQ29ycmVsYXRpb24gXG5oaWdoLnJpc2suc3BhdGlhbCA9IGdsbWVyLm5iKERlYXRocyB+IHNjYWxlKGhpc3BhbmljKSArIHNjYWxlKHBjdF9ibGspICsgc2NhbGUocGN0X2FzaWFuKSArIHNjYWxlKHBjdF93aGl0ZSkrICAgc2NhbGUocGN0X25hdGl2ZSlcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKyBmYWN0b3IocV9wb3BkZW5zaXR5KVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArIHNjYWxlKGxvZyhtZWRob3VzZWhvbGRpbmNvbWUpKSsgc2NhbGUoZWR1Y2F0aW9uKSArIHNjYWxlKGJlZHMvcG9wdWxhdGlvbilcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKyBzY2FsZShkYXRlX3NpbmNlX3NvY2lhbCkgKyBzY2FsZShkYXRlX3NpbmNlKSArIHNjYWxlKGRhdGVfc2luY2VfcmVvcGVuKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUoZGF0ZV9zaW5jZV9yZWNsb3N1cmUpK3NjYWxlKGRhdGVfc2luY2VfbWFzaylcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKHBjdF9vYmVzaXR5KVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUocGN0X2FnZTY1KStzY2FsZShwY3RfZGlhYmV0ZXMpXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShMdW5nQ2FuY2VyKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUoQ09QRClcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKEFkdWx0QXN0aG1hKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUoQ2FyZGlvdmFzY3VsYXIuZGVhdGhfcmF0ZSlcbiAgICAgICAgICAgICAgICAgICAgICArKDF8c3RhdGUpXG4gICAgICAgICAgICAgICAgICAgICAgKyBvZmZzZXQobG9nKHBvcHVsYXRpb24pKSArIHNjYWxlKExhdCkgKyBzY2FsZShMb25nXyksIGRhdGEgPSBhZ2dyZWdhdGUuZGF0YSlcbnN1bW1hcnkoaGlnaC5yaXNrLnNwYXRpYWwpXG4jIyNOZWdhdGl2ZSBCaW5vbWlhbCBNaXhlZCBNb2RlbCBFeGNsdWRpbmcgTllDXG5oaWdoLnJpc2subm8ubnljID0gZ2xtZXIubmIoRGVhdGhzIH4gc2NhbGUoaGlzcGFuaWMpICsgc2NhbGUocGN0X2JsaykgKyBzY2FsZShwY3RfYXNpYW4pICsgc2NhbGUocGN0X3doaXRlKSsgICBzY2FsZShwY3RfbmF0aXZlKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArIGZhY3RvcihxX3BvcGRlbnNpdHkpXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICsgc2NhbGUobG9nKG1lZGhvdXNlaG9sZGluY29tZSkpICsgc2NhbGUoZWR1Y2F0aW9uKSArIHNjYWxlKGJlZHMvcG9wdWxhdGlvbilcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKyBzY2FsZShkYXRlX3NpbmNlX3NvY2lhbCkgKyBzY2FsZShkYXRlX3NpbmNlKSArIHNjYWxlKGRhdGVfc2luY2VfcmVvcGVuKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUoZGF0ZV9zaW5jZV9yZWNsb3N1cmUpK3NjYWxlKGRhdGVfc2luY2VfbWFzaylcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKHBjdF9vYmVzaXR5KVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUocGN0X2FnZTY1KStzY2FsZShwY3RfZGlhYmV0ZXMpXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShMdW5nQ2FuY2VyKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUoQ09QRClcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKEFkdWx0QXN0aG1hKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUoQ2FyZGlvdmFzY3VsYXIuZGVhdGhfcmF0ZSlcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArICgxfHN0YXRlKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICsgb2Zmc2V0KGxvZyhwb3B1bGF0aW9uKSksIGRhdGEgPSBzdWJzZXQoYWdncmVnYXRlLmRhdGEsIShmaXBzICVpbiUgYyhcIjA5MDAxXCIsXCI0MjA4OVwiLFwiMzYxMTFcIixcIjA5MDA5XCIsXCIzNjA1OVwiLFwiMzYxMDNcIixcIjM0MDEzXCIsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXCIzNjA3OVwiLFwiMzYwODFcIiwgIFwiMzYwODVcIiwgIFwiMzYwODdcIiwgIFwiMzYxMTlcIiwgIFwiMzYwMjdcIiwgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcIjM2MDcxXCIsICBcIjA5MDA1XCIsICBcIjM0MDIxXCIpKSkpXG5zdW1tYXJ5KGhpZ2gucmlzay5uby5ueWMpXG4jIyNOZWdhdGl2ZSBCaW5vbWlhbCBNaXhlZCBNb2RlbCBFeGNsdWRpbmcgQ291bnRpZXMgV2l0aCBMZXNzIFRoYW4gMTAgQ2FzZXNcbmhpZ2gucmlzay50ZW4gPSBnbG1lci5uYihEZWF0aHMgfiBzY2FsZShoaXNwYW5pYykgKyBzY2FsZShwY3RfYmxrKSArIHNjYWxlKHBjdF9hc2lhbikgKyBzY2FsZShwY3Rfd2hpdGUpKyAgIHNjYWxlKHBjdF9uYXRpdmUpXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICsgZmFjdG9yKHFfcG9wZGVuc2l0eSlcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKyBzY2FsZShsb2cobWVkaG91c2Vob2xkaW5jb21lKSkgKyBzY2FsZShlZHVjYXRpb24pICsgc2NhbGUoYmVkcy9wb3B1bGF0aW9uKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArIHNjYWxlKGRhdGVfc2luY2Vfc29jaWFsKSArIHNjYWxlKGRhdGVfc2luY2UpICsgc2NhbGUoZGF0ZV9zaW5jZV9yZW9wZW4pXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShkYXRlX3NpbmNlX3JlY2xvc3VyZSkrc2NhbGUoZGF0ZV9zaW5jZV9tYXNrKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUocGN0X29iZXNpdHkpXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShwY3RfYWdlNjUpK3NjYWxlKHBjdF9kaWFiZXRlcylcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKEx1bmdDYW5jZXIpXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShDT1BEKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUoQWR1bHRBc3RobWEpXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShDYXJkaW92YXNjdWxhci5kZWF0aF9yYXRlKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKyAoMXxzdGF0ZSlcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICsgb2Zmc2V0KGxvZyhwb3B1bGF0aW9uKSksIGRhdGEgPSBzdWJzZXQoYWdncmVnYXRlLmRhdGEsQ29uZmlybWVkID49MTApKVxuc3VtbWFyeShoaWdoLnJpc2sudGVuKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMjWmVybyBJbmZsYXRlZFxuaGlnaC5yaXNrLnplcm89IGdsbW1UTUIoRGVhdGhzIH4gc2NhbGUoaGlzcGFuaWMpICsgc2NhbGUocGN0X2JsaykgKyBzY2FsZShwY3RfYXNpYW4pICsgc2NhbGUocGN0X3doaXRlKSsgICBzY2FsZShwY3RfbmF0aXZlKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArIGZhY3RvcihxX3BvcGRlbnNpdHkpXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICsgc2NhbGUobG9nKG1lZGhvdXNlaG9sZGluY29tZSkpKyBzY2FsZShlZHVjYXRpb24pICsgc2NhbGUoYmVkcy9wb3B1bGF0aW9uKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArIHNjYWxlKGRhdGVfc2luY2Vfc29jaWFsKSArIHNjYWxlKGRhdGVfc2luY2UpICsgc2NhbGUoZGF0ZV9zaW5jZV9yZW9wZW4pXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShkYXRlX3NpbmNlX3JlY2xvc3VyZSkrc2NhbGUoZGF0ZV9zaW5jZV9tYXNrKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUocGN0X29iZXNpdHkpXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShwY3RfYWdlNjUpK3NjYWxlKHBjdF9kaWFiZXRlcylcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKEx1bmdDYW5jZXIpXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShDT1BEKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUoQWR1bHRBc3RobWEpXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShDYXJkaW92YXNjdWxhci5kZWF0aF9yYXRlKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgKyAoMXxzdGF0ZSlcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICsgb2Zmc2V0KGxvZyhwb3B1bGF0aW9uKSksIGRhdGEgPSBhZ2dyZWdhdGUuZGF0YSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgIGZhbWlseSA9IG5iaW5vbTIsIHppZm9ybXVsYSAgPSB+IDEpXG5zdW1tYXJ5KGhpZ2gucmlzay56ZXJvKVxuYGBgIn0= -->
 <pre class="r"><code>###Zero Inflated
 high.risk.zero= glmmTMB(Deaths ~ scale(hispanic) + scale(pct_blk) + scale(pct_asian) + scale(pct_white)+   scale(pct_native)
                                             + factor(q_popdensity)
@@ -2251,8 +1925,65 @@ high.risk.zero= glmmTMB(Deaths ~ scale(hispanic) + scale(pct_blk) + scale(pct_as
                            + (1|state)
                            + offset(log(population)), data = aggregate.data,
                            family = nbinom2, ziformula  = ~ 1)
-summary(high.risk.zero)
-###Fixed Negative Binomial 
+summary(high.risk.zero)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiIEZhbWlseTogbmJpbm9tMiAgKCBsb2cgKVxuRm9ybXVsYTogICAgICAgICAgRGVhdGhzIH4gc2NhbGUoaGlzcGFuaWMpICsgc2NhbGUocGN0X2JsaykgKyBzY2FsZShwY3RfYXNpYW4pICsgICAgICBzY2FsZShwY3Rfd2hpdGUpICsgc2NhbGUocGN0X25hdGl2ZSkgKyBmYWN0b3IocV9wb3BkZW5zaXR5KSArICBcbiAgICBzY2FsZShsb2cobWVkaG91c2Vob2xkaW5jb21lKSkgKyBzY2FsZShlZHVjYXRpb24pICsgc2NhbGUoYmVkcy9wb3B1bGF0aW9uKSArICAgICAgc2NhbGUoZGF0ZV9zaW5jZV9zb2NpYWwpICsgc2NhbGUoZGF0ZV9zaW5jZSkgKyBzY2FsZShkYXRlX3NpbmNlX3Jlb3BlbikgKyAgXG4gICAgc2NhbGUoZGF0ZV9zaW5jZV9yZWNsb3N1cmUpICsgc2NhbGUoZGF0ZV9zaW5jZV9tYXNrKSArIHNjYWxlKHBjdF9vYmVzaXR5KSArICAgICAgc2NhbGUocGN0X2FnZTY1KSArIHNjYWxlKHBjdF9kaWFiZXRlcykgKyBzY2FsZShMdW5nQ2FuY2VyKSArICBcbiAgICBzY2FsZShDT1BEKSArIHNjYWxlKEFkdWx0QXN0aG1hKSArIHNjYWxlKENhcmRpb3Zhc2N1bGFyLmRlYXRoX3JhdGUpICsgICAgICAoMSB8IHN0YXRlKSArIG9mZnNldChsb2cocG9wdWxhdGlvbikpXG5aZXJvIGluZmxhdGlvbjogICAgICAgICAgfjFcbkRhdGE6IGFnZ3JlZ2F0ZS5kYXRhXG5cbiAgICAgQUlDICAgICAgQklDICAgbG9nTGlrIGRldmlhbmNlIGRmLnJlc2lkIFxuIDE1ODA4LjMgIDE1OTc3LjMgIC03ODc2LjEgIDE1NzUyLjMgICAgIDMwNjUgXG5cblJhbmRvbSBlZmZlY3RzOlxuXG5Db25kaXRpb25hbCBtb2RlbDpcbiBHcm91cHMgTmFtZSAgICAgICAgVmFyaWFuY2UgU3RkLkRldi5cbiBzdGF0ZSAgKEludGVyY2VwdCkgMC41MzE1ICAgMC43MjkxICBcbk51bWJlciBvZiBvYnM6IDMwOTMsIGdyb3VwczogIHN0YXRlLCA0OVxuXG5PdmVyZGlzcGVyc2lvbiBwYXJhbWV0ZXIgZm9yIG5iaW5vbTIgZmFtaWx5ICgpOiAwLjg4NiBcblxuQ29uZGl0aW9uYWwgbW9kZWw6XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgRXN0aW1hdGUgU3RkLiBFcnJvciB6IHZhbHVlIFByKD58enwpICAgIFxuKEludGVyY2VwdCkgICAgICAgICAgICAgICAgICAgICAgLTkuMjA1MjgwICAgMC4xNDkwMTIgIC02MS43OCAgPCAyZS0xNiAqKipcbnNjYWxlKGhpc3BhbmljKSAgICAgICAgICAgICAgICAgICAwLjE5NTk5MCAgIDAuMDUxMDMxICAgIDMuODQgMC4wMDAxMjMgKioqXG5zY2FsZShwY3RfYmxrKSAgICAgICAgICAgICAgICAgICAgMC4zMDc4ODEgICAwLjEzOTc3MyAgICAyLjIwIDAuMDI3NjE1ICogIFxuc2NhbGUocGN0X2FzaWFuKSAgICAgICAgICAgICAgICAgIDAuMDc5MjY2ICAgMC4wMzc5NjIgICAgMi4wOSAwLjAzNjc5NyAqICBcbnNjYWxlKHBjdF93aGl0ZSkgICAgICAgICAgICAgICAgIC0wLjEwODczNiAgIDAuMTQ5NTIzICAgLTAuNzMgMC40NjcwOTEgICAgXG5zY2FsZShwY3RfbmF0aXZlKSAgICAgICAgICAgICAgICAgMC4xNTE5NDIgICAwLjA2NTc5MCAgICAyLjMxIDAuMDIwOTE2ICogIFxuZmFjdG9yKHFfcG9wZGVuc2l0eSkyICAgICAgICAgICAgLTAuMDY0Mzk2ICAgMC4xMTM1MjcgICAtMC41NyAwLjU3MDU1NiAgICBcbmZhY3RvcihxX3BvcGRlbnNpdHkpMyAgICAgICAgICAgIC0wLjAzNTc2MiAgIDAuMTE0OTA0ICAgLTAuMzEgMC43NTU2MjIgICAgXG5mYWN0b3IocV9wb3BkZW5zaXR5KTQgICAgICAgICAgICAtMC4xODg4ODMgICAwLjExNzg2OSAgIC0xLjYwIDAuMTA5MDQ4ICAgIFxuZmFjdG9yKHFfcG9wZGVuc2l0eSk1ICAgICAgICAgICAgIDAuMDA1NTU0ICAgMC4xMjkzODIgICAgMC4wNCAwLjk2NTc2MSAgICBcbnNjYWxlKGxvZyhtZWRob3VzZWhvbGRpbmNvbWUpKSAgICAwLjIwMDE0NyAgIDAuMDQ0Njc5ICAgIDQuNDggNy40N2UtMDYgKioqXG5zY2FsZShlZHVjYXRpb24pICAgICAgICAgICAgICAgICAgMC4xMzIxMjUgICAwLjA0MTYwOSAgICAzLjE4IDAuMDAxNDk2ICoqIFxuc2NhbGUoYmVkcy9wb3B1bGF0aW9uKSAgICAgICAgICAgIDAuMDA3MjE0ICAgMC4wMzM5MzcgICAgMC4yMSAwLjgzMTY2OSAgICBcbnNjYWxlKGRhdGVfc2luY2Vfc29jaWFsKSAgICAgICAgICAwLjA5MzY0MiAgIDAuMTcyNDcxICAgIDAuNTQgMC41ODcxNzAgICAgXG5zY2FsZShkYXRlX3NpbmNlKSAgICAgICAgICAgICAgICAgMC44MTMxNjEgICAwLjA3NTQ4OSAgIDEwLjc3ICA8IDJlLTE2ICoqKlxuc2NhbGUoZGF0ZV9zaW5jZV9yZW9wZW4pICAgICAgICAgIDAuMTE0MDI5ICAgMC4xNzU3ODcgICAgMC42NSAwLjUxNjU0NiAgICBcbnNjYWxlKGRhdGVfc2luY2VfcmVjbG9zdXJlKSAgICAgICAwLjA3MjQ5OCAgIDAuMTQ3NTQ2ICAgIDAuNDkgMC42MjMxNzMgICAgXG5zY2FsZShkYXRlX3NpbmNlX21hc2spICAgICAgICAgICAgMC4yNzE2NzkgICAwLjEwMDUyNyAgICAyLjcwIDAuMDA2ODgxICoqIFxuc2NhbGUocGN0X29iZXNpdHkpICAgICAgICAgICAgICAgLTAuMDE0NzA0ICAgMC4wMzUwNjUgICAtMC40MiAwLjY3NDk3OSAgICBcbnNjYWxlKHBjdF9hZ2U2NSkgICAgICAgICAgICAgICAgICAwLjA0NzUyOSAgIDAuMDU5ODUyICAgIDAuNzkgMC40MjcxMzQgICAgXG5zY2FsZShwY3RfZGlhYmV0ZXMpICAgICAgICAgICAgICAgMC4wNDM0MTAgICAwLjAzNTIxNSAgICAxLjIzIDAuMjE3Njg0ICAgIFxuc2NhbGUoTHVuZ0NhbmNlcikgICAgICAgICAgICAgICAgIDAuMzQwODUwICAgMC4xMjI0NTkgICAgMi43OCAwLjAwNTM4MCAqKiBcbnNjYWxlKENPUEQpICAgICAgICAgICAgICAgICAgICAgICAwLjAzNDc4MyAgIDAuMTUzMTA4ICAgIDAuMjMgMC44MjAyODcgICAgXG5zY2FsZShBZHVsdEFzdGhtYSkgICAgICAgICAgICAgICAtMC4yMTc1NzMgICAwLjA5NjI5MSAgIC0yLjI2IDAuMDIzODUwICogIFxuc2NhbGUoQ2FyZGlvdmFzY3VsYXIuZGVhdGhfcmF0ZSkgIDAuMDgyMTQ0ICAgMC4wNDI3MjEgICAgMS45MiAwLjA1NDUwMyAuICBcbi0tLVxuU2lnbmlmLiBjb2RlczogIDAg4oCYKioq4oCZIDAuMDAxIOKAmCoq4oCZIDAuMDEg4oCYKuKAmSAwLjA1IOKAmC7igJkgMC4xIOKAmCDigJkgMVxuXG5aZXJvLWluZmxhdGlvbiBtb2RlbDpcbiAgICAgICAgICAgIEVzdGltYXRlIFN0ZC4gRXJyb3IgeiB2YWx1ZSBQcig+fHp8KVxuKEludGVyY2VwdCkgICAtMTkuNjIgICAgMTE2Ni44OSAgLTAuMDE3ICAgIDAuOTg3XG4ifQ== -->
+<pre><code> Family: nbinom2  ( log )
+Formula:          Deaths ~ scale(hispanic) + scale(pct_blk) + scale(pct_asian) +      scale(pct_white) + scale(pct_native) + factor(q_popdensity) +  
+    scale(log(medhouseholdincome)) + scale(education) + scale(beds/population) +      scale(date_since_social) + scale(date_since) + scale(date_since_reopen) +  
+    scale(date_since_reclosure) + scale(date_since_mask) + scale(pct_obesity) +      scale(pct_age65) + scale(pct_diabetes) + scale(LungCancer) +  
+    scale(COPD) + scale(AdultAsthma) + scale(Cardiovascular.death_rate) +      (1 | state) + offset(log(population))
+Zero inflation:          ~1
+Data: aggregate.data
+
+     AIC      BIC   logLik deviance df.resid 
+ 15808.3  15977.3  -7876.1  15752.3     3065 
+
+Random effects:
+
+Conditional model:
+ Groups Name        Variance Std.Dev.
+ state  (Intercept) 0.5315   0.7291  
+Number of obs: 3093, groups:  state, 49
+
+Overdispersion parameter for nbinom2 family (): 0.886 
+
+Conditional model:
+                                  Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)                      -9.205280   0.149012  -61.78  &lt; 2e-16 ***
+scale(hispanic)                   0.195990   0.051031    3.84 0.000123 ***
+scale(pct_blk)                    0.307881   0.139773    2.20 0.027615 *  
+scale(pct_asian)                  0.079266   0.037962    2.09 0.036797 *  
+scale(pct_white)                 -0.108736   0.149523   -0.73 0.467091    
+scale(pct_native)                 0.151942   0.065790    2.31 0.020916 *  
+factor(q_popdensity)2            -0.064396   0.113527   -0.57 0.570556    
+factor(q_popdensity)3            -0.035762   0.114904   -0.31 0.755622    
+factor(q_popdensity)4            -0.188883   0.117869   -1.60 0.109048    
+factor(q_popdensity)5             0.005554   0.129382    0.04 0.965761    
+scale(log(medhouseholdincome))    0.200147   0.044679    4.48 7.47e-06 ***
+scale(education)                  0.132125   0.041609    3.18 0.001496 ** 
+scale(beds/population)            0.007214   0.033937    0.21 0.831669    
+scale(date_since_social)          0.093642   0.172471    0.54 0.587170    
+scale(date_since)                 0.813161   0.075489   10.77  &lt; 2e-16 ***
+scale(date_since_reopen)          0.114029   0.175787    0.65 0.516546    
+scale(date_since_reclosure)       0.072498   0.147546    0.49 0.623173    
+scale(date_since_mask)            0.271679   0.100527    2.70 0.006881 ** 
+scale(pct_obesity)               -0.014704   0.035065   -0.42 0.674979    
+scale(pct_age65)                  0.047529   0.059852    0.79 0.427134    
+scale(pct_diabetes)               0.043410   0.035215    1.23 0.217684    
+scale(LungCancer)                 0.340850   0.122459    2.78 0.005380 ** 
+scale(COPD)                       0.034783   0.153108    0.23 0.820287    
+scale(AdultAsthma)               -0.217573   0.096291   -2.26 0.023850 *  
+scale(Cardiovascular.death_rate)  0.082144   0.042721    1.92 0.054503 .  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Zero-inflation model:
+            Estimate Std. Error z value Pr(&gt;|z|)
+(Intercept)   -19.62    1166.89  -0.017    0.987</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMjRml4ZWQgTmVnYXRpdmUgQmlub21pYWwgXG5oaWdoLnJpc2suZml4ZWQgPSBnbG0ubmIoRGVhdGhzIH4gc2NhbGUoaGlzcGFuaWMpICsgc2NhbGUocGN0X2JsaykgKyBzY2FsZShwY3RfYXNpYW4pICsgc2NhbGUocGN0X3doaXRlKSsgICBzY2FsZShwY3RfbmF0aXZlKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArIGZhY3RvcihxX3BvcGRlbnNpdHkpXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICsgc2NhbGUobG9nKG1lZGhvdXNlaG9sZGluY29tZSkpKyBzY2FsZShlZHVjYXRpb24pICsgc2NhbGUoYmVkcy9wb3B1bGF0aW9uKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArIHNjYWxlKGRhdGVfc2luY2Vfc29jaWFsKSArIHNjYWxlKGRhdGVfc2luY2UpICsgc2NhbGUoZGF0ZV9zaW5jZV9yZW9wZW4pXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShkYXRlX3NpbmNlX3JlY2xvc3VyZSkrc2NhbGUoZGF0ZV9zaW5jZV9tYXNrKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUocGN0X29iZXNpdHkpXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShwY3RfYWdlNjUpK3NjYWxlKHBjdF9kaWFiZXRlcylcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKEx1bmdDYW5jZXIpXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShDT1BEKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUoQWR1bHRBc3RobWEpXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShDYXJkaW92YXNjdWxhci5kZWF0aF9yYXRlKVxuICAgICAgICAgICAgICAgICAgICArIG9mZnNldChsb2cocG9wdWxhdGlvbikpLCBkYXRhID0gYWdncmVnYXRlLmRhdGEpXG5zdW1tYXJ5KGhpZ2gucmlzay5maXhlZClcbmBgYCJ9 -->
+<pre class="r"><code>###Fixed Negative Binomial 
 high.risk.fixed = glm.nb(Deaths ~ scale(hispanic) + scale(pct_blk) + scale(pct_asian) + scale(pct_white)+   scale(pct_native)
                                             + factor(q_popdensity)
                                             + scale(log(medhouseholdincome))+ scale(education) + scale(beds/population)
@@ -2265,8 +1996,70 @@ high.risk.fixed = glm.nb(Deaths ~ scale(hispanic) + scale(pct_blk) + scale(pct_a
                                             +scale(AdultAsthma)
                                             +scale(Cardiovascular.death_rate)
                     + offset(log(population)), data = aggregate.data)
-summary(high.risk.fixed)
-###Spatial-Correlation 
+summary(high.risk.fixed)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG5DYWxsOlxuZ2xtLm5iKGZvcm11bGEgPSBEZWF0aHMgfiBzY2FsZShoaXNwYW5pYykgKyBzY2FsZShwY3RfYmxrKSArIFxuICAgIHNjYWxlKHBjdF9hc2lhbikgKyBzY2FsZShwY3Rfd2hpdGUpICsgc2NhbGUocGN0X25hdGl2ZSkgKyBcbiAgICBmYWN0b3IocV9wb3BkZW5zaXR5KSArIHNjYWxlKGxvZyhtZWRob3VzZWhvbGRpbmNvbWUpKSArIHNjYWxlKGVkdWNhdGlvbikgKyBcbiAgICBzY2FsZShiZWRzL3BvcHVsYXRpb24pICsgc2NhbGUoZGF0ZV9zaW5jZV9zb2NpYWwpICsgc2NhbGUoZGF0ZV9zaW5jZSkgKyBcbiAgICBzY2FsZShkYXRlX3NpbmNlX3Jlb3BlbikgKyBzY2FsZShkYXRlX3NpbmNlX3JlY2xvc3VyZSkgKyBcbiAgICBzY2FsZShkYXRlX3NpbmNlX21hc2spICsgc2NhbGUocGN0X29iZXNpdHkpICsgc2NhbGUocGN0X2FnZTY1KSArIFxuICAgIHNjYWxlKHBjdF9kaWFiZXRlcykgKyBzY2FsZShMdW5nQ2FuY2VyKSArIHNjYWxlKENPUEQpICsgc2NhbGUoQWR1bHRBc3RobWEpICsgXG4gICAgc2NhbGUoQ2FyZGlvdmFzY3VsYXIuZGVhdGhfcmF0ZSkgKyBvZmZzZXQobG9nKHBvcHVsYXRpb24pKSwgXG4gICAgZGF0YSA9IGFnZ3JlZ2F0ZS5kYXRhLCBpbml0LnRoZXRhID0gMC42ODk4Mjg1MjAyLCBsaW5rID0gbG9nKVxuXG5EZXZpYW5jZSBSZXNpZHVhbHM6IFxuICAgIE1pbiAgICAgICAxUSAgIE1lZGlhbiAgICAgICAzUSAgICAgIE1heCAgXG4tMi45MDM3ICAtMS4wMTgzICAtMC41MDY2ICAgMC4wMzcwICAgNS40MTUwICBcblxuQ29lZmZpY2llbnRzOlxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIEVzdGltYXRlIFN0ZC4gRXJyb3IgeiB2YWx1ZSBQcig+fHp8KSAgICBcbihJbnRlcmNlcHQpICAgICAgICAgICAgICAgICAgICAgIC05LjIxMDQ2NiAgIDAuMDkyMzczIC05OS43MTAgIDwgMmUtMTYgKioqXG5zY2FsZShoaXNwYW5pYykgICAgICAgICAgICAgICAgICAgMC4yNjMzMzQgICAwLjA0NTQ3OCAgIDUuNzkwIDcuMDJlLTA5ICoqKlxuc2NhbGUocGN0X2JsaykgICAgICAgICAgICAgICAgICAgIDAuNjY0NTQ1ICAgMC4xMzY0NzEgICA0Ljg3MCAxLjEyZS0wNiAqKipcbnNjYWxlKHBjdF9hc2lhbikgICAgICAgICAgICAgICAgICAwLjA4MTYzMiAgIDAuMDM3ODAxICAgMi4xNjAgIDAuMDMwODEgKiAgXG5zY2FsZShwY3Rfd2hpdGUpICAgICAgICAgICAgICAgICAgMC4yMzc1MzcgICAwLjE0NjkxNSAgIDEuNjE3ICAwLjEwNTkxICAgIFxuc2NhbGUocGN0X25hdGl2ZSkgICAgICAgICAgICAgICAgIDAuMjc0NDI5ICAgMC4wNjUyNTEgICA0LjIwNiAyLjYwZS0wNSAqKipcbmZhY3RvcihxX3BvcGRlbnNpdHkpMiAgICAgICAgICAgICAwLjA5NDk5OCAgIDAuMTEwNjI4ICAgMC44NTkgIDAuMzkwNTAgICAgXG5mYWN0b3IocV9wb3BkZW5zaXR5KTMgICAgICAgICAgICAgMC4wMzgwNjAgICAwLjExMTc1NyAgIDAuMzQxICAwLjczMzQ0ICAgIFxuZmFjdG9yKHFfcG9wZGVuc2l0eSk0ICAgICAgICAgICAgIDAuMDA4ODE0ICAgMC4xMTQ2ODAgICAwLjA3NyAgMC45Mzg3NCAgICBcbmZhY3RvcihxX3BvcGRlbnNpdHkpNSAgICAgICAgICAgICAwLjI5NDg3MCAgIDAuMTI0Njc0ICAgMi4zNjUgIDAuMDE4MDIgKiAgXG5zY2FsZShsb2cobWVkaG91c2Vob2xkaW5jb21lKSkgICAgMC4zMDI2NzUgICAwLjA0Mzg0NSAgIDYuOTAzIDUuMDhlLTEyICoqKlxuc2NhbGUoZWR1Y2F0aW9uKSAgICAgICAgICAgICAgICAgIDAuMDgwOTcwICAgMC4wNDA0NDggICAyLjAwMiAgMC4wNDUzMCAqICBcbnNjYWxlKGJlZHMvcG9wdWxhdGlvbikgICAgICAgICAgICAwLjAwNjQzMiAgIDAuMDM0MTE1ICAgMC4xODkgIDAuODUwNDYgICAgXG5zY2FsZShkYXRlX3NpbmNlX3NvY2lhbCkgICAgICAgICAtMC4wMzg5NTcgICAwLjA1NDQ0NSAgLTAuNzE2ICAwLjQ3NDI5ICAgIFxuc2NhbGUoZGF0ZV9zaW5jZSkgICAgICAgICAgICAgICAgIDAuODEzNTYyICAgMC4wNjYwMDcgIDEyLjMyNSAgPCAyZS0xNiAqKipcbnNjYWxlKGRhdGVfc2luY2VfcmVvcGVuKSAgICAgICAgICAwLjE1ODQ0MiAgIDAuMDUzNjUzICAgMi45NTMgIDAuMDAzMTUgKiogXG5zY2FsZShkYXRlX3NpbmNlX3JlY2xvc3VyZSkgICAgICAtMC4wNjgyODIgICAwLjAzNzI1MyAgLTEuODMzICAwLjA2NjgxIC4gIFxuc2NhbGUoZGF0ZV9zaW5jZV9tYXNrKSAgICAgICAgICAgIDAuMTg1Njc5ICAgMC4wMzA2MjUgICA2LjA2MyAxLjM0ZS0wOSAqKipcbnNjYWxlKHBjdF9vYmVzaXR5KSAgICAgICAgICAgICAgICAwLjAzMDQxMiAgIDAuMDM0MzM0ICAgMC44ODYgIDAuMzc1NzQgICAgXG5zY2FsZShwY3RfYWdlNjUpICAgICAgICAgICAgICAgICAgMC4wOTI2NTUgICAwLjAzODE3MyAgIDIuNDI3ICAwLjAxNTIxICogIFxuc2NhbGUocGN0X2RpYWJldGVzKSAgICAgICAgICAgICAgIDAuMDg1MzI5ICAgMC4wMzU5NDAgICAyLjM3NCAgMC4wMTc1OSAqICBcbnNjYWxlKEx1bmdDYW5jZXIpICAgICAgICAgICAgICAgICAwLjI3ODI4OSAgIDAuMDYxNjEyICAgNC41MTcgNi4yOGUtMDYgKioqXG5zY2FsZShDT1BEKSAgICAgICAgICAgICAgICAgICAgICAtMC4xMTY2MjQgICAwLjA1OTM1MiAgLTEuOTY1ICAwLjA0OTQyICogIFxuc2NhbGUoQWR1bHRBc3RobWEpICAgICAgICAgICAgICAgLTAuMDg3NDQzICAgMC4wNDMyMzcgIC0yLjAyMiAgMC4wNDMxNCAqICBcbnNjYWxlKENhcmRpb3Zhc2N1bGFyLmRlYXRoX3JhdGUpICAwLjA1ODI0OSAgIDAuMDQyNDE1ICAgMS4zNzMgIDAuMTY5NjYgICAgXG4tLS1cblNpZ25pZi4gY29kZXM6ICAwIOKAmCoqKuKAmSAwLjAwMSDigJgqKuKAmSAwLjAxIOKAmCrigJkgMC4wNSDigJgu4oCZIDAuMSDigJgg4oCZIDFcblxuKERpc3BlcnNpb24gcGFyYW1ldGVyIGZvciBOZWdhdGl2ZSBCaW5vbWlhbCgwLjY4OTgpIGZhbWlseSB0YWtlbiB0byBiZSAxKVxuXG4gICAgTnVsbCBkZXZpYW5jZTogNDI1MC43ICBvbiAzMDkyICBkZWdyZWVzIG9mIGZyZWVkb21cblJlc2lkdWFsIGRldmlhbmNlOiAzMDY5LjkgIG9uIDMwNjggIGRlZ3JlZXMgb2YgZnJlZWRvbVxuQUlDOiAxNjE2M1xuXG5OdW1iZXIgb2YgRmlzaGVyIFNjb3JpbmcgaXRlcmF0aW9uczogMVxuXG5cbiAgICAgICAgICAgICAgVGhldGE6ICAwLjY4OTggXG4gICAgICAgICAgU3RkLiBFcnIuOiAgMC4wMjM2IFxuXG4gMiB4IGxvZy1saWtlbGlob29kOiAgLTE2MTEwLjc3MjAgXG4ifQ== -->
+<pre><code>
+Call:
+glm.nb(formula = Deaths ~ scale(hispanic) + scale(pct_blk) + 
+    scale(pct_asian) + scale(pct_white) + scale(pct_native) + 
+    factor(q_popdensity) + scale(log(medhouseholdincome)) + scale(education) + 
+    scale(beds/population) + scale(date_since_social) + scale(date_since) + 
+    scale(date_since_reopen) + scale(date_since_reclosure) + 
+    scale(date_since_mask) + scale(pct_obesity) + scale(pct_age65) + 
+    scale(pct_diabetes) + scale(LungCancer) + scale(COPD) + scale(AdultAsthma) + 
+    scale(Cardiovascular.death_rate) + offset(log(population)), 
+    data = aggregate.data, init.theta = 0.6898285202, link = log)
+
+Deviance Residuals: 
+    Min       1Q   Median       3Q      Max  
+-2.9037  -1.0183  -0.5066   0.0370   5.4150  
+
+Coefficients:
+                                  Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)                      -9.210466   0.092373 -99.710  &lt; 2e-16 ***
+scale(hispanic)                   0.263334   0.045478   5.790 7.02e-09 ***
+scale(pct_blk)                    0.664545   0.136471   4.870 1.12e-06 ***
+scale(pct_asian)                  0.081632   0.037801   2.160  0.03081 *  
+scale(pct_white)                  0.237537   0.146915   1.617  0.10591    
+scale(pct_native)                 0.274429   0.065251   4.206 2.60e-05 ***
+factor(q_popdensity)2             0.094998   0.110628   0.859  0.39050    
+factor(q_popdensity)3             0.038060   0.111757   0.341  0.73344    
+factor(q_popdensity)4             0.008814   0.114680   0.077  0.93874    
+factor(q_popdensity)5             0.294870   0.124674   2.365  0.01802 *  
+scale(log(medhouseholdincome))    0.302675   0.043845   6.903 5.08e-12 ***
+scale(education)                  0.080970   0.040448   2.002  0.04530 *  
+scale(beds/population)            0.006432   0.034115   0.189  0.85046    
+scale(date_since_social)         -0.038957   0.054445  -0.716  0.47429    
+scale(date_since)                 0.813562   0.066007  12.325  &lt; 2e-16 ***
+scale(date_since_reopen)          0.158442   0.053653   2.953  0.00315 ** 
+scale(date_since_reclosure)      -0.068282   0.037253  -1.833  0.06681 .  
+scale(date_since_mask)            0.185679   0.030625   6.063 1.34e-09 ***
+scale(pct_obesity)                0.030412   0.034334   0.886  0.37574    
+scale(pct_age65)                  0.092655   0.038173   2.427  0.01521 *  
+scale(pct_diabetes)               0.085329   0.035940   2.374  0.01759 *  
+scale(LungCancer)                 0.278289   0.061612   4.517 6.28e-06 ***
+scale(COPD)                      -0.116624   0.059352  -1.965  0.04942 *  
+scale(AdultAsthma)               -0.087443   0.043237  -2.022  0.04314 *  
+scale(Cardiovascular.death_rate)  0.058249   0.042415   1.373  0.16966    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for Negative Binomial(0.6898) family taken to be 1)
+
+    Null deviance: 4250.7  on 3092  degrees of freedom
+Residual deviance: 3069.9  on 3068  degrees of freedom
+AIC: 16163
+
+Number of Fisher Scoring iterations: 1
+
+              Theta:  0.6898 
+          Std. Err.:  0.0236 
+
+ 2 x log-likelihood:  -16110.7720 </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMjU3BhdGlhbC1Db3JyZWxhdGlvbiBcbmhpZ2gucmlzay5zcGF0aWFsID0gZ2xtZXIubmIoRGVhdGhzIH4gc2NhbGUoaGlzcGFuaWMpICsgc2NhbGUocGN0X2JsaykgKyBzY2FsZShwY3RfYXNpYW4pICsgc2NhbGUocGN0X3doaXRlKSsgICBzY2FsZShwY3RfbmF0aXZlKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArIGZhY3RvcihxX3BvcGRlbnNpdHkpXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICsgc2NhbGUobG9nKG1lZGhvdXNlaG9sZGluY29tZSkpKyBzY2FsZShlZHVjYXRpb24pICsgc2NhbGUoYmVkcy9wb3B1bGF0aW9uKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArIHNjYWxlKGRhdGVfc2luY2Vfc29jaWFsKSArIHNjYWxlKGRhdGVfc2luY2UpICsgc2NhbGUoZGF0ZV9zaW5jZV9yZW9wZW4pXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShkYXRlX3NpbmNlX3JlY2xvc3VyZSkrc2NhbGUoZGF0ZV9zaW5jZV9tYXNrKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUocGN0X29iZXNpdHkpXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShwY3RfYWdlNjUpK3NjYWxlKHBjdF9kaWFiZXRlcylcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKEx1bmdDYW5jZXIpXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShDT1BEKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUoQWR1bHRBc3RobWEpXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShDYXJkaW92YXNjdWxhci5kZWF0aF9yYXRlKVxuICAgICAgICAgICAgICAgICAgICAgICsoMXxzdGF0ZSlcbiAgICAgICAgICAgICAgICAgICAgICArIG9mZnNldChsb2cocG9wdWxhdGlvbikpICsgc2NhbGUoTGF0KSArIHNjYWxlKExvbmdfKSwgZGF0YSA9IGFnZ3JlZ2F0ZS5kYXRhKVxuYGBgIn0= -->
+<pre class="r"><code>###Spatial-Correlation 
 high.risk.spatial = glmer.nb(Deaths ~ scale(hispanic) + scale(pct_blk) + scale(pct_asian) + scale(pct_white)+   scale(pct_native)
                                             + factor(q_popdensity)
                                             + scale(log(medhouseholdincome))+ scale(education) + scale(beds/population)
@@ -2279,9 +2072,76 @@ high.risk.spatial = glmer.nb(Deaths ~ scale(hispanic) + scale(pct_blk) + scale(p
                                             +scale(AdultAsthma)
                                             +scale(Cardiovascular.death_rate)
                       +(1|state)
-                      + offset(log(population)) + scale(Lat) + scale(Long_), data = aggregate.data)
-summary(high.risk.spatial)
-###Negative Binomial Mixed Model Excluding NYC
+                      + offset(log(population)) + scale(Lat) + scale(Long_), data = aggregate.data)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiTW9kZWwgaXMgbmVhcmx5IHVuaWRlbnRpZmlhYmxlOiB2ZXJ5IGxhcmdlIGVpZ2VudmFsdWVcbiAtIFJlc2NhbGUgdmFyaWFibGVzP01vZGVsIGZhaWxlZCB0byBjb252ZXJnZSB3aXRoIG1heHxncmFkfCA9IDAuMDA2MTI4OTkgKHRvbCA9IDAuMDAyLCBjb21wb25lbnQgMSlcbiJ9 -->
+<pre><code>Model is nearly unidentifiable: very large eigenvalue
+ - Rescale variables?Model failed to converge with max|grad| = 0.00612899 (tol = 0.002, component 1)</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3VtbWFyeShoaWdoLnJpc2suc3BhdGlhbClcbmBgYCJ9 -->
+<pre class="r"><code>summary(high.risk.spatial)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiR2VuZXJhbGl6ZWQgbGluZWFyIG1peGVkIG1vZGVsIGZpdCBieSBtYXhpbXVtIGxpa2VsaWhvb2QgKExhcGxhY2UgQXBwcm94aW1hdGlvbikgWydnbG1lck1vZCddXG4gRmFtaWx5OiBOZWdhdGl2ZSBCaW5vbWlhbCgwLjg5MDUpICAoIGxvZyApXG5Gb3JtdWxhOiBEZWF0aHMgfiBzY2FsZShoaXNwYW5pYykgKyBzY2FsZShwY3RfYmxrKSArIHNjYWxlKHBjdF9hc2lhbikgKyAgICAgIHNjYWxlKHBjdF93aGl0ZSkgKyBzY2FsZShwY3RfbmF0aXZlKSArIGZhY3RvcihxX3BvcGRlbnNpdHkpICsgIFxuICAgIHNjYWxlKGxvZyhtZWRob3VzZWhvbGRpbmNvbWUpKSArIHNjYWxlKGVkdWNhdGlvbikgKyBzY2FsZShiZWRzL3BvcHVsYXRpb24pICsgICAgICBzY2FsZShkYXRlX3NpbmNlX3NvY2lhbCkgKyBzY2FsZShkYXRlX3NpbmNlKSArIHNjYWxlKGRhdGVfc2luY2VfcmVvcGVuKSArICBcbiAgICBzY2FsZShkYXRlX3NpbmNlX3JlY2xvc3VyZSkgKyBzY2FsZShkYXRlX3NpbmNlX21hc2spICsgc2NhbGUocGN0X29iZXNpdHkpICsgICAgICBzY2FsZShwY3RfYWdlNjUpICsgc2NhbGUocGN0X2RpYWJldGVzKSArIHNjYWxlKEx1bmdDYW5jZXIpICsgIFxuICAgIHNjYWxlKENPUEQpICsgc2NhbGUoQWR1bHRBc3RobWEpICsgc2NhbGUoQ2FyZGlvdmFzY3VsYXIuZGVhdGhfcmF0ZSkgKyAgICAgICgxIHwgc3RhdGUpICsgb2Zmc2V0KGxvZyhwb3B1bGF0aW9uKSkgKyBzY2FsZShMYXQpICsgc2NhbGUoTG9uZ18pXG4gICBEYXRhOiBhZ2dyZWdhdGUuZGF0YVxuXG4gICAgIEFJQyAgICAgIEJJQyAgIGxvZ0xpayBkZXZpYW5jZSBkZi5yZXNpZCBcbiAxNTc5Ny4wICAxNTk3Mi4wICAtNzg2OS41ICAxNTczOS4wICAgICAzMDY0IFxuXG5TY2FsZWQgcmVzaWR1YWxzOiBcbiAgICBNaW4gICAgICAxUSAgTWVkaWFuICAgICAgM1EgICAgIE1heCBcbi0wLjk0MTEgLTAuNjQ4OCAtMC4zNDMyICAwLjExMTAgMTIuNzk1MSBcblxuUmFuZG9tIGVmZmVjdHM6XG4gR3JvdXBzIE5hbWUgICAgICAgIFZhcmlhbmNlIFN0ZC5EZXYuXG4gc3RhdGUgIChJbnRlcmNlcHQpIDAuNDU1MiAgIDAuNjc0NyAgXG5OdW1iZXIgb2Ygb2JzOiAzMDkzLCBncm91cHM6ICBzdGF0ZSwgNDlcblxuRml4ZWQgZWZmZWN0czpcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIEVzdGltYXRlIFN0ZC4gRXJyb3IgeiB2YWx1ZSBQcig+fHp8KSAgICBcbihJbnRlcmNlcHQpICAgICAgICAgICAgICAgICAgICAgIC05LjE1NzE1ICAgIDAuMTQzNjYgLTYzLjc0MCAgPCAyZS0xNiAqKipcbnNjYWxlKGhpc3BhbmljKSAgICAgICAgICAgICAgICAgICAwLjIxMTA3ICAgIDAuMDUxNjggICA0LjA4NCA0LjQyZS0wNSAqKipcbnNjYWxlKHBjdF9ibGspICAgICAgICAgICAgICAgICAgICAwLjMwMjU3ICAgIDAuMTM5NzkgICAyLjE2NCAgMC4wMzA0MyAqICBcbnNjYWxlKHBjdF9hc2lhbikgICAgICAgICAgICAgICAgICAwLjA4MjkyICAgIDAuMDM3NzEgICAyLjE5OSAgMC4wMjc4OCAqICBcbnNjYWxlKHBjdF93aGl0ZSkgICAgICAgICAgICAgICAgIC0wLjEwMzE0ICAgIDAuMTQ5MTYgIC0wLjY5MSAgMC40ODkyNyAgICBcbnNjYWxlKHBjdF9uYXRpdmUpICAgICAgICAgICAgICAgICAwLjE1ODIwICAgIDAuMDY1NTMgICAyLjQxNCAgMC4wMTU3NyAqICBcbmZhY3RvcihxX3BvcGRlbnNpdHkpMiAgICAgICAgICAgIC0wLjA5NDg3ICAgIDAuMTEzNTIgIC0wLjgzNiAgMC40MDMzNCAgICBcbmZhY3RvcihxX3BvcGRlbnNpdHkpMyAgICAgICAgICAgIC0wLjA4MDE2ICAgIDAuMTE1MjcgIC0wLjY5NSAgMC40ODY3OSAgICBcbmZhY3RvcihxX3BvcGRlbnNpdHkpNCAgICAgICAgICAgIC0wLjI0MTc0ICAgIDAuMTE4MjggIC0yLjA0NCAgMC4wNDA5OCAqICBcbmZhY3RvcihxX3BvcGRlbnNpdHkpNSAgICAgICAgICAgIC0wLjA1NjM3ICAgIDAuMTI5OTQgIC0wLjQzNCAgMC42NjQ0MiAgICBcbnNjYWxlKGxvZyhtZWRob3VzZWhvbGRpbmNvbWUpKSAgICAwLjE4MTM0ICAgIDAuMDQ0NjEgICA0LjA2NSA0Ljc5ZS0wNSAqKipcbnNjYWxlKGVkdWNhdGlvbikgICAgICAgICAgICAgICAgICAwLjEyMjIzICAgIDAuMDQxNjUgICAyLjkzNSAgMC4wMDMzNCAqKiBcbnNjYWxlKGJlZHMvcG9wdWxhdGlvbikgICAgICAgICAgICAwLjAxMDYzICAgIDAuMDMzOTAgICAwLjMxNCAgMC43NTM4MSAgICBcbnNjYWxlKGRhdGVfc2luY2Vfc29jaWFsKSAgICAgICAgICAwLjExNjEyICAgIDAuMTYxNzkgICAwLjcxOCAgMC40NzI5NCAgICBcbnNjYWxlKGRhdGVfc2luY2UpICAgICAgICAgICAgICAgICAwLjgwNTg2ICAgIDAuMDc1MzIgIDEwLjcwMCAgPCAyZS0xNiAqKipcbnNjYWxlKGRhdGVfc2luY2VfcmVvcGVuKSAgICAgICAgICAwLjAyMjAwICAgIDAuMTY3MzggICAwLjEzMSAgMC44OTU0MyAgICBcbnNjYWxlKGRhdGVfc2luY2VfcmVjbG9zdXJlKSAgICAgICAwLjEwMjkxICAgIDAuMTQzOTIgICAwLjcxNSAgMC40NzQ1OCAgICBcbnNjYWxlKGRhdGVfc2luY2VfbWFzaykgICAgICAgICAgICAwLjEyMjQyICAgIDAuMTAyNDkgICAxLjE5NCAgMC4yMzIzMCAgICBcbnNjYWxlKHBjdF9vYmVzaXR5KSAgICAgICAgICAgICAgIC0wLjAxOTU4ICAgIDAuMDM0OTUgIC0wLjU2MCAgMC41NzUzMiAgICBcbnNjYWxlKHBjdF9hZ2U2NSkgICAgICAgICAgICAgICAgICAwLjA0ODEyICAgIDAuMDU4MjAgICAwLjgyNyAgMC40MDg0MiAgICBcbnNjYWxlKHBjdF9kaWFiZXRlcykgICAgICAgICAgICAgICAwLjAzODQ0ICAgIDAuMDM1MDkgICAxLjA5NSAgMC4yNzMzMyAgICBcbnNjYWxlKEx1bmdDYW5jZXIpICAgICAgICAgICAgICAgICAwLjE5Mzk0ICAgIDAuMTI1MzAgICAxLjU0OCAgMC4xMjE2NSAgICBcbnNjYWxlKENPUEQpICAgICAgICAgICAgICAgICAgICAgICAwLjAzNjA0ICAgIDAuMTUwNzggICAwLjIzOSAgMC44MTExMCAgICBcbnNjYWxlKEFkdWx0QXN0aG1hKSAgICAgICAgICAgICAgIC0wLjI1NjY4ICAgIDAuMDk0OTMgIC0yLjcwNCAgMC4wMDY4NSAqKiBcbnNjYWxlKENhcmRpb3Zhc2N1bGFyLmRlYXRoX3JhdGUpICAwLjA3NTQwICAgIDAuMDQyNTEgICAxLjc3MyAgMC4wNzYxNSAuICBcbnNjYWxlKExhdCkgICAgICAgICAgICAgICAgICAgICAgICAwLjA1MDQwICAgIDAuMDg5MjcgICAwLjU2NSAgMC41NzIzNiAgICBcbnNjYWxlKExvbmdfKSAgICAgICAgICAgICAgICAgICAgICAwLjM1NDMxICAgIDAuMDk2MTkgICAzLjY4MyAgMC4wMDAyMyAqKipcbi0tLVxuU2lnbmlmLiBjb2RlczogIDAg4oCYKioq4oCZIDAuMDAxIOKAmCoq4oCZIDAuMDEg4oCYKuKAmSAwLjA1IOKAmC7igJkgMC4xIOKAmCDigJkgMVxuIn0= -->
+<pre><code>Generalized linear mixed model fit by maximum likelihood (Laplace Approximation) ['glmerMod']
+ Family: Negative Binomial(0.8905)  ( log )
+Formula: Deaths ~ scale(hispanic) + scale(pct_blk) + scale(pct_asian) +      scale(pct_white) + scale(pct_native) + factor(q_popdensity) +  
+    scale(log(medhouseholdincome)) + scale(education) + scale(beds/population) +      scale(date_since_social) + scale(date_since) + scale(date_since_reopen) +  
+    scale(date_since_reclosure) + scale(date_since_mask) + scale(pct_obesity) +      scale(pct_age65) + scale(pct_diabetes) + scale(LungCancer) +  
+    scale(COPD) + scale(AdultAsthma) + scale(Cardiovascular.death_rate) +      (1 | state) + offset(log(population)) + scale(Lat) + scale(Long_)
+   Data: aggregate.data
+
+     AIC      BIC   logLik deviance df.resid 
+ 15797.0  15972.0  -7869.5  15739.0     3064 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-0.9411 -0.6488 -0.3432  0.1110 12.7951 
+
+Random effects:
+ Groups Name        Variance Std.Dev.
+ state  (Intercept) 0.4552   0.6747  
+Number of obs: 3093, groups:  state, 49
+
+Fixed effects:
+                                 Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)                      -9.15715    0.14366 -63.740  &lt; 2e-16 ***
+scale(hispanic)                   0.21107    0.05168   4.084 4.42e-05 ***
+scale(pct_blk)                    0.30257    0.13979   2.164  0.03043 *  
+scale(pct_asian)                  0.08292    0.03771   2.199  0.02788 *  
+scale(pct_white)                 -0.10314    0.14916  -0.691  0.48927    
+scale(pct_native)                 0.15820    0.06553   2.414  0.01577 *  
+factor(q_popdensity)2            -0.09487    0.11352  -0.836  0.40334    
+factor(q_popdensity)3            -0.08016    0.11527  -0.695  0.48679    
+factor(q_popdensity)4            -0.24174    0.11828  -2.044  0.04098 *  
+factor(q_popdensity)5            -0.05637    0.12994  -0.434  0.66442    
+scale(log(medhouseholdincome))    0.18134    0.04461   4.065 4.79e-05 ***
+scale(education)                  0.12223    0.04165   2.935  0.00334 ** 
+scale(beds/population)            0.01063    0.03390   0.314  0.75381    
+scale(date_since_social)          0.11612    0.16179   0.718  0.47294    
+scale(date_since)                 0.80586    0.07532  10.700  &lt; 2e-16 ***
+scale(date_since_reopen)          0.02200    0.16738   0.131  0.89543    
+scale(date_since_reclosure)       0.10291    0.14392   0.715  0.47458    
+scale(date_since_mask)            0.12242    0.10249   1.194  0.23230    
+scale(pct_obesity)               -0.01958    0.03495  -0.560  0.57532    
+scale(pct_age65)                  0.04812    0.05820   0.827  0.40842    
+scale(pct_diabetes)               0.03844    0.03509   1.095  0.27333    
+scale(LungCancer)                 0.19394    0.12530   1.548  0.12165    
+scale(COPD)                       0.03604    0.15078   0.239  0.81110    
+scale(AdultAsthma)               -0.25668    0.09493  -2.704  0.00685 ** 
+scale(Cardiovascular.death_rate)  0.07540    0.04251   1.773  0.07615 .  
+scale(Lat)                        0.05040    0.08927   0.565  0.57236    
+scale(Long_)                      0.35431    0.09619   3.683  0.00023 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG5Db3JyZWxhdGlvbiBtYXRyaXggbm90IHNob3duIGJ5IGRlZmF1bHQsIGFzIHAgPSAyNyA+IDEyLlxuVXNlIHByaW50KHgsIGNvcnJlbGF0aW9uPVRSVUUpICBvclxuICAgIHZjb3YoeCkgICAgICAgIGlmIHlvdSBuZWVkIGl0XG4ifQ== -->
+<pre><code>
+Correlation matrix not shown by default, as p = 27 &gt; 12.
+Use print(x, correlation=TRUE)  or
+    vcov(x)        if you need it</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMjTmVnYXRpdmUgQmlub21pYWwgTWl4ZWQgTW9kZWwgRXhjbHVkaW5nIE5ZQ1xuaGlnaC5yaXNrLm5vLm55YyA9IGdsbWVyLm5iKERlYXRocyB+IHNjYWxlKGhpc3BhbmljKSArIHNjYWxlKHBjdF9ibGspICsgc2NhbGUocGN0X2FzaWFuKSArIHNjYWxlKHBjdF93aGl0ZSkrICAgc2NhbGUocGN0X25hdGl2ZSlcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKyBmYWN0b3IocV9wb3BkZW5zaXR5KVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArIHNjYWxlKGxvZyhtZWRob3VzZWhvbGRpbmNvbWUpKSArIHNjYWxlKGVkdWNhdGlvbikgKyBzY2FsZShiZWRzL3BvcHVsYXRpb24pXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICsgc2NhbGUoZGF0ZV9zaW5jZV9zb2NpYWwpICsgc2NhbGUoZGF0ZV9zaW5jZSkgKyBzY2FsZShkYXRlX3NpbmNlX3Jlb3BlbilcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKGRhdGVfc2luY2VfcmVjbG9zdXJlKStzY2FsZShkYXRlX3NpbmNlX21hc2spXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShwY3Rfb2Jlc2l0eSlcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKHBjdF9hZ2U2NSkrc2NhbGUocGN0X2RpYWJldGVzKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUoTHVuZ0NhbmNlcilcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKENPUEQpXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShBZHVsdEFzdGhtYSlcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKENhcmRpb3Zhc2N1bGFyLmRlYXRoX3JhdGUpXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKyAoMXxzdGF0ZSlcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArIG9mZnNldChsb2cocG9wdWxhdGlvbikpLCBkYXRhID0gc3Vic2V0KGFnZ3JlZ2F0ZS5kYXRhLCEoZmlwcyAlaW4lIGMoXCIwOTAwMVwiLFwiNDIwODlcIixcIjM2MTExXCIsXCIwOTAwOVwiLFwiMzYwNTlcIixcIjM2MTAzXCIsXCIzNDAxM1wiLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwiMzYwNzlcIixcIjM2MDgxXCIsICBcIjM2MDg1XCIsICBcIjM2MDg3XCIsICBcIjM2MTE5XCIsICBcIjM2MDI3XCIsICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXCIzNjA3MVwiLCAgXCIwOTAwNVwiLCAgXCIzNDAyMVwiKSkpKVxuYGBgIn0= -->
+<pre class="r"><code>###Negative Binomial Mixed Model Excluding NYC
 high.risk.no.nyc = glmer.nb(Deaths ~ scale(hispanic) + scale(pct_blk) + scale(pct_asian) + scale(pct_white)+   scale(pct_native)
                                             + factor(q_popdensity)
                                             + scale(log(medhouseholdincome)) + scale(education) + scale(beds/population)
@@ -2295,9 +2155,74 @@ high.risk.no.nyc = glmer.nb(Deaths ~ scale(hispanic) + scale(pct_blk) + scale(pc
                                             +scale(Cardiovascular.death_rate)
                                   + (1|state)
                                   + offset(log(population)), data = subset(aggregate.data,!(fips %in% c(&quot;09001&quot;,&quot;42089&quot;,&quot;36111&quot;,&quot;09009&quot;,&quot;36059&quot;,&quot;36103&quot;,&quot;34013&quot;,
-                                                                                                                                              &quot;36079&quot;,&quot;36081&quot;,  &quot;36085&quot;,  &quot;36087&quot;,  &quot;36119&quot;,  &quot;36027&quot;,                                                                                                                           &quot;36071&quot;,  &quot;09005&quot;,  &quot;34021&quot;))))
-summary(high.risk.no.nyc)
-###Negative Binomial Mixed Model Excluding Counties With Less Than 10 Cases
+                                                                                                                                              &quot;36079&quot;,&quot;36081&quot;,  &quot;36085&quot;,  &quot;36087&quot;,  &quot;36119&quot;,  &quot;36027&quot;,                                                                                                                           &quot;36071&quot;,  &quot;09005&quot;,  &quot;34021&quot;))))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiTW9kZWwgaXMgbmVhcmx5IHVuaWRlbnRpZmlhYmxlOiB2ZXJ5IGxhcmdlIGVpZ2VudmFsdWVcbiAtIFJlc2NhbGUgdmFyaWFibGVzP01vZGVsIGZhaWxlZCB0byBjb252ZXJnZSB3aXRoIG1heHxncmFkfCA9IDAuMDA2ODkxODcgKHRvbCA9IDAuMDAyLCBjb21wb25lbnQgMSlcbiJ9 -->
+<pre><code>Model is nearly unidentifiable: very large eigenvalue
+ - Rescale variables?Model failed to converge with max|grad| = 0.00689187 (tol = 0.002, component 1)</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3VtbWFyeShoaWdoLnJpc2subm8ubnljKVxuYGBgIn0= -->
+<pre class="r"><code>summary(high.risk.no.nyc)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiR2VuZXJhbGl6ZWQgbGluZWFyIG1peGVkIG1vZGVsIGZpdCBieSBtYXhpbXVtIGxpa2VsaWhvb2QgKExhcGxhY2UgQXBwcm94aW1hdGlvbikgWydnbG1lck1vZCddXG4gRmFtaWx5OiBOZWdhdGl2ZSBCaW5vbWlhbCgwLjg4NDIpICAoIGxvZyApXG5Gb3JtdWxhOiBEZWF0aHMgfiBzY2FsZShoaXNwYW5pYykgKyBzY2FsZShwY3RfYmxrKSArIHNjYWxlKHBjdF9hc2lhbikgKyAgICAgIHNjYWxlKHBjdF93aGl0ZSkgKyBzY2FsZShwY3RfbmF0aXZlKSArIGZhY3RvcihxX3BvcGRlbnNpdHkpICsgIFxuICAgIHNjYWxlKGxvZyhtZWRob3VzZWhvbGRpbmNvbWUpKSArIHNjYWxlKGVkdWNhdGlvbikgKyBzY2FsZShiZWRzL3BvcHVsYXRpb24pICsgICAgICBzY2FsZShkYXRlX3NpbmNlX3NvY2lhbCkgKyBzY2FsZShkYXRlX3NpbmNlKSArIHNjYWxlKGRhdGVfc2luY2VfcmVvcGVuKSArICBcbiAgICBzY2FsZShkYXRlX3NpbmNlX3JlY2xvc3VyZSkgKyBzY2FsZShkYXRlX3NpbmNlX21hc2spICsgc2NhbGUocGN0X29iZXNpdHkpICsgICAgICBzY2FsZShwY3RfYWdlNjUpICsgc2NhbGUocGN0X2RpYWJldGVzKSArIHNjYWxlKEx1bmdDYW5jZXIpICsgIFxuICAgIHNjYWxlKENPUEQpICsgc2NhbGUoQWR1bHRBc3RobWEpICsgc2NhbGUoQ2FyZGlvdmFzY3VsYXIuZGVhdGhfcmF0ZSkgKyAgICAgICgxIHwgc3RhdGUpICsgb2Zmc2V0KGxvZyhwb3B1bGF0aW9uKSlcbiAgIERhdGE6IHN1YnNldChhZ2dyZWdhdGUuZGF0YSwgIShmaXBzICVpbiUgYyhcIjA5MDAxXCIsIFwiNDIwODlcIiwgXCIzNjExMVwiLCAgICAgIFwiMDkwMDlcIiwgXCIzNjA1OVwiLCBcIjM2MTAzXCIsIFwiMzQwMTNcIiwgXCIzNjA3OVwiLCBcIjM2MDgxXCIsIFwiMzYwODVcIiwgICAgICBcIjM2MDg3XCIsIFwiMzYxMTlcIiwgXCIzNjAyN1wiLCBcIjM2MDcxXCIsIFwiMDkwMDVcIiwgXCIzNDAyMVwiKSkpXG5cbiAgICAgQUlDICAgICAgQklDICAgbG9nTGlrIGRldmlhbmNlIGRmLnJlc2lkIFxuIDE1NTgzLjMgIDE1NzQ2LjIgIC03NzY0LjcgIDE1NTI5LjMgICAgIDMwNTAgXG5cblNjYWxlZCByZXNpZHVhbHM6IFxuICAgIE1pbiAgICAgIDFRICBNZWRpYW4gICAgICAzUSAgICAgTWF4IFxuLTAuOTM3NCAtMC42NDc5IC0wLjM0NTQgIDAuMTA0MyAxMi4yMTU5IFxuXG5SYW5kb20gZWZmZWN0czpcbiBHcm91cHMgTmFtZSAgICAgICAgVmFyaWFuY2UgU3RkLkRldi5cbiBzdGF0ZSAgKEludGVyY2VwdCkgMC41MjUyICAgMC43MjQ3ICBcbk51bWJlciBvZiBvYnM6IDMwNzcsIGdyb3VwczogIHN0YXRlLCA0OVxuXG5GaXhlZCBlZmZlY3RzOlxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIEVzdGltYXRlIFN0ZC4gRXJyb3IgeiB2YWx1ZSBQcig+fHp8KSAgICBcbihJbnRlcmNlcHQpICAgICAgICAgICAgICAgICAgICAgIC05LjIyNTE5OSAgIDAuMTQ4NDMyIC02Mi4xNTEgIDwgMmUtMTYgKioqXG5zY2FsZShoaXNwYW5pYykgICAgICAgICAgICAgICAgICAgMC4xOTE2MDEgICAwLjA1MTA0MiAgIDMuNzU0IDAuMDAwMTc0ICoqKlxuc2NhbGUocGN0X2JsaykgICAgICAgICAgICAgICAgICAgIDAuMzEwNTM4ICAgMC4xMzk2MzIgICAyLjIyNCAwLjAyNjE1MCAqICBcbnNjYWxlKHBjdF9hc2lhbikgICAgICAgICAgICAgICAgICAwLjA4ODkwMyAgIDAuMDM3NDYyICAgMi4zNzMgMC4wMTc2MzggKiAgXG5zY2FsZShwY3Rfd2hpdGUpICAgICAgICAgICAgICAgICAtMC4xMDQ4MTAgICAwLjE0OTA3NiAgLTAuNzAzIDAuNDgyMDE3ICAgIFxuc2NhbGUocGN0X25hdGl2ZSkgICAgICAgICAgICAgICAgIDAuMTUxNDE3ICAgMC4wNjU3NjUgICAyLjMwMiAwLjAyMTMxMyAqICBcbmZhY3RvcihxX3BvcGRlbnNpdHkpMiAgICAgICAgICAgIC0wLjA1OTAyOCAgIDAuMTEzMDI4ICAtMC41MjIgMC42MDE1MDEgICAgXG5mYWN0b3IocV9wb3BkZW5zaXR5KTMgICAgICAgICAgICAtMC4wMjI5MTYgICAwLjExNDQ5OSAgLTAuMjAwIDAuODQxMzcxICAgIFxuZmFjdG9yKHFfcG9wZGVuc2l0eSk0ICAgICAgICAgICAgLTAuMTc0ODYzICAgMC4xMTc1MDkgIC0xLjQ4OCAwLjEzNjcyOSAgICBcbmZhY3RvcihxX3BvcGRlbnNpdHkpNSAgICAgICAgICAgICAwLjAxOTE3MiAgIDAuMTI5MTcxICAgMC4xNDggMC44ODIwMDggICAgXG5zY2FsZShsb2cobWVkaG91c2Vob2xkaW5jb21lKSkgICAgMC4xODM3ODkgICAwLjA0NDY2NyAgIDQuMTE1IDMuODhlLTA1ICoqKlxuc2NhbGUoZWR1Y2F0aW9uKSAgICAgICAgICAgICAgICAgIDAuMTMxMDU2ICAgMC4wNDE1ODQgICAzLjE1MiAwLjAwMTYyNCAqKiBcbnNjYWxlKGJlZHMvcG9wdWxhdGlvbikgICAgICAgICAgICAwLjAwODQ5NSAgIDAuMDMzOTI0ICAgMC4yNTAgMC44MDIyNjQgICAgXG5zY2FsZShkYXRlX3NpbmNlX3NvY2lhbCkgICAgICAgICAgMC4xMTEzMzQgICAwLjE3MzAzOSAgIDAuNjQzIDAuNTE5OTYxICAgIFxuc2NhbGUoZGF0ZV9zaW5jZSkgICAgICAgICAgICAgICAgIDAuNzY3NzYwICAgMC4wNzQxODYgIDEwLjM0OSAgPCAyZS0xNiAqKipcbnNjYWxlKGRhdGVfc2luY2VfcmVvcGVuKSAgICAgICAgICAwLjA5NzQ4OSAgIDAuMTc2MjY5ICAgMC41NTMgMC41ODAyMTQgICAgXG5zY2FsZShkYXRlX3NpbmNlX3JlY2xvc3VyZSkgICAgICAgMC4wNzQyNTQgICAwLjE0NzAxNSAgIDAuNTA1IDAuNjEzNTA0ICAgIFxuc2NhbGUoZGF0ZV9zaW5jZV9tYXNrKSAgICAgICAgICAgIDAuMjUxOTE0ICAgMC4wOTg5MDkgICAyLjU0NyAwLjAxMDg2OCAqICBcbnNjYWxlKHBjdF9vYmVzaXR5KSAgICAgICAgICAgICAgIC0wLjAxMjUxNiAgIDAuMDM0OTQzICAtMC4zNTggMC43MjAyMDAgICAgXG5zY2FsZShwY3RfYWdlNjUpICAgICAgICAgICAgICAgICAgMC4wNDU0ODkgICAwLjA1OTY2MCAgIDAuNzYyIDAuNDQ1Nzc3ICAgIFxuc2NhbGUocGN0X2RpYWJldGVzKSAgICAgICAgICAgICAgIDAuMDQ0NDM0ICAgMC4wMzUxODggICAxLjI2MyAwLjIwNjY3OCAgICBcbnNjYWxlKEx1bmdDYW5jZXIpICAgICAgICAgICAgICAgICAwLjMzOTMwMSAgIDAuMTIxOTk4ICAgMi43ODEgMC4wMDU0MTYgKiogXG5zY2FsZShDT1BEKSAgICAgICAgICAgICAgICAgICAgICAgMC4wMzgzMzcgICAwLjE1MjI2NSAgIDAuMjUyIDAuODAxMjEzICAgIFxuc2NhbGUoQWR1bHRBc3RobWEpICAgICAgICAgICAgICAgLTAuMjE4OTE5ICAgMC4wOTY2MDkgIC0yLjI2NiAwLjAyMzQ1MCAqICBcbnNjYWxlKENhcmRpb3Zhc2N1bGFyLmRlYXRoX3JhdGUpICAwLjA3NTUyMCAgIDAuMDQyNjgwICAgMS43NjkgMC4wNzY4MTkgLiAgXG4tLS1cblNpZ25pZi4gY29kZXM6ICAwIOKAmCoqKuKAmSAwLjAwMSDigJgqKuKAmSAwLjAxIOKAmCrigJkgMC4wNSDigJgu4oCZIDAuMSDigJgg4oCZIDFcbiJ9 -->
+<pre><code>Generalized linear mixed model fit by maximum likelihood (Laplace Approximation) ['glmerMod']
+ Family: Negative Binomial(0.8842)  ( log )
+Formula: Deaths ~ scale(hispanic) + scale(pct_blk) + scale(pct_asian) +      scale(pct_white) + scale(pct_native) + factor(q_popdensity) +  
+    scale(log(medhouseholdincome)) + scale(education) + scale(beds/population) +      scale(date_since_social) + scale(date_since) + scale(date_since_reopen) +  
+    scale(date_since_reclosure) + scale(date_since_mask) + scale(pct_obesity) +      scale(pct_age65) + scale(pct_diabetes) + scale(LungCancer) +  
+    scale(COPD) + scale(AdultAsthma) + scale(Cardiovascular.death_rate) +      (1 | state) + offset(log(population))
+   Data: subset(aggregate.data, !(fips %in% c(&quot;09001&quot;, &quot;42089&quot;, &quot;36111&quot;,      &quot;09009&quot;, &quot;36059&quot;, &quot;36103&quot;, &quot;34013&quot;, &quot;36079&quot;, &quot;36081&quot;, &quot;36085&quot;,      &quot;36087&quot;, &quot;36119&quot;, &quot;36027&quot;, &quot;36071&quot;, &quot;09005&quot;, &quot;34021&quot;)))
+
+     AIC      BIC   logLik deviance df.resid 
+ 15583.3  15746.2  -7764.7  15529.3     3050 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-0.9374 -0.6479 -0.3454  0.1043 12.2159 
+
+Random effects:
+ Groups Name        Variance Std.Dev.
+ state  (Intercept) 0.5252   0.7247  
+Number of obs: 3077, groups:  state, 49
+
+Fixed effects:
+                                  Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)                      -9.225199   0.148432 -62.151  &lt; 2e-16 ***
+scale(hispanic)                   0.191601   0.051042   3.754 0.000174 ***
+scale(pct_blk)                    0.310538   0.139632   2.224 0.026150 *  
+scale(pct_asian)                  0.088903   0.037462   2.373 0.017638 *  
+scale(pct_white)                 -0.104810   0.149076  -0.703 0.482017    
+scale(pct_native)                 0.151417   0.065765   2.302 0.021313 *  
+factor(q_popdensity)2            -0.059028   0.113028  -0.522 0.601501    
+factor(q_popdensity)3            -0.022916   0.114499  -0.200 0.841371    
+factor(q_popdensity)4            -0.174863   0.117509  -1.488 0.136729    
+factor(q_popdensity)5             0.019172   0.129171   0.148 0.882008    
+scale(log(medhouseholdincome))    0.183789   0.044667   4.115 3.88e-05 ***
+scale(education)                  0.131056   0.041584   3.152 0.001624 ** 
+scale(beds/population)            0.008495   0.033924   0.250 0.802264    
+scale(date_since_social)          0.111334   0.173039   0.643 0.519961    
+scale(date_since)                 0.767760   0.074186  10.349  &lt; 2e-16 ***
+scale(date_since_reopen)          0.097489   0.176269   0.553 0.580214    
+scale(date_since_reclosure)       0.074254   0.147015   0.505 0.613504    
+scale(date_since_mask)            0.251914   0.098909   2.547 0.010868 *  
+scale(pct_obesity)               -0.012516   0.034943  -0.358 0.720200    
+scale(pct_age65)                  0.045489   0.059660   0.762 0.445777    
+scale(pct_diabetes)               0.044434   0.035188   1.263 0.206678    
+scale(LungCancer)                 0.339301   0.121998   2.781 0.005416 ** 
+scale(COPD)                       0.038337   0.152265   0.252 0.801213    
+scale(AdultAsthma)               -0.218919   0.096609  -2.266 0.023450 *  
+scale(Cardiovascular.death_rate)  0.075520   0.042680   1.769 0.076819 .  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG5Db3JyZWxhdGlvbiBtYXRyaXggbm90IHNob3duIGJ5IGRlZmF1bHQsIGFzIHAgPSAyNSA+IDEyLlxuVXNlIHByaW50KHgsIGNvcnJlbGF0aW9uPVRSVUUpICBvclxuICAgIHZjb3YoeCkgICAgICAgIGlmIHlvdSBuZWVkIGl0XG4ifQ== -->
+<pre><code>
+Correlation matrix not shown by default, as p = 25 &gt; 12.
+Use print(x, correlation=TRUE)  or
+    vcov(x)        if you need it</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMjTmVnYXRpdmUgQmlub21pYWwgTWl4ZWQgTW9kZWwgRXhjbHVkaW5nIENvdW50aWVzIFdpdGggTGVzcyBUaGFuIDEwIENhc2VzXG5oaWdoLnJpc2sudGVuID0gZ2xtZXIubmIoRGVhdGhzIH4gc2NhbGUoaGlzcGFuaWMpICsgc2NhbGUocGN0X2JsaykgKyBzY2FsZShwY3RfYXNpYW4pICsgc2NhbGUocGN0X3doaXRlKSsgICBzY2FsZShwY3RfbmF0aXZlKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArIGZhY3RvcihxX3BvcGRlbnNpdHkpXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICsgc2NhbGUobG9nKG1lZGhvdXNlaG9sZGluY29tZSkpICsgc2NhbGUoZWR1Y2F0aW9uKSArIHNjYWxlKGJlZHMvcG9wdWxhdGlvbilcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKyBzY2FsZShkYXRlX3NpbmNlX3NvY2lhbCkgKyBzY2FsZShkYXRlX3NpbmNlKSArIHNjYWxlKGRhdGVfc2luY2VfcmVvcGVuKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUoZGF0ZV9zaW5jZV9yZWNsb3N1cmUpK3NjYWxlKGRhdGVfc2luY2VfbWFzaylcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKHBjdF9vYmVzaXR5KVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUocGN0X2FnZTY1KStzY2FsZShwY3RfZGlhYmV0ZXMpXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShMdW5nQ2FuY2VyKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUoQ09QRClcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKEFkdWx0QXN0aG1hKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUoQ2FyZGlvdmFzY3VsYXIuZGVhdGhfcmF0ZSlcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICsgKDF8c3RhdGUpXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArIG9mZnNldChsb2cocG9wdWxhdGlvbikpLCBkYXRhID0gc3Vic2V0KGFnZ3JlZ2F0ZS5kYXRhLENvbmZpcm1lZCA+PTEwKSlcbmBgYCJ9 -->
+<pre class="r"><code>###Negative Binomial Mixed Model Excluding Counties With Less Than 10 Cases
 high.risk.ten = glmer.nb(Deaths ~ scale(hispanic) + scale(pct_blk) + scale(pct_asian) + scale(pct_white)+   scale(pct_native)
                                             + factor(q_popdensity)
                                             + scale(log(medhouseholdincome)) + scale(education) + scale(beds/population)
@@ -2310,12 +2235,75 @@ high.risk.ten = glmer.nb(Deaths ~ scale(hispanic) + scale(pct_blk) + scale(pct_a
                                             +scale(AdultAsthma)
                                             +scale(Cardiovascular.death_rate)
                                     + (1|state)
-                                    + offset(log(population)), data = subset(aggregate.data,Confirmed &gt;=10))
-summary(high.risk.ten)</code></pre>
+                                    + offset(log(population)), data = subset(aggregate.data,Confirmed &gt;=10))</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiTW9kZWwgaXMgbmVhcmx5IHVuaWRlbnRpZmlhYmxlOiB2ZXJ5IGxhcmdlIGVpZ2VudmFsdWVcbiAtIFJlc2NhbGUgdmFyaWFibGVzP01vZGVsIGZhaWxlZCB0byBjb252ZXJnZSB3aXRoIG1heHxncmFkfCA9IDAuMDE3MDUwMiAodG9sID0gMC4wMDIsIGNvbXBvbmVudCAxKVxuIn0= -->
+<pre><code>Model is nearly unidentifiable: very large eigenvalue
+ - Rescale variables?Model failed to converge with max|grad| = 0.0170502 (tol = 0.002, component 1)</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3VtbWFyeShoaWdoLnJpc2sudGVuKVxuYGBgIn0= -->
+<pre class="r"><code>summary(high.risk.ten)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiR2VuZXJhbGl6ZWQgbGluZWFyIG1peGVkIG1vZGVsIGZpdCBieSBtYXhpbXVtIGxpa2VsaWhvb2QgKExhcGxhY2UgQXBwcm94aW1hdGlvbikgWydnbG1lck1vZCddXG4gRmFtaWx5OiBOZWdhdGl2ZSBCaW5vbWlhbCgwLjkyNDkpICAoIGxvZyApXG5Gb3JtdWxhOiBEZWF0aHMgfiBzY2FsZShoaXNwYW5pYykgKyBzY2FsZShwY3RfYmxrKSArIHNjYWxlKHBjdF9hc2lhbikgKyAgICAgIHNjYWxlKHBjdF93aGl0ZSkgKyBzY2FsZShwY3RfbmF0aXZlKSArIGZhY3RvcihxX3BvcGRlbnNpdHkpICsgIFxuICAgIHNjYWxlKGxvZyhtZWRob3VzZWhvbGRpbmNvbWUpKSArIHNjYWxlKGVkdWNhdGlvbikgKyBzY2FsZShiZWRzL3BvcHVsYXRpb24pICsgICAgICBzY2FsZShkYXRlX3NpbmNlX3NvY2lhbCkgKyBzY2FsZShkYXRlX3NpbmNlKSArIHNjYWxlKGRhdGVfc2luY2VfcmVvcGVuKSArICBcbiAgICBzY2FsZShkYXRlX3NpbmNlX3JlY2xvc3VyZSkgKyBzY2FsZShkYXRlX3NpbmNlX21hc2spICsgc2NhbGUocGN0X29iZXNpdHkpICsgICAgICBzY2FsZShwY3RfYWdlNjUpICsgc2NhbGUocGN0X2RpYWJldGVzKSArIHNjYWxlKEx1bmdDYW5jZXIpICsgIFxuICAgIHNjYWxlKENPUEQpICsgc2NhbGUoQWR1bHRBc3RobWEpICsgc2NhbGUoQ2FyZGlvdmFzY3VsYXIuZGVhdGhfcmF0ZSkgKyAgICAgICgxIHwgc3RhdGUpICsgb2Zmc2V0KGxvZyhwb3B1bGF0aW9uKSlcbiAgIERhdGE6IHN1YnNldChhZ2dyZWdhdGUuZGF0YSwgQ29uZmlybWVkID49IDEwKVxuXG4gICAgIEFJQyAgICAgIEJJQyAgIGxvZ0xpayBkZXZpYW5jZSBkZi5yZXNpZCBcbiAxNTQzMy45ICAxNTU5Mi4zICAtNzY4OS45ICAxNTM3OS45ICAgICAyNTkwIFxuXG5TY2FsZWQgcmVzaWR1YWxzOiBcbiAgICBNaW4gICAgICAxUSAgTWVkaWFuICAgICAgM1EgICAgIE1heCBcbi0wLjk0ODMgLTAuNjg3MyAtMC4zOTIwICAwLjIxMTAgMTAuNjExMyBcblxuUmFuZG9tIGVmZmVjdHM6XG4gR3JvdXBzIE5hbWUgICAgICAgIFZhcmlhbmNlIFN0ZC5EZXYuXG4gc3RhdGUgIChJbnRlcmNlcHQpIDAuNTI0NCAgIDAuNzI0MiAgXG5OdW1iZXIgb2Ygb2JzOiAyNjE3LCBncm91cHM6ICBzdGF0ZSwgNDlcblxuRml4ZWQgZWZmZWN0czpcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBFc3RpbWF0ZSBTdGQuIEVycm9yIHogdmFsdWUgUHIoPnx6fCkgICAgXG4oSW50ZXJjZXB0KSAgICAgICAgICAgICAgICAgICAgICAtOC43NjEwMzcgICAwLjE1NzE5NiAtNTUuNzMzICA8IDJlLTE2ICoqKlxuc2NhbGUoaGlzcGFuaWMpICAgICAgICAgICAgICAgICAgIDAuMTkzMjExICAgMC4wNTE0NzkgICAzLjc1MyAwLjAwMDE3NSAqKipcbnNjYWxlKHBjdF9ibGspICAgICAgICAgICAgICAgICAgICAwLjI5NTI2MiAgIDAuMTQ1MTQwICAgMi4wMzQgMC4wNDE5MTkgKiAgXG5zY2FsZShwY3RfYXNpYW4pICAgICAgICAgICAgICAgICAgMC4wOTE1NTcgICAwLjAzOTU5MiAgIDIuMzEzIDAuMDIwNzQ5ICogIFxuc2NhbGUocGN0X3doaXRlKSAgICAgICAgICAgICAgICAgLTAuMTM2NzQ0ICAgMC4xNTEwNTQgIC0wLjkwNSAwLjM2NTMyNiAgICBcbnNjYWxlKHBjdF9uYXRpdmUpICAgICAgICAgICAgICAgICAwLjE0NzEyMyAgIDAuMDYwNTczICAgMi40MjkgMC4wMTUxNDcgKiAgXG5mYWN0b3IocV9wb3BkZW5zaXR5KTIgICAgICAgICAgICAtMC4xNDkxMDggICAwLjEyMDg1MSAgLTEuMjM0IDAuMjE3MjcxICAgIFxuZmFjdG9yKHFfcG9wZGVuc2l0eSkzICAgICAgICAgICAgLTAuMTUwOTM1ICAgMC4xMjE4MDIgIC0xLjIzOSAwLjIxNTI3OCAgICBcbmZhY3RvcihxX3BvcGRlbnNpdHkpNCAgICAgICAgICAgIC0wLjI5MjUwNSAgIDAuMTI0NzQ5ICAtMi4zNDUgMC4wMTkwNDAgKiAgXG5mYWN0b3IocV9wb3BkZW5zaXR5KTUgICAgICAgICAgICAtMC4wODk2MzEgICAwLjEzNDk0NiAgLTAuNjY0IDAuNTA2NTY0ICAgIFxuc2NhbGUobG9nKG1lZGhvdXNlaG9sZGluY29tZSkpICAgIDAuMTk4Nzc1ICAgMC4wNDU0MjQgICA0LjM3NiAxLjIxZS0wNSAqKipcbnNjYWxlKGVkdWNhdGlvbikgICAgICAgICAgICAgICAgICAwLjEyNDMxMSAgIDAuMDQwNTk5ICAgMy4wNjIgMC4wMDIxOTkgKiogXG5zY2FsZShiZWRzL3BvcHVsYXRpb24pICAgICAgICAgICAgMC4wMDg0ODkgICAwLjAyODI2OSAgIDAuMzAwIDAuNzYzOTYyICAgIFxuc2NhbGUoZGF0ZV9zaW5jZV9zb2NpYWwpICAgICAgICAgIDAuMDY0NDMzICAgMC4xNjY3MDkgICAwLjM4NyAwLjY5OTEyNSAgICBcbnNjYWxlKGRhdGVfc2luY2UpICAgICAgICAgICAgICAgICAwLjI4ODY4NCAgIDAuMDQwODQ2ICAgNy4wNjggMS41OGUtMTIgKioqXG5zY2FsZShkYXRlX3NpbmNlX3Jlb3BlbikgICAgICAgICAgMC4xMzQ2ODEgICAwLjE3MDM5NCAgIDAuNzkwIDAuNDI5MjkxICAgIFxuc2NhbGUoZGF0ZV9zaW5jZV9yZWNsb3N1cmUpICAgICAgIDAuMDUzNjE5ICAgMC4xNDgzOTUgICAwLjM2MSAwLjcxNzg1MyAgICBcbnNjYWxlKGRhdGVfc2luY2VfbWFzaykgICAgICAgICAgICAwLjI4MjkzNyAgIDAuMDk5OTUzICAgMi44MzEgMC4wMDQ2NDUgKiogXG5zY2FsZShwY3Rfb2Jlc2l0eSkgICAgICAgICAgICAgICAtMC4wMTQ4NTUgICAwLjAzNTM2MSAgLTAuNDIwIDAuNjc0NDE4ICAgIFxuc2NhbGUocGN0X2FnZTY1KSAgICAgICAgICAgICAgICAgIDAuMDU0NDE5ICAgMC4wNTYyNTcgICAwLjk2NyAwLjMzMzM4MSAgICBcbnNjYWxlKHBjdF9kaWFiZXRlcykgICAgICAgICAgICAgICAwLjA0NjAzNSAgIDAuMDM1NDIwICAgMS4zMDAgMC4xOTM3MTcgICAgXG5zY2FsZShMdW5nQ2FuY2VyKSAgICAgICAgICAgICAgICAgMC4yNjIxMTQgICAwLjExMjk3NCAgIDIuMzIwIDAuMDIwMzM0ICogIFxuc2NhbGUoQ09QRCkgICAgICAgICAgICAgICAgICAgICAgIDAuMDM4MTEzICAgMC4xNTQxNjQgICAwLjI0NyAwLjgwNDczNSAgICBcbnNjYWxlKEFkdWx0QXN0aG1hKSAgICAgICAgICAgICAgIC0wLjIxMzI5OCAgIDAuMDk1MjIwICAtMi4yNDAgMC4wMjUwODYgKiAgXG5zY2FsZShDYXJkaW92YXNjdWxhci5kZWF0aF9yYXRlKSAgMC4wODU1MjAgICAwLjA0MzAxNSAgIDEuOTg4IDAuMDQ2Nzk1ICogIFxuLS0tXG5TaWduaWYuIGNvZGVzOiAgMCDigJgqKirigJkgMC4wMDEg4oCYKirigJkgMC4wMSDigJgq4oCZIDAuMDUg4oCYLuKAmSAwLjEg4oCYIOKAmSAxXG4ifQ== -->
+<pre><code>Generalized linear mixed model fit by maximum likelihood (Laplace Approximation) ['glmerMod']
+ Family: Negative Binomial(0.9249)  ( log )
+Formula: Deaths ~ scale(hispanic) + scale(pct_blk) + scale(pct_asian) +      scale(pct_white) + scale(pct_native) + factor(q_popdensity) +  
+    scale(log(medhouseholdincome)) + scale(education) + scale(beds/population) +      scale(date_since_social) + scale(date_since) + scale(date_since_reopen) +  
+    scale(date_since_reclosure) + scale(date_since_mask) + scale(pct_obesity) +      scale(pct_age65) + scale(pct_diabetes) + scale(LungCancer) +  
+    scale(COPD) + scale(AdultAsthma) + scale(Cardiovascular.death_rate) +      (1 | state) + offset(log(population))
+   Data: subset(aggregate.data, Confirmed &gt;= 10)
+
+     AIC      BIC   logLik deviance df.resid 
+ 15433.9  15592.3  -7689.9  15379.9     2590 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-0.9483 -0.6873 -0.3920  0.2110 10.6113 
+
+Random effects:
+ Groups Name        Variance Std.Dev.
+ state  (Intercept) 0.5244   0.7242  
+Number of obs: 2617, groups:  state, 49
+
+Fixed effects:
+                                  Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)                      -8.761037   0.157196 -55.733  &lt; 2e-16 ***
+scale(hispanic)                   0.193211   0.051479   3.753 0.000175 ***
+scale(pct_blk)                    0.295262   0.145140   2.034 0.041919 *  
+scale(pct_asian)                  0.091557   0.039592   2.313 0.020749 *  
+scale(pct_white)                 -0.136744   0.151054  -0.905 0.365326    
+scale(pct_native)                 0.147123   0.060573   2.429 0.015147 *  
+factor(q_popdensity)2            -0.149108   0.120851  -1.234 0.217271    
+factor(q_popdensity)3            -0.150935   0.121802  -1.239 0.215278    
+factor(q_popdensity)4            -0.292505   0.124749  -2.345 0.019040 *  
+factor(q_popdensity)5            -0.089631   0.134946  -0.664 0.506564    
+scale(log(medhouseholdincome))    0.198775   0.045424   4.376 1.21e-05 ***
+scale(education)                  0.124311   0.040599   3.062 0.002199 ** 
+scale(beds/population)            0.008489   0.028269   0.300 0.763962    
+scale(date_since_social)          0.064433   0.166709   0.387 0.699125    
+scale(date_since)                 0.288684   0.040846   7.068 1.58e-12 ***
+scale(date_since_reopen)          0.134681   0.170394   0.790 0.429291    
+scale(date_since_reclosure)       0.053619   0.148395   0.361 0.717853    
+scale(date_since_mask)            0.282937   0.099953   2.831 0.004645 ** 
+scale(pct_obesity)               -0.014855   0.035361  -0.420 0.674418    
+scale(pct_age65)                  0.054419   0.056257   0.967 0.333381    
+scale(pct_diabetes)               0.046035   0.035420   1.300 0.193717    
+scale(LungCancer)                 0.262114   0.112974   2.320 0.020334 *  
+scale(COPD)                       0.038113   0.154164   0.247 0.804735    
+scale(AdultAsthma)               -0.213298   0.095220  -2.240 0.025086 *  
+scale(Cardiovascular.death_rate)  0.085520   0.043015   1.988 0.046795 *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG5Db3JyZWxhdGlvbiBtYXRyaXggbm90IHNob3duIGJ5IGRlZmF1bHQsIGFzIHAgPSAyNSA+IDEyLlxuVXNlIHByaW50KHgsIGNvcnJlbGF0aW9uPVRSVUUpICBvclxuICAgIHZjb3YoeCkgICAgICAgIGlmIHlvdSBuZWVkIGl0XG4ifQ== -->
+<pre><code>
+Correlation matrix not shown by default, as p = 25 &gt; 12.
+Use print(x, correlation=TRUE)  or
+    vcov(x)        if you need it</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiSGlnaC1SaXNrIE1vZGVsIgpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sKLS0tCgpUaGlzIG5vdGVib29rIGNhbiBiZSB1c2VkIHRvIHJlcHJvZHVjZSB0aGUgSGlnaC1SaXNrIE1vZGVsIGZyb20gIkNvbXByZWhlbnNpdmUgU3R1ZHkgb2YgU29jaWFsIERldGVybWluYW50cyBBc3NvY2lhdGVkIHdpdGggQ09WSUQtMTkgTW9ydGFsaXR5Ii4gCgpMb2FkIHByZXByb2Nlc3NpbmcgYW5hbHlzaXMgYW5kIHRoZSBuZWNlc3NhcnkgZGVwZW5kZW5jaWVzLiAKYGBge3Igc2V0dXAsIGluY2x1ZGU9RkFMU0UsIGNhY2hlID0gRkFMU0V9CmtuaXRyOjpvcHRzX2NodW5rJHNldChlY2hvID0gVFJVRSkKa25pdHI6Om9wdHNfa25pdCRzZXQocm9vdC5kaXIgPSBzdWJzdHIoZ2V0d2QoKSwwLG5jaGFyKGdldHdkKCkpLTkpKQpgYGAKCmBgYHtyfQpzb3VyY2UoIi4vTW9kdWxlcy9Tb3VyY2UuUiIpCmFnZ3JlZ2F0ZS5kYXRhPC1yZWFkUkRTKCcuL1ByZXByb2Nlc3NpbmdfRlRTX091dHB1dHMvMDctMDUtMjAyMGRhdGEuUmRzJykKYGBgCgpFeGVjdXRlIHRoZSBtYWluIGFuYWx5c2lzLiAKCmBgYHtyfQpoaWdoLnJpc2subW9kZWwgPSBnbG1lci5uYihEZWF0aHMgfiBzY2FsZShoaXNwYW5pYykgKyBzY2FsZShwY3RfYmxrKSArIHNjYWxlKHBjdF9hc2lhbikgKyBzY2FsZShwY3Rfd2hpdGUpKyAgIHNjYWxlKHBjdF9uYXRpdmUpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKyBmYWN0b3IocV9wb3BkZW5zaXR5KQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICsgc2NhbGUobG9nKG1lZGhvdXNlaG9sZGluY29tZSkpICsgc2NhbGUoZWR1Y2F0aW9uKSArIHNjYWxlKGJlZHMvcG9wdWxhdGlvbikKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArIHNjYWxlKGRhdGVfc2luY2Vfc29jaWFsKSArIHNjYWxlKGRhdGVfc2luY2UpICsgc2NhbGUoZGF0ZV9zaW5jZV9yZW9wZW4pCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKGRhdGVfc2luY2VfcmVjbG9zdXJlKStzY2FsZShkYXRlX3NpbmNlX21hc2spCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKHBjdF9vYmVzaXR5KQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShwY3RfYWdlNjUpK3NjYWxlKHBjdF9kaWFiZXRlcykKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUoTHVuZ0NhbmNlcikKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUoQ09QRCkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUoQWR1bHRBc3RobWEpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKENhcmRpb3Zhc2N1bGFyLmRlYXRoX3JhdGUpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKyAoMXxzdGF0ZSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArIG9mZnNldChsb2cocG9wdWxhdGlvbikpLCBkYXRhPSBhZ2dyZWdhdGUuZGF0YSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKYGBgCgoKUHJpbnQgdGhlIG91dHB1dCBvZiBtYWluIGFuYWx5c2lzLgoKYGBge3J9CiNHZW5lcmFsIFN1bW1hcnkKc3VtbWFyeShoaWdoLnJpc2subW9kZWwpCiNPdXRwdXQgTVJSCmV4cChzdW1tYXJ5KGhpZ2gucmlzay5tb2RlbClbMTBdJGNvZWZmaWNpZW50c1syOjI1LDFdKQpoaWdoX3Jpc2tfTVJSIDwtIGFzLmRhdGEuZnJhbWUoZXhwKHN1bW1hcnkoaGlnaC5yaXNrLm1vZGVsKVsxMF0kY29lZmZpY2llbnRzWzI6MjUsMV0pKQpzYXZlUkRTKGhpZ2hfcmlza19NUlIsIGZpbGUgPSAiLi9Tb2NpYWxfRGV0ZXJtaW5hbnRzL0hpZ2hSaXNrUmVzdWx0cy9oaWdoLnJpc2subW9kZWxfTVJSLlJkcyIpCiNPdXRwdXQgV2FsZC10ZXN0IHAtdmFsdWVzCnN1bW1hcnkoaGlnaC5yaXNrLm1vZGVsKVsxMF0kY29lZmZpY2llbnRzWzI6MjUsNF0KaGlnaF9yaXNrX3AgPC0gYXMuZGF0YS5mcmFtZShzdW1tYXJ5KGhpZ2gucmlzay5tb2RlbClbMTBdJGNvZWZmaWNpZW50c1syOjI1LDRdKQpzYXZlUkRTKGhpZ2hfcmlza19wLCBmaWxlID0gIi4vU29jaWFsX0RldGVybWluYW50cy9IaWdoUmlza1Jlc3VsdHMvaGlnaC5yaXNrLm1vZGVsX1AuUmRzIikKYGBgCgpFbnN1cmUgc3RhdGlzdGljYWwgYXNzdW1wdGlvbnMuCgpgYGB7cn0KIyNESVNQRVJTSU9OIFRFU1QKI0NhbGN1bGF0ZSBtZWFuCk1lYW48LW1lYW4oYWdncmVnYXRlLmRhdGEkRGVhdGhzKSAKI0NhbGN1bGF0ZSB2YXJpYW5jZQpWYXJpYW5jZTwtdmFyKGFnZ3JlZ2F0ZS5kYXRhJERlYXRocykgCiNSYXRpbyB0byB0ZXN0IGZvciBEaXNwZXJzaW9uClJhdGlvPC0oVmFyaWFuY2UvTWVhbikKUmF0aW8KYGBgCgpUZXN0IGFsdGVybmF0aXZlIG1vZGVscyB0byBlbnN1cmUgcm9idXN0bmVzcyBvZiByZXN1bHRzLiBUaGVzZSBhcmUgZGlzY3Vzc2VkIGluIHRoZSBTdXBwbGVtZW50YXJ5IE1hdGVyaWFscy4gCgpgYGB7cn0KIyMjWmVybyBJbmZsYXRlZApoaWdoLnJpc2suemVybz0gZ2xtbVRNQihEZWF0aHMgfiBzY2FsZShoaXNwYW5pYykgKyBzY2FsZShwY3RfYmxrKSArIHNjYWxlKHBjdF9hc2lhbikgKyBzY2FsZShwY3Rfd2hpdGUpKyAgIHNjYWxlKHBjdF9uYXRpdmUpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKyBmYWN0b3IocV9wb3BkZW5zaXR5KQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICsgc2NhbGUobG9nKG1lZGhvdXNlaG9sZGluY29tZSkpKyBzY2FsZShlZHVjYXRpb24pICsgc2NhbGUoYmVkcy9wb3B1bGF0aW9uKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICsgc2NhbGUoZGF0ZV9zaW5jZV9zb2NpYWwpICsgc2NhbGUoZGF0ZV9zaW5jZSkgKyBzY2FsZShkYXRlX3NpbmNlX3Jlb3BlbikKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUoZGF0ZV9zaW5jZV9yZWNsb3N1cmUpK3NjYWxlKGRhdGVfc2luY2VfbWFzaykKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUocGN0X29iZXNpdHkpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKHBjdF9hZ2U2NSkrc2NhbGUocGN0X2RpYWJldGVzKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShMdW5nQ2FuY2VyKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShDT1BEKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShBZHVsdEFzdGhtYSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUoQ2FyZGlvdmFzY3VsYXIuZGVhdGhfcmF0ZSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgKyAoMXxzdGF0ZSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgKyBvZmZzZXQobG9nKHBvcHVsYXRpb24pKSwgZGF0YSA9IGFnZ3JlZ2F0ZS5kYXRhLAogICAgICAgICAgICAgICAgICAgICAgICAgICBmYW1pbHkgPSBuYmlub20yLCB6aWZvcm11bGEgID0gfiAxKQpzdW1tYXJ5KGhpZ2gucmlzay56ZXJvKQojIyNGaXhlZCBOZWdhdGl2ZSBCaW5vbWlhbCAKaGlnaC5yaXNrLmZpeGVkID0gZ2xtLm5iKERlYXRocyB+IHNjYWxlKGhpc3BhbmljKSArIHNjYWxlKHBjdF9ibGspICsgc2NhbGUocGN0X2FzaWFuKSArIHNjYWxlKHBjdF93aGl0ZSkrICAgc2NhbGUocGN0X25hdGl2ZSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArIGZhY3RvcihxX3BvcGRlbnNpdHkpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKyBzY2FsZShsb2cobWVkaG91c2Vob2xkaW5jb21lKSkrIHNjYWxlKGVkdWNhdGlvbikgKyBzY2FsZShiZWRzL3BvcHVsYXRpb24pCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKyBzY2FsZShkYXRlX3NpbmNlX3NvY2lhbCkgKyBzY2FsZShkYXRlX3NpbmNlKSArIHNjYWxlKGRhdGVfc2luY2VfcmVvcGVuKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShkYXRlX3NpbmNlX3JlY2xvc3VyZSkrc2NhbGUoZGF0ZV9zaW5jZV9tYXNrKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShwY3Rfb2Jlc2l0eSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUocGN0X2FnZTY1KStzY2FsZShwY3RfZGlhYmV0ZXMpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKEx1bmdDYW5jZXIpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKENPUEQpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKEFkdWx0QXN0aG1hKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShDYXJkaW92YXNjdWxhci5kZWF0aF9yYXRlKQogICAgICAgICAgICAgICAgICAgICsgb2Zmc2V0KGxvZyhwb3B1bGF0aW9uKSksIGRhdGEgPSBhZ2dyZWdhdGUuZGF0YSkKc3VtbWFyeShoaWdoLnJpc2suZml4ZWQpCiMjI1NwYXRpYWwtQ29ycmVsYXRpb24gCmhpZ2gucmlzay5zcGF0aWFsID0gZ2xtZXIubmIoRGVhdGhzIH4gc2NhbGUoaGlzcGFuaWMpICsgc2NhbGUocGN0X2JsaykgKyBzY2FsZShwY3RfYXNpYW4pICsgc2NhbGUocGN0X3doaXRlKSsgICBzY2FsZShwY3RfbmF0aXZlKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICsgZmFjdG9yKHFfcG9wZGVuc2l0eSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArIHNjYWxlKGxvZyhtZWRob3VzZWhvbGRpbmNvbWUpKSsgc2NhbGUoZWR1Y2F0aW9uKSArIHNjYWxlKGJlZHMvcG9wdWxhdGlvbikKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArIHNjYWxlKGRhdGVfc2luY2Vfc29jaWFsKSArIHNjYWxlKGRhdGVfc2luY2UpICsgc2NhbGUoZGF0ZV9zaW5jZV9yZW9wZW4pCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKGRhdGVfc2luY2VfcmVjbG9zdXJlKStzY2FsZShkYXRlX3NpbmNlX21hc2spCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKHBjdF9vYmVzaXR5KQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShwY3RfYWdlNjUpK3NjYWxlKHBjdF9kaWFiZXRlcykKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUoTHVuZ0NhbmNlcikKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUoQ09QRCkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUoQWR1bHRBc3RobWEpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKENhcmRpb3Zhc2N1bGFyLmRlYXRoX3JhdGUpCiAgICAgICAgICAgICAgICAgICAgICArKDF8c3RhdGUpCiAgICAgICAgICAgICAgICAgICAgICArIG9mZnNldChsb2cocG9wdWxhdGlvbikpICsgc2NhbGUoTGF0KSArIHNjYWxlKExvbmdfKSwgZGF0YSA9IGFnZ3JlZ2F0ZS5kYXRhKQpzdW1tYXJ5KGhpZ2gucmlzay5zcGF0aWFsKQojIyNOZWdhdGl2ZSBCaW5vbWlhbCBNaXhlZCBNb2RlbCBFeGNsdWRpbmcgTllDCmhpZ2gucmlzay5uby5ueWMgPSBnbG1lci5uYihEZWF0aHMgfiBzY2FsZShoaXNwYW5pYykgKyBzY2FsZShwY3RfYmxrKSArIHNjYWxlKHBjdF9hc2lhbikgKyBzY2FsZShwY3Rfd2hpdGUpKyAgIHNjYWxlKHBjdF9uYXRpdmUpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKyBmYWN0b3IocV9wb3BkZW5zaXR5KQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICsgc2NhbGUobG9nKG1lZGhvdXNlaG9sZGluY29tZSkpICsgc2NhbGUoZWR1Y2F0aW9uKSArIHNjYWxlKGJlZHMvcG9wdWxhdGlvbikKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArIHNjYWxlKGRhdGVfc2luY2Vfc29jaWFsKSArIHNjYWxlKGRhdGVfc2luY2UpICsgc2NhbGUoZGF0ZV9zaW5jZV9yZW9wZW4pCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKGRhdGVfc2luY2VfcmVjbG9zdXJlKStzY2FsZShkYXRlX3NpbmNlX21hc2spCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKHBjdF9vYmVzaXR5KQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShwY3RfYWdlNjUpK3NjYWxlKHBjdF9kaWFiZXRlcykKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUoTHVuZ0NhbmNlcikKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUoQ09QRCkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUoQWR1bHRBc3RobWEpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKENhcmRpb3Zhc2N1bGFyLmRlYXRoX3JhdGUpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArICgxfHN0YXRlKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKyBvZmZzZXQobG9nKHBvcHVsYXRpb24pKSwgZGF0YSA9IHN1YnNldChhZ2dyZWdhdGUuZGF0YSwhKGZpcHMgJWluJSBjKCIwOTAwMSIsIjQyMDg5IiwiMzYxMTEiLCIwOTAwOSIsIjM2MDU5IiwiMzYxMDMiLCIzNDAxMyIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiMzYwNzkiLCIzNjA4MSIsICAiMzYwODUiLCAgIjM2MDg3IiwgICIzNjExOSIsICAiMzYwMjciLCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICIzNjA3MSIsICAiMDkwMDUiLCAgIjM0MDIxIikpKSkKc3VtbWFyeShoaWdoLnJpc2subm8ubnljKQojIyNOZWdhdGl2ZSBCaW5vbWlhbCBNaXhlZCBNb2RlbCBFeGNsdWRpbmcgQ291bnRpZXMgV2l0aCBMZXNzIFRoYW4gMTAgQ2FzZXMKaGlnaC5yaXNrLnRlbiA9IGdsbWVyLm5iKERlYXRocyB+IHNjYWxlKGhpc3BhbmljKSArIHNjYWxlKHBjdF9ibGspICsgc2NhbGUocGN0X2FzaWFuKSArIHNjYWxlKHBjdF93aGl0ZSkrICAgc2NhbGUocGN0X25hdGl2ZSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArIGZhY3RvcihxX3BvcGRlbnNpdHkpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKyBzY2FsZShsb2cobWVkaG91c2Vob2xkaW5jb21lKSkgKyBzY2FsZShlZHVjYXRpb24pICsgc2NhbGUoYmVkcy9wb3B1bGF0aW9uKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICsgc2NhbGUoZGF0ZV9zaW5jZV9zb2NpYWwpICsgc2NhbGUoZGF0ZV9zaW5jZSkgKyBzY2FsZShkYXRlX3NpbmNlX3Jlb3BlbikKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUoZGF0ZV9zaW5jZV9yZWNsb3N1cmUpK3NjYWxlKGRhdGVfc2luY2VfbWFzaykKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUocGN0X29iZXNpdHkpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKHBjdF9hZ2U2NSkrc2NhbGUocGN0X2RpYWJldGVzKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShMdW5nQ2FuY2VyKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShDT1BEKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShBZHVsdEFzdGhtYSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUoQ2FyZGlvdmFzY3VsYXIuZGVhdGhfcmF0ZSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKyAoMXxzdGF0ZSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKyBvZmZzZXQobG9nKHBvcHVsYXRpb24pKSwgZGF0YSA9IHN1YnNldChhZ2dyZWdhdGUuZGF0YSxDb25maXJtZWQgPj0xMCkpCnN1bW1hcnkoaGlnaC5yaXNrLnRlbikKYGBg</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiSGlnaC1SaXNrIE1vZGVsIgpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sKLS0tCgpUaGlzIG5vdGVib29rIGNhbiBiZSB1c2VkIHRvIHJlcHJvZHVjZSB0aGUgSGlnaC1SaXNrIE1vZGVsIGZyb20gIkNvbXByZWhlbnNpdmUgU3R1ZHkgb2YgU29jaWFsIERldGVybWluYW50cyBBc3NvY2lhdGVkIHdpdGggQ09WSUQtMTkgTW9ydGFsaXR5Ii4gCgpMb2FkIHByZXByb2Nlc3NpbmcgYW5hbHlzaXMgYW5kIHRoZSBuZWNlc3NhcnkgZGVwZW5kZW5jaWVzLiAKYGBge3Igc2V0dXAsIGluY2x1ZGU9RkFMU0UsIGNhY2hlID0gRkFMU0V9CmtuaXRyOjpvcHRzX2NodW5rJHNldChlY2hvID0gVFJVRSkKa25pdHI6Om9wdHNfa25pdCRzZXQocm9vdC5kaXIgPSBzdWJzdHIoZ2V0d2QoKSwwLG5jaGFyKGdldHdkKCkpLTkpKQpgYGAKCmBgYHtyfQpzb3VyY2UoIi4vTW9kdWxlcy9Tb3VyY2UuUiIpCmFnZ3JlZ2F0ZS5kYXRhPC1yZWFkUkRTKCcuL1ByZXByb2Nlc3NpbmdfRlRTX091dHB1dHMvMDctMDUtMjAyMGRhdGEuUmRzJykKYGBgCgpFeGVjdXRlIHRoZSBtYWluIGFuYWx5c2lzLiAKCmBgYHtyfQpoaWdoLnJpc2subW9kZWwgPSBnbG1lci5uYihEZWF0aHMgfiBzY2FsZShoaXNwYW5pYykgKyBzY2FsZShwY3RfYmxrKSArIHNjYWxlKHBjdF9hc2lhbikgKyBzY2FsZShwY3Rfd2hpdGUpKyAgIHNjYWxlKHBjdF9uYXRpdmUpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKyBmYWN0b3IocV9wb3BkZW5zaXR5KQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICsgc2NhbGUobG9nKG1lZGhvdXNlaG9sZGluY29tZSkpICsgc2NhbGUoZWR1Y2F0aW9uKSArIHNjYWxlKGJlZHMvcG9wdWxhdGlvbikKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArIHNjYWxlKGRhdGVfc2luY2Vfc29jaWFsKSArIHNjYWxlKGRhdGVfc2luY2UpICsgc2NhbGUoZGF0ZV9zaW5jZV9yZW9wZW4pCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKGRhdGVfc2luY2VfcmVjbG9zdXJlKStzY2FsZShkYXRlX3NpbmNlX21hc2spCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKHBjdF9vYmVzaXR5KQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShwY3RfYWdlNjUpK3NjYWxlKHBjdF9kaWFiZXRlcykKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUoTHVuZ0NhbmNlcikKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUoQ09QRCkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUoQWR1bHRBc3RobWEpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKENhcmRpb3Zhc2N1bGFyLmRlYXRoX3JhdGUpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKyAoMXxzdGF0ZSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArIG9mZnNldChsb2cocG9wdWxhdGlvbikpLCBkYXRhPSBhZ2dyZWdhdGUuZGF0YSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKYGBgCgoKUHJpbnQgdGhlIG91dHB1dCBvZiBtYWluIGFuYWx5c2lzLgoKYGBge3J9CiNHZW5lcmFsIFN1bW1hcnkKc3VtbWFyeShoaWdoLnJpc2subW9kZWwpCiNPdXRwdXQgTVJSCmV4cChzdW1tYXJ5KGhpZ2gucmlzay5tb2RlbClbMTBdJGNvZWZmaWNpZW50c1syOjI1LDFdKQpoaWdoX3Jpc2tfTVJSIDwtIGFzLmRhdGEuZnJhbWUoZXhwKHN1bW1hcnkoaGlnaC5yaXNrLm1vZGVsKVsxMF0kY29lZmZpY2llbnRzWzI6MjUsMV0pKQpzYXZlUkRTKGhpZ2hfcmlza19NUlIsIGZpbGUgPSAiLi9IaWdoUmlza1Jlc3VsdHMvaGlnaC5yaXNrLm1vZGVsX01SUi5SZHMiKQojT3V0cHV0IFdhbGQtdGVzdCBwLXZhbHVlcwpzdW1tYXJ5KGhpZ2gucmlzay5tb2RlbClbMTBdJGNvZWZmaWNpZW50c1syOjI1LDRdCmhpZ2hfcmlza19wIDwtIGFzLmRhdGEuZnJhbWUoc3VtbWFyeShoaWdoLnJpc2subW9kZWwpWzEwXSRjb2VmZmljaWVudHNbMjoyNSw0XSkKc2F2ZVJEUyhoaWdoX3Jpc2tfcCwgZmlsZSA9ICIuL0hpZ2hSaXNrUmVzdWx0cy9oaWdoLnJpc2subW9kZWxfUC5SZHMiKQpgYGAKCkVuc3VyZSBzdGF0aXN0aWNhbCBhc3N1bXB0aW9ucy4KCmBgYHtyfQojI0RJU1BFUlNJT04gVEVTVAojQ2FsY3VsYXRlIG1lYW4KTWVhbjwtbWVhbihhZ2dyZWdhdGUuZGF0YSREZWF0aHMpIAojQ2FsY3VsYXRlIHZhcmlhbmNlClZhcmlhbmNlPC12YXIoYWdncmVnYXRlLmRhdGEkRGVhdGhzKSAKI1JhdGlvIHRvIHRlc3QgZm9yIERpc3BlcnNpb24KUmF0aW88LShWYXJpYW5jZS9NZWFuKQpSYXRpbwpgYGAKClRlc3QgYWx0ZXJuYXRpdmUgbW9kZWxzIHRvIGVuc3VyZSByb2J1c3RuZXNzIG9mIHJlc3VsdHMuIFRoZXNlIGFyZSBkaXNjdXNzZWQgaW4gdGhlIFN1cHBsZW1lbnRhcnkgTWF0ZXJpYWxzLiAKCmBgYHtyfQojIyNaZXJvIEluZmxhdGVkCmhpZ2gucmlzay56ZXJvPSBnbG1tVE1CKERlYXRocyB+IHNjYWxlKGhpc3BhbmljKSArIHNjYWxlKHBjdF9ibGspICsgc2NhbGUocGN0X2FzaWFuKSArIHNjYWxlKHBjdF93aGl0ZSkrICAgc2NhbGUocGN0X25hdGl2ZSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArIGZhY3RvcihxX3BvcGRlbnNpdHkpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKyBzY2FsZShsb2cobWVkaG91c2Vob2xkaW5jb21lKSkrIHNjYWxlKGVkdWNhdGlvbikgKyBzY2FsZShiZWRzL3BvcHVsYXRpb24pCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKyBzY2FsZShkYXRlX3NpbmNlX3NvY2lhbCkgKyBzY2FsZShkYXRlX3NpbmNlKSArIHNjYWxlKGRhdGVfc2luY2VfcmVvcGVuKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShkYXRlX3NpbmNlX3JlY2xvc3VyZSkrc2NhbGUoZGF0ZV9zaW5jZV9tYXNrKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShwY3Rfb2Jlc2l0eSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUocGN0X2FnZTY1KStzY2FsZShwY3RfZGlhYmV0ZXMpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKEx1bmdDYW5jZXIpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKENPUEQpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKEFkdWx0QXN0aG1hKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShDYXJkaW92YXNjdWxhci5kZWF0aF9yYXRlKQogICAgICAgICAgICAgICAgICAgICAgICAgICArICgxfHN0YXRlKQogICAgICAgICAgICAgICAgICAgICAgICAgICArIG9mZnNldChsb2cocG9wdWxhdGlvbikpLCBkYXRhID0gYWdncmVnYXRlLmRhdGEsCiAgICAgICAgICAgICAgICAgICAgICAgICAgIGZhbWlseSA9IG5iaW5vbTIsIHppZm9ybXVsYSAgPSB+IDEpCnN1bW1hcnkoaGlnaC5yaXNrLnplcm8pCiMjI0ZpeGVkIE5lZ2F0aXZlIEJpbm9taWFsIApoaWdoLnJpc2suZml4ZWQgPSBnbG0ubmIoRGVhdGhzIH4gc2NhbGUoaGlzcGFuaWMpICsgc2NhbGUocGN0X2JsaykgKyBzY2FsZShwY3RfYXNpYW4pICsgc2NhbGUocGN0X3doaXRlKSsgICBzY2FsZShwY3RfbmF0aXZlKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICsgZmFjdG9yKHFfcG9wZGVuc2l0eSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArIHNjYWxlKGxvZyhtZWRob3VzZWhvbGRpbmNvbWUpKSsgc2NhbGUoZWR1Y2F0aW9uKSArIHNjYWxlKGJlZHMvcG9wdWxhdGlvbikKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArIHNjYWxlKGRhdGVfc2luY2Vfc29jaWFsKSArIHNjYWxlKGRhdGVfc2luY2UpICsgc2NhbGUoZGF0ZV9zaW5jZV9yZW9wZW4pCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKGRhdGVfc2luY2VfcmVjbG9zdXJlKStzY2FsZShkYXRlX3NpbmNlX21hc2spCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKHBjdF9vYmVzaXR5KQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShwY3RfYWdlNjUpK3NjYWxlKHBjdF9kaWFiZXRlcykKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUoTHVuZ0NhbmNlcikKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUoQ09QRCkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUoQWR1bHRBc3RobWEpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKENhcmRpb3Zhc2N1bGFyLmRlYXRoX3JhdGUpCiAgICAgICAgICAgICAgICAgICAgKyBvZmZzZXQobG9nKHBvcHVsYXRpb24pKSwgZGF0YSA9IGFnZ3JlZ2F0ZS5kYXRhKQpzdW1tYXJ5KGhpZ2gucmlzay5maXhlZCkKIyMjU3BhdGlhbC1Db3JyZWxhdGlvbiAKaGlnaC5yaXNrLnNwYXRpYWwgPSBnbG1lci5uYihEZWF0aHMgfiBzY2FsZShoaXNwYW5pYykgKyBzY2FsZShwY3RfYmxrKSArIHNjYWxlKHBjdF9hc2lhbikgKyBzY2FsZShwY3Rfd2hpdGUpKyAgIHNjYWxlKHBjdF9uYXRpdmUpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKyBmYWN0b3IocV9wb3BkZW5zaXR5KQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICsgc2NhbGUobG9nKG1lZGhvdXNlaG9sZGluY29tZSkpKyBzY2FsZShlZHVjYXRpb24pICsgc2NhbGUoYmVkcy9wb3B1bGF0aW9uKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICsgc2NhbGUoZGF0ZV9zaW5jZV9zb2NpYWwpICsgc2NhbGUoZGF0ZV9zaW5jZSkgKyBzY2FsZShkYXRlX3NpbmNlX3Jlb3BlbikKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUoZGF0ZV9zaW5jZV9yZWNsb3N1cmUpK3NjYWxlKGRhdGVfc2luY2VfbWFzaykKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUocGN0X29iZXNpdHkpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKHBjdF9hZ2U2NSkrc2NhbGUocGN0X2RpYWJldGVzKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShMdW5nQ2FuY2VyKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShDT1BEKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShBZHVsdEFzdGhtYSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUoQ2FyZGlvdmFzY3VsYXIuZGVhdGhfcmF0ZSkKICAgICAgICAgICAgICAgICAgICAgICsoMXxzdGF0ZSkKICAgICAgICAgICAgICAgICAgICAgICsgb2Zmc2V0KGxvZyhwb3B1bGF0aW9uKSkgKyBzY2FsZShMYXQpICsgc2NhbGUoTG9uZ18pLCBkYXRhID0gYWdncmVnYXRlLmRhdGEpCnN1bW1hcnkoaGlnaC5yaXNrLnNwYXRpYWwpCiMjI05lZ2F0aXZlIEJpbm9taWFsIE1peGVkIE1vZGVsIEV4Y2x1ZGluZyBOWUMKaGlnaC5yaXNrLm5vLm55YyA9IGdsbWVyLm5iKERlYXRocyB+IHNjYWxlKGhpc3BhbmljKSArIHNjYWxlKHBjdF9ibGspICsgc2NhbGUocGN0X2FzaWFuKSArIHNjYWxlKHBjdF93aGl0ZSkrICAgc2NhbGUocGN0X25hdGl2ZSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArIGZhY3RvcihxX3BvcGRlbnNpdHkpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKyBzY2FsZShsb2cobWVkaG91c2Vob2xkaW5jb21lKSkgKyBzY2FsZShlZHVjYXRpb24pICsgc2NhbGUoYmVkcy9wb3B1bGF0aW9uKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICsgc2NhbGUoZGF0ZV9zaW5jZV9zb2NpYWwpICsgc2NhbGUoZGF0ZV9zaW5jZSkgKyBzY2FsZShkYXRlX3NpbmNlX3Jlb3BlbikKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUoZGF0ZV9zaW5jZV9yZWNsb3N1cmUpK3NjYWxlKGRhdGVfc2luY2VfbWFzaykKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUocGN0X29iZXNpdHkpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKHBjdF9hZ2U2NSkrc2NhbGUocGN0X2RpYWJldGVzKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShMdW5nQ2FuY2VyKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShDT1BEKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShBZHVsdEFzdGhtYSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUoQ2FyZGlvdmFzY3VsYXIuZGVhdGhfcmF0ZSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICsgKDF8c3RhdGUpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArIG9mZnNldChsb2cocG9wdWxhdGlvbikpLCBkYXRhID0gc3Vic2V0KGFnZ3JlZ2F0ZS5kYXRhLCEoZmlwcyAlaW4lIGMoIjA5MDAxIiwiNDIwODkiLCIzNjExMSIsIjA5MDA5IiwiMzYwNTkiLCIzNjEwMyIsIjM0MDEzIiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICIzNjA3OSIsIjM2MDgxIiwgICIzNjA4NSIsICAiMzYwODciLCAgIjM2MTE5IiwgICIzNjAyNyIsICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIjM2MDcxIiwgICIwOTAwNSIsICAiMzQwMjEiKSkpKQpzdW1tYXJ5KGhpZ2gucmlzay5uby5ueWMpCiMjI05lZ2F0aXZlIEJpbm9taWFsIE1peGVkIE1vZGVsIEV4Y2x1ZGluZyBDb3VudGllcyBXaXRoIExlc3MgVGhhbiAxMCBDYXNlcwpoaWdoLnJpc2sudGVuID0gZ2xtZXIubmIoRGVhdGhzIH4gc2NhbGUoaGlzcGFuaWMpICsgc2NhbGUocGN0X2JsaykgKyBzY2FsZShwY3RfYXNpYW4pICsgc2NhbGUocGN0X3doaXRlKSsgICBzY2FsZShwY3RfbmF0aXZlKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICsgZmFjdG9yKHFfcG9wZGVuc2l0eSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArIHNjYWxlKGxvZyhtZWRob3VzZWhvbGRpbmNvbWUpKSArIHNjYWxlKGVkdWNhdGlvbikgKyBzY2FsZShiZWRzL3BvcHVsYXRpb24pCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKyBzY2FsZShkYXRlX3NpbmNlX3NvY2lhbCkgKyBzY2FsZShkYXRlX3NpbmNlKSArIHNjYWxlKGRhdGVfc2luY2VfcmVvcGVuKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShkYXRlX3NpbmNlX3JlY2xvc3VyZSkrc2NhbGUoZGF0ZV9zaW5jZV9tYXNrKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShwY3Rfb2Jlc2l0eSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArc2NhbGUocGN0X2FnZTY1KStzY2FsZShwY3RfZGlhYmV0ZXMpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKEx1bmdDYW5jZXIpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKENPUEQpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgK3NjYWxlKEFkdWx0QXN0aG1hKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICtzY2FsZShDYXJkaW92YXNjdWxhci5kZWF0aF9yYXRlKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArICgxfHN0YXRlKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArIG9mZnNldChsb2cocG9wdWxhdGlvbikpLCBkYXRhID0gc3Vic2V0KGFnZ3JlZ2F0ZS5kYXRhLENvbmZpcm1lZCA+PTEwKSkKc3VtbWFyeShoaWdoLnJpc2sudGVuKQpgYGA=</div>
 
 
 

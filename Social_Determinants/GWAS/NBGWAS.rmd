@@ -15,16 +15,16 @@ knitr::opts_knit$set(root.dir = substr(getwd(),0,nchar(getwd())-5))
 
 
 ```{r}
-source("./Social_Determinants/Modules/Source.R")
+source("./Modules/Source.R")
 ```
 
 # Clean up dataframe for storage
 
 ```{r}
 
-GWAS_MRR <- readRDS("./Social_Determinants/GWAS/GWAS_MRR.rds")
-GWAS_P <- readRDS("./Social_Determinants/GWAS/GWAS_P.rds")
-GWAS_ADJ_P <- readRDS("./Social_Determinants/GWAS/GWAS_ADJ_P.rds")
+GWAS_MRR <- readRDS("./GWAS/GWAS_MRR.rds")
+GWAS_P <- readRDS("./GWAS/GWAS_P.rds")
+GWAS_ADJ_P <- readRDS("./GWAS/GWAS_ADJ_P.rds")
 
 GWAS_MRR <- subset(GWAS_MRR, select = c())
 GWAS_P <- subset(GWAS_P, select = c())
@@ -49,9 +49,9 @@ for (name in names) {
   names(GWAS_MRR)[names(GWAS_MRR) == "placeholder_name"] <- name
 }
 
-saveRDS(GWAS_ADJ_P, "./Social_Determinants/GWAS/GWAS_ADJ_P.rds")
-saveRDS(GWAS_P, "./Social_Determinants/GWAS/GWAS_P.rds")
-saveRDS(GWAS_MRR, "./Social_Determinants/GWAS/GWAS_MRR.rds")
+saveRDS(GWAS_ADJ_P, "./GWAS/GWAS_ADJ_P.rds")
+saveRDS(GWAS_P, "./GWAS/GWAS_P.rds")
+saveRDS(GWAS_MRR, "./GWAS/GWAS_MRR.rds")
 
 ```
 
@@ -59,7 +59,7 @@ saveRDS(GWAS_MRR, "./Social_Determinants/GWAS/GWAS_MRR.rds")
 
 ```{r}
 
-sampledata <- readRDS('./Social_Determinants/Preprocessing_FTS_Outputs/07-05-2020data.Rds')
+sampledata <- readRDS('./Preprocessing_FTS_Outputs/07-05-2020data.Rds')
 
 ```
 
@@ -113,9 +113,9 @@ for (interested_var in args){
   # 3 Steps of saving results: 
   
   # 1. Read in rds saved from last iteration
-  GWAS_MRR <- readRDS("./Social_Determinants/GWAS/GWAS_MRR.rds")
-  GWAS_P <- readRDS("./Social_Determinants/GWAS/GWAS_P.rds")
-  GWAS_ADJ_P <- readRDS("./Social_Determinants/GWAS/GWAS_ADJ_P.rds")
+  GWAS_MRR <- readRDS("./GWAS/GWAS_MRR.rds")
+  GWAS_P <- readRDS("./GWAS/GWAS_P.rds")
+  GWAS_ADJ_P <- readRDS("./GWAS/GWAS_ADJ_P.rds")
   
   # 2. Append/Modify values obtained from current iteration to dataframe
   GWAS_MRR[[interested_var]]   <- summary(In.loop.model)[10]$coefficients[2:16,1]
@@ -125,9 +125,9 @@ for (interested_var in args){
                                            n = length(summary(In.loop.model)[10]$coefficients[2:16,4]))
   
   # 3. Override rds file with updated dataframe
-  saveRDS(GWAS_ADJ_P, "./Social_Determinants/GWAS/GWAS_ADJ_P.rds")
-  saveRDS(GWAS_P, "./Social_Determinants/GWAS/GWAS_P.rds")
-  saveRDS(GWAS_MRR, "./Social_Determinants/GWAS/GWAS_MRR.rds")  
+  saveRDS(GWAS_ADJ_P, "./GWAS/GWAS_ADJ_P.rds")
+  saveRDS(GWAS_P, "./GWAS/GWAS_P.rds")
+  saveRDS(GWAS_MRR, "./GWAS/GWAS_MRR.rds")  
 }
 
 ```

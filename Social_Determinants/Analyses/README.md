@@ -1,10 +1,14 @@
 # Analyses
-This is the folder containing national and state models for analysis.
+This is the folder containing models for analysis.
+
+# High Risk Model
+
+[`High_Risk_Model.Rmd`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/Analyses/High_Risk_Model.Rmd) includes the high risk model.
 
 # National Model
 
-[`NationalModel.R`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/Analyses/NationalModel.R) includes the national model for social determinants analysis.
+[`NationalModel.R`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/Analyses/NationalModel.R) includes the prototype national model used for temporal analysis.
 
 # State Model
 
-[`StateModel.R`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/Analyses/StateModel.R) includes the national model for social determinants analysis.
+[`StateModel.R`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/Analyses/StateModel.R) includes the prototype states model used for temporal analysis.

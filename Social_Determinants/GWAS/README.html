@@ -372,22 +372,24 @@ summary {
 <div id="national-social-determinants-analysis" class="section level1">
 <h1>National Social Determinants Analysis</h1>
 <ol style="list-style-type: decimal">
-<li><p><a href="https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/Social_Determinants/GWAS/NBGWAS.rmd"><code>NBGWAS.rmd</code></a> contains code and explanation of national social determinants analysis. *Running time of this file is approximatedly 7 hours.</p></li>
-<li><p><a href="https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/Social_Determinants/GWAS/NBGWAS.R"><code>NBGWAS.R</code></a> contains only the code and is designed to run with <a href="https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/Social_Determinants/GWAS/parasdwas.sh"><code>parasdwas.sh</code></a> to shorten running time(~2H).</p></li>
-<li><p><a href="https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/Social_Determinants/GWAS/GWAS_P.rds"><code>GWAS_P.rds</code></a> contains p-values(raw). <a href="https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/Social_Determinants/GWAS/GWAS_ADJ_P.rds"><code>GWAS_ADJ_P.rds</code></a> contains adjusted p-values using Benjamini-Hochberg. <a href="https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/Social_Determinants/GWAS/GWAS_MRR.rds"><code>GWAS_MRR.rds</code></a> contains MRRs.</p></li>
+<li><p><a href="https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/GWAS/NBGWAS.rmd"><code>NBGWAS.rmd</code></a> contains code and explanation of national social determinants analysis. *Running time of this file is approximatedly 7 hours.</p></li>
+<li><p><a href="https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/GWAS/NBGWAS.R"><code>NBGWAS.R</code></a> contains only the code and is designed to run with <a href="https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/GWAS/parasdwas.sh"><code>parasdwas.sh</code></a> to shorten running time(~2H).</p></li>
+<li><p><a href="https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/GWAS/GWAS_P.rds"><code>GWAS_P.rds</code></a> contains p-values(raw). <a href="https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/GWAS/GWAS_ADJ_P.rds"><code>GWAS_ADJ_P.rds</code></a> contains adjusted p-values using Benjamini-Hochberg. <a href="https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/GWAS/GWAS_MRR.rds"><code>GWAS_MRR.rds</code></a> contains MRRs.</p></li>
 </ol>
 </div>
 <div id="states-social-determinants-analysis" class="section level1">
 <h1>States Social Determinants Analysis</h1>
 <ol style="list-style-type: decimal">
-<li><p><a href="https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/Social_Determinants/GWAS/states_NBGWAS.rmd"><code>states_NBGWAS.rmd</code></a> contains code and explanation of states social determinants analysis.</p></li>
-<li><p><a href="https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/Social_Determinants/GWAS/states_NBGWAS.R"><code>states_NBGWAS.R</code></a> contains only the code and is designed to run with <a href="https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/Social_Determinants/GWAS/sparanbsdwas.sh"><code>sparanbsdwas.sh</code></a> to shorten running time.</p></li>
-<li><p><a href="https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/Social_Determinants/GWAS/state_results"><code>state_results</code></a> contains results of all states social determinants analysis.</p></li>
+<li><p><a href="https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/GWAS/states_NBGWAS.rmd"><code>states_NBGWAS.rmd</code></a> contains code and explanation of states social determinants analysis.</p></li>
+<li><p><a href="https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/GWAS/states_NBGWAS.R"><code>states_NBGWAS.R</code></a> contains only the code and is designed to run with <a href="https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/GWAS/sparanbsdwas.sh"><code>sparanbsdwas.sh</code></a> to shorten running time.</p></li>
+<li><p><a href="https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/GWAS/state_results"><code>state_results</code></a> contains results of all states social determinants analysis.</p></li>
 </ol>
 </div>
-<div id="others" class="section level1">
-<h1>Others</h1>
-<p>Files other than those mentioned above are achived files.</p>
+<div id="usage-of-parallelism" class="section level1">
+<h1>Usage of parallelism</h1>
+<p>When using bash scripts, type in commands below in terminal.</p>
+<pre class="shell"><code>bash ./Social_Determinants/GWAS/parasdwas.sh</code></pre>
+<pre class="shell"><code>bash ./Social_Determinants/GWAS/sparanbsdwas.sh</code></pre>
 </div>
 
 

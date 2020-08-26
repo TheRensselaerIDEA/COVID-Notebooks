@@ -28,17 +28,17 @@ This is the data repository for publicly available code and data to reproduce an
 
 # Analyses Results
 
-1. [`TemporalResults`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/TemporalResults) contains results from temporal analysis with national model and R scripts for visualization.
+1. [`HighRiskResults`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/HighRiskResults) contains results from high risk model.
 
-2. [`StateSummaries`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/StateSummaries) contains analysis results from state model and aggregated data file.
+2. [`TemporalResults`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/TemporalResults) contains results from temporal analysis with national model and R scripts for visualization.
 
-3. [`AdjustedStateSummaries`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/AdjustedStateSummaries) contains aggregated data file after adjusting p-values from state analysis results.
+3. [`StateSummaries`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/StateSummaries) contains analysis results from state model and aggregated data file.
 
 # Visualization
 
-[`Notebooks`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/Notebooks) contains several examples for types of figures that can be generated with the data.
+1. [`SocialDeterminantsZoomIn`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/SocialDeterminantsZoomIn) contains code and data needed to produce social determinants distribution plots with COVID mortality.
 
-R Notebook exists in [`ProtoNotebook.Rmd`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/Notebooks/ProtoNotebook.Rmd).  
+2. [`Notebooks`](https://github.com/TheRensselaerIDEA/COVID-Notebooks/tree/MergeSD/Social_Determinants/Notebooks) contains several examples for types of figures that can be generated with the data.
 
 # Parallelism
 
