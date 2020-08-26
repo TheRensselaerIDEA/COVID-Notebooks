@@ -1,18 +1,18 @@
 knitr::opts_chunk$set(echo = TRUE)
-knitr::opts_knit$set(root.dir = "./")
+knitr::opts_knit$set(root.dir = "../")
 
-source("./Modules/Source.R")
+source("./Social_Determinants/Modules/Source.R")
 '%ni%' <- Negate('%in%')
 
 ## Unfiltered MRR
 
-data_1 <- readRDS("./TemporalResults/NationalModel/ALL_C_sig.rds")
+data_1 <- readRDS("./Social_Determinants/TemporalResults/NationalModel/ALL_C_sig.rds")
 data_1 <- melt(data_1)
 # data_1 <- subset(data_1, coefficients != "(Intercept)")
 
 COEF <- data_1$coefficients
 
-data_2 <- readRDS("./TemporalResults/NationalModel/ALL_C.rds")
+data_2 <- readRDS("./Social_Determinants/TemporalResults/NationalModel/ALL_C.rds")
 data_2 <- melt(data_2)
 
 # data_2 <- data_2[data_2$coefficients %in% COEF, ]
@@ -28,11 +28,11 @@ mrr <- ggplot(mapping = aes(x=date, y=value, group=`Social Determinants`, color=
               ylab("MRR")
 mrr
 
-data_3 <- readRDS("./TemporalResults/NationalModel/ALL_P_sig.rds")
+data_3 <- readRDS("./Social_Determinants/TemporalResults/NationalModel/ALL_P_sig.rds")
 data_3 <- melt(data_3)
 # data_3 <- subset(data_3, coefficients != "(Intercept)")
 
-data_4 <- readRDS("./TemporalResults/NationalModel/ALL_P.rds")
+data_4 <- readRDS("./Social_Determinants/TemporalResults/NationalModel/ALL_P.rds")
 data_4 <- melt(data_4)
 
 # data_4 <- data_4[data_4$coefficients %in% COEF, ]

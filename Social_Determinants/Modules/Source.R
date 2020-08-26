@@ -3,7 +3,7 @@ libs <- c("tidyverse", "sp", "raster", "ggplot2", "plyr", "dplyr", "sf", "string
           "glmmTMB", "gamm4", "MASS", "RCurl", "httr", "data.table", "devtools", "lubridate", "blmeco", "VineCopula", "PerformanceAnalytics", 
           "ggfortify", "foreign", "ResourceSelection", "ROCR", "klaR", "heplots", "hermite", "lattice", "boot", "DescTools", "car",
           "multcompView", "emmeans", "pscl", "robust", "AER", "usmap", "gsheet", "gplots", "stats", "cluster", "ggpubr", "caret", "pROC", 
-          "cvms", "sgof", "kableExtra")
+          "cvms", "sgof", "kableExtra", "pracma")
 
 for (lib in libs){
   # if required, install before loading

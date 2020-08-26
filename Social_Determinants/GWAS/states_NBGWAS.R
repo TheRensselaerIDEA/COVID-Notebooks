@@ -1,37 +1,13 @@
 knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_knit$set(root.dir = "../")
 
-#Nationwide GWAS with Negative Binomial Mixed Model
-setwd("/data/Social_Determinants")
-
-###dependencies
-library("MASS")
-library("lme4")
-library('caret')
-library('blmeco')
-library(VineCopula)
-library(sgof)
-library(tidyverse)
-library(cvms)
-library(pracma)
-
-
-#source("Modules/Source.R")
-#source("GWAS/helper.R")
-
-## Get variable in the loop
+source("./Social_Determinants/Modules/Source.R")
 
 args <- commandArgs()
 
 state <- c(args[6:length(args)])
 
-#state = "NJ"
-# Split the data on state
-
-
-
-
-sampledata<-readRDS('Preprocessing_FTS_Outputs/07-12-2020data.Rds')
+sampledata<-readRDS('./Social_Determinants/Preprocessing_FTS_Outputs/07-12-2020data.Rds')
 statesplit <- split(sampledata, sampledata$state)
 
 
@@ -41,32 +17,6 @@ for (name in names(statesplit)) {
     statesplit <- statesplit[names(statesplit) != name]
   }
 }
-
-#//!I honestly have no idea how to comment things so they wont be run at the command line...
-#//!# CREATE Blank output files....
-#for (i in 1:length(names(statesplit))) {
-#  state = names(statesplit)[i]
-#small_states = c("CT", "DE", "IN", "MA", "MD", "ME", "NC", "ND", "NH", "OH", "SC", "TN", "VT", "WY", "KY")
-#small_states[1]
-#for (i in 1:length(small_states)) {
-#  state = small_states[i]
-#  MRR_file = paste("GWAS/state_results/", state, "_GWAS_MRR.rds", sep = "")
-#  MRR_file
-#  P_file = paste("GWAS/state_results/", state, "_GWAS_P.rds", sep = "")
-#  ADJ_P_file = paste("GWAS/state_results/", state, "_GWAS_ADJ_P.rds", sep = "")
-#
-#  dats = c ("hispanic", "pct_blk", "pct_asian", "pct_white", "pct_native",  "q_popdensity 3", "q_popdensity 4", "q_popdensity 5", "Median Household Income", 
-#   "education", "beds/population", "interested_var")
-#  
-#  MRR = data_frame(NULL, row.names = dats)
-#  P = data_frame(NULL, row.names = dats)
-#  ADJ_P = data_frame(NULL, row.names = dats)
-#
-#  saveRDS(MRR, MRR_file)
-#  saveRDS(P, P_file)
-#  saveRDS(ADJ_P, ADJ_P_file)
-#}
-
 
 for (i in 1:length(names(statesplit))) {
   name = names(statesplit)[i]
@@ -125,9 +75,9 @@ for (i in 1:length(names(statesplit))) {
     
     
     
-    MRR_file = paste("GWAS/state_results/", state, "_GWAS_MRR.rds", sep = "")
-    P_file = paste("GWAS/state_results/", state, "_GWAS_P.rds", sep = "")
-    ADJ_P_file = paste("GWAS/state_results/", state, "_GWAS_ADJ_P.rds", sep = "")
+    MRR_file = paste("./Social_Determinants/GWAS/state_results/", state, "_GWAS_MRR.rds", sep = "")
+    P_file = paste("./Social_Determinants/GWAS/state_results/", state, "_GWAS_P.rds", sep = "")
+    ADJ_P_file = paste("./Social_Determinants/GWAS/state_results/", state, "_GWAS_ADJ_P.rds", sep = "")
     
     GWAS_MRR <- readRDS(MRR_file)
     GWAS_P <- readRDS(P_file)

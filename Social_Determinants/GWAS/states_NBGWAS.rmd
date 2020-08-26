@@ -11,15 +11,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_knit$set(root.dir = "../")
 
-library("MASS")
-library("lme4")
-library('caret')
-library('blmeco')
-library(VineCopula)
-library(sgof)
-library(tidyverse)
-library(cvms)
-library(pracma)
+source("./Social_Determinants/Modules/Source.R")
 ```
 
 # Set state and date of analysis
@@ -28,7 +20,7 @@ library(pracma)
 
 state = "NJ"
 
-sampledata <- readRDS('Preprocessing_FTS_Outputs/07-06-2020data.Rds')
+sampledata <- readRDS('./Social_Determinants/Preprocessing_FTS_Outputs/07-06-2020data.Rds')
 
 ```
 
@@ -112,9 +104,9 @@ for (interested_var in colnames(statesplit[[state]]) ) {
     
     # Set paths to save results
     
-    MRR_file = paste("GWAS/state_results/", state, "_GWAS_MRR.rds", sep = "")
-    P_file = paste("GWAS/state_results/", state, "_GWAS_P.rds", sep = "")
-    ADJ_P_file = paste("GWAS/state_results/", state, "_GWAS_ADJ_P.rds", sep = "")
+    MRR_file = paste("./Social_Determinants/GWAS/state_results/", state, "_GWAS_MRR.rds", sep = "")
+    P_file = paste("./Social_Determinants/GWAS/state_results/", state, "_GWAS_P.rds", sep = "")
+    ADJ_P_file = paste("./Social_Determinants/GWAS/state_results/", state, "_GWAS_ADJ_P.rds", sep = "")
     
     # 3 Steps of saving results: 
   

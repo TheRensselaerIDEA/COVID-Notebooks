@@ -10,26 +10,21 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-knitr::opts_knit$set(root.dir = "../")
+knitr::opts_knit$set(root.dir = substr(getwd(),0,nchar(getwd())-5))
+```
 
-library("MASS")
-library("lme4")
-library('caret')
-library('blmeco')
-library(VineCopula)
-library(sgof)
-library(tidyverse)
-library(cvms)
-library(pracma)
+
+```{r}
+source("./Social_Determinants/Modules/Source.R")
 ```
 
 # Clean up dataframe for storage
 
 ```{r}
 
-GWAS_MRR <- readRDS("GWAS/GWAS_MRR.rds")
-GWAS_P <- readRDS("GWAS/GWAS_P.rds")
-GWAS_ADJ_P <- readRDS("GWAS/GWAS_ADJ_P.rds")
+GWAS_MRR <- readRDS("./Social_Determinants/GWAS/GWAS_MRR.rds")
+GWAS_P <- readRDS("./Social_Determinants/GWAS/GWAS_P.rds")
+GWAS_ADJ_P <- readRDS("./Social_Determinants/GWAS/GWAS_ADJ_P.rds")
 
 GWAS_MRR <- subset(GWAS_MRR, select = c())
 GWAS_P <- subset(GWAS_P, select = c())
@@ -54,9 +49,9 @@ for (name in names) {
   names(GWAS_MRR)[names(GWAS_MRR) == "placeholder_name"] <- name
 }
 
-saveRDS(GWAS_ADJ_P, "GWAS/GWAS_ADJ_P.rds")
-saveRDS(GWAS_P, "GWAS/GWAS_P.rds")
-saveRDS(GWAS_MRR, "GWAS/GWAS_MRR.rds")
+saveRDS(GWAS_ADJ_P, "./Social_Determinants/GWAS/GWAS_ADJ_P.rds")
+saveRDS(GWAS_P, "./Social_Determinants/GWAS/GWAS_P.rds")
+saveRDS(GWAS_MRR, "./Social_Determinants/GWAS/GWAS_MRR.rds")
 
 ```
 
@@ -64,7 +59,7 @@ saveRDS(GWAS_MRR, "GWAS/GWAS_MRR.rds")
 
 ```{r}
 
-sampledata <- readRDS('./Preprocessing_FTS_Outputs/07-05-2020data.Rds')
+sampledata <- readRDS('./Social_Determinants/Preprocessing_FTS_Outputs/07-05-2020data.Rds')
 
 ```
 
@@ -72,15 +67,15 @@ sampledata <- readRDS('./Preprocessing_FTS_Outputs/07-05-2020data.Rds')
 
 ```{r}
 
-args <- c("Infant Mortality Rate", "Cancer.death_rate", "Suicide Rate (Age-Adjusted)", "Assault.death_rate", "Cardiovascular.death_rate",
-          "Motor Vehicle Mortality Rate", "Drug Overdose Mortality Rate", "All.Cause.death_rate", "PediatricAsthma",
-          "AdultChronicLungDisease", "% Not Proficient in English", "% Insufficient Sleep", "% Unemployed", "% Drive Alone to Work",
-          "% Long Commute - Drives Alone", "% Food Insecure", "% With Access to Exercise Opportunities", "% Frequent Mental Distress",
-          "% Smokers", "% Excessive Drinking", "Overcrowding", "% less than 18 years of age", "% Homeowners", "% Severe Housing Cost Burden",
-          "Average Number of Physically Unhealthy Days", "Social Association Rate", "Segregation index", "Average Daily PM2.5",
-          "Presence of Water Violation", "Average Grade Performance", "High School Graduation Rate", "Preventable Hospitalization Rate",
-          "Primary Care Physicians Rate", "Other Primary Care Provider Rate", "% With Annual Mammogram", "% Uninsured",
-          "% Fair or Poor Health", "% Vaccinated", "Chlamydia Rate", "Mental Health Provider Rate", "HIV Prevalence Rate")
+args <- c("Infant Mortality Rate", "Cancer.death_rate", "Suicide Rate (Age-Adjusted)", "Assault.death_rate", "Despair.death_rate", "Motor Vehicle Mortality Rate",
+          "Drug Overdose Mortality Rate", "All.Cause.death_rate", "PediatricAsthma", "AdultChronicLungDisease", "% Not Proficient in English",
+          "% Insufficient Sleep", "% Unemployed", "% Drive Alone to Work", "% Long Commute - Drives Alone", "% Food Insecure",
+          "% With Access to Exercise Opportunities", "% Frequent Mental Distress", "% Smokers", "% Excessive Drinking", "Overcrowding",
+          "% less than 18 years of age", "% Homeowners", "% Severe Housing Cost Burden", "Average Number of Physically Unhealthy Days",
+          "Social Association Rate", "Segregation index", "Average Daily PM2.5", "Presence of Water Violation", "Average Grade Performance",
+          "High School Graduation Rate", "Preventable Hospitalization Rate", "Primary Care Physicians Rate", "Other Primary Care Provider Rate",
+          "% With Annual Mammogram", "% Uninsured", "% Fair or Poor Health", "% Vaccinated", "Chlamydia Rate", "Mental Health Provider Rate",
+          "HIV Prevalence Rate")
 ```
 
 # Loop through all interested variables to perform a complete NBGWAS analysis
@@ -98,7 +93,7 @@ for (interested_var in args){
   if (strcmp(unname(sapply(sub_sampledata, typeof)[ncol(sub_sampledata)]), "character")) {
     In.loop.model=glmer.nb(Deaths ~ scale(hispanic) + scale(pct_blk) + scale(pct_asian) + scale(pct_white) + scale(pct_native)
                            + factor(q_popdensity)
-                           + scale(log(medhouseholdincome))+scale(education) + scale(beds/population)
+                           + scale(log(medhouseholdincome)) + scale(education) + scale(beds/population)
                            + scale(date_since) 
                            + scale(date_since_mask)
                            + factor(i_var)
@@ -118,9 +113,9 @@ for (interested_var in args){
   # 3 Steps of saving results: 
   
   # 1. Read in rds saved from last iteration
-  GWAS_MRR <- readRDS("GWAS/GWAS_MRR.rds")
-  GWAS_P <- readRDS("GWAS/GWAS_P.rds")
-  GWAS_ADJ_P <- readRDS("GWAS/GWAS_ADJ_P.rds")
+  GWAS_MRR <- readRDS("./Social_Determinants/GWAS/GWAS_MRR.rds")
+  GWAS_P <- readRDS("./Social_Determinants/GWAS/GWAS_P.rds")
+  GWAS_ADJ_P <- readRDS("./Social_Determinants/GWAS/GWAS_ADJ_P.rds")
   
   # 2. Append/Modify values obtained from current iteration to dataframe
   GWAS_MRR[[interested_var]]   <- summary(In.loop.model)[10]$coefficients[2:16,1]
@@ -130,9 +125,9 @@ for (interested_var in args){
                                            n = length(summary(In.loop.model)[10]$coefficients[2:16,4]))
   
   # 3. Override rds file with updated dataframe
-  saveRDS(GWAS_ADJ_P, "GWAS/GWAS_ADJ_P.rds")
-  saveRDS(GWAS_P, "GWAS/GWAS_P.rds")
-  saveRDS(GWAS_MRR, "GWAS/GWAS_MRR.rds")  
+  saveRDS(GWAS_ADJ_P, "./Social_Determinants/GWAS/GWAS_ADJ_P.rds")
+  saveRDS(GWAS_P, "./Social_Determinants/GWAS/GWAS_P.rds")
+  saveRDS(GWAS_MRR, "./Social_Determinants/GWAS/GWAS_MRR.rds")  
 }
 
 ```

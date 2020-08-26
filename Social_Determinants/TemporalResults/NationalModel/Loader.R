@@ -1,7 +1,7 @@
 knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_knit$set(root.dir = "./")
 
-source("./Modules/Source.R")
+source("./Social_Determinants/Modules/Source.R")
 
 dates_names = c("03-29", "04-05", "04-12", "04-19", "04-26", "05-03", "05-17", "05-24", "05-31", "06-07", "06-14", "06-21", "06-28", "07-05", "07-12")
 # dates_names = c("03-30", "04-06", "04-13", "04-20", "04-27", "05-04", "05-11", "05-18", "05-25", "06-01", "06-08", "06-15", "06-22", "06-29", "07-06", "07-13")
@@ -29,7 +29,7 @@ ALL_P = data.frame(coefficients = COEF)
 ALL_sig = data.frame(coefficients = COEF)
 
 for (i in 1:length(dates_names)){
-  fname <- paste("./TemporalResults/NationalModel/",dates_names[i],".rda",sep="")
+  fname <- paste("./Social_Determinants/TemporalResults/NationalModel/",dates_names[i],".rda",sep="")
   load(fname)
   summ <- eval(as.name(dates_names[i]))
   c <- exp(summ[10]$coefficients[,1])
@@ -72,8 +72,8 @@ ALL_C_sig <- ALL_C_sig[rowSums(is.na(ALL_C_sig)) != ncol(ALL_C_sig)-1, ]
 ALL_P_sig <- ALL_P_sig[rowSums(is.na(ALL_P_sig)) != ncol(ALL_P_sig)-1, ]
 
 
-saveRDS(ALL_C, file = './TemporalResults/NationalModel/ALL_C.rds')
-saveRDS(ALL_P, file = './TemporalResults/NationalModel/ALL_P.rds')
+saveRDS(ALL_C, file = './Social_Determinants/TemporalResults/NationalModel/ALL_C.rds')
+saveRDS(ALL_P, file = './Social_Determinants/TemporalResults/NationalModel/ALL_P.rds')
 
-saveRDS(ALL_C_sig, file = './TemporalResults/NationalModel/ALL_C_sig.rds')
-saveRDS(ALL_P_sig, file = './TemporalResults/NationalModel/ALL_P_sig.rds')
+saveRDS(ALL_C_sig, file = './Social_Determinants/TemporalResults/NationalModel/ALL_C_sig.rds')
+saveRDS(ALL_P_sig, file = './Social_Determinants/TemporalResults/NationalModel/ALL_P_sig.rds')

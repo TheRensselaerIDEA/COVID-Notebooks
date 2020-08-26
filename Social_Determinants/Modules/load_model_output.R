@@ -1,16 +1,16 @@
 
 
 # Import p values for states
-states.all_p <- readRDS("StateSummaries/ALL_P.rds")
+states.all_p <- readRDS("./Social_Determinants/StateSummaries/ALL_P.rds")
 
 # Import c values for states
-states.all_c <- readRDS("StateSummaries/ALL_C.rds")
+states.all_c <- readRDS("./Social_Determinants/StateSummaries/ALL_C.rds")
 
 # Import p values for states
-states.all_merged <- readRDS("StateSummaries/ALL_merged.rds")
+states.all_merged <- readRDS("./Social_Determinants/StateSummaries/ALL_merged.rds")
 
 # Import model input data
-model_input <- readRDS('Preprocessing_FTS_Outputs/06-28-2020data.Rds')
+model_input <- readRDS('./Social_Determinants/Preprocessing_FTS_Outputs/06-28-2020data.Rds')
 
 # Import national model summary
 national <- readRDS('Modules/combined.summary.July8.Rds')
@@ -24,12 +24,12 @@ GWAS_ADJ_P <- data.frame(row.names = colnames(model_input))
 GWAS_MRR <- data.frame(row.names = colnames(model_input))
 #colnames(GWAS_MRR) < - statenames
 for (state in statenames) {
-  fname <- paste("./StateSummaries/",state,".summary.rda",sep="")
+  fname <- paste("./Social_Determinants/StateSummaries/",state,".summary.rda",sep="")
   load(fname)
   
   
   #f2 <- eval(as.name(paste(state,".GWAS_MRR", sep = "")))
-  fname2 <- paste("./GWAS/state_results/", state, "_GWAS_ADJ_P.rds", sep = "")
+  fname2 <- paste("./Social_Determinants/GWAS/state_results/", state, "_GWAS_ADJ_P.rds", sep = "")
   #f2 <- data.frame(row.names = rownmames(readRDS(fname2)))
   if (file.exists(fname2)) {
     temp2 <- readRDS(fname2)
@@ -37,7 +37,7 @@ for (state in statenames) {
     next
   }
   #f3 <- eval(as.name(paste(state,".GWAS_ADJ_P", sep = "")))
-  fname3 <- paste("./GWAS/state_results/", state, "_GWAS_MRR.rds", sep = "")
+  fname3 <- paste("./Social_Determinants/GWAS/state_results/", state, "_GWAS_MRR.rds", sep = "")
   #f3 <- data.frame(row.names = rownmames(readRDS(fname3)))
   if (file.exists(fname3)) {
     temp3 <- readRDS(fname3)
@@ -63,11 +63,11 @@ for (state in statenames) {
 }
 
 # adjusted p vals
-states.adjusted_p <- readRDS("AdjustedStateSummaries/ALL_P.rds")
+states.adjusted_p <- readRDS("./Social_Determinants/StateSummaries/ALL_P.rds")
 
-states.adjusted_c <- readRDS("AdjustedStateSummaries/ALL_C.rds")
+states.adjusted_c <- readRDS("./Social_Determinants/StateSummaries/ALL_C.rds")
 
-states.shapes <- readRDS("data/json/us_projection.Rds")
+states.shapes <- readRDS("./Social_Determinants/data/json/us_projection.Rds")
 
 # Convert to dataframe state data
 states <- states.shapes

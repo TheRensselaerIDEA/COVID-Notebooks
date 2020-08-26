@@ -1,10 +1,10 @@
 knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_knit$set(root.dir = "../")
 
-source("./Modules/Source.R")
+source("./Social_Determinants/Modules/Source.R")
 
 # Read in data
-aggregated_data <- readRDS('Preprocessing_FTS_Outputs/06-28-2020data.Rds')
+aggregated_data <- readRDS('./Social_Determinants/Preprocessing_FTS_Outputs/07-05-2020data.Rds')
 
 # Split the data on state
 statesplit <- split(aggregated_data, aggregated_data$state)
@@ -17,7 +17,6 @@ for (name in names(statesplit)) {
 }
 
 states <- names(statesplit)
-states
 
 # names of coefficients for indexing
 COEF <- c("(Intercept)", "scale(hispanic)", "scale(pct_blk)", "scale(pct_asian)", "scale(pct_white)", "scale(pct_native)", 
@@ -33,8 +32,10 @@ ALL.merged <- data.frame(coefficients=COEF)
 
 for (name in names(statesplit)) {
   # Ignore states having issues
-  if (name %in% c("AZ", "CT", "DE", "RI"))
+  # NOTE: the list of states with issues are different with dates
+  if (name %in% c("AZ", "DE", "KS", "NY", "RI", "WA"))
     next
+  print(name)
   state_data <- statesplit[[name]]
   
   state_data <- subset(state_data, select = c(fips, Deaths, hispanic, pct_blk, pct_asian, pct_white, pct_native, 
@@ -58,7 +59,7 @@ for (name in names(statesplit)) {
   # save model summary of single state
   result <- paste(name, ".summary", sep = "")
   assign(result, summary(model))
-  fname = paste("./StateSummaries/",result,".rda",sep="")
+  fname = paste("./Social_Determinants/StateSummaries/",result,".rda",sep="")
   do.call(save, list(result, file=fname))
   
   # NY model summary stores coefficients on 13th element while all others on 12nd
@@ -70,6 +71,7 @@ for (name in names(statesplit)) {
     p <- summary(model)[12]$coefficients[,4]
   }
   
+  # Adjust p-value with the Benjamini-Hochberg Procedure
   p <- p.adjust(p, method = 'BH', n = length(p))
   
   # merge into master data frame
@@ -78,40 +80,7 @@ for (name in names(statesplit)) {
   ALL.P$state <- p[match(ALL.P$coefficients, names(p))]
   names(ALL.P)[names(ALL.P) == 'state'] <- name
   
-  ALL.merged$state_c <- c[match(ALL.merged$coefficients, names(c))]
-  ALL.merged$state_p <- p[match(ALL.merged$coefficients, names(p))]
-  name_c = paste(name, '_c', sep = '')
-  name_p = paste(name, '_p', sep = '')
-  names(ALL.merged)[names(ALL.merged) == 'state_c'] <- name_c
-  names(ALL.merged)[names(ALL.merged) == 'state_p'] <- name_p
-  
 }
 
-saveRDS(ALL.C, file = './AdjustedStateSummaries/ALL_C.rds')
-saveRDS(ALL.P, file = './AdjustedStateSummaries/ALL_P.rds')
-saveRDS(ALL.merged, file = './AdjustedStateSummaries/ALL_merged.rds')
-
-ALL.pair <- data.frame(states=names(ALL.C)[2:45])
-
-for (i in 1:19){
-  column <- c()
-  for (name in ALL.pair$states){
-    c <- ALL.C[[name]][i]
-    p <- ALL.P[[name]][i]
-    if (!is.na(p) & p <= 0.05){
-      pair <- c(c, p)
-    }else{
-      pair <- c(NA,NA)
-    }
-    #pair <- c(c, p)
-    column <- append(column, pair, after = length(column))
-  }
-  x <- seq_along(column)
-  column <- split(column, ceiling(x/2))
-  ALL.pair$coef <- column
-  names(ALL.pair)[names(ALL.pair) == 'coef'] <- COEF[i]
-}
-
-#replace(ALL.pair, ALL.pair==c(NA,NA), 0)
-
-saveRDS(ALL.pair, file = './AdjustedStateSummaries/Significant.rds')
+saveRDS(ALL.C, file = './Social_Determinants/StateSummaries/ALL_C.rds')
+saveRDS(ALL.P, file = './Social_Determinants/StateSummaries/ALL_P.rds')
